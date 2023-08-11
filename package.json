@@ -1,0 +1,16 @@
+{
+  "name": "css-hooks",
+  "description": "Monorepo for @hooks.css/* packages",
+  "version": "0.3.1",
+  "devDependencies": {
+    "syncpack": "^10.9.3"
+  },
+  "license": "MIT",
+  "private": true,
+  "repository": "css-hooks/hooks.css",
+  "workspaces": [
+    "packages/core",
+    "packages/hooks.css",
+    "packages/react"
+  ]
+}

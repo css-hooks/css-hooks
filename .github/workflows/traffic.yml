@@ -1,0 +1,32 @@
+name: traffic
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - ".github/workflows/traffic.yml"
+  schedule:
+    - cron: "15 23 * * 0"
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    env:
+      TRAFFIC_PATH: .github/traffic.json
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: nsaunders/traffic-lite@v1
+        with:
+          path: ${{ env.TRAFFIC_PATH }}
+          repo: ${{ github.repository }}
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
+
+      - uses: EndBug/add-and-commit@v9
+        with:
+          add: ${{ env.TRAFFIC_PATH }}
+          author_name: GitHub Actions
+          author_email: 41898282+github-actions[bot]@users.noreply.github.com
+          message: Log repository traffic.

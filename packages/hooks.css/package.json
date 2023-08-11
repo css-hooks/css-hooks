@@ -1,0 +1,28 @@
+{
+  "name": "hooks.css",
+  "description": "The style sheet that enables CSS hooks",
+  "version": "0.1.0",
+  "author": "Nick Saunders",
+  "devDependencies": {
+    "@hooks.css/core": "^0.1.0",
+    "@tsconfig/node-lts": "^18.12.3",
+    "lightningcss": "^1.21.5",
+    "rimraf": "^5.0.1",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.1.6"
+  },
+  "files": [
+    "index.css",
+    "index.min.css",
+    "index.min.css.map"
+  ],
+  "license": "MIT",
+  "private": false,
+  "repository": "css-hooks/hooks.css",
+  "scripts": {
+    "clean": "rimraf index.css index.min.css index.min.css.map",
+    "postversion": "npm install -D @hooks.css/core@^$npm_package_version",
+    "prepublishOnly": "ts-node ./__fixtures__/gen.ts"
+  }
+}

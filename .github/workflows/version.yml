@@ -1,0 +1,44 @@
+name: version
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Value passed to npm-version command"
+        required: true
+        default: "prerelease"
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+          - premajor
+          - preminor
+          - prepatch
+          - prerelease
+
+jobs:
+  bump:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - id: root
+        run: echo "version=$(npm version ${{inputs.bump}} --preid=alpha --git-tag-version=false --tag-version-prefix='')" >> $GITHUB_OUTPUT
+      - run: npm version ${{steps.root.outputs.version}} --workspaces --git-tag-version=false
+      - id: commit
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: GitHub Actions
+          author_email: 41898282+github-actions[bot]@users.noreply.github.com
+          message: Version bump v${{steps.root.outputs.version}}
+      - uses: actions/github-script@v3
+        with:
+          github-token: ${{github.token}}
+          script: |
+            await github.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/v${{steps.root.outputs.version}}",
+              sha: "${{steps.commit.outputs.commit_long_sha}}"
+            })

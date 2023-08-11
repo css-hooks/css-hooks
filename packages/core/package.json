@@ -1,0 +1,31 @@
+{
+  "name": "@hooks.css/core",
+  "description": "CSS Hooks core library",
+  "version": "0.1.0",
+  "author": "Nick Saunders",
+  "devDependencies": {
+    "@tsconfig/node-lts": "^18.12.3",
+    "@tsconfig/strictest": "^2.0.1",
+    "@types/jest": "^29.5.3",
+    "jest": "^29.6.2",
+    "rimraf": "^5.0.1",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.1.6"
+  },
+  "files": [
+    "cjs",
+    "esm",
+    "types"
+  ],
+  "license": "MIT",
+  "main": "cjs",
+  "module": "esm",
+  "private": false,
+  "repository": "css-hooks/hooks.css",
+  "scripts": {
+    "clean": "rimraf cjs esm types",
+    "prepublishOnly": "tsc -p tsconfig.dist.json --outDir esm --module es6 && tsc -p tsconfig.dist.json --outDir cjs --module commonjs && tsc -p tsconfig.dist.json --outDir types --declaration --emitDeclarationOnly",
+    "test": "jest"
+  },
+  "types": "types"
+}
