@@ -8,7 +8,11 @@ Breaking changes:
 
 New features:
 
+- Solid integration (#1 by @nsaunders)
+
 Bugfixes:
+
+- Incorrect repository name in package.json files (#2 by @nsaunders)
 
 Other improvements:
 
