@@ -11,6 +11,7 @@
   "workspaces": [
     "packages/core",
     "packages/hooks.css",
-    "packages/react"
+    "packages/react",
+    "packages/solid"
   ]
 }
