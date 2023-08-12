@@ -1,10 +1,10 @@
 {
   "name": "hooks.css",
   "description": "The style sheet that enables CSS hooks",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "author": "Nick Saunders",
   "devDependencies": {
-    "@hooks.css/core": "^0.1.1",
+    "@hooks.css/core": "^0.2.0",
     "@tsconfig/node-lts": "^18.12.3",
     "lightningcss": "^1.21.5",
     "rimraf": "^5.0.1",
