@@ -1,11 +1,11 @@
 {
   "name": "@hooks.css/react",
   "description": "CSS Hooks for React",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Nick Saunders",
   "dependencies": {
     "@emotion/unitless": "^0.8.1",
-    "@hooks.css/core": "^0.1.0"
+    "@hooks.css/core": "^0.1.1"
   },
   "devDependencies": {
     "@tsconfig/node-lts": "^18.12.3",
@@ -27,7 +27,7 @@
   "module": "esm",
   "peerDependencies": {
     "@types/react": ">=16.14.0 <19",
-    "hooks.css": "^0.1.0"
+    "hooks.css": "^0.1.1"
   },
   "private": false,
   "repository": "css-hooks/hooks.css",
