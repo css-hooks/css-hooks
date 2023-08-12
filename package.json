@@ -1,7 +1,7 @@
 {
   "name": "css-hooks",
   "description": "Monorepo for @hooks.css/* packages",
-  "version": "0.3.1",
+  "version": "0.1.0",
   "devDependencies": {
     "syncpack": "^10.9.3"
   },
