@@ -33,7 +33,7 @@
   "repository": "css-hooks/hooks.css",
   "scripts": {
     "clean": "rimraf cjs esm types",
-    "postversion": "npm install @hooks.css/core@^$npm_package_version && npm install --save-peer hooks.css@^$npm_package_vesion",
+    "postversion": "npm install @hooks.css/core@^$npm_package_version && npm install --save-peer hooks.css@^$npm_package_version",
     "prepublishOnly": "tsc -p tsconfig.dist.json --outDir cjs --module commonjs && tsc -p tsconfig.dist.json --outDir esm --module es6 && tsc -p tsconfig.dist.json --declaration --emitDeclarationOnly --outDir types",
     "test": "jest"
   },
