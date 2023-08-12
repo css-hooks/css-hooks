@@ -7,7 +7,7 @@
   },
   "license": "MIT",
   "private": true,
-  "repository": "css-hooks/hooks.css",
+  "repository": "css-hooks/css-hooks",
   "workspaces": [
     "packages/core",
     "packages/hooks.css",

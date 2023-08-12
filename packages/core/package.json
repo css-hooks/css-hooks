@@ -21,7 +21,7 @@
   "main": "cjs",
   "module": "esm",
   "private": false,
-  "repository": "css-hooks/hooks.css",
+  "repository": "css-hooks/css-hooks",
   "scripts": {
     "clean": "rimraf cjs esm types",
     "prepublishOnly": "tsc -p tsconfig.dist.json --outDir esm --module es6 && tsc -p tsconfig.dist.json --outDir cjs --module commonjs && tsc -p tsconfig.dist.json --outDir types --declaration --emitDeclarationOnly",

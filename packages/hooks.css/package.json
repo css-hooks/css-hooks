@@ -19,7 +19,7 @@
   ],
   "license": "MIT",
   "private": false,
-  "repository": "css-hooks/hooks.css",
+  "repository": "css-hooks/css-hooks",
   "scripts": {
     "clean": "rimraf index.css index.min.css index.min.css.map",
     "postversion": "npm install -D @hooks.css/core@^$npm_package_version",
