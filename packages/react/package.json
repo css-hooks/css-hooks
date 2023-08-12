@@ -17,9 +17,6 @@
     "ts-jest": "^29.1.1",
     "typescript": "^5.1.6"
   },
-  "peerDependencies": {
-    "@types/react": ">=16.14.0 <19"
-  },
   "files": [
     "cjs",
     "esm",
@@ -28,11 +25,15 @@
   "license": "MIT",
   "main": "cjs",
   "module": "esm",
+  "peerDependencies": {
+    "@types/react": ">=16.14.0 <19",
+    "hooks.css": "^0.1.0"
+  },
   "private": false,
   "repository": "css-hooks/hooks.css",
   "scripts": {
     "clean": "rimraf cjs esm types",
-    "postversion": "npm install @hooks.css/core@^$npm_package_version",
+    "postversion": "npm install @hooks.css/core@^$npm_package_version && npm install --save-peer hooks.css@^$npm_package_vesion",
     "prepublishOnly": "tsc -p tsconfig.dist.json --outDir cjs --module commonjs && tsc -p tsconfig.dist.json --outDir esm --module es6 && tsc -p tsconfig.dist.json --declaration --emitDeclarationOnly --outDir types",
     "test": "jest"
   },
