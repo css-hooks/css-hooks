@@ -30,7 +30,7 @@ jobs:
         run: npm version ${{steps.root.outputs.version}} --workspaces --git-tag-version=false
 
       - name: generate changelog
-        run: npx conventional-changelog -p angular -o CHANGELOG.md
+        run: npx conventional-changelog -p angular -o CHANGELOG.md -r 0
 
       - name: commit version bump
         id: commit
