@@ -30,7 +30,11 @@
     "hooks.css": "^0.1.1"
   },
   "private": false,
-  "repository": "css-hooks/css-hooks",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/css-hooks/css-hooks.git",
+    "directory": "packages/react"
+  },
   "scripts": {
     "clean": "rimraf cjs esm types",
     "postversion": "npm install @hooks.css/core@^$npm_package_version && npm install --save-peer hooks.css@^$npm_package_version",

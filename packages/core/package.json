@@ -21,7 +21,11 @@
   "main": "cjs",
   "module": "esm",
   "private": false,
-  "repository": "css-hooks/css-hooks",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/css-hooks/css-hooks.git",
+    "directory": "packages/core"
+  },
   "scripts": {
     "clean": "rimraf cjs esm types",
     "prepublishOnly": "tsc -p tsconfig.dist.json --outDir esm --module es6 && tsc -p tsconfig.dist.json --outDir cjs --module commonjs && tsc -p tsconfig.dist.json --outDir types --declaration --emitDeclarationOnly",

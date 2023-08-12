@@ -1,22 +1,68 @@
 name: release
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
 
 jobs:
-  publish:
+  release:
+    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: checkout
+        uses: actions/checkout@v3
         with:
           ref: ${{github.ref}}
+          fetch-depth: 0
+
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
-          registry-url: "https://registry.npmjs.org"
-      - run: npm ci
-      - run: cp LICENSE packages/core && cp LICENSE packages/react
-      - run: npm publish --access public --workspace="packages/**"
+          node-version: 18
+
+      - name: install dependencies
+        run: npm ci
+
+      - name: version bump (root)
+        id: root
+        run: echo "version=$(npm version $(npx conventional-recommended-bump -p angular) --preid=alpha --git-tag-version=false --tag-version-prefix='')" >> $GITHUB_OUTPUT
+
+      - name: version bump (packages)
+        run: npm version ${{steps.root.outputs.version}} --workspaces --git-tag-version=false
+
+      - name: generate changelog
+        run: npx conventional-changelog -p angular -o CHANGELOG.md
+
+      - name: commit version bump
+        id: commit
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: GitHub Actions
+          author_email: 41898282+github-actions[bot]@users.noreply.github.com
+          message: "release: v${{steps.root.outputs.version}}"
+
+      - name: tag version
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{github.token}}
+          script: |
+            await github.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/v${{steps.root.outputs.version}}",
+              sha: "${{steps.commit.outputs.commit_long_sha}}"
+            })
+
+      - name: fetch tag
+        run: git fetch --tags
+
+      - name: github release
+        run: npx conventional-github-releaser -p angular
+        env:
+          CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{secrets.GH_ACCESS_TOKEN}}
+
+      - name: propagate license
+        run: for dir in ./packages/*; do cp LICENSE "$dir"; done
+
+      - name: npm publish
+        run: npm publish --access public --workspace="packages/**"
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

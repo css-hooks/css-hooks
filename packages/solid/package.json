@@ -29,7 +29,11 @@
     "solid-js": ">=1.0.0 <2.0.0"
   },
   "private": false,
-  "repository": "css-hooks/hooks.css",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/css-hooks/css-hooks.git",
+    "directory": "packages/solid"
+  },
   "scripts": {
     "clean": "rimraf cjs esm types",
     "postversion": "npm install @hooks.css/core@^$npm_package_version && npm install --save-peer hooks.css@^$npm_package_version",

@@ -3,11 +3,16 @@
   "description": "Monorepo for @hooks.css/* packages",
   "version": "0.1.1",
   "devDependencies": {
-    "syncpack": "^10.9.3"
+    "conventional-changelog-cli": "^3.0.0",
+    "conventional-github-releaser": "^3.1.5",
+    "conventional-recommended-bump": "^7.0.1"
   },
   "license": "MIT",
   "private": true,
-  "repository": "css-hooks/css-hooks",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/css-hooks/css-hooks.git"
+  },
   "workspaces": [
     "packages/core",
     "packages/hooks.css",
