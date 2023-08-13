@@ -24,10 +24,15 @@ jobs:
 
       - name: version bump (root)
         id: root
-        run: echo "version=$(npm version $(npx conventional-recommended-bump -p angular) --preid=alpha --git-tag-version=false --tag-version-prefix='')" >> $GITHUB_OUTPUT
+        run:
+          echo "version=$(npm version $(npx conventional-recommended-bump -p
+          angular) --preid=alpha --git-tag-version=false
+          --tag-version-prefix='')" >> $GITHUB_OUTPUT
 
       - name: version bump (packages)
-        run: npm version ${{steps.root.outputs.version}} --workspaces --git-tag-version=false
+        run:
+          npm version ${{steps.root.outputs.version}} --workspaces
+          --git-tag-version=false
 
       - name: generate changelog
         run: npx conventional-changelog -p angular -o CHANGELOG.md -r 0

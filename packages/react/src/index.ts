@@ -11,7 +11,7 @@ import unitless from "@emotion/unitless";
  */
 export function stringifyValue(
   propertyName: string,
-  value: unknown
+  value: unknown,
 ): string | null {
   //
 

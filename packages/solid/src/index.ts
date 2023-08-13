@@ -17,5 +17,5 @@ export function stringifyValue(_: string, value: unknown): string | null {
 export default createHooksFn<JSX.CSSProperties>()(
   "kebab",
   stringifyValue,
-  types
+  types,
 );

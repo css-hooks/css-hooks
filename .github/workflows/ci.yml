@@ -14,7 +14,9 @@ jobs:
           cache-name: cache-node-modules
         with:
           path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key:
+            ${{ runner.os }}-build-${{ env.cache-name }}-${{
+            hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -26,6 +28,10 @@ jobs:
         run: npm list
 
       - uses: wagoid/commitlint-github-action@v5
+
+      - uses: actionsx/prettier@v3
+        with:
+          args: --check .
 
       - run: npm ci
 

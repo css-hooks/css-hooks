@@ -6,7 +6,7 @@ import selectors from "@hooks.css/core/selectors";
 const css = `
 .hooks {
   ${Object.keys(selectors as Record<string, unknown>)
-    .flatMap((hookType) => [`--${hookType}-0: initial;`, `--${hookType}-1: ;`])
+    .flatMap(hookType => [`--${hookType}-0: initial;`, `--${hookType}-1: ;`])
     .join("\n  ")}
 }
 
@@ -17,7 +17,7 @@ ${Object.entries(selectors as Record<string, unknown>)
     } {
   --${hookType}-0: ;
   --${hookType}-1: initial;
-}`
+}`,
   )
   .join("\n\n")}
 `;
@@ -31,7 +31,7 @@ const { code: minCSS, map } = transform({
 
 async function writeOutput(
   to: string,
-  contents: Parameters<typeof fs.writeFile>[1]
+  contents: Parameters<typeof fs.writeFile>[1],
 ) {
   await fs.mkdir(path.dirname(path.resolve(to)), { recursive: true });
   await fs.writeFile(path.resolve(to), contents);
@@ -43,7 +43,7 @@ async function writeOutput(
   if (map) {
     await writeOutput("index.min.css.map", map);
   }
-})().catch((err) => {
+})().catch(err => {
   console.error(err);
   process.exit(1);
 });

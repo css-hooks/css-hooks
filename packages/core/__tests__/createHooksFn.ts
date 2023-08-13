@@ -5,7 +5,7 @@ describe("`createHooksFn`-produced hooks function", () => {
     const hooks = createHooksFn<{ color?: string }>()(
       "camel",
       (_, x) => (typeof x === "string" ? `${x}` : ""),
-      ["test-hook-a", "test-hook-b", "test-hook-c"] as const
+      ["test-hook-a", "test-hook-b", "test-hook-c"] as const,
     );
     expect(
       hooks({
@@ -13,7 +13,7 @@ describe("`createHooksFn`-produced hooks function", () => {
         testHookA: { color: "yellow" },
         testHookB: { color: "green" },
         testHookC: { color: "blue" },
-      })
+      }),
     ).toEqual({
       color:
         "var(--test-hook-c-1, blue) var(--test-hook-c-0, var(--test-hook-b-1, green) var(--test-hook-b-0, var(--test-hook-a-1, yellow) var(--test-hook-a-0, red)))",
@@ -24,7 +24,7 @@ describe("`createHooksFn`-produced hooks function", () => {
         testHookB: { color: "yellow" },
         testHookC: { color: "green" },
         testHookA: { color: "blue" },
-      })
+      }),
     ).toEqual({
       color:
         "var(--test-hook-a-1, blue) var(--test-hook-a-0, var(--test-hook-c-1, green) var(--test-hook-c-0, var(--test-hook-b-1, yellow) var(--test-hook-b-0, red)))",
@@ -35,13 +35,13 @@ describe("`createHooksFn`-produced hooks function", () => {
     const hooks = createHooksFn<{ "text-decoration"?: "underline" | "none" }>()(
       "kebab",
       (_, value) => (typeof value === "string" ? value : null),
-      ["test-hook"] as const
+      ["test-hook"] as const,
     );
     expect(
       hooks({
         "test-hook": { "text-decoration": "underline" },
         "text-decoration": "none",
-      })
+      }),
     ).toEqual({
       "text-decoration":
         "var(--test-hook-1, underline) var(--test-hook-0, none)",
@@ -60,7 +60,7 @@ describe("`createHooksFn`-produced hooks function", () => {
         "test-hook": {
           "background-color": "blue",
         },
-      }).color
+      }).color,
     ).toEqual("white");
   });
 
@@ -68,7 +68,7 @@ describe("`createHooksFn`-produced hooks function", () => {
     const hooks = createHooksFn<{ color?: string }>()(
       "kebab",
       (_, value) => (typeof value === "string" ? value : null),
-      ["test-hook"] as const
+      ["test-hook"] as const,
     );
     expect(hooks({ "test-hook": { color: "red" } })).toEqual({
       color: "var(--test-hook-1, red) var(--test-hook-0, initial)",
@@ -79,7 +79,7 @@ describe("`createHooksFn`-produced hooks function", () => {
     const hooks = createHooksFn<{ color?: string }>()(
       "camel",
       (_, value) => (value === "hook" ? value : null),
-      ["test-hook"] as const
+      ["test-hook"] as const,
     );
     expect(hooks({ color: "invalid", testHook: { color: "hook" } })).toEqual({
       color: "var(--test-hook-1, hook) var(--test-hook-0, initial)",
@@ -90,10 +90,10 @@ describe("`createHooksFn`-produced hooks function", () => {
     const hooks = createHooksFn<{ color?: string }>()(
       "camel",
       (_, value) => (value === "default" ? value : null),
-      ["test-hook"] as const
+      ["test-hook"] as const,
     );
     expect(hooks({ color: "default", testHook: { color: "invalid" } })).toEqual(
-      { color: "default" }
+      { color: "default" },
     );
   });
 
@@ -101,7 +101,7 @@ describe("`createHooksFn`-produced hooks function", () => {
     const hooks = createHooksFn<{ color?: string }>()(
       "kebab",
       (_, value) => (typeof value === "string" ? `[${value}]` : null),
-      ["test-hook-a", "test-hook-b"] as const
+      ["test-hook-a", "test-hook-b"] as const,
     );
     expect(
       hooks({
@@ -112,7 +112,7 @@ describe("`createHooksFn`-produced hooks function", () => {
         "test-hook-b": {
           color: "red",
         },
-      })
+      }),
     ).toEqual({
       color:
         "var(--test-hook-b-1, [red]) var(--test-hook-b-0, var(--test-hook-a-1, [lightblue]) var(--test-hook-a-0, [blue]))",

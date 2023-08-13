@@ -1,0 +1,7 @@
+# Generated
+/CHANGELOG.md
+packages/**/cjs
+packages/**/esm
+packages/**/types
+packages/hooks.css/index.css
+packages/hooks.css/index.min.css*
