@@ -1,33 +1,26 @@
 import fs from "fs/promises";
-import { transform } from "lightningcss";
+import autoprefixer from "autoprefixer";
+import cssnano from "cssnano";
 import path from "path";
 import selectors from "@hooks.css/core/selectors";
+import postcss from "postcss";
 
-const css = `
+const rawCSS = `
 .hooks {
   ${Object.keys(selectors as Record<string, unknown>)
     .flatMap(hookType => [`--${hookType}-0: initial;`, `--${hookType}-1: ;`])
     .join("\n  ")}
 }
 
-${Object.entries(selectors as Record<string, unknown>)
+${Object.entries(selectors as Record<string, (selectorBase: string) => string>)
   .map(
-    ([hookType, selector]) => `.hooks${
-      typeof selector === "string" ? selector : ""
-    } {
+    ([hookType, selector]) => `${selector(".hooks")} {
   --${hookType}-0: ;
   --${hookType}-1: initial;
 }`,
   )
   .join("\n\n")}
 `;
-
-const { code: minCSS, map } = transform({
-  filename: "index.css",
-  code: Buffer.from(css),
-  minify: true,
-  sourceMap: true,
-});
 
 async function writeOutput(
   to: string,
@@ -38,11 +31,24 @@ async function writeOutput(
 }
 
 (async function main() {
-  await writeOutput("index.css", css);
-  await writeOutput("index.min.css", minCSS);
-  if (map) {
-    await writeOutput("index.min.css.map", map);
-  }
+  const original = await postcss([autoprefixer]).process(rawCSS, {
+    from: undefined,
+    to: "index.css",
+    map: { inline: false },
+  });
+
+  await writeOutput("index.css", original.css);
+  original.map && (await writeOutput("index.css.map", original.map.toString()));
+
+  const minified = await postcss([autoprefixer, cssnano]).process(rawCSS, {
+    from: undefined,
+    to: "index.min.css",
+    map: { inline: false },
+  });
+
+  await writeOutput("index.min.css", minified.css);
+  minified.map &&
+    (await writeOutput("index.min.css.map", minified.map.toString()));
 })().catch(err => {
   console.error(err);
   process.exit(1);
