@@ -25,6 +25,8 @@ jobs:
         continue-on-error: true
         run: npm list
 
+      - uses: wagoid/commitlint-github-action@v5
+
       - run: npm ci
 
       - run: npm run prepublishOnly --workspaces --if-present

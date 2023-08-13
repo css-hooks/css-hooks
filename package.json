@@ -3,6 +3,7 @@
   "description": "Monorepo for @hooks.css/* packages",
   "version": "0.2.1",
   "devDependencies": {
+    "@commitlint/config-angular": "^17.7.0",
     "conventional-changelog-cli": "^3.0.0",
     "conventional-github-releaser": "^3.1.5",
     "conventional-recommended-bump": "^7.0.1"
