@@ -35,7 +35,7 @@ jobs:
           --git-tag-version=false
 
       - name: generate changelog
-        run: npx conventional-changelog -p angular -o CHANGELOG.md -r 0
+        run: npx conventional-changelog -p angular -i CHANGELOG.md -s
 
       - name: commit version bump
         id: commit
