@@ -1,0 +1,4 @@
+{
+  "extends": "@tsconfig/node-lts/tsconfig.json",
+  "include": ["__fixtures__", ".eslintrc.cjs"]
+}

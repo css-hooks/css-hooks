@@ -6,6 +6,9 @@
   "devDependencies": {
     "@hooks.css/core": "^0.2.1",
     "@tsconfig/node-lts": "^18.12.3",
+    "@typescript-eslint/eslint-plugin": "^6.3.0",
+    "@typescript-eslint/parser": "^6.3.0",
+    "eslint": "^8.47.0",
     "lightningcss": "^1.21.5",
     "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",
@@ -26,6 +29,7 @@
   },
   "scripts": {
     "clean": "rimraf index.css index.min.css index.min.css.map",
+    "lint": "eslint __fixtures__",
     "postversion": "npm install -D @hooks.css/core@^$npm_package_version",
     "prepublishOnly": "ts-node ./__fixtures__/gen.ts"
   },

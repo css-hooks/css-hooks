@@ -5,14 +5,16 @@ import selectors from "@hooks.css/core/selectors";
 
 const css = `
 .hooks {
-  ${Object.keys(selectors)
+  ${Object.keys(selectors as Record<string, unknown>)
     .flatMap((hookType) => [`--${hookType}-0: initial;`, `--${hookType}-1: ;`])
     .join("\n  ")}
 }
 
-${Object.entries(selectors)
+${Object.entries(selectors as Record<string, unknown>)
   .map(
-    ([hookType, selector]) => `.hooks${selector} {
+    ([hookType, selector]) => `.hooks${
+      typeof selector === "string" ? selector : ""
+    } {
   --${hookType}-0: ;
   --${hookType}-1: initial;
 }`
