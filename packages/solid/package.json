@@ -1,10 +1,10 @@
 {
   "name": "@hooks.css/solid",
   "description": "CSS Hooks for Solid",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "author": "Nick Saunders",
   "dependencies": {
-    "@hooks.css/core": "^0.2.1"
+    "@hooks.css/core": "^0.3.0"
   },
   "devDependencies": {
     "@tsconfig/node-lts": "^18.12.3",
@@ -28,7 +28,7 @@
   "main": "cjs",
   "module": "esm",
   "peerDependencies": {
-    "hooks.css": "^0.2.1",
+    "hooks.css": "^0.3.0",
     "solid-js": ">=1.0.0 <2.0.0"
   },
   "private": false,

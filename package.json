@@ -1,7 +1,7 @@
 {
   "name": "css-hooks",
   "description": "Monorepo for @hooks.css/* packages",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "devDependencies": {
     "conventional-changelog-cli": "^3.0.0",
     "conventional-github-releaser": "^3.1.5",
