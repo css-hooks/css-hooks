@@ -4,7 +4,7 @@ describe("`createHooksFn`-produced hooks function", () => {
   it("renders hook values in the reverse of the specified order", () => {
     const hooks = createHooksFn<{ color?: string }>()(
       "camel",
-      (_, x: unknown) => `${x}`,
+      (_, x) => (typeof x === "string" ? `${x}` : ""),
       ["test-hook-a", "test-hook-b", "test-hook-c"] as const
     );
     expect(
@@ -34,7 +34,7 @@ describe("`createHooksFn`-produced hooks function", () => {
   it("allows the default property value to be defined after hooks (mimicking specificity)", () => {
     const hooks = createHooksFn<{ "text-decoration"?: "underline" | "none" }>()(
       "kebab",
-      (_, value) => `${value}`,
+      (_, value) => (typeof value === "string" ? value : null),
       ["test-hook"] as const
     );
     expect(
@@ -52,7 +52,7 @@ describe("`createHooksFn`-produced hooks function", () => {
     const hooks = createHooksFn<{
       color?: string;
       "background-color"?: string;
-    }>()("kebab", (_, x: unknown) => "", ["test-hook"] as const);
+    }>()("kebab", () => "", ["test-hook"] as const);
     expect(
       hooks({
         color: "white",
@@ -67,7 +67,7 @@ describe("`createHooksFn`-produced hooks function", () => {
   it("falls back to `initial` when a default value is not present", () => {
     const hooks = createHooksFn<{ color?: string }>()(
       "kebab",
-      (_, value) => `${value}`,
+      (_, value) => (typeof value === "string" ? value : null),
       ["test-hook"] as const
     );
     expect(hooks({ "test-hook": { color: "red" } })).toEqual({
@@ -100,7 +100,7 @@ describe("`createHooksFn`-produced hooks function", () => {
   it('uses as-is a value that is already a string starting with "var("', () => {
     const hooks = createHooksFn<{ color?: string }>()(
       "kebab",
-      (_, value) => `[${value}]`,
+      (_, value) => (typeof value === "string" ? `[${value}]` : null),
       ["test-hook-a", "test-hook-b"] as const
     );
     expect(

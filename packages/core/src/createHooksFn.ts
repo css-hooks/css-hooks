@@ -43,22 +43,26 @@ export default function createHooksFn<Properties>() {
           ? (k: string) => k.replace(/[A-Z]/g, (x) => `-${x.toLowerCase()}`)
           : (k: string) => k;
 
-      const o = JSON.parse(JSON.stringify(properties));
+      const o = JSON.parse(JSON.stringify(properties)) as typeof properties;
       for (const k in o) {
         const key = normalizeKey(k);
         if (hookTypes.some((x) => x.toString() === key)) {
           const hookType = key;
-          for (const p in o[k]) {
-            const v1 = stringify(p, o[k][p]);
+          for (const p in o[k as keyof typeof o]) {
+            const h = o[k as keyof typeof o];
+            const v1 = h ? stringify(p, h[p as keyof Properties]) : null;
             if (v1 === null) {
               continue;
             }
             const v0 = p in o ? stringify(p, o[p]) : "initial";
-            o[p] = `var(--${hookType}-1, ${v1}) var(--${hookType}-0, ${
-              v0 === null ? "initial" : v0
-            })`;
+            /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any */
+            o[p as keyof typeof o] =
+              `var(--${hookType}-1, ${v1}) var(--${hookType}-0, ${
+                v0 === null ? "initial" : v0
+              })` as any;
+            /* eslint-enable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any */
           }
-          delete o[k];
+          delete o[k as keyof typeof o];
         }
       }
 
