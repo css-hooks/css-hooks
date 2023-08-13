@@ -39,8 +39,8 @@ jobs:
 
       - run: npm ci
 
+      - run: npm run lint --workspaces --if-present
+
       - run: npm run prepublishOnly --workspaces --if-present
 
       - run: npm test --workspaces --if-present
-
-      - run: npm run lint --workspaces --if-present
