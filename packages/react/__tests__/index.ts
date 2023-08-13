@@ -9,7 +9,7 @@ describe("`stringifyValue` function", () => {
   });
 
   it("returns unitless numbers as direct string equivalents", () => {
-    Object.keys(unitless).forEach((propertyName) => {
+    Object.keys(unitless as Record<string, unknown>).forEach((propertyName) => {
       expect(stringifyValue(propertyName, 1.5)).toEqual("1.5");
     });
   });
