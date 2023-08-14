@@ -31,8 +31,11 @@ export function stringifyValue(
   return null;
 }
 
-export default createHooksFn<JSX.DOMCSSProperties>()(
-  "camel",
-  stringifyValue,
-  types,
-);
+/**
+ * @remarks
+ * The type we really want is {@link JSX.CSSProperties}. However, that type
+ * enforces a flat structure that is incompatible with hooks.
+ */
+type CSSProperties = JSX.DOMCSSProperties & { cssText?: string | null };
+
+export default createHooksFn<CSSProperties>()("camel", stringifyValue, types);
