@@ -1,3 +1,12 @@
+## [0.4.2](https://github.com/css-hooks/css-hooks/compare/v0.4.1...v0.4.2) (2023-08-14)
+
+
+### Bug Fixes
+
+* **preact:** update csstext property type ([d126269](https://github.com/css-hooks/css-hooks/commit/d1262698ce831a379fc3ca3de85c6d0d126e1b57))
+
+
+
 ## [0.4.1](https://github.com/css-hooks/css-hooks/compare/v0.4.0...v0.4.1) (2023-08-14)
 
 
