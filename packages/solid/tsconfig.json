@@ -2,6 +2,7 @@
   "extends": "@tsconfig/node-lts/tsconfig.json",
   "compilerOptions": {
     "module": "ES2015",
-    "moduleResolution": "Bundler"
+    "moduleResolution": "Bundler",
+    "noEmit": true
   }
 }
