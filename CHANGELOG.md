@@ -1,3 +1,12 @@
+## [0.4.1](https://github.com/css-hooks/css-hooks/compare/v0.4.0...v0.4.1) (2023-08-14)
+
+
+### Bug Fixes
+
+* **preact:** css property types ([18f3b01](https://github.com/css-hooks/css-hooks/commit/18f3b01e757e73e182e67623fc938987036e3fe0))
+
+
+
 # [0.4.0](https://github.com/css-hooks/css-hooks/compare/v0.3.0...v0.4.0) (2023-08-14)
 
 
