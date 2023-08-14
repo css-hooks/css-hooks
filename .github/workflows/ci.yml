@@ -43,8 +43,10 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run lint --workspaces --if-present
-
       - run: npm run prepublishOnly --workspaces --if-present
+
+      # Note that linting must be done after the `prepublishOnly` scripts are
+      # run. Otherwise, some types will be inferred as `any` leading to errors.
+      - run: npm run lint --workspaces --if-present
 
       - run: npm test --workspaces --if-present
