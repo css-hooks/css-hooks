@@ -13,8 +13,6 @@ export function stringifyValue(
   propertyName: string,
   value: unknown,
 ): string | null {
-  //
-
   if (typeof value === "string") {
     return value;
   }
