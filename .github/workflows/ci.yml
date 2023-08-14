@@ -37,6 +37,10 @@ jobs:
         with:
           args: --check .
 
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.16.1
+
       - run: npm ci
 
       - run: npm run lint --workspaces --if-present
