@@ -1,4 +1,4 @@
-import type { CSSProperties } from "preact/compat";
+import type { JSX } from "preact";
 import { createHooksFn, types } from "@hooks.css/core";
 
 /**
@@ -31,4 +31,8 @@ export function stringifyValue(
   return null;
 }
 
-export default createHooksFn<CSSProperties>()("camel", stringifyValue, types);
+export default createHooksFn<JSX.DOMCSSProperties>()(
+  "camel",
+  stringifyValue,
+  types,
+);
