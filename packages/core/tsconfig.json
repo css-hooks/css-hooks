@@ -1,4 +1,7 @@
 {
   "extends": "@tsconfig/node-lts/tsconfig.json",
-  "include": ["__fixtures__", "src"]
+  "include": ["__fixtures__", "src"],
+  "compilerOptions": {
+    "noEmit": true
+  }
 }
