@@ -1,3 +1,17 @@
+# [0.4.0](https://github.com/css-hooks/css-hooks/compare/v0.3.0...v0.4.0) (2023-08-14)
+
+
+### Bug Fixes
+
+* **react:** peer dependency should be react, not types package ([7d23298](https://github.com/css-hooks/css-hooks/commit/7d23298765bb86e0410582879b1e04b0da7bbf05))
+
+
+### Features
+
+* **preact:** framework integration ([ca5d6da](https://github.com/css-hooks/css-hooks/commit/ca5d6dae7c0443c108942671d278937212f620c1))
+
+
+
 # [0.3.0](https://github.com/css-hooks/css-hooks/compare/v0.2.1...v0.3.0) (2023-08-13)
 
 
