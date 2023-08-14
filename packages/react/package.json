@@ -26,7 +26,7 @@
   "main": "cjs",
   "module": "esm",
   "peerDependencies": {
-    "@types/react": ">=16.14.0 <19",
+    "react": ">=16.14.0 <19",
     "hooks.css": "^0.3.0"
   },
   "private": false,
