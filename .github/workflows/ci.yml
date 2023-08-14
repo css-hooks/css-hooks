@@ -12,6 +12,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: wagoid/commitlint-github-action@v5
+
       - id: cache-npm
         uses: actions/cache@v3
         env:
@@ -30,8 +32,6 @@ jobs:
         name: List the state of node modules
         continue-on-error: true
         run: npm list
-
-      - uses: wagoid/commitlint-github-action@v5
 
       - uses: actionsx/prettier@v3
         with:
