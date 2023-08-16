@@ -54,11 +54,11 @@ export default function createHooksFn<Properties>() {
             if (v1 === null) {
               continue;
             }
-            const v0 = p in o ? stringify(p, o[p]) : "initial";
+            const v0 = p in o ? stringify(p, o[p]) : "unset";
             /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any */
             o[p as keyof typeof o] =
               `var(--${hookType}-1, ${v1}) var(--${hookType}-0, ${
-                v0 === null ? "initial" : v0
+                v0 === null ? "unset" : v0
               })` as any;
             /* eslint-enable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any */
           }

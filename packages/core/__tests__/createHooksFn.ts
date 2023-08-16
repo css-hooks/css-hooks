@@ -64,25 +64,25 @@ describe("`createHooksFn`-produced hooks function", () => {
     ).toEqual("white");
   });
 
-  it("falls back to `initial` when a default value is not present", () => {
+  it("falls back to `unset` when a default value is not present", () => {
     const hooks = createHooksFn<{ color?: string }>()(
       "kebab",
       (_, value) => (typeof value === "string" ? value : null),
       ["test-hook"] as const,
     );
     expect(hooks({ "test-hook": { color: "red" } })).toEqual({
-      color: "var(--test-hook-1, red) var(--test-hook-0, initial)",
+      color: "var(--test-hook-1, red) var(--test-hook-0, unset)",
     });
   });
 
-  it("falls back to `initial` when the default value can't be stringified", () => {
+  it("falls back to `unset` when the default value can't be stringified", () => {
     const hooks = createHooksFn<{ color?: string }>()(
       "camel",
       (_, value) => (value === "hook" ? value : null),
       ["test-hook"] as const,
     );
     expect(hooks({ color: "invalid", testHook: { color: "hook" } })).toEqual({
-      color: "var(--test-hook-1, hook) var(--test-hook-0, initial)",
+      color: "var(--test-hook-1, hook) var(--test-hook-0, unset)",
     });
   });
 
