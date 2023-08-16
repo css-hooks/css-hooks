@@ -1,3 +1,12 @@
+## [0.4.3](https://github.com/css-hooks/css-hooks/compare/v0.4.2...v0.4.3) (2023-08-16)
+
+
+### Bug Fixes
+
+* **core:** fall back to unset rather than initial ([667828f](https://github.com/css-hooks/css-hooks/commit/667828f2b3571d0de9ce9d4d6129d2b03fe88248)), closes [#4](https://github.com/css-hooks/css-hooks/issues/4)
+
+
+
 ## [0.4.2](https://github.com/css-hooks/css-hooks/compare/v0.4.1...v0.4.2) (2023-08-14)
 
 
