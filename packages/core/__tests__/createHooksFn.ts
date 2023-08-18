@@ -118,4 +118,49 @@ describe("`createHooksFn`-produced hooks function", () => {
         "var(--test-hook-b-1, [red]) var(--test-hook-b-0, var(--test-hook-a-1, [lightblue]) var(--test-hook-a-0, [blue]))",
     });
   });
+
+  it("allows hooks to be combined via nesting", () => {
+    const hooks = createHooksFn<{ color?: string }>()(
+      "camel",
+      (_, value) => (typeof value === "string" ? `[${value}]` : null),
+      ["test-hook-a", "test-hook-b"] as const,
+    );
+    expect(
+      hooks({
+        color: "black",
+        testHookA: {
+          color: "red",
+          testHookB: {
+            color: "pink",
+          },
+        },
+      }),
+    ).toEqual({
+      color:
+        "var(--test-hook-a-1, var(--test-hook-b-1, [pink]) var(--test-hook-b-0, [red])) var(--test-hook-a-0, [black])",
+    });
+  });
+
+  it("falls back multiple levels if needed", () => {
+    const hooks = createHooksFn<{ color?: string }>()(
+      "camel",
+      (_, value) =>
+        typeof value === "string" && value !== "invalid" ? `[${value}]` : null,
+      ["test-hook-a", "test-hook-b"] as const,
+    );
+    expect(
+      hooks({
+        color: "black",
+        testHookA: {
+          color: "invalid",
+          testHookB: {
+            color: "pink",
+          },
+        },
+      }),
+    ).toEqual({
+      color:
+        "var(--test-hook-a-1, var(--test-hook-b-1, [pink]) var(--test-hook-b-0, [black])) var(--test-hook-a-0, [black])",
+    });
+  });
 });

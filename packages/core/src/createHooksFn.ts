@@ -23,50 +23,113 @@ export default function createHooksFn<Properties>() {
     stringifyValue: (propertyName: string, value: unknown) => string | null,
     hookTypes: HookTypes,
   ) => {
-    const stringify: typeof stringifyValue = (propertyName, value) =>
-      typeof value === "string" && value.startsWith("var(")
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    type UnionToIntersection<T> = (
+      T extends any ? (x: T) => any : never
+    ) extends (x: infer R) => any
+      ? R
+      : never;
+    /* eslint-enable @typescript-eslint/no-explicit-any */
+
+    type PropertiesWithHooks<
+      A extends string = Casing extends "camel"
+        ? KebabToCamel<HookTypes[number]>
+        : HookTypes[number],
+      B extends A = A,
+    > = Partial<
+      Properties &
+        UnionToIntersection<
+          B extends infer T
+            ? T extends string
+              ? Record<B, PropertiesWithHooks<Exclude<A, B>>>
+              : never
+            : never
+        >
+    >;
+
+    const stringify = (
+      propertyName: string | number | symbol,
+      value: unknown,
+    ) => {
+      if (typeof propertyName !== "string") {
+        return null;
+      }
+      return typeof value === "string" && value.startsWith("var(")
         ? value
         : stringifyValue(propertyName, value);
+    };
 
-    type HookType = HookTypes[number];
-    return (
-      properties: Properties &
-        Partial<
-          Record<
-            Casing extends "camel" ? KebabToCamel<HookType> : HookType,
-            Partial<Properties>
-          >
-        >,
-    ): Properties => {
-      const normalizeKey =
-        casing === "camel"
-          ? (k: string) => k.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`)
-          : (k: string) => k;
+    const keyToHookType =
+      casing === "camel"
+        ? (k: string) =>
+            hookTypes.find(
+              ht => ht === k.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`),
+            ) || null
+        : (k: string) => hookTypes.find(ht => ht === k) || null;
 
-      const o = JSON.parse(JSON.stringify(properties)) as typeof properties;
-      for (const k in o) {
-        const key = normalizeKey(k);
-        if (hookTypes.some(x => x.toString() === key)) {
-          const hookType = key;
-          for (const p in o[k as keyof typeof o]) {
-            const h = o[k as keyof typeof o];
-            const v1 = h ? stringify(p, h[p as keyof Properties]) : null;
-            if (v1 === null) {
-              continue;
+    function forEachHook(
+      obj: PropertiesWithHooks,
+      callback: (
+        key: string,
+        hookType: HookTypes[number],
+        obj: PropertiesWithHooks,
+      ) => void,
+    ) {
+      return Object.entries(obj)
+        .map(([key, value]) => [key, keyToHookType(key), value] as const)
+        .filter(([, hookType]) => hookType)
+        .forEach(([key, hookType, value]) =>
+          callback(
+            key,
+            hookType as HookTypes[number],
+            value as PropertiesWithHooks,
+          ),
+        );
+    }
+
+    function hooks(
+      properties: PropertiesWithHooks,
+      fallback: (propertyName: string) => string | null = propertyName =>
+        stringify(
+          propertyName,
+          properties[propertyName as keyof typeof properties],
+        ),
+    ): Properties {
+      forEachHook(properties, (key, hookType, hook) => {
+        hooks(hook, propertyName => {
+          let v = stringify(
+            propertyName,
+            hook[propertyName as keyof typeof properties],
+          );
+          if (v === null) {
+            v = fallback(propertyName);
+          }
+          if (v === null) {
+            v = "unset";
+          }
+          return v;
+        });
+        for (const propertyName in hook) {
+          const v1 = stringify(
+            propertyName,
+            hook[propertyName as keyof typeof hook],
+          );
+          if (v1 !== null) {
+            let v0: string | null = fallback(propertyName);
+            if (v0 === null) {
+              v0 = "unset";
             }
-            const v0 = p in o ? stringify(p, o[p]) : "unset";
             /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any */
-            o[p as keyof typeof o] =
-              `var(--${hookType}-1, ${v1}) var(--${hookType}-0, ${
-                v0 === null ? "unset" : v0
-              })` as any;
+            properties[propertyName as keyof typeof properties] =
+              `var(--${hookType}-1, ${v1}) var(--${hookType}-0, ${v0})` as any;
             /* eslint-enable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any */
           }
-          delete o[k as keyof typeof o];
         }
-      }
+        delete properties[key as keyof typeof properties];
+      });
+      return properties as Properties;
+    }
 
-      return o;
-    };
+    return (properties: PropertiesWithHooks) => hooks(properties);
   };
 }
