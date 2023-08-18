@@ -143,7 +143,7 @@ describe("`createHooksFn`-produced hooks function", () => {
 
   it("falls back multiple levels if needed", () => {
     const hooks = createHooksFn<{ color?: string }>()(
-      "camel",
+      "kebab",
       (_, value) =>
         typeof value === "string" && value !== "invalid" ? `[${value}]` : null,
       ["test-hook-a", "test-hook-b"] as const,
@@ -151,9 +151,9 @@ describe("`createHooksFn`-produced hooks function", () => {
     expect(
       hooks({
         color: "black",
-        testHookA: {
+        "test-hook-a": {
           color: "invalid",
-          testHookB: {
+          "test-hook-b": {
             color: "pink",
           },
         },
