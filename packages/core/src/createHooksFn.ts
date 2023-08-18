@@ -1,3 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (
+  x: infer R,
+) => any
+  ? R
+  : never;
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
 type KebabToCamel<S extends string> = S extends `${infer H0}${infer T0}`
   ? H0 extends "-"
     ? T0 extends `${infer H1}${infer T1}`
@@ -6,9 +14,25 @@ type KebabToCamel<S extends string> = S extends `${infer H0}${infer T0}`
     : `${H0}${KebabToCamel<T0>}`
   : "";
 
+type WithHooks<
+  Properties,
+  HookProperties,
+  HookPropertiesSub extends HookProperties = HookProperties,
+> = Properties &
+  Partial<
+    UnionToIntersection<
+      HookPropertiesSub extends string
+        ? Record<
+            HookPropertiesSub,
+            WithHooks<Properties, Exclude<HookProperties, HookPropertiesSub>>
+          >
+        : never
+    >
+  >;
+
 /** @internal */
 export default function createHooksFn<Properties>() {
-  return <
+  return function <
     Casing extends "camel" | "kebab",
     HookTypes extends Readonly<string[]>,
   >(
@@ -22,29 +46,12 @@ export default function createHooksFn<Properties>() {
      */
     stringifyValue: (propertyName: string, value: unknown) => string | null,
     hookTypes: HookTypes,
-  ) => {
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    type UnionToIntersection<T> = (
-      T extends any ? (x: T) => any : never
-    ) extends (x: infer R) => any
-      ? R
-      : never;
-    /* eslint-enable @typescript-eslint/no-explicit-any */
-
-    type PropertiesWithHooks<
-      A extends string = Casing extends "camel"
+  ) {
+    type PropertiesWithHooks = WithHooks<
+      Properties,
+      Casing extends "camel"
         ? KebabToCamel<HookTypes[number]>
-        : HookTypes[number],
-      B extends A = A,
-    > = Partial<
-      Properties &
-        UnionToIntersection<
-          B extends infer T
-            ? T extends string
-              ? Record<B, PropertiesWithHooks<Exclude<A, B>>>
-              : never
-            : never
-        >
+        : HookTypes[number]
     >;
 
     const stringify = (
@@ -130,6 +137,6 @@ export default function createHooksFn<Properties>() {
       return properties as Properties;
     }
 
-    return (properties: PropertiesWithHooks) => hooks(properties);
+    return (properties: PropertiesWithHooks): Properties => hooks(properties);
   };
 }
