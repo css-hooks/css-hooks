@@ -1,3 +1,18 @@
+# [0.5.0](https://github.com/css-hooks/css-hooks/compare/v0.4.3...v0.5.0) (2023-08-18)
+
+
+### Bug Fixes
+
+* **core:** fix type defs for properties with hooks ([71a9a4a](https://github.com/css-hooks/css-hooks/commit/71a9a4af76a0c578ee6cbe6cdf78908bce8a6f96))
+
+
+### Features
+
+* **core:** allow hooks to be combined via nesting ([ff07425](https://github.com/css-hooks/css-hooks/commit/ff07425ce2189df3329d39340282378bd74c5113))
+* dark mode hook ([98b01e2](https://github.com/css-hooks/css-hooks/commit/98b01e2d72a2855584461f77e03cccf02538b919))
+
+
+
 ## [0.4.3](https://github.com/css-hooks/css-hooks/compare/v0.4.2...v0.4.3) (2023-08-16)
 
 
