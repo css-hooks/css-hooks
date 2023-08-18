@@ -3,6 +3,7 @@ const types = [
   "active",
   "autofill",
   "checked",
+  "dark",
   "default",
   "disabled",
   "empty",

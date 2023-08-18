@@ -2,22 +2,27 @@ import fs from "fs/promises";
 import autoprefixer from "autoprefixer";
 import cssnano from "cssnano";
 import path from "path";
-import selectors from "@hooks.css/core/selectors";
+import rules from "./rules";
 import postcss from "postcss";
 
+/**
+ * @remarks
+ * Note that the `--ON` and `--OFF` properties exist to help users override the
+ * dark mode media query using a selector of their choice.
+ */
 const rawCSS = `
 .hooks {
-  ${Object.keys(selectors as Record<string, unknown>)
+  --ON: initial;
+  --OFF: ;
+
+  ${Object.keys(rules as Record<string, unknown>)
     .flatMap(hookType => [`--${hookType}-0: initial;`, `--${hookType}-1: ;`])
     .join("\n  ")}
 }
 
-${Object.entries(selectors as Record<string, (selectorBase: string) => string>)
-  .map(
-    ([hookType, selector]) => `${selector(".hooks")} {
-  --${hookType}-0: ;
-  --${hookType}-1: initial;
-}`,
+${Object.entries(rules)
+  .map(([hookType, rule]) =>
+    rule(".hooks", `--${hookType}-0`, `--${hookType}-1`).trim(),
   )
   .join("\n\n")}
 `;
