@@ -1,3 +1,12 @@
+## [0.5.1](https://github.com/css-hooks/css-hooks/compare/v0.5.0...v0.5.1) (2023-08-19)
+
+
+### Bug Fixes
+
+* typescript performance issue ([b6967a0](https://github.com/css-hooks/css-hooks/commit/b6967a03cefc03c75d0fa8110bc9ab2524e77e0d))
+
+
+
 # [0.5.0](https://github.com/css-hooks/css-hooks/compare/v0.4.3...v0.5.0) (2023-08-18)
 
 
