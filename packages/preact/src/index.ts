@@ -1,5 +1,5 @@
 import type { JSX } from "preact";
-import { createHooksFn, types } from "@hooks.css/core";
+import { WithHooks, createHooksFn, types } from "@hooks.css/core";
 
 /**
  * @remarks
@@ -38,4 +38,14 @@ export function stringifyValue(
  */
 type CSSProperties = JSX.DOMCSSProperties & { cssText?: string | null };
 
-export default createHooksFn<CSSProperties>()("camel", stringifyValue, types);
+const casing = "camel" as const;
+
+const hooks: (
+  propertiesWithHooks: WithHooks<CSSProperties, typeof types>,
+) => CSSProperties = createHooksFn<typeof casing, typeof types, CSSProperties>(
+  casing,
+  types,
+  stringifyValue,
+);
+
+export default hooks;

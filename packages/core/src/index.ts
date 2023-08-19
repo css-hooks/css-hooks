@@ -1,4 +1,4 @@
-import createHooksFn from "./createHooksFn";
+import createHooksFn, { WithHooksPublic } from "./createHooksFn";
 import types from "./types";
 
-export { createHooksFn, types };
+export { WithHooksPublic as WithHooks, createHooksFn, types };

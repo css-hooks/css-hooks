@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { createHooksFn, types } from "@hooks.css/core";
+import { WithHooks, createHooksFn, types } from "@hooks.css/core";
 import unitless from "@emotion/unitless";
 
 /**
@@ -24,4 +24,14 @@ export function stringifyValue(
   return null;
 }
 
-export default createHooksFn<CSSProperties>()("camel", stringifyValue, types);
+const casing = "camel" as const;
+
+const hooks: (
+  propertiesWithHooks: WithHooks<CSSProperties, typeof types>,
+) => CSSProperties = createHooksFn<typeof casing, typeof types, CSSProperties>(
+  "camel",
+  types,
+  stringifyValue,
+);
+
+export default hooks;

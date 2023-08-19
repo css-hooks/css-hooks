@@ -2,11 +2,13 @@ import createHooksFn from "../src/createHooksFn";
 
 describe("`createHooksFn`-produced hooks function", () => {
   it("renders hook values in the reverse of the specified order", () => {
-    const hooks = createHooksFn<{ color?: string }>()(
-      "camel",
-      (_, x) => (typeof x === "string" ? `${x}` : ""),
-      ["test-hook-a", "test-hook-b", "test-hook-c"] as const,
-    );
+    const casing = "camel" as const;
+    const hookTypes = ["test-hook-a", "test-hook-b", "test-hook-c"] as const;
+    const hooks = createHooksFn<
+      typeof casing,
+      typeof hookTypes,
+      { color?: string }
+    >(casing, hookTypes, (_, x) => (typeof x === "string" ? `${x}` : ""));
     expect(
       hooks({
         color: "red",
@@ -32,10 +34,14 @@ describe("`createHooksFn`-produced hooks function", () => {
   });
 
   it("allows the default property value to be defined after hooks (mimicking specificity)", () => {
-    const hooks = createHooksFn<{ "text-decoration"?: "underline" | "none" }>()(
-      "kebab",
-      (_, value) => (typeof value === "string" ? value : null),
-      ["test-hook"] as const,
+    const casing = "kebab" as const;
+    const hookTypes = ["test-hook"] as const;
+    const hooks = createHooksFn<
+      typeof casing,
+      typeof hookTypes,
+      { "text-decoration"?: "underline" | "none" }
+    >(casing, hookTypes, (_, value) =>
+      typeof value === "string" ? value : null,
     );
     expect(
       hooks({
@@ -49,10 +55,16 @@ describe("`createHooksFn`-produced hooks function", () => {
   });
 
   it("leaves non-hooks values as-is", () => {
-    const hooks = createHooksFn<{
-      color?: string;
-      "background-color"?: string;
-    }>()("kebab", () => "", ["test-hook"] as const);
+    const casing = "kebab" as const;
+    const hookTypes = ["test-hook"] as const;
+    const hooks = createHooksFn<
+      typeof casing,
+      typeof hookTypes,
+      {
+        color?: string;
+        "background-color"?: string;
+      }
+    >("kebab", hookTypes, () => "");
     expect(
       hooks({
         color: "white",
@@ -65,10 +77,14 @@ describe("`createHooksFn`-produced hooks function", () => {
   });
 
   it("falls back to `unset` when a default value is not present", () => {
-    const hooks = createHooksFn<{ color?: string }>()(
-      "kebab",
-      (_, value) => (typeof value === "string" ? value : null),
-      ["test-hook"] as const,
+    const casing = "kebab" as const;
+    const hookTypes = ["test-hook"] as const;
+    const hooks = createHooksFn<
+      typeof casing,
+      typeof hookTypes,
+      { color?: string }
+    >(casing, hookTypes, (_, value) =>
+      typeof value === "string" ? value : null,
     );
     expect(hooks({ "test-hook": { color: "red" } })).toEqual({
       color: "var(--test-hook-1, red) var(--test-hook-0, unset)",
@@ -76,32 +92,40 @@ describe("`createHooksFn`-produced hooks function", () => {
   });
 
   it("falls back to `unset` when the default value can't be stringified", () => {
-    const hooks = createHooksFn<{ color?: string }>()(
-      "camel",
-      (_, value) => (value === "hook" ? value : null),
-      ["test-hook"] as const,
-    );
+    const casing = "camel" as const;
+    const hookTypes = ["test-hook"] as const;
+    const hooks = createHooksFn<
+      typeof casing,
+      typeof hookTypes,
+      { color?: string }
+    >(casing, hookTypes, (_, value) => (value === "hook" ? value : null));
     expect(hooks({ color: "invalid", testHook: { color: "hook" } })).toEqual({
       color: "var(--test-hook-1, hook) var(--test-hook-0, unset)",
     });
   });
 
   it("ignores a hook value that can't be stringified", () => {
-    const hooks = createHooksFn<{ color?: string }>()(
-      "camel",
-      (_, value) => (value === "default" ? value : null),
-      ["test-hook"] as const,
-    );
+    const casing = "camel";
+    const hookTypes = ["test-hook"] as const;
+    const hooks = createHooksFn<
+      typeof casing,
+      typeof hookTypes,
+      { color?: string }
+    >(casing, hookTypes, (_, value) => (value === "default" ? value : null));
     expect(hooks({ color: "default", testHook: { color: "invalid" } })).toEqual(
       { color: "default" },
     );
   });
 
   it('uses as-is a value that is already a string starting with "var("', () => {
-    const hooks = createHooksFn<{ color?: string }>()(
-      "kebab",
-      (_, value) => (typeof value === "string" ? `[${value}]` : null),
-      ["test-hook-a", "test-hook-b"] as const,
+    const casing = "kebab" as const;
+    const hookTypes = ["test-hook-a", "test-hook-b"] as const;
+    const hooks = createHooksFn<
+      typeof casing,
+      typeof hookTypes,
+      { color?: string }
+    >(casing, hookTypes, (_, value) =>
+      typeof value === "string" ? `[${value}]` : null,
     );
     expect(
       hooks({
@@ -120,10 +144,14 @@ describe("`createHooksFn`-produced hooks function", () => {
   });
 
   it("allows hooks to be combined via nesting", () => {
-    const hooks = createHooksFn<{ color?: string }>()(
-      "camel",
-      (_, value) => (typeof value === "string" ? `[${value}]` : null),
-      ["test-hook-a", "test-hook-b"] as const,
+    const casing = "camel" as const;
+    const hookTypes = ["test-hook-a", "test-hook-b"] as const;
+    const hooks = createHooksFn<
+      typeof casing,
+      typeof hookTypes,
+      { color?: string }
+    >(casing, hookTypes, (_, value) =>
+      typeof value === "string" ? `[${value}]` : null,
     );
     expect(
       hooks({
@@ -142,11 +170,14 @@ describe("`createHooksFn`-produced hooks function", () => {
   });
 
   it("falls back multiple levels if needed", () => {
-    const hooks = createHooksFn<{ color?: string }>()(
-      "kebab",
-      (_, value) =>
-        typeof value === "string" && value !== "invalid" ? `[${value}]` : null,
-      ["test-hook-a", "test-hook-b"] as const,
+    const casing = "kebab" as const;
+    const hookTypes = ["test-hook-a", "test-hook-b"] as const;
+    const hooks = createHooksFn<
+      typeof casing,
+      typeof hookTypes,
+      { color?: string }
+    >(casing, hookTypes, (_, value) =>
+      typeof value === "string" && value !== "invalid" ? `[${value}]` : null,
     );
     expect(
       hooks({
