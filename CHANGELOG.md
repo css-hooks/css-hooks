@@ -1,3 +1,12 @@
+## [0.5.2](https://github.com/css-hooks/css-hooks/compare/v0.5.1...v0.5.2) (2023-08-19)
+
+
+### Bug Fixes
+
+* type definitions for camel-cased hooks ([277909e](https://github.com/css-hooks/css-hooks/commit/277909ef445a5cc8e23d4af09a61d9c885e37be2))
+
+
+
 ## [0.5.1](https://github.com/css-hooks/css-hooks/compare/v0.5.0...v0.5.1) (2023-08-19)
 
 
