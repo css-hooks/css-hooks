@@ -15,9 +15,15 @@ type KebabToCamel<S extends string> = S extends `${infer H0}${infer T0}`
   : "";
 
 export type WithHooksPublic<
-  Properties,
+  Casing extends "camel" | "kebab",
   HookProperties extends Readonly<string[]>,
-> = WithHooks<Properties, HookProperties[number]>;
+  Properties,
+> = WithHooks<
+  Properties,
+  Casing extends "camel"
+    ? KebabToCamel<HookProperties[number]>
+    : HookProperties[number]
+>;
 
 type WithHooks<
   Properties,

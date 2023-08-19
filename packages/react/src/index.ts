@@ -27,7 +27,7 @@ export function stringifyValue(
 const casing = "camel" as const;
 
 const hooks: (
-  propertiesWithHooks: WithHooks<CSSProperties, typeof types>,
+  propertiesWithHooks: WithHooks<typeof casing, typeof types, CSSProperties>,
 ) => CSSProperties = createHooksFn<typeof casing, typeof types, CSSProperties>(
   "camel",
   types,

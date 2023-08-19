@@ -17,7 +17,11 @@ export function stringifyValue(_: string, value: unknown): string | null {
 const casing = "kebab" as const;
 
 const hooks: (
-  propertiesWithHooks: WithHooks<JSX.CSSProperties, typeof types>,
+  propertiesWithHooks: WithHooks<
+    typeof casing,
+    typeof types,
+    JSX.CSSProperties
+  >,
 ) => JSX.CSSProperties = createHooksFn<
   typeof casing,
   typeof types,
