@@ -96,7 +96,7 @@ export default async function Home() {
                         color: "var(--white)",
                         padding: "0.5em 0.75em",
                         display: "inline-block",
-                        marginTop: "1em",
+                        marginTop: "2em",
                         hover: {
                           background: "var(--blue-700)",
                         },

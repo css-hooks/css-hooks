@@ -1,8 +1,8 @@
 import hooks from "@hooks.css/react";
 import { CSSProperties } from "react";
-import { Carlito } from "next/font/google";
+import { Assistant } from "next/font/google";
 
-const carlito = Carlito({ subsets: ["latin"], weight: ["400"] });
+const assistant = Assistant({ subsets: ["latin"], weight: ["400"] });
 
 export default function Logo({
   size = "2rem",
@@ -11,13 +11,14 @@ export default function Logo({
 }) {
   return (
     <div
-      className={carlito.className}
+      className={assistant.className}
       style={{
         fontSize: `${size}`,
         letterSpacing: "-0.05em",
         display: "flex",
         alignItems: "center",
         gap: "0.125em",
+        lineHeight: 1,
       }}
     >
       <svg viewBox="0 0 334 400" style={{ height: "1em" }}>
@@ -43,7 +44,6 @@ export default function Logo({
       <div
         className="hooks"
         style={hooks({
-          transform: "translateY(0.05em)",
           color: "var(--gray-900)",
           dark: { color: "var(--gray-200)" },
         })}
