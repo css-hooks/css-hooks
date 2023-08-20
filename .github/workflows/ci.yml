@@ -50,3 +50,14 @@ jobs:
       - run: npm run lint --workspaces --if-present
 
       - run: npm test --workspaces --if-present
+
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        run: npm run build --workspace=site
+
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site/out
+          cname: css-hooks.com
+          commit_message: ${{ github.event.head_commit.message }}
