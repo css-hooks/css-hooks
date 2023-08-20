@@ -18,6 +18,7 @@
     "packages/hooks.css",
     "packages/preact",
     "packages/react",
-    "packages/solid"
+    "packages/solid",
+    "site"
   ]
 }
