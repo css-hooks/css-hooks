@@ -45,12 +45,12 @@ export default async function Home() {
       >
         <PageBlock
           style={{
-            paddingTop: "4rem",
-            paddingBottom: "4rem",
+            paddingTop: "2rem",
+            paddingBottom: "2rem",
             display: "grid",
             gridTemplateColumns:
               "repeat(auto-fit, minmax(min(100%, 400px), 1fr))",
-            gap: "4rem 8rem",
+            gap: "2rem 8rem",
           }}
         >
           <div
@@ -58,7 +58,7 @@ export default async function Home() {
               display: "flex",
               flexDirection: "column",
               alignItems: "flex-start",
-              gap: "4rem",
+              gap: "2rem",
             }}
           >
             <Logo size="2rem" />
