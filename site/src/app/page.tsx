@@ -102,11 +102,11 @@ export default async function Home() {
                 }
               </Typography>
               <Typography variant="boldLarge">
-                {({ className, style, ...restProps }) =>
+                {({ className = "", style, ...restProps }) =>
                   exhausted(restProps) && (
                     <a
                       href="https://github.com/css-hooks/css-hooks"
-                      className={className}
+                      className={`${className} hooks`}
                       style={hooks({
                         ...style,
                         textDecoration: "none",
