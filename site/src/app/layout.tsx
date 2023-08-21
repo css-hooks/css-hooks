@@ -1,9 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import hooks from "@hooks.css/react";
-
-const sans = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "CSS Hooks",
@@ -18,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`hooks ${sans.className}`}
+        className="hooks"
         style={hooks({
           margin: 0,
           background: "var(--white)",

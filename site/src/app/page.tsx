@@ -21,11 +21,17 @@ const codeExample = `
       color: "#e33",
     },
   })}>
-  Get Hooked
+  Get hooked
 </a>
 `;
 
 export default async function Home() {
+  const formattedCodeExample = (
+    await prettier.format(codeExample, {
+      plugins: [prettierEstree, prettierTypescript],
+      parser: "typescript",
+    })
+  ).replace(/;$/gm, "");
   return (
     <div>
       <header
@@ -58,7 +64,14 @@ export default async function Home() {
               gap: "2rem 8rem",
             }}
           >
-            <section>
+            <section
+              style={{
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+              }}
+            >
               <Typography variant="bold3XL">
                 {({ className, style, ...restProps }) =>
                   exhausted(restProps) && (
@@ -69,7 +82,7 @@ export default async function Home() {
                   )
                 }
               </Typography>
-              <Typography variant="regularXL">
+              <Typography variant="regularXL" style={{ flex: 1 }}>
                 {({ className, style, ...restProps }) =>
                   exhausted(restProps) && (
                     <p
@@ -118,16 +131,17 @@ export default async function Home() {
                 dark: { background: "var(--black)" },
               })}
             >
-              <pre style={{ margin: 0 }}>
-                <SyntaxHighlighter language="typescript">
-                  {(
-                    await prettier.format(codeExample, {
-                      plugins: [prettierEstree, prettierTypescript],
-                      parser: "typescript",
-                    })
-                  ).replace(/;$/gm, "")}
-                </SyntaxHighlighter>
-              </pre>
+              <Typography variant="codeBase">
+                {({ className, style, ...restProps }) =>
+                  exhausted(restProps) && (
+                    <pre className={className} style={style}>
+                      <SyntaxHighlighter language="typescript">
+                        {formattedCodeExample}
+                      </SyntaxHighlighter>
+                    </pre>
+                  )
+                }
+              </Typography>
             </section>
           </PageBlock>
         </div>

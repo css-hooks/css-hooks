@@ -1,5 +1,5 @@
 import { CSSProperties, ComponentProps, ReactElement, forwardRef } from "react";
-import { Inter } from "next/font/google";
+import { Inconsolata, Inter } from "next/font/google";
 import { O, U } from "ts-toolbelt";
 
 export type ForwardProps = {
@@ -8,6 +8,7 @@ export type ForwardProps = {
 };
 
 const inter = Inter({ subsets: ["latin"] });
+const inconsolata = Inconsolata({ subsets: ["latin"], weight: ["400"] });
 
 function makeStyle(fontSizeRem: number, fontWeight: 400 | 700 = 400) {
   const marginBlock = `${1.5 / fontSizeRem}rem`;
@@ -33,7 +34,7 @@ const variantStyles = {
 
 export type Props = {
   margins?: boolean;
-  variant?: keyof typeof variantStyles;
+  variant?: keyof typeof variantStyles | "codeBase";
 } & U.Strict<
   | ComponentProps<"span">
   | {
@@ -54,10 +55,12 @@ export default forwardRef<HTMLSpanElement, O.Omit<Props, "ref">>(
     ref,
   ) {
     const forwardProps: ForwardProps = {
-      className: `${className} ${inter.className}`,
+      className: `${className} ${
+        variant === "codeBase" ? inconsolata.className : inter.className
+      }`,
       style: {
-        ...variantStyles[variant],
-        letterSpacing: "-0.03em",
+        ...variantStyles[variant === "codeBase" ? "regularBase" : variant],
+        letterSpacing: variant === "codeBase" ? undefined : "-0.03em",
         ...(margins ? { display: "block" } : { margin: 0 }),
         ...style,
       },
