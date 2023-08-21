@@ -82,12 +82,17 @@ export default async function Home() {
                   )
                 }
               </Typography>
-              <Typography variant="regularXL" style={{ flex: 1 }}>
+              <Typography variant="regularXL">
                 {({ className, style, ...restProps }) =>
                   exhausted(restProps) && (
                     <p
                       className={className}
-                      style={{ ...style, margin: 0, marginTop: "2rem" }}
+                      style={{
+                        ...style,
+                        flex: 1,
+                        margin: 0,
+                        marginTop: "2rem",
+                      }}
                     >
                       With zero runtime, no build steps, and a tiny CSS
                       footprint, hooks bring advanced CSS capabilities to native
