@@ -60,7 +60,10 @@ export default forwardRef<HTMLSpanElement, O.Omit<Props, "ref">>(
       }`,
       style: {
         ...variantStyles[variant === "codeBase" ? "regularBase" : variant],
-        letterSpacing: variant === "codeBase" ? undefined : "-0.03em",
+        letterSpacing:
+          variant === "codeBase" || variant === "regularBase"
+            ? undefined
+            : "-0.03em",
         ...(margins ? { display: "block" } : { margin: 0 }),
         ...style,
       },
