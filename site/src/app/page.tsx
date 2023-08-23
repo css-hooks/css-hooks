@@ -206,8 +206,8 @@ export default async function Home() {
               "M413.92 312c-46.54 19.41-105.57 31-157.92 31s-111.39-11.59-157.93-31c-17.07-7.17-31.69-18.81-43.64-28a4 4 0 0 0-6.43 3.2V317c0 6.41 5.2 14.47 14.62 22.71c11.13 9.74 27.66 19.33 47.79 27.74C153.24 385.32 207.66 396 256 396s102.76-10.68 145.59-28.57c20.13-8.41 36.65-18 47.78-27.74C458.8 331.44 464 323.37 464 317v-29.8a4 4 0 0 0-6.43-3.18c-11.95 9.17-26.57 20.81-43.65 27.98Z",
             ]}
           >
-            Inline styles are directly embedded within HTML markup, making
-            server-side rendering simple and reliable. It just works.
+            Directly embedded within HTML markup without side effects, hooks
+            make server-side rendering simple and reliable. It just works.
           </Feature>
         </PageBlock>
       </main>
