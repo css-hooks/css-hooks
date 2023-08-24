@@ -1,5 +1,4 @@
 @import "hooks.css";
-@import "prism-theme-vars/base.css";
 
 :root {
   --white: #fbfbfc;
@@ -92,46 +91,152 @@
 
 /* syntax highlighting */
 
-.code-highlighter {
-  --prism-foreground: var(--black);
-  --prism-background: var(--white);
+.syntax-highlighter {
+  color: var(--gray-900);
+}
 
-  --prism-comment: var(--gray-500);
-  --prism-selector: var(--blue-950);
-  --prism-class: var(--green-600);
-  --prism-builtin: var(--green-700);
-  --prism-property: var(--blue-900);
-  --prism-keyword: var(--yellow-600);
-  --prism-punctuation: var(--blue-700);
-  --prism-function: var(--purple-700);
-  --prism-string: var(--blue-800);
-  --prism-literal: var(--yellow-800);
+.syntax-highlighter .keyword {
+  color: var(--purple-700);
+}
 
-  /* TODO */
-  --prism-namespace: red;
-  --prism-deleted: red;
-  --prism-regex: red;
+.syntax-highlighter .punctuation {
+  color: var(--gray-800);
+}
+
+.syntax-highlighter .attr-name {
+  color: var(--blue-700);
+}
+
+.syntax-highlighter .attr-value {
+  color: var(--red-700);
+}
+
+.syntax-highlighter .script {
+  color: var(--gray-900);
+}
+
+.syntax-highlighter .operator {
+  color: var(--gray-700);
+}
+
+.syntax-highlighter .plain-text {
+  color: var(--gray-900);
+}
+
+.syntax-highlighter .tag {
+  color: var(--green-700);
+}
+
+.syntax-highlighter .function {
+  color: var(--purple-700);
+}
+
+.syntax-highlighter .language-javascript {
+  color: var(--gray-900);
+}
+
+.syntax-highlighter .language-tsx {
+  color: var(--gray-900);
+}
+
+/* Highlighting specific cases */
+
+.syntax-highlighter .language-tsx .token.string {
+  color: var(--blue-700);
+}
+
+.syntax-highlighter .language-tsx .token.comment {
+  color: var(--gray-700);
+}
+
+.syntax-highlighter .language-tsx .token.plain-text {
+  color: var(--gray-900);
+}
+
+.syntax-highlighter .language-tsx .token.script-punctuation {
+  color: var(--gray-800);
+}
+
+.syntax-highlighter .language-tsx .token.function-variable {
+  color: var(--blue-700);
+}
+
+.syntax-highlighter .language-tsx .token.boolean {
+  color: var(--purple-700);
 }
 
 @media (prefers-color-scheme: dark) {
-  .code-highlighter {
-    --prism-foreground: var(--white);
-    --prism-background: var(--gray-950);
+  .syntax-highlighter {
+    color: var(--white);
+  }
 
-    --prism-comment: var(--gray-500);
-    --prism-selector: var(--blue-50);
-    --prism-class: var(--green-400);
-    --prism-builtin: var(--green-300);
-    --prism-property: var(--blue-300);
-    --prism-keyword: var(--yellow-400);
-    --prism-punctuation: var(--blue-300);
-    --prism-function: var(--purple-300);
-    --prism-string: var(--blue-200);
-    --prism-literal: var(--yellow-200);
+  .syntax-highlighter .keyword {
+    color: var(--purple-300);
+  }
 
-    /* TODO */
-    --prism-namespace: red;
-    --prism-deleted: red;
-    --prism-regex: red;
+  .syntax-highlighter .punctuation {
+    color: var(--gray-400);
+  }
+
+  .syntax-highlighter .attr-name {
+    color: var(--blue-300);
+  }
+
+  .syntax-highlighter .attr-value {
+    color: var(--red-300);
+  }
+
+  .syntax-highlighter .script {
+    color: var(--white);
+  }
+
+  .syntax-highlighter .operator {
+    color: var(--gray-300);
+  }
+
+  .syntax-highlighter .plain-text {
+    color: var(--white);
+  }
+
+  .syntax-highlighter .tag {
+    color: var(--green-300);
+  }
+
+  .syntax-highlighter .function {
+    color: var(--purple-300);
+  }
+
+  .syntax-highlighter .language-javascript {
+    color: var(--white);
+  }
+
+  .syntax-highlighter .language-tsx {
+    color: var(--white);
+  }
+
+  /* Highlighting specific cases */
+
+  .syntax-highlighter .language-tsx .token.string {
+    color: var(--blue-300);
+  }
+
+  .syntax-highlighter .language-tsx .token.comment {
+    color: var(--gray-500);
+  }
+
+  .syntax-highlighter .language-tsx .token.plain-text {
+    color: var(--white);
+  }
+
+  .syntax-highlighter .language-tsx .token.script-punctuation {
+    color: var(--gray-400);
+  }
+
+  .syntax-highlighter .language-tsx .token.function-variable {
+    color: var(--blue-300);
+  }
+
+  .syntax-highlighter .language-tsx .token.boolean {
+    color: var(--purple-300);
   }
 }

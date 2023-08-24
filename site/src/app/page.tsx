@@ -8,6 +8,7 @@ import hooks from "@hooks.css/react";
 import Typography from "@/components/Typography";
 import { exhausted } from "@/util/exhausted";
 import { ReactNode } from "react";
+import Link from "next/link";
 
 const codeExample = `
 <a
@@ -25,7 +26,7 @@ const codeExample = `
       color: "#e33",
     },
   })}>
-  Get hooked
+  Hooks
 </a>
 `;
 
@@ -97,8 +98,8 @@ export default async function Home() {
             <Typography variant="boldLarge">
               {({ className = "", style, ...restProps }) =>
                 exhausted(restProps) && (
-                  <a
-                    href="https://github.com/css-hooks/css-hooks"
+                  <Link
+                    href="./docs/getting-started"
                     className={`${className} hooks`}
                     style={hooks({
                       ...style,
@@ -116,7 +117,7 @@ export default async function Home() {
                     })}
                   >
                     Get started
-                  </a>
+                  </Link>
                 )
               }
             </Typography>
@@ -132,7 +133,7 @@ export default async function Home() {
               {({ className, style, ...restProps }) =>
                 exhausted(restProps) && (
                   <pre className={className} style={style}>
-                    <SyntaxHighlighter language="typescript">
+                    <SyntaxHighlighter language="tsx">
                       {formattedCodeExample}
                     </SyntaxHighlighter>
                   </pre>
