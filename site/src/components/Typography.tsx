@@ -64,7 +64,7 @@ export default forwardRef<HTMLSpanElement, O.Omit<Props, "ref">>(
           variant === "codeBase" || variant === "regularBase"
             ? undefined
             : "-0.03em",
-        ...(margins ? { display: "block" } : { margin: 0 }),
+        ...(margins ? { display: "block" } : { margin: 0, marginBlock: 0 }),
         ...style,
       },
     };

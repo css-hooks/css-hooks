@@ -1,0 +1,76 @@
+import Code from "@/components/Code";
+import Link from "next/link";
+import Pre from "@/components/Pre";
+import RadioLink from "@/components/RadioLink";
+import Typography from "@/components/Typography";
+
+# Getting started
+
+<Typography as="h2" variant="boldLarge" margins>
+  {({ className, style, ...restProps }) => (
+    <h2 style={style} className={className}>
+      Choose your framework
+    </h2>
+  )}
+</Typography>
+
+<div
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.25rem",
+    marginBlock: "1.5rem",
+  }}
+>
+  <RadioLink checked={props.framework === "React"}>
+    {({ renderChildren, className, style }) => (
+      <Link href="./react" className={className} style={style}>
+        {renderChildren("React")}
+      </Link>
+    )}
+  </RadioLink>
+  <RadioLink checked={props.framework === "Solid"}>
+    {({ className, renderChildren, style }) => (
+      <Link href="./solid" className={className} style={style}>
+        {renderChildren("Solid")}
+      </Link>
+    )}
+  </RadioLink>
+  <RadioLink checked={props.framework === "Preact"}>
+    {({ renderChildren, className, style }) => (
+      <Link href="./preact" className={className} style={style}>
+        {renderChildren("Preact")}
+      </Link>
+    )}
+  </RadioLink>
+</div>
+
+## Installation
+
+Run the following command to install CSS Hooks for {props.framework}:
+
+<Pre>
+  <Code>npm install {props.package}</Code>
+</Pre>
+
+This will also install the `hooks.css` package, used in the next step,
+automatically.
+
+## CSS import
+
+Import `node_modules/hooks.css/index.css` into your app. Depending on your
+bundler configuration, you may be able to import `hooks.css` as a shorthand for
+that file path.
+
+{props.cssImportExample}
+
+## Use hooks!
+
+First, import the `hooks` helper function from the <Code>{props.package}</Code>
+module.
+
+Then, determine the element where you want to use hooks. Simply add the `hooks`
+utility class; then, call the `hooks` function with your inline styles, passing
+the result to the `style` prop as usual. For example:
+
+{props.hookUsageExample}
