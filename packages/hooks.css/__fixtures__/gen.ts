@@ -11,19 +11,13 @@ import postcss from "postcss";
  * dark mode media query using a selector of their choice.
  */
 const rawCSS = `
-.hooks {
+:root {
   --ON: initial;
   --OFF: ;
-
-  ${Object.keys(rules as Record<string, unknown>)
-    .flatMap(hookType => [`--${hookType}-0: initial;`, `--${hookType}-1: ;`])
-    .join("\n  ")}
 }
 
 ${Object.entries(rules)
-  .map(([hookType, rule]) =>
-    rule(".hooks", `--${hookType}-0`, `--${hookType}-1`).trim(),
-  )
+  .map(([hookType, rule]) => rule(`--${hookType}-0`, `--${hookType}-1`).trim())
   .join("\n\n")}
 `;
 

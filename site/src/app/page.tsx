@@ -13,7 +13,6 @@ import Link from "next/link";
 const codeExample = `
 <a
   href="https://css-hooks.com/"
-  className="hooks"
   style={hooks({
     color: "#03f",
     dark: {
@@ -100,7 +99,7 @@ export default async function Home() {
                 exhausted(restProps) && (
                   <Link
                     href="./docs/getting-started"
-                    className={`${className} hooks`}
+                    className={className}
                     style={hooks({
                       ...style,
                       textDecoration: "none",
@@ -231,7 +230,6 @@ function Feature({
     <section style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
         <div
-          className="hooks"
           style={hooks({
             background: `var(--${color}-200)`,
             color: `var(--${color}-700)`,
@@ -257,7 +255,6 @@ function Feature({
         </div>
         <Typography
           variant="boldBase"
-          className="hooks"
           style={hooks({
             color: `var(--${color}-700)`,
             dark: { color: `var(--${color}-${color == "gray" ? 4 : 5}00)` },

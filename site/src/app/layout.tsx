@@ -15,7 +15,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className="hooks"
         style={hooks({
           margin: 0,
           background: "var(--white)",

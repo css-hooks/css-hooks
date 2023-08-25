@@ -58,7 +58,7 @@ export default forwardRef<HTMLElement, O.Omit<Props, "ref">>(function Code(
           },
           ...style,
         }),
-        className: `hooks ${inconsolata.className}`,
+        className: inconsolata.className,
       };
 
   return (

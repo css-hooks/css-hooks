@@ -9,7 +9,6 @@ export default function Pre({
 }) {
   return (
     <pre
-      className="hooks"
       style={hooks({
         marginBlock: "1.5em",
         lineHeight: 1.25,

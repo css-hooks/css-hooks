@@ -1,8 +1,12 @@
 import types from "@hooks.css/core/src/types";
 
 function pseudo(pseudo: string) {
-  return (selectorBase: string, offProp: string, onProp: string) => `
-${selectorBase}${pseudo} {
+  return (offProp: string, onProp: string) => `
+*:not(${pseudo}) {
+  ${offProp}: initial;
+  ${onProp}: ;
+}
+*${pseudo} {
   ${offProp}: ;
   ${onProp}: initial;
 }
@@ -12,15 +16,20 @@ ${selectorBase}${pseudo} {
 /** @internal */
 const rules: Record<
   (typeof types)[number],
-  (selectorBase: string, offProp: string, onProp: string) => string
+  (offProp: string, onProp: string) => string
 > = {
   active: pseudo(":active"),
   autofill: pseudo(":autofill"),
   checked: pseudo(":checked"),
   default: pseudo(":default"),
-  dark: (selectorBase, offProp, onProp) => `
+  dark: (offProp, onProp) => `
+:root {
+  ${offProp}: initial;
+  ${onProp}: ;
+}
+
 @media (prefers-color-scheme:dark) {
-  ${selectorBase} {
+  :root {
     ${offProp}: ;
     ${onProp}: initial;
   }

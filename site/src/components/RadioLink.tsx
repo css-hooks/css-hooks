@@ -24,7 +24,6 @@ function Radio({ checked }: { checked?: boolean }) {
 
 export type ForwardProps = {
   renderChildren?: (children: ReactNode) => ReactElement;
-  className?: string;
   style?: CSSProperties;
 };
 
@@ -38,10 +37,7 @@ export type Props = U.Strict<
 };
 
 export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
-  function RadioLink(
-    { checked, children, className = "", style, ...restProps },
-    ref,
-  ) {
+  function RadioLink({ checked, children, style, ...restProps }, ref) {
     const renderChildren: Exclude<
       ForwardProps["renderChildren"],
       undefined
@@ -59,8 +55,6 @@ export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
       </Typography>
     );
 
-    const forwardClassName = `${className} hooks`;
-
     const forwardStyle: CSSProperties = hooks({
       color: checked ? "var(--blue-300)" : "var(--blue-400)",
       textDecoration: "none",
@@ -73,18 +67,12 @@ export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
     if (typeof children === "function") {
       return children({
         renderChildren,
-        className: forwardClassName,
         style: forwardStyle,
       });
     }
 
     return (
-      <a
-        className={forwardClassName}
-        style={forwardStyle}
-        {...restProps}
-        ref={ref}
-      >
+      <a style={forwardStyle} {...restProps} ref={ref}>
         {renderChildren(children)}
       </a>
     );
