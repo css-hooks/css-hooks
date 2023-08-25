@@ -1,49 +1,8 @@
 import Code from "@/components/Code";
-import Link from "next/link";
 import Pre from "@/components/Pre";
-import RadioLink from "@/components/RadioLink";
-import Typography from "@/components/Typography";
+import Intro from "./page.mdx";
 
-# Getting started
-
-<Typography as="h2" variant="boldLarge" margins>
-  {({ className, style, ...restProps }) => (
-    <h2 style={style} className={className}>
-      Choose your framework
-    </h2>
-  )}
-</Typography>
-
-<div
-  style={{
-    display: "flex",
-    flexDirection: "column",
-    gap: "0.25rem",
-    marginBlock: "1.5rem",
-  }}
->
-  <RadioLink checked={props.framework === "React"}>
-    {({ renderChildren, className, style }) => (
-      <Link href="./react" className={className} style={style}>
-        {renderChildren("React")}
-      </Link>
-    )}
-  </RadioLink>
-  <RadioLink checked={props.framework === "Solid"}>
-    {({ className, renderChildren, style }) => (
-      <Link href="./solid" className={className} style={style}>
-        {renderChildren("Solid")}
-      </Link>
-    )}
-  </RadioLink>
-  <RadioLink checked={props.framework === "Preact"}>
-    {({ renderChildren, className, style }) => (
-      <Link href="./preact" className={className} style={style}>
-        {renderChildren("Preact")}
-      </Link>
-    )}
-  </RadioLink>
-</div>
+<Intro {...props} />
 
 ## Installation
 
