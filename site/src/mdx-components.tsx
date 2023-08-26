@@ -41,6 +41,8 @@ const Heading1 = makeHeadingComponent("h1", "regular3XL");
 
 const Heading2 = makeHeadingComponent("h2", "regular2XL");
 
+const Heading3 = makeHeadingComponent("h3", "regularXL");
+
 function Paragraph({
   className: pClassName = "",
   style: pStyle,
@@ -68,12 +70,27 @@ function Paragraph({
   );
 }
 
+function HorizontalRule() {
+  return (
+    <hr
+      style={{
+        background: "var(--gray-500)",
+        marginBlock: "2.5rem 2rem",
+        height: 1,
+        border: 0,
+      }}
+    />
+  );
+}
+
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     ...components,
     code: Code,
     h1: Heading1,
     h2: Heading2,
+    h3: Heading3,
+    hr: HorizontalRule,
     p: Paragraph,
     pre: Pre,
   };
