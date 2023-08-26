@@ -240,3 +240,7 @@
     color: var(--purple-300);
   }
 }
+
+html {
+  margin-left: calc(100vw - 100%);
+}
