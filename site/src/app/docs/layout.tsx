@@ -37,7 +37,10 @@ export default function Layout({ children }: { children: ReactNode }) {
           <Typography variant="boldLarge" margins>
             {({ className, style, ...restProps }) =>
               exhausted(restProps) && (
-                <h1 className={className} style={style}>
+                <h1
+                  className={className}
+                  style={{ ...style, color: "var(--gray-500)" }}
+                >
                   Documentation
                 </h1>
               )
@@ -59,6 +62,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 >
                   {[
                     ["Getting started", "/docs/getting-started"],
+                    ["API", "/docs/api"],
                     ["Hooks reference", "/docs/hooks-reference"],
                   ].map(([name, href]) => (
                     <li key={name}>
