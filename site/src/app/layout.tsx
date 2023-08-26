@@ -2,9 +2,18 @@ import "./globals.css";
 import type { Metadata } from "next";
 import hooks from "@hooks.css/react";
 
+const title = "CSS Hooks";
+const description =
+  "Everything inline styles shouldn't be able to do. State-driven styling, dark mode, and more.";
+
 export const metadata: Metadata = {
-  title: "CSS Hooks",
-  description: "Use advanced CSS features in inline styles",
+  title,
+  metadataBase: new URL("https://css-hooks.com"),
+  description,
+  openGraph: {
+    title,
+    description,
+  },
 };
 
 export default function RootLayout({
