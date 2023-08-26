@@ -17,29 +17,34 @@ export type Props = U.Strict<
   | {
       children: (forwardProps: ForwardProps) => ReactElement;
     }
->;
+> & {
+  selected?: boolean;
+};
 
 export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
-  function Link({ children, style, ...restProps }, ref) {
+  function Link({ children, selected, style, ...restProps }, ref) {
     const forwardProps: ForwardProps = {
       style: hooks({
-        color: "var(--blue-800)",
+        color: selected ? "inherit" : "var(--blue-800)",
         textDecoration: "none",
-        hover: {
-          color: "var(--blue-700)",
-        },
-        active: {
-          color: "var(--red-700)",
-        },
-        dark: {
-          color: "var(--blue-400)",
+        cursor: selected ? "default" : "pointer",
+        ...(!selected && {
           hover: {
-            color: "var(--blue-300)",
+            color: "var(--blue-700)",
           },
           active: {
-            color: "var(--red-400)",
+            color: "var(--red-700)",
           },
-        },
+          dark: {
+            color: "var(--blue-400)",
+            hover: {
+              color: "var(--blue-300)",
+            },
+            active: {
+              color: "var(--red-400)",
+            },
+          },
+        }),
         ...style,
       }),
     };

@@ -58,7 +58,7 @@ export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
     );
 
     return (
-      <Link>
+      <Link selected={checked}>
         {({ style, ...linkRest }) =>
           exhausted(linkRest) &&
           (typeof children === "function" ? (
