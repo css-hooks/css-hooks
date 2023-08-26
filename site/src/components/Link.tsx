@@ -1,5 +1,11 @@
 import hooks from "@hooks.css/react";
-import { ComponentProps, CSSProperties, ReactElement, forwardRef } from "react";
+import {
+  ComponentProps,
+  ComponentType,
+  CSSProperties,
+  ReactElement,
+  forwardRef,
+} from "react";
 import { O, U } from "ts-toolbelt";
 
 export type ForwardProps = {
@@ -46,4 +52,4 @@ export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
       </a>
     );
   },
-);
+) as ComponentType<Props>;
