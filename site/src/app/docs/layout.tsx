@@ -3,17 +3,18 @@ import Link from "next/link";
 import hooks from "@hooks.css/react";
 import Logo from "@/components/Logo";
 import PageBlock from "@/components/PageBlock";
-import TextLink from "@/components/Link";
 import { exhausted } from "@/util/exhausted";
 import Typography from "@/components/Typography";
 import DocLink from "./DocLink";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <div>
+    <>
       <header
         style={hooks({
+          marginLeft: "calc(100% - 100vw)",
           padding: "2rem",
+          paddingLeft: "calc(2rem + 100vw - 100%)",
           background: "var(--gray-100)",
           dark: { background: "var(--gray-950)" },
         })}
@@ -76,6 +77,6 @@ export default function Layout({ children }: { children: ReactNode }) {
         </nav>
         <div style={{ flex: 3, minWidth: "60ch" }}>{children}</div>
       </PageBlock>
-    </div>
+    </>
   );
 }

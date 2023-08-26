@@ -42,6 +42,8 @@ export default async function Home() {
         style={hooks({
           background: "var(--gray-100)",
           dark: { background: "var(--gray-950)" },
+          marginLeft: "calc(100% - 100vw)",
+          paddingLeft: "calc(100vw - 100%)",
         })}
       >
         <PageBlock
