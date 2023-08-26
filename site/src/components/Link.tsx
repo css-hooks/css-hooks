@@ -18,6 +18,7 @@ export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
     const forwardProps: ForwardProps = {
       style: hooks({
         color: "var(--blue-800)",
+        textDecoration: "none",
         hover: {
           color: "var(--blue-700)",
         },

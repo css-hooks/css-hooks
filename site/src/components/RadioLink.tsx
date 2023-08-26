@@ -9,6 +9,8 @@ import {
 import { O, U } from "ts-toolbelt";
 import Typography from "./Typography";
 import hooks from "@hooks.css/react";
+import Link from "./Link";
+import { exhausted } from "@/util/exhausted";
 
 function Radio({ checked }: { checked?: boolean }) {
   return (
@@ -55,26 +57,22 @@ export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
       </Typography>
     );
 
-    const forwardStyle: CSSProperties = hooks({
-      color: checked ? "var(--blue-300)" : "var(--blue-400)",
-      textDecoration: "none",
-      hover: {
-        color: "var(--blue-300)",
-      },
-      ...style,
-    });
-
-    if (typeof children === "function") {
-      return children({
-        renderChildren,
-        style: forwardStyle,
-      });
-    }
-
     return (
-      <a style={forwardStyle} {...restProps} ref={ref}>
-        {renderChildren(children)}
-      </a>
+      <Link>
+        {({ style, ...linkRest }) =>
+          exhausted(linkRest) &&
+          (typeof children === "function" ? (
+            children({
+              renderChildren,
+              style,
+            })
+          ) : (
+            <a style={style} {...restProps} ref={ref}>
+              {renderChildren(children)}
+            </a>
+          ))
+        }
+      </Link>
     );
   },
 ) as ComponentType<Props>;
