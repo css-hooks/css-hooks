@@ -3,6 +3,7 @@ import Typography from "./components/Typography";
 import { exhausted } from "./util/exhausted";
 import { CSSProperties, ComponentPropsWithoutRef, ElementType } from "react";
 import Code from "./components/Code";
+import Link from "@/components/Link";
 import Pre from "./components/Pre";
 
 function makeHeadingComponent(
@@ -87,6 +88,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     ...components,
     code: Code,
+    a: Link,
     h1: Heading1,
     h2: Heading2,
     h3: Heading3,
