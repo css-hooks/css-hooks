@@ -26,6 +26,7 @@ const types = [
   "out-of-range",
   "placeholder-shown",
   "read-only",
+  "read-write",
   "required",
   "target",
   "valid",

@@ -56,6 +56,7 @@ const rules: Record<
   "out-of-range": pseudo(":out-of-range"),
   "placeholder-shown": pseudo(":placeholder-shown"),
   "read-only": pseudo(":read-only"),
+  "read-write": pseudo(":read-write"),
   required: pseudo(":required"),
   target: pseudo(":target"),
   valid: pseudo(":valid"),
