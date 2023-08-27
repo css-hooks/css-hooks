@@ -15,6 +15,7 @@ export default forwardRef<HTMLDivElement, O.Omit<Props, "ref">>(
     const forwardProps: ForwardProps = {
       style: {
         margin: "0 auto",
+        boxSizing: "border-box",
         width: "calc(100vw - 4rem)",
         maxWidth: "80rem",
         ...style,

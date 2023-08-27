@@ -12,9 +12,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     <>
       <header
         style={hooks({
-          marginLeft: "calc(100% - 100vw)",
           padding: "2rem",
-          paddingLeft: "calc(2rem + 100vw - 100%)",
           background: "var(--gray-100)",
           dark: { background: "var(--gray-950)" },
         })}
@@ -59,13 +57,12 @@ export default function Layout({ children }: { children: ReactNode }) {
       <PageBlock
         style={{
           marginTop: "2rem",
-          marginBottom: "2rem",
           display: "flex",
           flexWrap: "wrap",
           gap: "2rem",
         }}
       >
-        <nav style={{ flex: 1, minWidth: "20ch" }}>
+        <nav style={{ flex: 1 }}>
           <Typography variant="boldLarge" margins>
             {({ className, style, ...restProps }) =>
               exhausted(restProps) && (
@@ -106,7 +103,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             }
           </Typography>
         </nav>
-        <div style={{ flex: 3, minWidth: "60ch" }}>{children}</div>
+        <div style={{ flex: 3, minWidth: "30ch" }}>{children}</div>
       </PageBlock>
     </>
   );
