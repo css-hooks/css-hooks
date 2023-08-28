@@ -1,3 +1,21 @@
+# [0.6.0](https://github.com/css-hooks/css-hooks/compare/v0.5.2...v0.6.0) (2023-08-28)
+
+
+### Bug Fixes
+
+* **site:** get started hover effect inherited in error ([6684eaf](https://github.com/css-hooks/css-hooks/commit/6684eafa7a3e1df180095da1b455181912eb9c77))
+* **site:** type error in homepage ([ef14ee1](https://github.com/css-hooks/css-hooks/commit/ef14ee1ed5bfd2ca7ba2a40b1e514341390dcc34))
+* **site:** use a supported font for the logo ([8875bdf](https://github.com/css-hooks/css-hooks/commit/8875bdf4eccb6f722d1657f723de0cce61add61b))
+
+
+### Features
+
+* **core:** read-write hook ([63af714](https://github.com/css-hooks/css-hooks/commit/63af714edc1c540d71731322884ea95e08f6242c))
+* **hooks.css:** drop requirement for hooks class ([aa4367b](https://github.com/css-hooks/css-hooks/commit/aa4367bd93be309f507bca2a75de71513f42fa12))
+* **site:** add website stub ([b68d84a](https://github.com/css-hooks/css-hooks/commit/b68d84ac7e821809bb94d875c2dbc45b3aa45ff8))
+
+
+
 ## [0.5.2](https://github.com/css-hooks/css-hooks/compare/v0.5.1...v0.5.2) (2023-08-19)
 
 
