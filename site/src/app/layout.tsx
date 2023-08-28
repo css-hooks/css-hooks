@@ -115,6 +115,11 @@ export default function RootLayout({
             )
           }
         </PageBlock>
+        <script
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={`{"token": "b1c573f33b1d41c7bb345f7a741ed5f2"}`}
+        />
       </body>
     </html>
   );
