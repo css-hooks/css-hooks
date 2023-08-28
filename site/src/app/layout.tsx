@@ -9,18 +9,11 @@ import Link from "@/components/Link";
 import Typography from "@/components/Typography";
 import { CSSProperties } from "react";
 
-const title = "CSS Hooks";
-const description =
-  "Everything inline styles shouldn't be able to do. State-driven styling, dark mode, and more.";
-
 export const metadata: Metadata = {
-  title,
   metadataBase: new URL("https://css-hooks.com"),
-  description,
-  openGraph: {
-    title,
-    description,
-  },
+  title: "CSS Hooks",
+  description:
+    "Everything inline styles shouldn't be able to do. State-driven styling, dark mode, and more.",
 };
 
 export default function RootLayout({
