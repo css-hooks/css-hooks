@@ -5,3 +5,5 @@ packages/**/esm
 packages/**/types
 packages/hooks.css/index.css
 packages/hooks.css/index.min.css*
+site/.next
+site/out
