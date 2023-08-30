@@ -60,4 +60,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./site/out
           cname: css-hooks.com
+          force_orphan: true
           commit_message: ${{ github.event.head_commit.message }}
