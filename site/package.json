@@ -7,11 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postversion": "npm install @hooks.css/core@^$npm_package_version"
+    "postversion": "npm install @hooks.css/react@^$npm_package_version --force"
   },
   "dependencies": {
-    "@hooks.css/core": "^0.6.0",
-    "@hooks.css/react": "^0.5.2",
+    "@hooks.css/react": "^0.6.0",
     "@mdx-js/loader": "^2.3.0",
     "@mdx-js/react": "^2.3.0",
     "@next/mdx": "^13.4.19",
