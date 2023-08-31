@@ -65,8 +65,8 @@ jobs:
         env:
           CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{secrets.GH_ACCESS_TOKEN}}
 
-      - name: propagate license
-        run: for dir in ./packages/*; do cp LICENSE "$dir"; done
+      - name: propagate common files
+        run: for dir in ./packages/*; do cp LICENSE README.md "$dir"; done
 
       - name: npm publish
         run: npm publish --access public --workspace="packages/**"
