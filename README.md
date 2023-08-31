@@ -18,3 +18,53 @@
 </p>
 
 ---
+
+## Overview
+
+Hooks bring CSS features to native inline styles, enabling you to target various
+states such as hover, focus, and active, all without leaving the `style` prop.
+For example, hooks can easily solve the common use case of applying state-driven
+styles to a link:
+
+```jsx
+<a
+  href="https://css-hooks.com/"
+  style={hooks({
+    color: "#03f",
+    hover: {
+      color: "#09f",
+    },
+    active: {
+      color: "#e33",
+    },
+  })}
+>
+  Hooks
+</a>
+```
+
+Notably, the `hooks` function is pure. It simply returns a flat style object
+that is compatible with the `style` prop, creating dynamic property values that
+change under various conditions through CSS variables.
+
+## Documentation
+
+Please visit [css-hooks.com](https://css-hooks.com) to get started.
+
+## Packages
+
+- [hooks.css](packages/hooks.css): The style sheet that enables CSS Hooks
+- [@hooks.css/react](packages/react): React framework integration
+- [@hooks.css/solid](packages/solid): Solid framework integration
+- [@hooks.css/preact](packages/preact): Preact framework integration
+- [@hooks.css/core](packages/core): Core CSS Hooks package (internal use only)
+
+## Contributing
+
+Contributions are welcome. Please see the
+[contributing guidelines](CONTRIBUTING.md) for more information.
+
+## License
+
+CSS Hooks is offered under the [MIT license](LICENSE) by
+[Nick Saunders](https://github.com/nsaunders).
