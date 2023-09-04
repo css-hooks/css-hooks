@@ -70,7 +70,7 @@ export default async function Home() {
                 {({ className, style, ...restProps }) =>
                   exhausted(restProps) && (
                     <h1 className={className} style={style}>
-                      Everything inline styles shouldn&apos;t be able to do.
+                      Inline styles doing what we thought they couldn&apos;t.
                     </h1>
                   )
                 }
