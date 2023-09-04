@@ -1,14 +1,10 @@
 <p align="center">
-  <a href="https://css-hooks.com/#gh-dark-mode-only" target="_blank">
+  <a href="https://css-hooks.com/#gh-dark-mode-only" target="_blank">https://github.com/css-hooks/css-hooks/blob/master/README.md
     <img alt="CSS Hooks" src="https://raw.githubusercontent.com/css-hooks/css-hooks/HEAD/.github/logo-dark.svg" width="310" height="64" style="max-width: 100%;">
   </a>
   <a href="https://css-hooks.com/#gh-light-mode-only" target="_blank">
     <img alt="CSS Hooks" src="https://raw.githubusercontent.com/css-hooks/css-hooks/HEAD/.github/logo-light.svg" width="310" height="64" style="max-width: 100%;">
   </a>
-</p>
-
-<p align="center">
-  Everything inline styles shouldn't be able to do.
 </p>
 
 <p align="center">
