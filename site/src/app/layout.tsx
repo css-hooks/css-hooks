@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://css-hooks.com"),
   title: "CSS Hooks",
   description:
-    "Everything inline styles shouldn't be able to do. State-driven styling, dark mode, and more.",
+    "Inline styles doing what we thought they couldn't: State-driven styling, dark mode, and more.",
 };
 
 export default function RootLayout({
