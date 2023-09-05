@@ -68,7 +68,11 @@ export default function Layout({ children }: { children: ReactNode }) {
               exhausted(restProps) && (
                 <h1
                   className={className}
-                  style={{ ...style, color: "var(--gray-500)" }}
+                  style={hooks({
+                    ...style,
+                    color: "var(--gray-300)",
+                    dark: { color: "var(--gray-700)" },
+                  })}
                 >
                   Documentation
                 </h1>
