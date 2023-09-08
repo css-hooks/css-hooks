@@ -1,3 +1,17 @@
+# [0.7.0](https://github.com/css-hooks/css-hooks/compare/v0.6.0...v0.7.0) (2023-09-08)
+
+
+### Bug Fixes
+
+* **site:** workspace dependency version issue ([1b2584b](https://github.com/css-hooks/css-hooks/commit/1b2584b76fa8d71c55ebcc2792ba9a16015446cd))
+
+
+### Features
+
+* new api, renaming packages ([ad7e608](https://github.com/css-hooks/css-hooks/commit/ad7e60832dc4ac94dfae2fb77ce578be670c09d9))
+
+
+
 # [0.6.0](https://github.com/css-hooks/css-hooks/compare/v0.5.2...v0.6.0) (2023-08-28)
 
 

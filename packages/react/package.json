@@ -1,10 +1,10 @@
 {
   "name": "@css-hooks/react",
   "description": "CSS Hooks for React",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "^0.6.0",
+    "@css-hooks/core": "^0.7.0",
     "@emotion/unitless": "^0.8.1"
   },
   "devDependencies": {
