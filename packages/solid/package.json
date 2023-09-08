@@ -29,7 +29,6 @@
   "main": "cjs",
   "module": "esm",
   "peerDependencies": {
-    "hooks.css": "^0.6.0",
     "solid-js": ">=1.0.0 <2.0.0"
   },
   "private": false,
@@ -41,7 +40,7 @@
   "scripts": {
     "clean": "rimraf cjs esm types",
     "lint": "eslint __tests__ src .*.*js *.*js",
-    "postversion": "npm install @css-hooks/core@^$npm_package_version --force && npm install --save-peer hooks.css@^$npm_package_version --force",
+    "postversion": "npm install @css-hooks/core@^$npm_package_version --force",
     "prepublishOnly": "tsc -p tsconfig.dist.json --outDir cjs --module commonjs && tsc -p tsconfig.dist.json --outDir esm --module es6 && tsc -p tsconfig.dist.json --declaration --emitDeclarationOnly --outDir types",
     "test": "jest"
   },

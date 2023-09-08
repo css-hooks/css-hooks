@@ -4,8 +4,8 @@
   "version": "0.6.0",
   "author": "Nick Saunders",
   "dependencies": {
-    "@emotion/unitless": "^0.8.1",
-    "@css-hooks/core": "^0.6.0"
+    "@css-hooks/core": "^0.6.0",
+    "@emotion/unitless": "^0.8.1"
   },
   "devDependencies": {
     "@tsconfig/node-lts": "^18.12.3",
@@ -26,7 +26,6 @@
   "main": "cjs",
   "module": "esm",
   "peerDependencies": {
-    "hooks.css": "^0.6.0",
     "react": ">=16.14.0 <19"
   },
   "private": false,
@@ -38,7 +37,7 @@
   "scripts": {
     "clean": "rimraf cjs esm types",
     "lint": "eslint __tests__ src .*.*js *.*js",
-    "postversion": "npm install @css-hooks/core@^$npm_package_version --force && npm install --save-peer hooks.css@^$npm_package_version --force",
+    "postversion": "npm install @css-hooks/core@^$npm_package_version --force",
     "prepublishOnly": "tsc -p tsconfig.dist.json --outDir cjs --module commonjs && tsc -p tsconfig.dist.json --outDir esm --module es6 && tsc -p tsconfig.dist.json --declaration --emitDeclarationOnly --outDir types",
     "test": "jest"
   },
