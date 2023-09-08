@@ -1,4 +1,4 @@
-import { recommended, stringifyValue } from "../src";
+import { stringifyValue } from "../src";
 
 describe("`stringifyValue` function", () => {
   it("returns a string as-is", () => {
