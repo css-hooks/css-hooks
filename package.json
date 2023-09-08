@@ -1,6 +1,6 @@
 {
   "name": "css-hooks",
-  "description": "Monorepo for @hooks.css/* packages",
+  "description": "Monorepo for @css-hooks/* packages",
   "version": "0.6.0",
   "devDependencies": {
     "conventional-changelog-cli": "^3.0.0",
@@ -15,7 +15,6 @@
   },
   "workspaces": [
     "packages/core",
-    "packages/hooks.css",
     "packages/preact",
     "packages/react",
     "packages/solid",

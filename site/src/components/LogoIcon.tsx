@@ -1,4 +1,4 @@
-import hooks from "@hooks.css/react";
+import hooks from "@/css-hooks";
 
 export type Props = {
   color1?: string;

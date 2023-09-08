@@ -1,4 +1,4 @@
-import hooks from "@hooks.css/react";
+import hooks from "@/css-hooks";
 import {
   ComponentProps,
   ComponentType,

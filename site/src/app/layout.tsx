@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import hooks from "@hooks.css/react";
+import hooks, { css } from "@/css-hooks";
 import PageBlock from "@/components/PageBlock";
 import { exhausted } from "@/util/exhausted";
 import Logo from "@/components/Logo";
@@ -37,6 +37,7 @@ export default function RootLayout({
           flexDirection: "column",
         })}
       >
+        <style>{css}</style>
         <div style={{ flex: 1 }}>{children}</div>
         <PageBlock>
           {({ style: pageBlockStyle, ...restProps }) =>

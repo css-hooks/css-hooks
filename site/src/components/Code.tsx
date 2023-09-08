@@ -1,8 +1,6 @@
 import {
-  CSSProperties,
   ComponentProps,
   ComponentType,
-  ReactElement,
   ReactNode,
   forwardRef,
   isValidElement,
@@ -10,7 +8,7 @@ import {
 import { O } from "ts-toolbelt";
 import { Inconsolata } from "next/font/google";
 import SyntaxHighlighter, { supportedLanguage } from "./SyntaxHighlighter";
-import hooks from "@hooks.css/react";
+import hooks from "@/css-hooks";
 
 export type Props = ComponentProps<"code">;
 

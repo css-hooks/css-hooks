@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { WithHooks, createHooksFn, types } from "@hooks.css/core";
+import { buildHooksSystem, recommended } from "@css-hooks/core";
 import unitless from "@emotion/unitless";
 
 /**
@@ -24,14 +24,13 @@ export function stringifyValue(
   return null;
 }
 
-const casing = "camel" as const;
+/**
+ * Creates the hooks specified in the configuration.
+ *
+ * @param config - The hooks to build
+ *
+ * @returns The CSS required to enable the configured hooks, along with the corresponding `hooks` function for use in components.
+ */
+export const createHooks = buildHooksSystem<CSSProperties>(stringifyValue);
 
-const hooks: (
-  propertiesWithHooks: WithHooks<typeof casing, typeof types, CSSProperties>,
-) => CSSProperties = createHooksFn<typeof casing, typeof types, CSSProperties>(
-  "camel",
-  types,
-  stringifyValue,
-);
-
-export default hooks;
+export { recommended };

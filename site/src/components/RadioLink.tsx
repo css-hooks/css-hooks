@@ -8,7 +8,6 @@ import {
 } from "react";
 import { O, U } from "ts-toolbelt";
 import Typography from "./Typography";
-import hooks from "@hooks.css/react";
 import Link from "./Link";
 import { exhausted } from "@/util/exhausted";
 

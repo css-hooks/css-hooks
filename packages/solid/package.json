@@ -1,10 +1,11 @@
 {
-  "name": "@hooks.css/solid",
+  "name": "@css-hooks/solid",
   "description": "CSS Hooks for Solid",
   "version": "0.6.0",
   "author": "Nick Saunders",
   "dependencies": {
-    "@hooks.css/core": "^0.6.0"
+    "@css-hooks/core": "^0.6.0",
+    "ts-toolbelt": "^9.6.0"
   },
   "devDependencies": {
     "@tsconfig/node-lts": "^18.12.3",
@@ -40,7 +41,7 @@
   "scripts": {
     "clean": "rimraf cjs esm types",
     "lint": "eslint __tests__ src .*.*js *.*js",
-    "postversion": "npm install @hooks.css/core@^$npm_package_version --force && npm install --save-peer hooks.css@^$npm_package_version --force",
+    "postversion": "npm install @css-hooks/core@^$npm_package_version --force && npm install --save-peer hooks.css@^$npm_package_version --force",
     "prepublishOnly": "tsc -p tsconfig.dist.json --outDir cjs --module commonjs && tsc -p tsconfig.dist.json --outDir esm --module es6 && tsc -p tsconfig.dist.json --declaration --emitDeclarationOnly --outDir types",
     "test": "jest"
   },

@@ -1,4 +1,4 @@
-import hooks from "@hooks.css/react";
+import hooks from "@/css-hooks";
 import { CSSProperties } from "react";
 import { Assistant } from "next/font/google";
 import LogoIcon from "./LogoIcon";
