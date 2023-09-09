@@ -1,10 +1,11 @@
 import hooks from "@/css-hooks";
-import { CSSProperties } from "react";
+import { CSSProperties, ReactNode } from "react";
 
 export default function Pre({
   style,
   ...restProps
 }: {
+  children?: ReactNode;
   style?: CSSProperties;
 }) {
   return (

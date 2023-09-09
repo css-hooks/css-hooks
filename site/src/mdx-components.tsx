@@ -5,6 +5,7 @@ import { CSSProperties, ComponentPropsWithoutRef, ElementType } from "react";
 import Code from "./components/Code";
 import Link from "@/components/Link";
 import Pre from "./components/Pre";
+import hooks from "@/css-hooks";
 
 function makeHeadingComponent(
   Tag: ElementType<ComponentPropsWithoutRef<"h1">>,
@@ -44,6 +45,33 @@ const Heading2 = makeHeadingComponent("h2", "regular2XL");
 
 const Heading3 = makeHeadingComponent("h3", "regularXL");
 
+function ListItem({
+  className: liClassName = "",
+  style: liStyle,
+  ...liRest
+}: {
+  className?: string;
+  style?: CSSProperties;
+}) {
+  return (
+    <Typography variant="regularBase">
+      {({
+        className: typographyClassName = "",
+        style: typographyStyle,
+        ...typographyRest
+      }) =>
+        exhausted(typographyRest) && (
+          <li
+            className={`${typographyClassName} ${liClassName}`}
+            style={{ ...typographyStyle, ...liStyle }}
+            {...liRest}
+          />
+        )
+      }
+    </Typography>
+  );
+}
+
 function Paragraph({
   className: pClassName = "",
   style: pStyle,
@@ -74,12 +102,13 @@ function Paragraph({
 function HorizontalRule() {
   return (
     <hr
-      style={{
-        background: "var(--gray-500)",
+      style={hooks({
+        background: "var(--gray-200)",
         marginBlock: "2.5rem 2rem",
         height: 1,
         border: 0,
-      }}
+        dark: { background: "var(--gray-800)" },
+      })}
     />
   );
 }
@@ -93,6 +122,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     h2: Heading2,
     h3: Heading3,
     hr: HorizontalRule,
+    li: ListItem,
     p: Paragraph,
     pre: Pre,
   };

@@ -24,7 +24,7 @@ function Radio({ checked }: { checked?: boolean }) {
 }
 
 export type ForwardProps = {
-  renderChildren?: (children: ReactNode) => ReactElement;
+  renderChildren: (children: ReactNode) => ReactElement;
   style?: CSSProperties;
 };
 

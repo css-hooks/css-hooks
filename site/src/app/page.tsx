@@ -98,7 +98,7 @@ export default async function Home() {
               {({ className = "", style, ...restProps }) =>
                 exhausted(restProps) && (
                   <Link
-                    href="./docs/getting-started"
+                    href="./docs/react/getting-started"
                     className={className}
                     style={hooks({
                       ...style,

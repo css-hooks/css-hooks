@@ -15,7 +15,7 @@ function makeStyle(fontSizeRem: number, fontWeight: 400 | 700 = 400) {
   return {
     fontSize: `${fontSizeRem}rem`,
     fontWeight,
-    lineHeight: 1.25,
+    lineHeight: 1.5,
     marginBlock,
   };
 }
@@ -23,12 +23,12 @@ function makeStyle(fontSizeRem: number, fontWeight: 400 | 700 = 400) {
 const variantStyles = {
   regularBase: makeStyle(1, 400),
   boldBase: makeStyle(1, 700),
-  boldLarge: makeStyle(1.2, 700),
-  regularXL: makeStyle(1.601),
+  boldLarge: makeStyle(1.333, 700),
+  regularXL: makeStyle(1.667),
   regular2XL: makeStyle(2),
   bold2XL: makeStyle(2, 700),
-  regular3XL: makeStyle(2.4),
-  bold3XL: makeStyle(2.4, 700),
+  regular3XL: makeStyle(2.333),
+  bold3XL: makeStyle(2.333, 700),
   regular4XL: makeStyle(3),
 } as const;
 

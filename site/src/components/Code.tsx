@@ -12,7 +12,7 @@ import hooks from "@/css-hooks";
 
 export type Props = ComponentProps<"code">;
 
-const inconsolata = Inconsolata({ weight: "400", subsets: ["latin"] });
+const inconsolata = Inconsolata({ weight: ["400", "700"], subsets: ["latin"] });
 
 function isIterable(x: any): x is Iterable<unknown> {
   return Symbol.iterator in x;

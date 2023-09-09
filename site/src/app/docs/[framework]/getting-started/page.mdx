@@ -1,0 +1,89 @@
+import Code from "@/components/Code";
+import Pre from "@/components/Pre";
+
+# Getting started with {props.params.framework.replace(/^[a-z]/, x => x.toUpperCase())}
+
+---
+
+## 1. Installation
+
+CSS Hooks offers a dedicated {props.params.framework.replace(/^[a-z]/, x =>
+x.toUpperCase())} integration to ensure a seamless developer experience. Install
+this via NPM or your package manager of choice, e.g.:
+
+<Pre>
+  <Code>npm install @css-hooks/{props.params.framework}</Code>
+</Pre>
+
+---
+
+## 2. Create hooks
+
+To support a wide range of use cases, CSS Hooks allows you to define your own
+hooks, although a default set of "recommended" hooks is provided for your
+convenience. Whether you use the recommended hooks or start from scratch, you'll
+need to create a dedicated CSS Hooks module somewhere in your codebase, e.g.
+`src/css-hooks.ts`. You can copy and paste the following example as a starting
+point.
+
+<Pre>
+  <Code className="language-typescript">
+    {`// src/css-hooks.ts
+
+import { createHooks, recommended } from "@css-hooks/${props.params.framework}";
+    
+const [css, hooks] = createHooks(recommended);
+
+export default hooks;
+export { css }`}
+  </Code>
+</Pre>
+
+---
+
+## 3. Add static CSS
+
+The `css` export from the module created in Step 2 consists of a static CSS
+string that must be included somewhere on the page. This could be achieved in
+any number of ways, but the easiest is simply to add a `<style>` element in your
+root component, e.g.:
+
+```tsx
+// src/App.tsx
+
+import { css } from "./css-hooks";
+
+export default function App() {
+  return (
+    <>
+      <style>{css}</style>
+      <h1>Hello world</h1>
+    </>
+  );
+}
+```
+
+---
+
+## 4. Use hooks
+
+Now you're ready to use the hooks. Simply import the `hooks` function and use it
+in any `style` prop where you need it, e.g.:
+
+```tsx
+// src/Button.tsx
+
+import hooks from "./css-hooks";
+
+export default function Button(props: ButtonProps) {
+  return (
+    <button
+      {...props}
+      style={hooks({
+        color: "black",
+        hover: { color: "blue" },
+      })}
+    />
+  );
+}
+```

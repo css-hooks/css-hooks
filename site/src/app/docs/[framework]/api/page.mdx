@@ -1,0 +1,38 @@
+import Code from "@/components/Code";
+
+# API
+
+## <Code className="language-typescript">createHooks(\_: HooksConfig) => [CSS extends string, HooksFn]</Code>
+
+Given a hook configuration, this function produces a static style sheet, which
+must be added to the document, along with a `hooks` function that supports the
+configured hooks.
+
+## <Code className="language-typescript">type HooksFn = (\_: WithHooks&lt;CSSProperties&gt;) => CSSProperties</Code>
+
+The `hooks` function accepts an object consisting of CSS properties and nested
+hook objects, flattening it to produce a properties object compatible with the
+`style` prop.
+
+## <Code className="language-typescript">type HooksConfig = Record&lt;HookName extends string, HookSpec&gt;</Code>
+
+This configuration object defines which hooks to support, which is reflected in
+the `hooks` function and its corresponding style sheet.
+
+## <Code className="language-typescript">type HookSpec extends string</Code>
+
+A `HookSpec` is a specific type of string that defines how a given hook works,
+following one of these formats:
+
+- **`":<pseudo>"`**, where `<pseudo>` is any
+  [pseudo-class](https://www.w3.org/TR/selectors/#pseudo-classes) such as
+  `hover`, `active`, or `focus`.
+- **`"<selector>"`**, where `<selector>` must contain an `&` character
+  functioning as a placeholder for a base selector. For example, a value of
+  `":checked + &"` would produce a hook that is activated whenever the element
+  is immediately preceded by a `:checked` element.
+- **`"@container <query>"`**, where `<query>` can be replaced with any
+  [container query](https://www.w3.org/TR/css-contain-3/#container-rule)
+  condition.
+- **`"@media <query>"`**, where `<query>` can be replaced with any
+  [media query](https://www.w3.org/TR/mediaqueries-5/) condition.
