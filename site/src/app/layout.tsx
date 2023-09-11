@@ -7,7 +7,6 @@ import Logo from "@/components/Logo";
 import NextLink from "next/link";
 import Link from "@/components/Link";
 import Typography from "@/components/Typography";
-import { CSSProperties } from "react";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://css-hooks.com"),
