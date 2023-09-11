@@ -49,7 +49,6 @@ Please visit [css-hooks.com](https://css-hooks.com) to get started.
 
 ## Packages
 
-- [hooks.css](packages/hooks.css): The style sheet that enables CSS Hooks
 - [@css-hooks/react](packages/react): React framework integration
 - [@css-hooks/solid](packages/solid): Solid framework integration
 - [@css-hooks/preact](packages/preact): Preact framework integration
