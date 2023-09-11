@@ -5,6 +5,7 @@ import * as prettier from "prettier/standalone";
 import * as prettierEstree from "prettier/plugins/estree";
 import * as prettierTypescript from "prettier/plugins/typescript";
 import hooks from "@/css-hooks";
+import Code from "@/components/Code";
 import Typography from "@/components/Typography";
 import { exhausted } from "@/util/exhausted";
 import { ReactNode } from "react";
@@ -86,9 +87,9 @@ export default async function Home() {
                         margin: 0,
                       }}
                     >
-                      With zero runtime, no build steps, and a tiny CSS
-                      footprint, hooks bring advanced CSS capabilities to native
-                      inline styles.
+                      Hooks bring advanced CSS capabilities to native inline
+                      styles, with practically zero runtime, no build steps, and
+                      a tiny CSS footprint.
                     </p>
                   )
                 }
@@ -156,11 +157,9 @@ export default async function Home() {
             headline="Intuitive state-driven styling"
             iconPath="M288 464h-64a16 16 0 0 0 0 32h64a16 16 0 0 0 0-32Zm16-48h-96a16 16 0 0 0 0 32h96a16 16 0 0 0 0-32Zm65.42-353.31C339.35 32.58 299.07 16 256 16A159.62 159.62 0 0 0 96 176c0 46.62 17.87 90.23 49 119.64l4.36 4.09C167.37 316.57 192 339.64 192 360v24a16 16 0 0 0 16 16h24a8 8 0 0 0 8-8V274.82a8 8 0 0 0-5.13-7.47A130.73 130.73 0 0 1 208.71 253a16 16 0 1 1 18.58-26c7.4 5.24 21.65 13 28.71 13s21.31-7.78 28.73-13a16 16 0 0 1 18.56 26a130.73 130.73 0 0 1-26.16 14.32a8 8 0 0 0-5.13 7.47V392a8 8 0 0 0 8 8h24a16 16 0 0 0 16-16v-24c0-19.88 24.36-42.93 42.15-59.77l4.91-4.66C399.08 265 416 223.61 416 176a159.16 159.16 0 0 0-46.58-113.31Z"
           >
-            Effortlessly define styles for states like{" "}
-            <Typography variant="codeBase">hover</Typography>,{" "}
-            <Typography variant="codeBase">focus</Typography>, and{" "}
-            <Typography variant="codeBase">active</Typography>. Create engaging
-            UIs without the complexity of external CSS.
+            Effortlessly define styles for states like <Code>hover</Code>,{" "}
+            <Code>focus</Code>, and <Code>active</Code>. Create engaging UIs
+            without the complexity of external CSS.
           </Feature>
           <Feature
             color="purple"
