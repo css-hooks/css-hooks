@@ -19,10 +19,10 @@ hook objects, flattening it to produce a properties object compatible with the
 This configuration object defines which hooks to support, which is reflected in
 the `hooks` function and its corresponding style sheet.
 
-## <Code className="language-typescript">type HookSpec extends string</Code>
+## <Code className="language-typescript">type HookSpec</Code>
 
-A `HookSpec` is a specific type of string that defines how a given hook works,
-following one of these formats:
+A `HookSpec` is a specific type of string that defines the condition under which
+a hook applies, following one of these formats:
 
 - **`":<pseudo>"`**, where `<pseudo>` is any
   [pseudo-class](https://www.w3.org/TR/selectors/#pseudo-classes) such as
@@ -36,3 +36,8 @@ following one of these formats:
   condition.
 - **`"@media <query>"`**, where `<query>` can be replaced with any
   [media query](https://www.w3.org/TR/mediaqueries-5/) condition.
+
+An additional type of `HookSpec` allows the hook to be activated whenever any
+one out of a list of conditions applies. It is defined using an object:
+
+- `{ or: (HookSpec & string)[] }`
