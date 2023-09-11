@@ -10,6 +10,7 @@ import Typography from "@/components/Typography";
 import hooks from "@/css-hooks";
 import { exhausted } from "@/util/exhausted";
 import frameworks from "./frameworks";
+import guides from "./guides";
 
 export default function Layout({
   children,
@@ -144,22 +145,22 @@ export default function Layout({
                 )
               }
             </Typography>
-            {[
-              ["Getting started", `/docs/${params.framework}/getting-started`],
-              ["Usage", `/docs/${params.framework}/usage`],
-              ["API", `/docs/${params.framework}/api`],
-              ["Hooks reference", `/docs/${params.framework}/hooks-reference`],
-            ].map(([name, href]) => (
-              <Fragment key={href}>
-                <RadioLink checked={href === pathname}>
-                  {({ renderChildren, style }) => (
-                    <Link href={href} style={style}>
-                      {renderChildren(name)}
-                    </Link>
-                  )}
-                </RadioLink>
-              </Fragment>
-            ))}
+            {guides
+              .map(([name, slug]) => [
+                name,
+                `/docs/${params.framework}/${slug}`,
+              ])
+              .map(([name, href]) => (
+                <Fragment key={href}>
+                  <RadioLink checked={href === pathname}>
+                    {({ renderChildren, style }) => (
+                      <Link href={href} style={style}>
+                        {renderChildren(name)}
+                      </Link>
+                    )}
+                  </RadioLink>
+                </Fragment>
+              ))}
           </div>
           <Typography variant="regularBase">
             {({ className, style, ...restProps }) =>
