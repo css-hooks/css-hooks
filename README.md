@@ -61,5 +61,4 @@ Contributions are welcome. Please see the
 
 ## License
 
-CSS Hooks is offered under the [MIT license](LICENSE) by
-[Nick Saunders](https://github.com/nsaunders).
+CSS Hooks is offered under the [MIT license](LICENSE).
