@@ -9,7 +9,28 @@ type UnionToIntersection<T> = (T extends any ? (t: T) => any : never) extends (
 type HookSpec =
   | `@${"media" | "container"} ${string}`
   | `:${string}`
-  | `${string}&${string}`;
+  | `${string}&${string}`
+  | { or: (HookSpec & string)[] | Readonly<(HookSpec & string)[]> }; // eslint-disable-line @typescript-eslint/no-redundant-type-constituents
+
+function isHookSpec(x: unknown): x is HookSpec {
+  if (!x) {
+    return false;
+  }
+  if (typeof x === "string") {
+    return (
+      x.startsWith(":") ||
+      x.startsWith("@media ") ||
+      x.startsWith("@container ") ||
+      x.includes("&")
+    );
+  }
+  if (typeof x === "object") {
+    if ("or" in x && x.or instanceof Array) {
+      return !x.or.some(xx => !isHookSpec(xx));
+    }
+  }
+  return false;
+}
 
 export type WithHooks<HookProperties, Properties> = WithHooksImpl<
   Properties,
@@ -121,20 +142,29 @@ export function buildHooksSystem<Properties>(
         "*{",
         ...Object.keys(config).map(off),
         "}",
-        ...Object.entries(config).map(([name, spec]) => {
-          if (typeof spec !== "string") {
-            return "";
+        ...Object.entries(config).flatMap(function render([name, spec]: [
+          string,
+          unknown,
+        ]): string[] {
+          if (!isHookSpec(spec)) {
+            return [];
+          }
+          if (typeof spec === "object") {
+            if ("or" in spec) {
+              return spec.or.flatMap(x => render.bind(this)([name, x]));
+            }
+            return [];
           }
           if (spec.includes("&")) {
-            return `${spec.replace(/&/g, "*")}{${on(name)}}`;
+            return [`${spec.replace(/&/g, "*")}{${on(name)}}`];
           }
           if (spec.startsWith(":")) {
-            return `${spec}{${on(name)}}`;
+            return [`${spec}{${on(name)}}`];
           }
           if (spec.startsWith("@")) {
-            return `${spec}{*{${on(name)}}}`;
+            return [`${spec}{*{${on(name)}}}`];
           }
-          return "";
+          return [];
         }),
       ].join(""),
       function hooks(
@@ -151,7 +181,7 @@ export function buildHooksSystem<Properties>(
  */
 export const recommended = {
   active: ":active",
-  autofill: ":autofill",
+  autofill: { or: [":autofill", ":-webkit-autofill"] },
   checked: ":checked",
   default: ":default",
   disabled: ":disabled",
@@ -173,9 +203,9 @@ export const recommended = {
   onlyChild: ":only-child",
   onlyOfType: ":only-of-type",
   outOfRange: ":out-of-range",
-  placeholderShown: ":placeholder-shown",
-  readOnly: ":read-only",
-  readWrite: ":read-write",
+  placeholderShown: { or: [":placeholder-shown", ":-moz-placeholder-shown"] },
+  readOnly: { or: [":read-only", ":-moz-read-only"] },
+  readWrite: { or: [":read-write", ":-moz-read-write"] },
   required: ":required",
   target: ":target",
   valid: ":valid",

@@ -188,6 +188,34 @@ describe("css renderer", () => {
       `),
     );
   });
+
+  it('renders "or" hooks', () => {
+    const [css] = createHooks({
+      dark: {
+        or: ["@media (prefers-color-scheme: dark)", "[data-theme='dark'] &"],
+      },
+    });
+    expect(normalizeCSS(css)).toEqual(
+      normalizeCSS(`
+      * {
+        --dark-0:initial;
+        --dark-1: ;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        * {
+          --dark-0: ;
+          --dark-1:initial;
+        }
+      }
+
+      [data-theme='dark'] * {
+        --dark-0: ;
+        --dark-1:initial;
+      }
+    `),
+    );
+  });
 });
 
 describe("hooks function", () => {
