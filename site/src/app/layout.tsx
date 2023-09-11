@@ -61,9 +61,6 @@ export default function RootLayout({
                       }}
                     >
                       <Logo size="1.5rem" />
-                      <span style={{ color: "var(--gray-300)" }}>
-                        Copyright &copy; 2023 Nick Saunders
-                      </span>
                       <div
                         style={{
                           flexBasis: "calc((60rem - 100%) * 999)",
@@ -83,7 +80,7 @@ export default function RootLayout({
                             exhausted(restProps) && (
                               <NextLink
                                 key="Documentation"
-                                href="/docs/getting-started"
+                                href="/docs/react/getting-started"
                                 style={style}
                               >
                                 Documentation
@@ -93,7 +90,7 @@ export default function RootLayout({
                         </Link>
                         {[
                           ["GitHub", "https://github.com/css-hooks/css-hooks"],
-                          ["NPM", "https://www.npmjs.com/org/hooks.css"],
+                          ["NPM", "https://www.npmjs.com/org/css-hooks"],
                           ["Twitter", "https://www.twitter.com/csshooks"],
                           ["Facebook", "https://www.facebook.com/csshooks"],
                         ].map(([children, href]) => (
