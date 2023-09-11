@@ -1,14 +1,12 @@
-import type { generateStaticParams } from "../layout";
 import Code from "@/components/Code";
+import type frameworks from "../frameworks";
 
 export default function HookName({
   children: name,
   framework,
 }: {
   children: string;
-  framework: Awaited<
-    ReturnType<typeof generateStaticParams>
-  >[number]["framework"];
+  framework: (typeof frameworks)[number];
 }) {
   return (
     <Code>

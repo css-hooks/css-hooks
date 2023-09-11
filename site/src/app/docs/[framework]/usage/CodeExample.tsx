@@ -1,6 +1,5 @@
 "use client";
 
-import type { generateStaticParams } from "../layout";
 import { U } from "ts-toolbelt";
 import * as prettier from "prettier/standalone";
 import * as prettierEstree from "prettier/plugins/estree";
@@ -8,6 +7,7 @@ import * as prettierTypescript from "prettier/plugins/typescript";
 import { useEffect, useMemo, useState } from "react";
 import Code from "@/components/Code";
 import Pre from "@/components/Pre";
+import type frameworks from "../frameworks";
 
 const baseStyles = {
   border: 0,
@@ -44,9 +44,7 @@ export default function CodeExample({
   framework,
 }: {
   name: keyof typeof examples;
-  framework: Awaited<
-    ReturnType<typeof generateStaticParams>
-  >[number]["framework"];
+  framework: (typeof frameworks)[number];
 }) {
   const code = useMemo(() => examples[name](framework), [name, framework]);
   const [formatted, setFormatted] = useState("");
@@ -78,11 +76,7 @@ export default function CodeExample({
 }
 
 function example(style: Record<string, unknown>, noHooks = false) {
-  return (
-    framework: Awaited<
-      ReturnType<typeof generateStaticParams>
-    >[number]["framework"],
-  ) => `
+  return (framework: (typeof frameworks)[number]) => `
     // src/Button.tsx${noHooks ? "" : '\n\nimport hooks from "./css-hooks";'}
 
     export default function Button(props: Props) {

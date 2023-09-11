@@ -9,12 +9,7 @@ import RadioLink from "@/components/RadioLink";
 import Typography from "@/components/Typography";
 import hooks from "@/css-hooks";
 import { exhausted } from "@/util/exhausted";
-
-const frameworks = ["react", "solid", "preact"] as const;
-
-export async function generateStaticParams() {
-  return frameworks.map(framework => ({ framework }));
-}
+import frameworks from "./frameworks";
 
 export default function Layout({
   children,
