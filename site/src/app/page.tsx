@@ -9,7 +9,9 @@ import Code from "@/components/Code";
 import Typography from "@/components/Typography";
 import { exhausted } from "@/util/exhausted";
 import { ReactNode } from "react";
+import CtaButton from "@/components/CtaButton";
 import Link from "next/link";
+import frameworks from "./docs/[framework]/frameworks";
 
 const codeExample = `
 <a
@@ -95,32 +97,19 @@ export default async function Home() {
                 }
               </Typography>
             </div>
-            <Typography variant="boldLarge">
-              {({ className = "", style, ...restProps }) =>
+            <CtaButton>
+              {({ className, style, ...restProps }) =>
                 exhausted(restProps) && (
                   <Link
-                    href="./docs/react/getting-started"
+                    href="/docs/react/getting-started"
                     className={className}
-                    style={hooks({
-                      ...style,
-                      textDecoration: "none",
-                      background: "var(--blue-800)",
-                      color: "var(--white)",
-                      padding: "0.5em 0.75em",
-                      display: "inline-block",
-                      hover: {
-                        background: "var(--blue-700)",
-                      },
-                      active: {
-                        background: "var(--red-700)",
-                      },
-                    })}
+                    style={style}
                   >
-                    Get started
+                    Documentation
                   </Link>
                 )
               }
-            </Typography>
+            </CtaButton>
           </div>
           <section
             style={hooks({
@@ -209,6 +198,160 @@ export default async function Home() {
             make server-side rendering simple and reliable. It just works.
           </Feature>
         </PageBlock>
+        <PageBlock
+          style={{
+            display: "flex",
+            gap: "2rem",
+            flexWrap: "wrap",
+            marginTop: "4rem",
+          }}
+        >
+          <DesignedFor
+            framework="react"
+            logo={
+              <svg
+                style={{
+                  height: 160,
+                  maxWidth: "100%",
+                  color: "#149eca",
+                }}
+                viewBox="-11.5 -10.23174 23 20.46348"
+              >
+                <circle cx="0" cy="0" r="2.05" fill="currentColor" />
+                <g stroke="currentColor" strokeWidth="1" fill="none">
+                  <ellipse rx="11" ry="4.2" />
+                  <ellipse rx="11" ry="4.2" transform="rotate(60)" />
+                  <ellipse rx="11" ry="4.2" transform="rotate(120)" />
+                </g>
+              </svg>
+            }
+          />
+          <DesignedFor
+            framework="solid"
+            logo={
+              <svg
+                style={{ height: 160, maxWidth: "100%" }}
+                viewBox="0 0 166 155.3"
+              >
+                <defs>
+                  <linearGradient
+                    id="a"
+                    x1="27.5"
+                    x2="152"
+                    y1="3"
+                    y2="63.5"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop offset="0.1" stopColor="#76b3e1"></stop>
+                    <stop offset="0.3" stopColor="#dcf2fd"></stop>
+                    <stop offset="1" stopColor="#76b3e1"></stop>
+                  </linearGradient>
+                  <linearGradient
+                    id="b"
+                    x1="95.8"
+                    x2="74"
+                    y1="32.6"
+                    y2="105.2"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop offset="0" stopColor="#76b3e1"></stop>
+                    <stop offset="0.5" stopColor="#4377bb"></stop>
+                    <stop offset="1" stopColor="#1f3b77"></stop>
+                  </linearGradient>
+                  <linearGradient
+                    id="c"
+                    x1="18.4"
+                    x2="144.3"
+                    y1="64.2"
+                    y2="149.8"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop offset="0" stopColor="#315aa9"></stop>
+                    <stop offset="0.5" stopColor="#518ac8"></stop>
+                    <stop offset="1" stopColor="#315aa9"></stop>
+                  </linearGradient>
+                  <linearGradient
+                    id="d"
+                    x1="75.2"
+                    x2="24.4"
+                    y1="74.5"
+                    y2="260.8"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop offset="0" stopColor="#4377bb"></stop>
+                    <stop offset="0.5" stopColor="#1a336b"></stop>
+                    <stop offset="1" stopColor="#1a336b"></stop>
+                  </linearGradient>
+                </defs>
+                <path
+                  fill="#76b3e1"
+                  d="M163 35S110-4 69 5l-3 1c-6 2-11 5-14 9l-2 3-15 26 26 5c11 7 25 10 38 7l46 9 18-30z"
+                ></path>
+                <path
+                  fill="url(#a)"
+                  d="M163 35S110-4 69 5l-3 1c-6 2-11 5-14 9l-2 3-15 26 26 5c11 7 25 10 38 7l46 9 18-30z"
+                  opacity="0.3"
+                ></path>
+                <path
+                  fill="#518ac8"
+                  d="M52 35l-4 1c-17 5-22 21-13 35 10 13 31 20 48 15l62-21S92 26 52 35z"
+                ></path>
+                <path
+                  fill="url(#b)"
+                  d="M52 35l-4 1c-17 5-22 21-13 35 10 13 31 20 48 15l62-21S92 26 52 35z"
+                  opacity="0.3"
+                ></path>
+                <path
+                  fill="url(#c)"
+                  d="M134 80a45 45 0 00-48-15L24 85 4 120l112 19 20-36c4-7 3-15-2-23z"
+                ></path>
+                <path
+                  fill="url(#d)"
+                  d="M114 115a45 45 0 00-48-15L4 120s53 40 94 30l3-1c17-5 23-21 13-34z"
+                ></path>
+              </svg>
+            }
+          />
+          <DesignedFor
+            framework="preact"
+            logo={
+              <svg
+                viewBox="0 0 512 512"
+                style={{ height: 160, maxWidth: "100%" }}
+              >
+                <g transform="translate(256,256)">
+                  <path
+                    d="M0,-256 222,-128 222,128 0,256 -222,128 -222,-128z"
+                    fill="#673ab8"
+                  />
+                  <ellipse
+                    cx="0"
+                    cy="0"
+                    strokeWidth="16"
+                    rx="75"
+                    ry="196"
+                    fill="none"
+                    stroke="#ffffff"
+                    transform="rotate(52.5)"
+                  />
+
+                  <ellipse
+                    cx="0"
+                    cy="0"
+                    strokeWidth="16"
+                    rx="75"
+                    ry="196"
+                    fill="none"
+                    stroke="#ffffff"
+                    transform="rotate(-52.5)"
+                  />
+
+                  <circle cx="0" cy="0" r="34" fill="#ffffff" />
+                </g>
+              </svg>
+            }
+          />
+        </PageBlock>
       </main>
     </>
   );
@@ -272,5 +415,81 @@ function Feature({
         }
       </Typography>
     </section>
+  );
+}
+
+function DesignedFor({
+  framework,
+  logo,
+}: {
+  framework: (typeof frameworks)[number];
+  logo: ReactNode;
+}) {
+  return (
+    <div
+      className="group"
+      style={hooks({
+        flexBasis: "calc((44rem - 100%) * 999)",
+        flexGrow: 1,
+        background: "var(--gray-100)",
+        color: "var(--gray-800)",
+        dark: {
+          background: "var(--gray-950)",
+          color: "var(--gray-100)",
+        },
+        padding: 32,
+        display: "flex",
+        flexDirection: "column",
+        gap: 48,
+        alignItems: "center",
+      })}
+    >
+      <h1
+        style={{
+          margin: 0,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Typography
+          variant="regularSmallCaps"
+          style={hooks({
+            color: "var(--gray-600)",
+            dark: { color: "var(--gray-400)" },
+          })}
+        >
+          Designed for
+        </Typography>
+        <Typography variant="regular2XL">
+          {framework.replace(/^[a-z]/, x => x.toUpperCase())}
+        </Typography>
+      </h1>
+      <CtaButton ofGroup theme="gray">
+        {({ className, style, ...restProps }) =>
+          exhausted(restProps) && (
+            <Link
+              href={`/docs/${framework}/getting-started`}
+              className={`${className} embedded`}
+              style={{ ...style, order: 999 }}
+            >
+              Get started
+            </Link>
+          )
+        }
+      </CtaButton>
+      <div
+        style={hooks({
+          opacity: 0.75,
+          filter: "grayscale(0.5)",
+          dark: {
+            filter: "grayscale(0.75)",
+          },
+          previousHover: { opacity: 1, filter: "grayscale(0)" },
+        })}
+      >
+        {logo}
+      </div>
+    </div>
   );
 }

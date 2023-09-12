@@ -21,6 +21,7 @@ function makeStyle(fontSizeRem: number, fontWeight: 400 | 700 = 400) {
 }
 
 const variantStyles = {
+  regularSmallCaps: makeStyle(0.667),
   regularBase: makeStyle(1, 400),
   boldBase: makeStyle(1, 700),
   boldLarge: makeStyle(1.333, 700),
@@ -60,9 +61,12 @@ export default forwardRef<HTMLSpanElement, O.Omit<Props, "ref">>(
       }`,
       style: {
         ...variantStyles[variant === "codeBase" ? "regularBase" : variant],
+        textTransform: variant === "regularSmallCaps" ? "uppercase" : undefined,
         letterSpacing:
           variant === "codeBase" || variant === "regularBase"
             ? undefined
+            : variant === "regularSmallCaps"
+            ? "0.1em"
             : "-0.03em",
         ...(margins ? { display: "block" } : { margin: 0, marginBlock: 0 }),
         ...style,
