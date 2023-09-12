@@ -1,3 +1,3 @@
-export function exhausted(x: Record<any, never>) {
+export function exhausted(_: Record<any, never>) {
   return true as const;
 }

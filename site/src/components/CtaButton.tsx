@@ -14,12 +14,11 @@ export type Props = U.Strict<
   | { children: (forwardProps: ForwardProps) => ReactElement }
 > & {
   theme?: "blue" | "gray";
-  ofGroup?: boolean;
 };
 
 export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
   function CtaButton(
-    { children, className = "", theme = "blue", ofGroup, style, ...restProps },
+    { children, className = "", theme = "blue", style, ...restProps },
     ref,
   ) {
     return (

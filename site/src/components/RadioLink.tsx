@@ -58,15 +58,15 @@ export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
 
     return (
       <Link selected={checked}>
-        {({ style, ...linkRest }) =>
+        {({ style: linkStyle, ...linkRest }) =>
           exhausted(linkRest) &&
           (typeof children === "function" ? (
             children({
               renderChildren,
-              style,
+              style: { ...linkStyle, ...style },
             })
           ) : (
-            <a style={style} {...restProps} ref={ref}>
+            <a style={{ ...linkStyle, ...style }} {...restProps} ref={ref}>
               {renderChildren(children)}
             </a>
           ))

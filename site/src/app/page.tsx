@@ -465,7 +465,7 @@ function DesignedFor({
           {framework.replace(/^[a-z]/, x => x.toUpperCase())}
         </Typography>
       </h1>
-      <CtaButton ofGroup theme="gray">
+      <CtaButton theme="gray">
         {({ className, style, ...restProps }) =>
           exhausted(restProps) && (
             <Link
