@@ -10,7 +10,7 @@ type HookSpec =
   | `@${"media" | "container"} ${string}`
   | `:${string}`
   | `${string}&${string}`
-  | { or: (HookSpec & string)[] | Readonly<(HookSpec & string)[]> }; // eslint-disable-line @typescript-eslint/no-redundant-type-constituents
+  | { or: Readonly<(HookSpec & string)[]> }; // eslint-disable-line @typescript-eslint/no-redundant-type-constituents
 
 function isHookSpec(x: unknown): x is HookSpec {
   if (!x) {

@@ -5,7 +5,7 @@ const [css, hooks] = createHooks({
   dark: "@media (prefers-color-scheme: dark)",
   previousHover: ":hover + &",
   previousActive: ":active + &",
-});
+} as const);
 
 export default hooks;
 export { css };
