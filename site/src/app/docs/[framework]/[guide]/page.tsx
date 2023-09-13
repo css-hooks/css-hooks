@@ -1,6 +1,7 @@
 import frameworks from "../frameworks";
 import guides from "../guides";
 import API from "../api/page.mdx";
+import Configuration from "../configuration/page.mdx";
 import GettingStarted from "../getting-started/page.mdx";
 import HooksReference from "../hooks-reference/page.mdx";
 import Usage from "../usage/page.mdx";
@@ -20,6 +21,8 @@ export default function Page(props: {
   switch (props.params.guide) {
     case "api":
       return <API {...props} />;
+    case "configuration":
+      return <Configuration {...props} />;
     case "getting-started":
       return <GettingStarted {...props} />;
     case "hooks-reference":
