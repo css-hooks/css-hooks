@@ -101,7 +101,7 @@ export default async function Home() {
               {({ className, style, ...restProps }) =>
                 exhausted(restProps) && (
                   <Link
-                    href="/docs/react/getting-started"
+                    href="/docs/react/getting-started#top"
                     className={className}
                     style={style}
                   >
@@ -469,7 +469,7 @@ function DesignedFor({
         {({ className, style, ...restProps }) =>
           exhausted(restProps) && (
             <Link
-              href={`/docs/${framework}/getting-started`}
+              href={`/docs/${framework}/getting-started#top`}
               className={`${className} embedded`}
               style={{ ...style, order: 999 }}
             >
