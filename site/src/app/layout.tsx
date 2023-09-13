@@ -79,7 +79,7 @@ export default function RootLayout({
                             exhausted(restProps) && (
                               <NextLink
                                 key="Documentation"
-                                href="/docs/react/getting-started"
+                                href="/docs/react/getting-started#top"
                                 style={style}
                               >
                                 Documentation
