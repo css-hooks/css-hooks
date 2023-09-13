@@ -1,3 +1,17 @@
+# [0.8.0](https://github.com/css-hooks/css-hooks/compare/v0.7.0...v0.8.0) (2023-09-13)
+
+
+### Bug Fixes
+
+* type issue ([9f43f8f](https://github.com/css-hooks/css-hooks/commit/9f43f8f19ca072e4deac07062c1abe8ccadb4b8f))
+
+
+### Features
+
+* **core:** "or" hooks ([55af41b](https://github.com/css-hooks/css-hooks/commit/55af41bddfbb2024eb65ad0c132f6c45486f302c))
+
+
+
 # [0.7.0](https://github.com/css-hooks/css-hooks/compare/v0.6.0...v0.7.0) (2023-09-08)
 
 
