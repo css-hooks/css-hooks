@@ -1,7 +1,7 @@
 export default [
   ["Getting started", "getting-started"],
-  ["Configuration", "configuration"],
   ["Usage", "usage"],
-  ["API", "api"],
+  ["Configuration", "configuration"],
   ["Hooks reference", "hooks-reference"],
+  ["API", "api"],
 ] as const;
