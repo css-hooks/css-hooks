@@ -1,0 +1,85 @@
+# Configuration
+
+To address a wide range of use cases, hooks are fully configurable. A set of
+[recommended hooks](./hooks-reference) is provided for your convenience, but you
+can extend or replace these with your own custom hooks as needed.
+
+To start, let's review the default configuration shown in the
+[Getting started](./getting-started) guide:
+
+```typescript
+import { createHooks, recommended } from "@css-hooks/react";
+
+const [css, hooks] = createHooks(recommended);
+```
+
+If you aren't interested in the recommended hooks, you can simply replace them
+with your own hooks:
+
+```typescript
+import { createHooks } from "@css-hooks/react";
+
+const [css, hooks] = createHooks({
+  myHover: ":hover",
+  myActive: ":active",
+  myDark: ".dark > &",
+} as const);
+```
+
+Now the `hooks` function will allow you to use the three hooks you've
+configured:
+
+```tsx
+function Component() {
+  return (
+    <a
+      href="https://css-hooks.com"
+      style={hooks({
+        color: "blue",
+        myHover: { color: "lightblue" },
+        myActive: { color: "red" },
+        myDark: {
+          color: "lightblue",
+          myHover: { color: "white" },
+          myActive: { color: "pink" },
+        },
+      })}
+    >
+      Hooks
+    </a>
+  );
+}
+```
+
+Another option is to include the recommended hooks along with any custom hooks
+you'd like to add. To do this, simply define a custom configuration object and
+spread the `recommended` hooks:
+
+```typescript
+import { createHooks, recommended } from "@css-hooks/react";
+
+const [css, hooks] = createHooks({
+  ...recommended,
+  groupHover: ".group:hover &",
+  dark: ".dark &",
+} as const);
+```
+
+## Hook spec
+
+Each entry in the configuration object defines the name of a hook along with a
+spec describing its CSS representation. Let's take a look at each of the
+available spec types.
+
+### Basic pseudo-classes
+
+A hook that should be activated when the element matches a pseudo-class can
+usually be represented with a basic pseudo-class spec, e.g.
+
+- `":hover"`
+- `":active"`
+- `":nth-child(2n+3)"`
+
+The spec must start with a `:` character, and otherwise uses actual CSS syntax
+for pseudo-classes. For an overview of pseudo-classes that you might use, see
+[MDN's Pseudo-classes article](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes).
