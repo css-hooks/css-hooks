@@ -15,6 +15,7 @@ export default function Pre({
         lineHeight: 1.25,
         padding: "1.5em",
         background: "var(--gray-100)",
+        overflow: "auto",
         dark: {
           background: "transparent",
           boxShadow: "inset 0 0 0 1px var(--gray-900)",

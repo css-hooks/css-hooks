@@ -180,7 +180,7 @@ export default function Layout({
             }
           </Typography>
         </nav>
-        <div style={{ flex: 3, minWidth: "80ch" }}>{children}</div>
+        <div style={{ flex: 3, minWidth: "40ch" }}>{children}</div>
       </PageBlock>
     </>
   );
