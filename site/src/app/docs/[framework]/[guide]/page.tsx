@@ -12,12 +12,24 @@ export async function generateStaticParams() {
   );
 }
 
-export default function Page(props: {
+type Props = {
   params: {
     framework: (typeof frameworks)[number];
     guide: (typeof guides)[number][1];
   };
-}) {
+};
+
+export async function generateMetadata({ params }: Props) {
+  const guide = guides.find(([, guide]) => guide === params.guide);
+  return {
+    title: `${guide?.[0] || "Documentation"} - CSS Hooks for ${
+      params.framework[0].toUpperCase() + params.framework.substring(1)
+    }`,
+    description: guide?.[2],
+  };
+}
+
+export default function Page(props: Props) {
   switch (props.params.guide) {
     case "api":
       return <API {...props} />;
