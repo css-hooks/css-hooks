@@ -15,6 +15,9 @@
 
 ---
 
+> **Warning** This project is experimental. Breaking changes are not reflected
+> in the version number.
+
 ## Overview
 
 Hooks bring CSS features to native inline styles, enabling you to target various
@@ -52,7 +55,7 @@ Please visit [css-hooks.com](https://css-hooks.com) to get started.
 - [@css-hooks/react](packages/react): React framework integration
 - [@css-hooks/solid](packages/solid): Solid framework integration
 - [@css-hooks/preact](packages/preact): Preact framework integration
-- [@css-hooks/core](packages/core): Core CSS Hooks package (internal use only)
+- [@css-hooks/core](packages/core): Core package (internal use only)
 
 ## Contributing
 
