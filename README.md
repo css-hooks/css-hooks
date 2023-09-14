@@ -15,9 +15,6 @@
 
 ---
 
-> **Warning** This project is experimental. Breaking changes are not reflected
-> in the version number.
-
 ## Overview
 
 Hooks bring CSS features to native inline styles, enabling you to target various
