@@ -18,6 +18,7 @@
     "packages/preact",
     "packages/react",
     "packages/solid",
-    "site"
+    "site",
+    "examples/*"
   ]
 }
