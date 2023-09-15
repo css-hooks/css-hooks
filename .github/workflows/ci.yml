@@ -10,11 +10,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: checkout
+        uses: actions/checkout@v3
 
-      - uses: wagoid/commitlint-github-action@v5
+      - name: commitlint
+        uses: wagoid/commitlint-github-action@v5
 
-      - id: cache-npm
+      - name: cache npm
+        id: cache-npm
         uses: actions/cache@v3
         env:
           cache-name: cache-node-modules
@@ -29,32 +32,43 @@ jobs:
             ${{ runner.os }}-
 
       - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
-        name: List the state of node modules
+        name: list node_modules state
         continue-on-error: true
         run: npm list
 
-      - uses: actionsx/prettier@v3
+      - name: prettier
+        uses: actionsx/prettier@v3
         with:
           args: --check .
 
-      - uses: actions/setup-node@v3
+      - name: node setup
+        uses: actions/setup-node@v3
         with:
           node-version: 18.16.1
 
-      - run: npm ci
+      - name: install dependencies
+        run: npm ci
 
-      - run: npm run prepublishOnly --workspaces --if-present
+      - name: build packages
+        run: npm run prepublishOnly --workspace=packages
 
       # Note that linting must be done after the `prepublishOnly` scripts are
       # run. Otherwise, some types will be inferred as `any` leading to errors.
-      - run: npm run lint --workspaces --if-present
+      - name: lint
+        run: npm run lint --workspaces --if-present
 
-      - run: npm test --workspaces --if-present
+      - name: test
+        run: npm test --workspaces --if-present
+
+      - name: build examples
+        run: npm run build --workspace=examples
 
       - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        name: build site
         run: npm run build --workspace=site
 
       - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        name: publish site
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
