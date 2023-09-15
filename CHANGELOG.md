@@ -1,3 +1,14 @@
+## [1.0.0](https://github.com/css-hooks/css-hooks/compare/v0.8.0...v1.0.0) (2023-09-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove experimental warning
+
+### Documentation
+
+* remove experimental warning ([2c30112](https://github.com/css-hooks/css-hooks/commit/2c3011261732903b21ab918f866b5848b31cb54a))
+
 # [0.8.0](https://github.com/css-hooks/css-hooks/compare/v0.7.0...v0.8.0) (2023-09-13)
 
 
