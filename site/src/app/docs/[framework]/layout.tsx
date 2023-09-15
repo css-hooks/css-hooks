@@ -33,12 +33,36 @@ export default function Layout({
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
+            gap: "1.25rem",
           }}
         >
-          <Link href="/" style={{ textDecoration: "none" }}>
+          <Link href="/" style={{ textDecoration: "none", flex: 1 }}>
             <Logo size="2rem" />
           </Link>
+          <a
+            href={`https://codesandbox.io/p/sandbox/github/css-hooks/css-hooks/tree/master/examples/${params.framework}?file=/src/App.tsx:1,1`}
+            style={hooks({
+              color: "var(--gray-500)",
+              hover: { color: "var(--blue-700)" },
+              active: { color: "var(--red-600)" },
+              dark: {
+                hover: { color: "var(--blue-300)" },
+                active: { color: "var(--red-400)" },
+              },
+            })}
+          >
+            <svg
+              height="1.5rem"
+              preserveAspectRatio="xMidYMid meet"
+              viewBox="0 0 256 296"
+              aria-label="Run in CodeSandbox"
+            >
+              <path
+                d="M115.498 261.088v-106.61L23.814 101.73v60.773l41.996 24.347v45.7l49.688 28.54zm23.814.627l50.605-29.151V185.78l42.269-24.495v-60.011l-92.874 53.621v106.82zm80.66-180.887l-48.817-28.289l-42.863 24.872l-43.188-24.897l-49.252 28.667l91.914 52.882l92.206-53.235zM0 222.212V74.495L127.987 0L256 74.182v147.797l-128.016 73.744L0 222.212z"
+                fill="currentColor"
+              />
+            </svg>
+          </a>
           <a
             href="https://github.com/css-hooks/css-hooks"
             style={hooks({
