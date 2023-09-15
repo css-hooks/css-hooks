@@ -1,0 +1,12 @@
+@import "@fontsource/inter/latin-700.css";
+
+:root {
+  --white: #fbfbfc;
+  --black: #141418;
+  --red-700: #af2626;
+  --blue-500: #53a3ee;
+  --blue-700: #2669cf;
+  --blue-800: #2556a8;
+  --gray-300: #b5b4c5;
+  --gray-500: #6e6d8a;
+}
