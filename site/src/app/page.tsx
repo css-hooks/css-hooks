@@ -98,7 +98,7 @@ export default async function Home() {
               </Typography>
             </div>
             <div style={{ display: "flex", gap: "1rem" }}>
-              <CtaButton theme="blue">
+              <CtaButton theme="purple">
                 {({ className, style, ...restProps }) =>
                   exhausted(restProps) && (
                     <Link

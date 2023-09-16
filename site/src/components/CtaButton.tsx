@@ -13,12 +13,12 @@ export type Props = U.Strict<
   | ComponentProps<"a">
   | { children: (forwardProps: ForwardProps) => ReactElement }
 > & {
-  theme?: "blue" | "gray";
+  theme?: "purple" | "gray";
 };
 
 export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
   function CtaButton(
-    { children, className = "", theme = "blue", style, ...restProps },
+    { children, className = "", theme = "gray", style, ...restProps },
     ref,
   ) {
     return (
@@ -36,7 +36,7 @@ export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
               ...typographyStyle,
               textDecoration: "none",
               background: `var(--${
-                theme === "blue" ? "blue-800" : "gray-500"
+                theme === "purple" ? "purple-800" : "gray-500"
               })`,
               dark: {
                 background: `var(--${theme}-800)`,
