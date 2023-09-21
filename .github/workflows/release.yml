@@ -1,3 +1,5 @@
+# prettier-ignore
+
 name: release
 
 on:
@@ -65,6 +67,9 @@ jobs:
         run: npx conventional-github-releaser -p conventionalcommits
         env:
           CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{secrets.GH_ACCESS_TOKEN}}
+
+      - name: prepare readme
+        run: node -e "require('fs').writeFileSync('./README.md', require('fs').readFileSync('./README.md', 'utf8').replace(/<\!-- npm-remove -->[\S\s]*<\!-- \/npm-remove -->/gm, ''))"
 
       - name: propagate common files
         run: for dir in ./packages/*; do cp LICENSE README.md "$dir"; done
