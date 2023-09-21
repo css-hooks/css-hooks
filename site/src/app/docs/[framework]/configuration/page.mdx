@@ -1,3 +1,6 @@
+import Code from "@/components/Code";
+import Pre from "@/components/Pre";
+
 # Configuration
 
 To address a wide range of use cases, hooks are fully configurable. A set of
@@ -16,54 +19,70 @@ const [css, hooks] = createHooks(recommended);
 If you aren't interested in the recommended hooks, you can simply replace them
 with your own hooks:
 
-```typescript
-import { createHooks } from "@css-hooks/react";
+<Pre>
+  <Code className="language-typescript">
+    {`import { createHooks } from "@css-hooks/${props.params.framework}";
 
 const [css, hooks] = createHooks({
-  myHover: ":hover",
-  myActive: ":active",
-  myDark: ".dark > &",
-} as const);
-```
+  ${props.params.framework === "solid" ? '"my-hover"' : "myHover"}: ":hover",
+  ${props.params.framework === "solid" ? '"my-active"' : "myActive"}: ":active",
+  ${props.params.framework === "solid" ? '"my-dark"' : "myDark"}: ".dark > &",
+} as const);`}
+  </Code>
+</Pre>
 
 Now the `hooks` function will allow you to use the three hooks you've
 configured:
 
-```tsx
-function Component() {
+<Pre>
+  <Code className="language-typescript">
+    {`function Component() {
   return (
     <a
       href="https://css-hooks.com"
       style={hooks({
         color: "blue",
-        myHover: { color: "lightblue" },
-        myActive: { color: "red" },
-        myDark: {
+        ${
+          props.params.framework === "solid" ? '"my-hover"' : "myHover"
+        }: { color: "lightblue" },
+        ${
+          props.params.framework === "solid" ? '"my-active"' : "myActive"
+        }: { color: "red" },
+        ${props.params.framework === "solid" ? '"my-dark"' : "myDark"}: {
           color: "lightblue",
-          myHover: { color: "white" },
-          myActive: { color: "pink" },
+          ${
+            props.params.framework === "solid" ? '"my-hover"' : "myHover"
+          }: { color: "white" },
+          ${
+            props.params.framework === "solid" ? '"my-active"' : "myActive"
+          }: { color: "pink" },
         },
       })}
     >
       Hooks
     </a>
   );
-}
-```
+}`}
+  </Code>
+</Pre>
 
 Another option is to include the recommended hooks along with any custom hooks
 you'd like to add. To do this, simply define a custom configuration object and
 spread the `recommended` hooks:
 
-```typescript
-import { createHooks, recommended } from "@css-hooks/react";
+<Pre>
+  <Code className="language-typescript">
+    {`import { createHooks, recommended } from "@css-hooks/react";
 
 const [css, hooks] = createHooks({
   ...recommended,
-  groupHover: ".group:hover &",
+  ${
+    props.params.framework === "solid" ? '"group-hover"' : "groupHover"
+  }: ".group:hover &",
   dark: ".dark &",
-} as const);
-```
+} as const);`}
+  </Code>
+</Pre>
 
 ---
 
