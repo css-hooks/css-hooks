@@ -1,7 +1,6 @@
-import { CSSProperties, ComponentProps, ReactElement } from "react";
+import { CSSProperties, ComponentProps, ReactElement, forwardRef } from "react";
 import { Inconsolata, Inter } from "next/font/google";
-import { U } from "ts-toolbelt";
-import styled from "@/util/styled";
+import { O, U } from "ts-toolbelt";
 
 export type ForwardProps = {
   className?: string;
@@ -44,26 +43,41 @@ export type Props = {
     }
 >;
 
-export default styled(
-  "span",
-  ({
-    variant = "regularBase",
-    margins,
-  }: {
-    variant?: keyof typeof variantStyles | "codeBase";
-    margins?: boolean;
-  }) => ({
-    className: variant === "codeBase" ? inconsolata.className : inter.className,
-    style: {
-      ...variantStyles[variant === "codeBase" ? "regularBase" : variant],
-      textTransform: variant === "regularSmallCaps" ? "uppercase" : undefined,
-      letterSpacing:
-        variant === "codeBase" || variant === "regularBase"
-          ? undefined
-          : variant === "regularSmallCaps"
-          ? "0.1em"
-          : "-0.03em",
-      ...(margins ? { display: "block" } : { margin: 0, marginBlock: 0 }),
+export default forwardRef<HTMLSpanElement, O.Omit<Props, "ref">>(
+  function Typography(
+    {
+      children,
+      className = "",
+      margins,
+      style,
+      variant = "regularBase",
+      ...restProps
     },
-  }),
+    ref,
+  ) {
+    const forwardProps: ForwardProps = {
+      className: `${className} ${
+        variant === "codeBase" ? inconsolata.className : inter.className
+      }`,
+      style: {
+        ...variantStyles[variant === "codeBase" ? "regularBase" : variant],
+        textTransform: variant === "regularSmallCaps" ? "uppercase" : undefined,
+        letterSpacing:
+          variant === "codeBase" || variant === "regularBase"
+            ? undefined
+            : variant === "regularSmallCaps"
+            ? "0.1em"
+            : "-0.03em",
+        ...(margins ? { display: "block" } : { margin: 0, marginBlock: 0 }),
+        ...style,
+      },
+    };
+    return typeof children === "function" ? (
+      children(forwardProps)
+    ) : (
+      <span {...forwardProps} {...restProps} ref={ref}>
+        {children}
+      </span>
+    );
+  },
 );
