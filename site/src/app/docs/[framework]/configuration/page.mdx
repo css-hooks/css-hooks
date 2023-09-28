@@ -72,7 +72,9 @@ spread the `recommended` hooks:
 
 <Pre>
   <Code className="language-typescript">
-    {`import { createHooks, recommended } from "@css-hooks/react";
+    {`import { createHooks, recommended } from "@css-hooks/${
+      props.params.framework
+    }";
 
 const [css, hooks] = createHooks({
   ...recommended,
