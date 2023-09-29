@@ -12,6 +12,9 @@ import { ReactNode } from "react";
 import CtaButton from "@/components/CtaButton";
 import Link from "next/link";
 import frameworks from "./docs/[framework]/frameworks";
+import GitHubIcon from "@/components/GitHubIcon";
+import BookIcon from "@/components/BookIcon";
+import CodeSandboxIcon from "@/components/CodeSandboxIcon";
 
 const codeExample = `
 <a
@@ -97,46 +100,71 @@ export default async function Home() {
                 }
               </Typography>
             </div>
-            <div style={{ display: "flex", gap: "1rem" }}>
+            <div
+              style={hooks({
+                display: "grid",
+                gridTemplateColumns: "repeat(2, auto)",
+                gap: "1rem",
+                mobile: {
+                  width: "100%",
+                  gridTemplateColumns: "repeat(2, 1fr)",
+                },
+              })}
+            >
               <CtaButton theme="purple">
                 {({ className, style, ...restProps }) =>
                   exhausted(restProps) && (
                     <Link
+                      href="/docs/react/getting-started"
+                      className={className}
+                      style={hooks({
+                        ...style,
+                        desktop: {
+                          display: "none",
+                        },
+                      })}
+                    >
+                      <BookIcon aria-hidden="true" />
+                      Docs
+                    </Link>
+                  )
+                }
+              </CtaButton>
+              <CtaButton theme="purple">
+                {({ className, style, ...restProps }) =>
+                  exhausted(restProps) && (
+                    <a
                       href="https://codesandbox.io/p/sandbox/github/css-hooks/css-hooks/tree/master/examples/react?file=/src/App.tsx:1,1"
                       className={className}
-                      style={{
+                      style={hooks({
                         ...style,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.5rem",
-                      }}
+                        mobile: {
+                          display: "none",
+                        },
+                      })}
                     >
-                      <svg
-                        height="1.5rem"
-                        preserveAspectRatio="xMidYMid meet"
-                        viewBox="0 0 256 296"
-                        aria-label="Run in CodeSandbox"
-                      >
-                        <path
-                          d="M115.498 261.088v-106.61L23.814 101.73v60.773l41.996 24.347v45.7l49.688 28.54zm23.814.627l50.605-29.151V185.78l42.269-24.495v-60.011l-92.874 53.621v106.82zm80.66-180.887l-48.817-28.289l-42.863 24.872l-43.188-24.897l-49.252 28.667l91.914 52.882l92.206-53.235zM0 222.212V74.495L127.987 0L256 74.182v147.797l-128.016 73.744L0 222.212z"
-                          fill="currentColor"
-                        />
-                      </svg>
+                      <CodeSandboxIcon aria-hidden="true" />
                       Try now
-                    </Link>
+                    </a>
                   )
                 }
               </CtaButton>
               <CtaButton theme="gray">
                 {({ className, style, ...restProps }) =>
                   exhausted(restProps) && (
-                    <Link
-                      href="/docs/react/getting-started#top"
+                    <a
+                      href="https://github.com/css-hooks/css-hooks"
                       className={className}
                       style={style}
                     >
-                      Documentation
-                    </Link>
+                      <GitHubIcon aria-hidden="true" />
+                      <span>
+                        Star{" "}
+                        <span style={hooks({ mobile: { display: "none" } })}>
+                          on GitHub
+                        </span>
+                      </span>
+                    </a>
                   )
                 }
               </CtaButton>

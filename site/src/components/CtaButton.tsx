@@ -43,7 +43,10 @@ export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
               },
               color: "var(--white)",
               padding: "0.5em 0.75em",
-              display: "inline-block",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.5em",
               hover: {
                 background: "var(--blue-700)",
               },
