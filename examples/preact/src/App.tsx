@@ -23,7 +23,7 @@ function App() {
         <Logo />
       </div>
       <a
-        href="https://css-hooks.com/"
+        href="https://css-hooks.com/docs/preact/getting-started"
         style={hooks({
           fontFamily: "Inter, sans-serif",
           fontSize: "1.333rem",
@@ -31,7 +31,7 @@ function App() {
           letterSpacing: "-0.03em",
           border: 0,
           textDecoration: "none",
-          background: "var(--blue-800)",
+          background: "var(--gray-800)",
           color: "var(--white)",
           padding: "0.5em 0.75em",
           display: "inline-block",
@@ -43,7 +43,7 @@ function App() {
           },
         })}
       >
-        Get Hooked
+        Get started
       </a>
     </div>
   );
