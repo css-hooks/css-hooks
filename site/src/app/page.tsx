@@ -15,6 +15,32 @@ import frameworks from "./docs/[framework]/frameworks";
 import GitHubIcon from "@/components/GitHubIcon";
 import BookIcon from "@/components/BookIcon";
 import CodeSandboxIcon from "@/components/CodeSandboxIcon";
+import {
+  blue20,
+  blue50,
+  blue60,
+  gray10,
+  gray40,
+  gray60,
+  gray80,
+  gray90,
+  green20,
+  green50,
+  green70,
+  pink20,
+  pink50,
+  pink60,
+  purple20,
+  purple50,
+  purple60,
+  teal20,
+  teal50,
+  teal70,
+  white,
+  yellow20,
+  yellow50,
+  yellow70,
+} from "varsace";
 
 const codeExample = `
 <a
@@ -46,8 +72,8 @@ export default async function Home() {
     <>
       <header
         style={hooks({
-          background: "var(--gray-100)",
-          dark: { background: "var(--gray-950)" },
+          background: gray10,
+          dark: { background: gray80 },
         })}
       >
         <PageBlock
@@ -172,9 +198,9 @@ export default async function Home() {
           </div>
           <section
             style={hooks({
-              background: "var(--white)",
+              background: white,
               padding: "2rem",
-              dark: { background: "var(--black)" },
+              dark: { background: gray90 },
             })}
           >
             <Typography variant="codeBase">
@@ -218,7 +244,7 @@ export default async function Home() {
             limitations to make it a viable solution for real-world use cases.
           </Feature>
           <Feature
-            color="blue"
+            color="teal"
             headline="Reusable knowledge"
             iconPath="M202.24 74C166.11 56.75 115.61 48.3 48 48a31.36 31.36 0 0 0-17.92 5.33A32 32 0 0 0 16 79.9V366c0 19.34 13.76 33.93 32 33.93c71.07 0 142.36 6.64 185.06 47a4.11 4.11 0 0 0 6.94-3V106.82a15.89 15.89 0 0 0-5.46-12A143 143 0 0 0 202.24 74Zm279.68-20.7A31.33 31.33 0 0 0 464 48c-67.61.3-118.11 8.71-154.24 26a143.31 143.31 0 0 0-32.31 20.78a15.93 15.93 0 0 0-5.45 12v337.13a3.93 3.93 0 0 0 6.68 2.81c25.67-25.5 70.72-46.82 185.36-46.81a32 32 0 0 0 32-32v-288a32 32 0 0 0-14.12-26.61Z"
           >
@@ -234,7 +260,7 @@ export default async function Home() {
             shipping large volumes of irrelevant, render-blocking CSS.
           </Feature>
           <Feature
-            color="gray"
+            color="blue"
             headline="Extreme maintainability"
             iconPath={[
               "M503.58 126.2a16.85 16.85 0 0 0-27.07-4.55l-51.15 51.15a11.15 11.15 0 0 1-15.66 0l-22.48-22.48a11.17 11.17 0 0 1 0-15.67l50.88-50.89a16.85 16.85 0 0 0-5.27-27.4c-39.71-17-89.08-7.45-120 23.29c-26.81 26.61-34.83 68-22 113.7a11 11 0 0 1-3.16 11.1L114.77 365.1a56.76 56.76 0 1 0 80.14 80.18L357 272.08a11 11 0 0 1 10.9-3.17c45 12 86 4 112.43-22c15.2-15 25.81-36.17 29.89-59.71c3.83-22.2 1.41-44.44-6.64-61Z",
@@ -417,32 +443,70 @@ export default async function Home() {
 }
 
 function Feature({
-  color = "gray",
+  color = "blue",
   iconPath,
   headline,
   children,
 }: {
-  color: "gray" | "pink" | "yellow" | "green" | "blue" | "purple";
+  color: "blue" | "pink" | "yellow" | "green" | "teal" | "purple";
   iconPath: string | string[];
   headline: string;
   children: ReactNode;
 }) {
   return (
     <section style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+      <div
+        style={hooks({
+          display: "flex",
+          gap: "1rem",
+          alignItems: "center",
+          color: {
+            blue: blue50,
+            purple: purple50,
+            pink: pink50,
+            yellow: yellow50,
+            green: green50,
+            teal: teal50,
+          }[color],
+          dark: {
+            color: {
+              blue: blue20,
+              purple: purple20,
+              pink: pink20,
+              yellow: yellow20,
+              green: green20,
+              teal: teal20,
+            }[color],
+          },
+        })}
+      >
         <div
           style={hooks({
-            background: `var(--${color}-200)`,
-            color: `var(--${color}-700)`,
+            boxShadow: "0 0 0 2px currentColor",
             width: "3rem",
             height: "3rem",
             borderRadius: 9999,
             display: "grid",
             placeItems: "center",
             dark: {
-              boxShadow: `0 0 32px 0 var(--${color}-950)`,
-              background: `var(--${color}-900)`,
-              color: `var(--${color}-400)`,
+              boxShadow: `0 0 32px 0 ${
+                {
+                  blue: blue60,
+                  purple: purple60,
+                  pink: pink60,
+                  yellow: yellow70,
+                  green: green70,
+                  teal: teal70,
+                }[color]
+              }`,
+              background: {
+                blue: blue50,
+                purple: purple50,
+                pink: pink50,
+                yellow: yellow50,
+                green: green50,
+                teal: teal50,
+              }[color],
             },
           })}
         >
@@ -454,15 +518,7 @@ function Feature({
             )}
           </svg>
         </div>
-        <Typography
-          variant="boldBase"
-          style={hooks({
-            color: `var(--${color}-700)`,
-            dark: { color: `var(--${color}-${color == "gray" ? 4 : 5}00)` },
-          })}
-        >
-          {headline}
-        </Typography>
+        <Typography variant="boldBase">{headline}</Typography>
       </div>
       <Typography variant="regularBase">
         {({ className, style, ...restProps }) =>
@@ -490,11 +546,11 @@ function DesignedFor({
       style={hooks({
         flexBasis: "calc((44rem - 100%) * 999)",
         flexGrow: 1,
-        background: "var(--gray-100)",
-        color: "var(--gray-800)",
+        background: gray10,
+        color: gray80,
         dark: {
-          background: "var(--gray-950)",
-          color: "var(--gray-100)",
+          background: gray80,
+          color: gray10,
         },
         padding: 32,
         display: "flex",
@@ -514,8 +570,8 @@ function DesignedFor({
         <Typography
           variant="regularSmallCaps"
           style={hooks({
-            color: "var(--gray-600)",
-            dark: { color: "var(--gray-400)" },
+            color: gray60,
+            dark: { color: gray40 },
           })}
         >
           Designed for
@@ -540,10 +596,7 @@ function DesignedFor({
       <div
         style={hooks({
           opacity: 0.75,
-          filter: "grayscale(0.5)",
-          dark: {
-            filter: "grayscale(0.75)",
-          },
+          filter: "grayscale(0.75)",
           previousHover: { opacity: 1, filter: "grayscale(0)" },
         })}
       >

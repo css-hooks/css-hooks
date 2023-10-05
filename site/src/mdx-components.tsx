@@ -6,6 +6,7 @@ import Code from "./components/Code";
 import Link from "@/components/Link";
 import Pre from "./components/Pre";
 import hooks from "@/css-hooks";
+import { gray20, gray80 } from "varsace";
 
 function makeHeadingComponent(
   Tag: ElementType<ComponentPropsWithoutRef<"h1">>,
@@ -103,11 +104,11 @@ function HorizontalRule() {
   return (
     <hr
       style={hooks({
-        background: "var(--gray-200)",
+        background: gray20,
         marginBlock: "2.5rem 2rem",
         height: 1,
         border: 0,
-        dark: { background: "var(--gray-800)" },
+        dark: { background: gray80 },
       })}
     />
   );

@@ -1,4 +1,4 @@
-import "./index.css";
+import "@fontsource/inter/latin-700.css";
 import { css } from "./css-hooks";
 
 import React from "react";

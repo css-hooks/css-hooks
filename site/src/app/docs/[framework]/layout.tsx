@@ -1,7 +1,8 @@
 "use client";
 
 import { Fragment, ReactNode } from "react";
-import Link from "next/link";
+import NextLink from "next/link";
+import Link from "@/components/Link";
 import { usePathname } from "next/navigation";
 import Logo from "@/components/Logo";
 import PageBlock from "@/components/PageBlock";
@@ -13,6 +14,7 @@ import frameworks from "./frameworks";
 import guides from "./guides";
 import GitHubIcon from "@/components/GitHubIcon";
 import CodeSandboxIcon from "@/components/CodeSandboxIcon";
+import { gray10, gray50, gray80 } from "varsace";
 
 export default function Layout({
   children,
@@ -27,8 +29,8 @@ export default function Layout({
       <header
         style={hooks({
           padding: "2rem",
-          background: "var(--gray-100)",
-          dark: { background: "var(--gray-950)" },
+          background: gray10,
+          dark: { background: gray80 },
         })}
       >
         <PageBlock
@@ -38,37 +40,17 @@ export default function Layout({
             gap: "1.25rem",
           }}
         >
-          <Link href="/" style={{ textDecoration: "none", flex: 1 }}>
+          <NextLink href="/" style={{ textDecoration: "none", flex: 1 }}>
             <Logo size="2rem" />
-          </Link>
-          <a
+          </NextLink>
+          <Link
             href={`https://codesandbox.io/p/sandbox/github/css-hooks/css-hooks/tree/master/examples/${params.framework}?file=/src/App.tsx:1,1`}
-            style={hooks({
-              color: "var(--gray-500)",
-              hover: { color: "var(--blue-700)" },
-              active: { color: "var(--red-600)" },
-              dark: {
-                hover: { color: "var(--blue-300)" },
-                active: { color: "var(--red-400)" },
-              },
-            })}
           >
             <CodeSandboxIcon aria-label="Try in CodeSandbox" height="1.5rem" />
-          </a>
-          <a
-            href="https://github.com/css-hooks/css-hooks"
-            style={hooks({
-              color: "var(--gray-500)",
-              hover: { color: "var(--blue-700)" },
-              active: { color: "var(--red-600)" },
-              dark: {
-                hover: { color: "var(--blue-300)" },
-                active: { color: "var(--red-400)" },
-              },
-            })}
-          >
+          </Link>
+          <Link href="https://github.com/css-hooks/css-hooks">
             <GitHubIcon aria-label="Source code on GitHub" height="1.5rem" />
-          </a>
+          </Link>
         </PageBlock>
       </header>
       <PageBlock
@@ -93,11 +75,10 @@ export default function Layout({
                 exhausted(restProps) && (
                   <h1
                     className={className}
-                    style={hooks({
+                    style={{
                       ...style,
-                      color: "var(--gray-400)",
-                      dark: { color: "var(--gray-600)" },
-                    })}
+                      color: gray50,
+                    }}
                   >
                     Framework
                   </h1>
@@ -109,7 +90,7 @@ export default function Layout({
                 <Fragment key={framework}>
                   <RadioLink checked={params.framework === framework}>
                     {({ renderChildren, style }) => (
-                      <Link
+                      <NextLink
                         href={pathname.replace(
                           `/${params.framework}/`,
                           `/${framework}/`,
@@ -119,7 +100,7 @@ export default function Layout({
                         {renderChildren(
                           framework[0].toUpperCase() + framework.substring(1),
                         )}
-                      </Link>
+                      </NextLink>
                     )}
                   </RadioLink>
                 </Fragment>
@@ -139,11 +120,10 @@ export default function Layout({
                 exhausted(restProps) && (
                   <h1
                     className={className}
-                    style={hooks({
+                    style={{
                       ...style,
-                      color: "var(--gray-400)",
-                      dark: { color: "var(--gray-600)" },
-                    })}
+                      color: gray50,
+                    }}
                   >
                     Guides
                   </h1>
@@ -159,9 +139,9 @@ export default function Layout({
                 <Fragment key={href}>
                   <RadioLink checked={href === pathname}>
                     {({ renderChildren, style }) => (
-                      <Link href={href} style={style}>
+                      <NextLink href={href} style={style}>
                         {renderChildren(name)}
-                      </Link>
+                      </NextLink>
                     )}
                   </RadioLink>
                 </Fragment>
