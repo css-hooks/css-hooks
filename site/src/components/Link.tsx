@@ -7,6 +7,7 @@ import {
   forwardRef,
 } from "react";
 import { O, U } from "ts-toolbelt";
+import { blue20, blue30, blue40, blue50, red20, red40 } from "varsace";
 
 export type ForwardProps = {
   style?: CSSProperties;
@@ -25,23 +26,23 @@ export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
   function Link({ children, selected, style, ...restProps }, ref) {
     const forwardProps: ForwardProps = {
       style: hooks({
-        color: selected ? "inherit" : "var(--blue-800)",
+        color: selected ? "inherit" : blue50,
         textDecoration: "none",
         cursor: selected ? "default" : "pointer",
         ...(!selected && {
           hover: {
-            color: "var(--blue-700)",
+            color: blue40,
           },
           active: {
-            color: "var(--red-700)",
+            color: red40,
           },
           dark: {
-            color: "var(--blue-400)",
+            color: blue30,
             hover: {
-              color: "var(--blue-300)",
+              color: blue20,
             },
             active: {
-              color: "var(--red-400)",
+              color: red20,
             },
           },
         }),

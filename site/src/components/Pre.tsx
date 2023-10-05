@@ -1,5 +1,6 @@
 import hooks from "@/css-hooks";
 import { CSSProperties, ReactNode } from "react";
+import { gray10, gray80 } from "varsace";
 
 export default function Pre({
   style,
@@ -14,11 +15,10 @@ export default function Pre({
         marginBlock: "1.5em",
         lineHeight: 1.25,
         padding: "1.5em",
-        background: "var(--gray-100)",
+        background: gray10,
         overflow: "auto",
         dark: {
-          background: "transparent",
-          boxShadow: "inset 0 0 0 1px var(--gray-900)",
+          background: gray80,
         },
         ...style,
       })}

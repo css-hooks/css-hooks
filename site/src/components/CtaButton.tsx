@@ -3,6 +3,17 @@ import Typography from "./Typography";
 import { CSSProperties, ComponentProps, ReactElement, forwardRef } from "react";
 import { exhausted } from "@/util/exhausted";
 import hooks from "@/css-hooks";
+import {
+  blue40,
+  blue50,
+  gray50,
+  gray70,
+  purple50,
+  purple60,
+  red40,
+  red50,
+  white,
+} from "varsace";
 
 export type ForwardProps = {
   className?: string;
@@ -35,23 +46,27 @@ export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
             style: hooks({
               ...typographyStyle,
               textDecoration: "none",
-              background: `var(--${
-                theme === "purple" ? "purple-800" : "gray-500"
-              })`,
-              dark: {
-                background: `var(--${theme}-800)`,
-              },
-              color: "var(--white)",
+              background: theme === "purple" ? purple50 : gray50,
+              color: white,
               padding: "0.5em 0.75em",
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               gap: "0.5em",
               hover: {
-                background: "var(--blue-700)",
+                background: blue40,
               },
               active: {
-                background: "var(--red-700)",
+                background: red40,
+              },
+              dark: {
+                background: theme === "purple" ? purple60 : gray70,
+                hover: {
+                  background: blue50,
+                },
+                active: {
+                  background: red50,
+                },
               },
               ...style,
             }),

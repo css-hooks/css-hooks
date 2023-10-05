@@ -1,12 +1,13 @@
-import "./globals.css";
+import cssGlobals from "./globals.css";
 import type { Metadata } from "next";
-import hooks, { css } from "@/css-hooks";
+import hooks, { css as cssHooks } from "@/css-hooks";
 import PageBlock from "@/components/PageBlock";
 import { exhausted } from "@/util/exhausted";
 import Logo from "@/components/Logo";
 import NextLink from "next/link";
 import Link from "@/components/Link";
 import Typography from "@/components/Typography";
+import { black, gray90, white } from "varsace";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://css-hooks.com"),
@@ -25,18 +26,18 @@ export default function RootLayout({
       <body
         style={hooks({
           margin: 0,
-          background: "var(--white)",
-          color: "var(--black)",
+          background: white,
+          color: black,
           dark: {
-            background: "var(--black)",
-            color: "var(--white)",
+            background: gray90,
+            color: white,
           },
           minHeight: "100dvh",
           display: "flex",
           flexDirection: "column",
         })}
       >
-        <style>{css}</style>
+        <style>{`${cssGlobals} ${cssHooks}`}</style>
         <div style={{ flex: 1 }}>{children}</div>
         <PageBlock>
           {({ style: pageBlockStyle, ...restProps }) =>

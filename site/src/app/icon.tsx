@@ -17,7 +17,7 @@ export default function Icon() {
       >
         <div
           style={{
-            background: "#282730",
+            background: "#2c323e",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -25,7 +25,7 @@ export default function Icon() {
             borderRadius: 9999,
           }}
         >
-          <LogoIcon color1="#53a3ee" color2="#b4b4c5" />
+          <LogoIcon color1="#448bbd" color2="#79828f" />
         </div>
       </div>
     ),

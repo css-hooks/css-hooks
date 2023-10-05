@@ -9,6 +9,7 @@ import { O } from "ts-toolbelt";
 import { Inconsolata } from "next/font/google";
 import SyntaxHighlighter, { supportedLanguage } from "./SyntaxHighlighter";
 import hooks from "@/css-hooks";
+import { teal20, teal60 } from "varsace";
 
 export type Props = ComponentProps<"code">;
 
@@ -50,9 +51,9 @@ export default forwardRef<HTMLElement, O.Omit<Props, "ref">>(function Code(
     ? { style }
     : {
         style: hooks({
-          color: "var(--pink-800)",
+          color: teal60,
           dark: {
-            color: "var(--pink-200)",
+            color: teal20,
           },
           ...style,
         }),

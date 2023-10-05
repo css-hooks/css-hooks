@@ -2,6 +2,7 @@ import hooks from "@/css-hooks";
 import { CSSProperties } from "react";
 import { Assistant } from "next/font/google";
 import LogoIcon from "./LogoIcon";
+import { gray10, gray90 } from "varsace";
 
 const assistant = Assistant({ subsets: ["latin"], weight: ["400"] });
 
@@ -25,8 +26,8 @@ export default function Logo({
       <LogoIcon />
       <div
         style={hooks({
-          color: "var(--gray-900)",
-          dark: { color: "var(--gray-200)" },
+          color: gray90,
+          dark: { color: gray10 },
         })}
       >
         CSS Hooks
