@@ -16,26 +16,6 @@ jobs:
       - name: commitlint
         uses: wagoid/commitlint-github-action@v5
 
-      - name: cache npm
-        id: cache-npm
-        uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: ~/.npm
-          key:
-            ${{ runner.os }}-build-${{ env.cache-name }}-${{
-            hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-
-      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
-        name: list node_modules state
-        continue-on-error: true
-        run: npm list
-
       - name: prettier
         uses: actionsx/prettier@v3
         with:
