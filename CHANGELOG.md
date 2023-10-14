@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/css-hooks/css-hooks/compare/v1.0.1...v1.0.2) (2023-10-14)
+
+
+### Bug Fixes
+
+* **core:** clone properties to be safe ([410a85a](https://github.com/css-hooks/css-hooks/commit/410a85a7aac1c005f2dda6909f27e6fe8b6efdb6))
+
 ## [1.0.1](https://github.com/css-hooks/css-hooks/compare/v1.0.0...v1.0.1) (2023-09-21)
 
 ## [1.0.0](https://github.com/css-hooks/css-hooks/compare/v0.8.0...v1.0.0) (2023-09-15)
