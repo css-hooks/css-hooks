@@ -170,7 +170,9 @@ export function buildHooksSystem<Properties>(
       function hooks(
         properties: WithHooks<HookProperties, Properties>,
       ): Properties {
-        return hooksImpl(properties);
+        return hooksImpl(
+          JSON.parse(JSON.stringify(properties)) as typeof properties,
+        );
       },
     ] as const;
   };
