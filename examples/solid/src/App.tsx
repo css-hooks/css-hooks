@@ -1,13 +1,4 @@
-import {
-  black,
-  blue40,
-  blue50,
-  gray50,
-  gray70,
-  red40,
-  red50,
-  white,
-} from "varsace";
+import * as V from "varsace";
 import Logo from "./Logo";
 import hooks from "./css-hooks";
 
@@ -20,9 +11,9 @@ function App() {
         right: 0,
         bottom: 0,
         left: 0,
-        background: white,
-        color: black,
-        dark: { background: black, color: white },
+        background: V.white,
+        color: V.black,
+        dark: { background: V.black, color: V.white },
         display: "flex",
         "flex-direction": "column",
         "align-items": "center",
@@ -41,23 +32,23 @@ function App() {
           "letter-spacing": "-0.03em",
           border: 0,
           "text-decoration": "none",
-          background: gray50,
-          color: white,
+          background: V.gray50,
+          color: V.white,
           padding: "0.5em 0.75em",
           display: "inline-block",
           hover: {
-            background: blue40,
+            background: V.blue40,
           },
           active: {
-            background: red40,
+            background: V.red40,
           },
           dark: {
-            background: gray70,
+            background: V.gray70,
             hover: {
-              background: blue50,
+              background: V.blue50,
             },
             active: {
-              background: red50,
+              background: V.red50,
             },
           },
         })}
