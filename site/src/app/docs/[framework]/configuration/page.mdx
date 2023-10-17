@@ -27,7 +27,7 @@ const [css, hooks] = createHooks({
   ${props.params.framework === "solid" ? '"my-hover"' : "myHover"}: ":hover",
   ${props.params.framework === "solid" ? '"my-active"' : "myActive"}: ":active",
   ${props.params.framework === "solid" ? '"my-dark"' : "myDark"}: ".dark > &",
-} as const);`}
+});`}
   </Code>
 </Pre>
 
@@ -82,7 +82,7 @@ const [css, hooks] = createHooks({
     props.params.framework === "solid" ? '"group-hover"' : "groupHover"
   }: ".group:hover &",
   dark: ".dark &",
-} as const);`}
+});`}
   </Code>
 </Pre>
 
