@@ -1,4 +1,4 @@
-import { buildHooksSystem } from "../src";
+import { buildHooksSystem, genericStringify } from "../src";
 import * as csstree from "css-tree";
 
 function normalizeCSS(css: string) {
@@ -390,6 +390,28 @@ describe("hooks function", () => {
     ).toEqual({
       color:
         "var(--test-hook-a-1, var(--test-hook-b-1, [pink]) var(--test-hook-b-0, [black])) var(--test-hook-a-0, [black])",
+    });
+  });
+});
+
+describe("default stringify function", () => {
+  it("returns a string value as-is", () => {
+    expect(genericStringify("display", "block")).toEqual("block");
+  });
+  it("returns a number value as a string", () => {
+    expect(genericStringify("width", 1)).toEqual("1");
+  });
+  it("returns null for invalid values", () => {
+    [
+      null,
+      undefined,
+      {},
+      false,
+      () => {
+        /*noop*/
+      },
+    ].forEach(value => {
+      expect(genericStringify("property", value)).toBeNull();
     });
   });
 });

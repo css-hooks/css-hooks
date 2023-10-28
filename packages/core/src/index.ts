@@ -55,8 +55,24 @@ type WithHooksImpl<
     >
   >;
 
-export function buildHooksSystem<Properties>(
-  stringify: (propertyName: keyof Properties, value: unknown) => string | null,
+/** @internal */
+export function genericStringify(_: unknown, value: unknown) {
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (typeof value === "number") {
+    return `${value}`;
+  }
+
+  return null;
+}
+
+export function buildHooksSystem<Properties = Record<string, unknown>>(
+  stringify: (
+    propertyName: keyof Properties,
+    value: unknown,
+  ) => string | null = genericStringify,
 ) {
   return function createHooks<HookProperties extends string | number | symbol>(
     config: Record<HookProperties, HookSpec>,
