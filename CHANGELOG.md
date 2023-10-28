@@ -1,3 +1,10 @@
+## [1.1.0](https://github.com/css-hooks/css-hooks/compare/v1.0.2...v1.1.0) (2023-10-28)
+
+
+### Features
+
+* **core:** default stringify function ([f5d3fe4](https://github.com/css-hooks/css-hooks/commit/f5d3fe46e7e8deb8b2b8e118f0554df318915298))
+
 ## [1.0.2](https://github.com/css-hooks/css-hooks/compare/v1.0.1...v1.0.2) (2023-10-14)
 
 
