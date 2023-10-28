@@ -2,21 +2,12 @@ import type { JSX } from "solid-js";
 import {
   buildHooksSystem,
   recommended as coreRecommended,
+  genericStringify,
 } from "@css-hooks/core";
 import { A, U } from "ts-toolbelt";
 
 /** @internal */
-export function stringifyValue(_: string, value: unknown): string | null {
-  if (typeof value === "string") {
-    return value;
-  }
-
-  if (typeof value === "number") {
-    return `${value}`;
-  }
-
-  return null;
-}
+export const stringifyValue = genericStringify;
 
 /**
  * Creates the hooks specified in the configuration.
