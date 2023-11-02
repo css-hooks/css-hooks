@@ -10,7 +10,8 @@ type HookSpec =
   | `@${"media" | "container"} ${string}`
   | `:${string}`
   | `${string}&${string}`
-  | { or: Readonly<(HookSpec & string)[]> }; // eslint-disable-line @typescript-eslint/no-redundant-type-constituents
+  | { or: Readonly<HookSpec[]> }
+  | { and: Readonly<HookSpec[]> };
 
 function isHookSpec(x: unknown): x is HookSpec {
   if (!x) {
@@ -27,6 +28,9 @@ function isHookSpec(x: unknown): x is HookSpec {
   if (typeof x === "object") {
     if ("or" in x && x.or instanceof Array) {
       return !x.or.some(xx => !isHookSpec(xx));
+    }
+    if ("and" in x && x.and instanceof Array) {
+      return !x.and.some(xx => !isHookSpec(xx));
     }
   }
   return false;
@@ -74,7 +78,7 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
     value: unknown,
   ) => string | null = genericStringify,
 ) {
-  return function createHooks<HookProperties extends string | number | symbol>(
+  return function createHooks<HookProperties extends string>(
     config: Record<HookProperties, HookSpec>,
   ) {
     const stringifyImpl = (propertyName: keyof Properties, value: unknown) => {
@@ -145,44 +149,139 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
       return properties as Properties;
     }
 
-    function off(name: string) {
-      return `--${name}-0:initial;--${name}-1: ;`;
-    }
+    const css = Object.entries(config)
+      .map(([name, definition]: [string, unknown]): [string, unknown] => {
+        function nest(input: HookSpec): HookSpec {
+          if (typeof input === "object") {
+            if ("and" in input) {
+              if (input.and.length > 2) {
+                const [left, ...rest] = input.and as [HookSpec];
+                return { and: [left, nest({ and: rest })] };
+              }
+              return {
+                and: input.and.map(item =>
+                  typeof item === "string" ? item : nest(item),
+                ),
+              };
+            }
 
-    function on(name: string) {
-      return `--${name}-0: ;--${name}-1:initial;`;
-    }
+            if ("or" in input) {
+              if (input.or.length > 2) {
+                const [left, ...rest] = input.or as [HookSpec];
+                return { or: [left, nest({ or: rest })] };
+              }
+              return {
+                or: input.or.map(item =>
+                  typeof item === "string" ? item : nest(item),
+                ),
+              };
+            }
+          }
+
+          return input;
+        }
+
+        if (!isHookSpec(definition) || typeof definition !== "object") {
+          return [name, definition];
+        }
+
+        return [name, nest(definition)];
+      })
+      .flatMap(function css([name, definition]: [string, unknown]): {
+        init: string;
+        rule?: string;
+      }[] {
+        if (!isHookSpec(definition)) {
+          return [];
+        }
+        if (typeof definition === "object") {
+          let a: HookSpec | undefined,
+            operator,
+            b: HookSpec | undefined,
+            extraCSS: ReturnType<typeof css> = [];
+          if ("or" in definition) {
+            operator = "or";
+            [a, b] = definition.or;
+            if (!a) {
+              return [];
+            }
+            if (!b) {
+              return css.bind(this)([name, a]);
+            }
+            extraCSS = [
+              {
+                init: (function aorb(x) {
+                  const a = `${x}A`;
+                  const b = `${x}B`;
+                  return [
+                    `--${x}-0:var(--${a}-0,var(--${b}-0));`,
+                    `--${x}-1:var(--${a}-0,var(--${b}-1)) var(--${b}-0,var(--${a}-1)) var(--${a}-1,var(--${b}-1));`,
+                  ].join("");
+                })(name),
+              },
+            ];
+          } else if ("and" in definition) {
+            operator = "and";
+            [a, b] = definition.and;
+            if (!a) {
+              return [];
+            }
+            if (!b) {
+              return css.bind(this)([name, a]);
+            }
+            extraCSS = [
+              {
+                init: (function aandb(x) {
+                  const a = `${x}A`;
+                  const b = `${x}B`;
+                  return [
+                    `--${x}-0:var(--${a}-0,var(--${b}-0)) var(--${a}-1,var(--${b}-0)) var(--${b}-1,var(--${a}-0));`,
+                    `--${x}-1:var(--${a}-1,var(${b}-1));`,
+                  ].join("");
+                })(name),
+              },
+            ];
+          }
+          if (operator) {
+            return [
+              ...css.bind(this)([`${name}A`, a]),
+              ...css.bind(this)([`${name}B`, b]),
+              ...extraCSS,
+            ];
+          }
+        }
+
+        const init = `--${name}-0:initial;--${name}-1: ;`;
+        let rule;
+
+        if (typeof definition === "string") {
+          if (definition.includes("&")) {
+            rule = `${definition.replace(
+              /&/g,
+              "*",
+            )}{--${name}-0: ;--${name}-1:initial;}`;
+          } else if (definition.startsWith(":")) {
+            rule = `${definition}{--${name}-0: ;--${name}-1:initial;}`;
+          } else if (definition.startsWith("@")) {
+            rule = `${definition}{*{--${name}-0: ;--${name}-1:initial;}}`;
+          }
+        }
+
+        return rule === undefined ? [] : [{ init, rule }];
+      })
+      .reduce(
+        (acc, { init = "", rule = "" }) => ({
+          init: acc.init + init,
+          rule: acc.rule + rule,
+        }),
+        {
+          init: "",
+          rule: "",
+        },
+      );
 
     return [
-      [
-        "*{",
-        ...Object.keys(config).map(off),
-        "}",
-        ...Object.entries(config).flatMap(function render([name, spec]: [
-          string,
-          unknown,
-        ]): string[] {
-          if (!isHookSpec(spec)) {
-            return [];
-          }
-          if (typeof spec === "object") {
-            if ("or" in spec) {
-              return spec.or.flatMap(x => render.bind(this)([name, x]));
-            }
-            return [];
-          }
-          if (spec.includes("&")) {
-            return [`${spec.replace(/&/g, "*")}{${on(name)}}`];
-          }
-          if (spec.startsWith(":")) {
-            return [`${spec}{${on(name)}}`];
-          }
-          if (spec.startsWith("@")) {
-            return [`${spec}{*{${on(name)}}}`];
-          }
-          return [];
-        }),
-      ].join(""),
+      `*{${css.init}}${css.rule}`,
       function hooks(
         properties: WithHooks<HookProperties, Properties>,
       ): Properties {

@@ -197,24 +197,148 @@ describe("css renderer", () => {
     });
     expect(normalizeCSS(css)).toEqual(
       normalizeCSS(`
-      * {
-        --dark-0:initial;
-        --dark-1: ;
-      }
-
-      @media (prefers-color-scheme: dark) {
         * {
-          --dark-0: ;
-          --dark-1:initial;
+          --darkA-0:initial;
+          --darkA-1: ;
+          --darkB-0:initial;
+          --darkB-1: ;
+          --dark-0:var(--darkA-0,var(--darkB-0));
+          --dark-1:var(--darkA-0,var(--darkB-1)) var(--darkB-0,var(--darkA-1)) var(--darkA-1,var(--darkB-1));
         }
-      }
-
-      [data-theme='dark'] * {
-        --dark-0: ;
-        --dark-1:initial;
-      }
-    `),
+        @media (prefers-color-scheme: dark) {
+          * {
+            --darkA-0: ;
+            --darkA-1:initial;
+          }
+        }
+        [data-theme="dark"] * {
+          --darkB-0: ;
+          --darkB-1:initial;
+        }
+      `),
     );
+  });
+
+  it('renders "and" hooks', () => {
+    const [css] = createHooks({
+      dark: {
+        and: ["@media (prefers-color-scheme: dark)", "[data-theme='dark'] &"],
+      },
+    });
+    expect(normalizeCSS(css)).toEqual(
+      normalizeCSS(`
+        * {
+          --darkA-0:initial;
+          --darkA-1: ;
+          --darkB-0:initial;
+          --darkB-1: ;
+          --dark-0:var(--darkA-0,var(--darkB-0)) var(--darkA-1,var(--darkB-0)) var(--darkB-1,var(--darkA-0));
+          --dark-1:var(--darkA-1,var(darkB-1));
+        }
+        @media (prefers-color-scheme: dark) {
+          * {
+            --darkA-0: ;
+            --darkA-1:initial;
+          }
+        }
+        [data-theme="dark"] * {
+          --darkB-0: ;
+          --darkB-1:initial;
+        }
+      `),
+    );
+  });
+
+  it('renders nested "and" and "or" hooks', () => {
+    const [css] = createHooks({
+      dark: {
+        or: [
+          {
+            and: [
+              "@media (prefers-color-scheme: dark)",
+              "[data-theme='auto'] &",
+            ],
+          },
+          "[data-theme='dark'] &",
+        ],
+      },
+    });
+    expect(normalizeCSS(css)).toEqual(
+      normalizeCSS(`
+        * {
+          --darkAA-0:initial;
+          --darkAA-1: ;
+          --darkAB-0:initial;
+          --darkAB-1: ;
+          --darkA-0:var(--darkAA-0,var(--darkAB-0)) var(--darkAA-1,var(--darkAB-0)) var(--darkAB-1,var(--darkAA-0));
+          --darkA-1:var(--darkAA-1,var(darkAB-1));
+          --darkB-0:initial;
+          --darkB-1: ;
+          --dark-0:var(--darkA-0,var(--darkB-0));
+          --dark-1:var(--darkA-0,var(--darkB-1)) var(--darkB-0,var(--darkA-1)) var(--darkA-1,var(--darkB-1));
+        }
+        @media (prefers-color-scheme: dark) {
+          * {
+            --darkAA-0: ;
+            --darkAA-1:initial;
+          }
+        }
+        [data-theme="auto"] * {
+          --darkAB-0: ;
+          --darkAB-1:initial;
+        }
+        [data-theme="dark"] * {
+          --darkB-0: ;
+          --darkB-1:initial;
+        }
+      `),
+    );
+  });
+
+  it('ignores empty "and" hooks', () => {
+    const [a] = createHooks({
+      dark: {
+        and: [],
+      },
+    });
+    const [b] = createHooks({});
+    expect(a).toEqual(b);
+  });
+
+  it('unwraps a unary "and" hook', () => {
+    const spec = ":foo";
+    const [a] = createHooks({
+      foo: {
+        and: [spec],
+      },
+    });
+    const [b] = createHooks({
+      foo: spec,
+    });
+    expect(a).toEqual(b);
+  });
+
+  it('ignores empty "or" hooks', () => {
+    const [a] = createHooks({
+      dark: {
+        or: [],
+      },
+    });
+    const [b] = createHooks({});
+    expect(a).toEqual(b);
+  });
+
+  it('unwraps a unary "or" hook', () => {
+    const spec = ":foo";
+    const [a] = createHooks({
+      foo: {
+        or: [spec],
+      },
+    });
+    const [b] = createHooks({
+      foo: spec,
+    });
+    expect(a).toEqual(b);
   });
 });
 
