@@ -1,6 +1,6 @@
 {
   "extends": "@tsconfig/strictest",
-  "include": ["__fixtures__", "src"],
+  "include": ["__tests__", "src"],
   "compilerOptions": {
     "noEmit": true
   }
