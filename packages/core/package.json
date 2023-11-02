@@ -4,7 +4,6 @@
   "version": "1.2.0",
   "author": "Nick Saunders",
   "devDependencies": {
-    "@tsconfig/node-lts": "^18.12.3",
     "@tsconfig/strictest": "^2.0.1",
     "@types/css-tree": "^2.3.2",
     "@types/jest": "^29.5.3",
@@ -33,6 +32,7 @@
   },
   "scripts": {
     "clean": "rimraf cjs esm types",
+    "compile": "tsc",
     "lint": "eslint __tests__ src .*.*js *.*js",
     "prepublishOnly": "tsc -p tsconfig.dist.json --outDir esm --module es6 && tsc -p tsconfig.dist.json --outDir cjs --module commonjs && tsc -p tsconfig.dist.json --outDir types --declaration --emitDeclarationOnly",
     "test": "jest"
