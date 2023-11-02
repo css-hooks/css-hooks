@@ -1,5 +1,5 @@
 {
-  "extends": "@tsconfig/strictest/tsconfig.json",
+  "extends": "@tsconfig/strictest",
   "include": ["src"],
   "compilerOptions": {
     "target": "es2015",

@@ -1,5 +1,6 @@
 {
-  "extends": "@tsconfig/node-lts/tsconfig.json",
+  "extends": "@tsconfig/strictest",
+  "include": ["__fixtures__", "src"],
   "compilerOptions": {
     "noEmit": true
   }
