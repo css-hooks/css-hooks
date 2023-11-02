@@ -8,7 +8,6 @@
     "ts-toolbelt": "^9.6.0"
   },
   "devDependencies": {
-    "@tsconfig/node-lts": "^18.12.3",
     "@tsconfig/strictest": "^2.0.1",
     "@types/jest": "^29.5.3",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
@@ -39,6 +38,7 @@
   },
   "scripts": {
     "clean": "rimraf cjs esm types",
+    "compile": "tsc",
     "lint": "eslint __tests__ src .*.*js *.*js",
     "postversion": "npm install @css-hooks/core@^$npm_package_version --force",
     "prepublishOnly": "tsc -p tsconfig.dist.json --outDir cjs --module commonjs && tsc -p tsconfig.dist.json --outDir esm --module es6 && tsc -p tsconfig.dist.json --declaration --emitDeclarationOnly --outDir types",

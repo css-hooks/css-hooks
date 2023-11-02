@@ -1,4 +1,4 @@
 {
-  "extends": "@tsconfig/strictest/tsconfig.json",
+  "extends": "@tsconfig/strictest",
   "include": ["__tests__", ".eslintrc.cjs", "jest.config.cjs", "src"]
 }
