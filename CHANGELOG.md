@@ -1,3 +1,10 @@
+## [1.2.0](https://github.com/css-hooks/css-hooks/compare/v1.1.0...v1.2.0) (2023-11-02)
+
+
+### Features
+
+* logical-and hooks, arbitrary and/or nesting ([a649416](https://github.com/css-hooks/css-hooks/commit/a6494168f1fd5d1d25c441ca555e82496df51b8a))
+
 ## [1.1.0](https://github.com/css-hooks/css-hooks/compare/v1.0.2...v1.1.0) (2023-10-28)
 
 

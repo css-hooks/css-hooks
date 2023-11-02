@@ -1,10 +1,10 @@
 {
   "name": "@css-hooks/preact",
   "description": "CSS Hooks for Preact",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "^1.1.0"
+    "@css-hooks/core": "^1.2.0"
   },
   "devDependencies": {
     "@tsconfig/node-lts": "^18.12.3",
