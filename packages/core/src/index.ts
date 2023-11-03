@@ -215,7 +215,7 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
                   const b = `${x}B`;
                   return [
                     `--${x}-0:var(--${a}-0,var(--${b}-0));`,
-                    `--${x}-1:var(--${a}-0,var(--${b}-1)) var(--${b}-0,var(--${a}-1)) var(--${a}-1,var(--${b}-1));`,
+                    `--${x}-1:var(--${a}-1) var(--${b}-1);`,
                   ].join("");
                 })(name),
               },
@@ -235,8 +235,8 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
                   const a = `${x}A`;
                   const b = `${x}B`;
                   return [
-                    `--${x}-0:var(--${a}-0,var(--${b}-0)) var(--${a}-1,var(--${b}-0)) var(--${b}-1,var(--${a}-0));`,
-                    `--${x}-1:var(--${a}-1,var(${b}-1));`,
+                    `--${x}-0:var(--${a}-0) var(--${b}-0);`,
+                    `--${x}-1:var(--${a}-1,var(--${b}-1));`,
                   ].join("");
                 })(name),
               },

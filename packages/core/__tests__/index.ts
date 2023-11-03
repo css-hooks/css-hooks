@@ -203,7 +203,7 @@ describe("css renderer", () => {
           --darkB-0:initial;
           --darkB-1: ;
           --dark-0:var(--darkA-0,var(--darkB-0));
-          --dark-1:var(--darkA-0,var(--darkB-1)) var(--darkB-0,var(--darkA-1)) var(--darkA-1,var(--darkB-1));
+          --dark-1:var(--darkA-1) var(--darkB-1);
         }
         @media (prefers-color-scheme: dark) {
           * {
@@ -232,8 +232,8 @@ describe("css renderer", () => {
           --darkA-1: ;
           --darkB-0:initial;
           --darkB-1: ;
-          --dark-0:var(--darkA-0,var(--darkB-0)) var(--darkA-1,var(--darkB-0)) var(--darkB-1,var(--darkA-0));
-          --dark-1:var(--darkA-1,var(darkB-1));
+          --dark-0:var(--darkA-0) var(--darkB-0);
+          --dark-1:var(--darkA-1,var(--darkB-1));
         }
         @media (prefers-color-scheme: dark) {
           * {
@@ -270,12 +270,12 @@ describe("css renderer", () => {
           --darkAA-1: ;
           --darkAB-0:initial;
           --darkAB-1: ;
-          --darkA-0:var(--darkAA-0,var(--darkAB-0)) var(--darkAA-1,var(--darkAB-0)) var(--darkAB-1,var(--darkAA-0));
-          --darkA-1:var(--darkAA-1,var(darkAB-1));
+          --darkA-0:var(--darkAA-0) var(--darkAB-0);
+          --darkA-1:var(--darkAA-1,var(--darkAB-1));
           --darkB-0:initial;
           --darkB-1: ;
           --dark-0:var(--darkA-0,var(--darkB-0));
-          --dark-1:var(--darkA-0,var(--darkB-1)) var(--darkB-0,var(--darkA-1)) var(--darkA-1,var(--darkB-1));
+          --dark-1:var(--darkA-1) var(--darkB-1);
         }
         @media (prefers-color-scheme: dark) {
           * {
