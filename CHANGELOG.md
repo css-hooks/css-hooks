@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/css-hooks/css-hooks/compare/v1.2.0...v1.2.1) (2023-11-03)
+
+
+### Bug Fixes
+
+* **core:** logical-and variable fix ([08d47f0](https://github.com/css-hooks/css-hooks/commit/08d47f082e2940c3e8d4a80d42888d5a8ce5bf6b))
+
 ## [1.2.0](https://github.com/css-hooks/css-hooks/compare/v1.1.0...v1.2.0) (2023-11-02)
 
 
