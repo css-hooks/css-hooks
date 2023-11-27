@@ -6,7 +6,8 @@ import { css } from "./css-hooks";
 
 render(
   <>
-    <style>{css}</style>
+    {/* eslint-disable-next-line react/no-danger */}
+    <style dangerouslySetInnerHTML={{ __html: css }} />
     <App />
   </>,
   document.getElementById("root")!,
