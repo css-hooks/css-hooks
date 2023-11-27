@@ -7,7 +7,7 @@ import App from "./App";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <style>{css}</style>
+    <style dangerouslySetInnerHTML={{ __html: css }} />
     <App />
   </React.StrictMode>,
 );
