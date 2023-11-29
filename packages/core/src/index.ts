@@ -72,6 +72,20 @@ export function genericStringify(_: unknown, value: unknown) {
   return null;
 }
 
+function hash(obj: unknown): string {
+  const jsonString = JSON.stringify(obj);
+
+  let hashValue = 0;
+
+  for (let i = 0; i < jsonString.length; i++) {
+    const charCode = jsonString.charCodeAt(i);
+    hashValue = (hashValue << 5) - hashValue + charCode;
+    hashValue &= 0x7fffffff;
+  }
+
+  return hashValue.toString(36);
+}
+
 export function buildHooksSystem<Properties = Record<string, unknown>>(
   stringify: (
     propertyName: keyof Properties,
@@ -80,12 +94,27 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
 ) {
   return function createHooks<HookProperties extends string>(
     config: Record<HookProperties, HookSpec>,
+    options?:
+      | { debug?: boolean; /** @internal */ hookNameToId?: undefined }
+      | {
+          debug?: undefined;
+          /** @internal */ hookNameToId?: (hookName: string) => string;
+        },
   ) {
     const stringifyImpl = (propertyName: keyof Properties, value: unknown) => {
       return typeof value === "string" && value.startsWith("var(")
         ? value
         : stringify(propertyName, value);
     };
+
+    const hookId =
+      options?.hookNameToId ||
+      ((hookName: HookProperties) => {
+        const specHash = hash(config[hookName]);
+        return options?.debug
+          ? `${hookName.replace(/[^A-Za-z0-9-]/g, "_")}-${specHash}`
+          : specHash;
+      });
 
     function forEachHook(
       properties: WithHooks<HookProperties, Properties>,
@@ -137,7 +166,7 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
             }
             /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any */
             properties[propertyName as keyof typeof properties] =
-              `var(--${String(hookName)}-1, ${v1}) var(--${String(
+              `var(--${hookId(hookName)}-1, ${v1}) var(--${hookId(
                 hookName,
               )}-0, ${v0})` as any;
             /* eslint-enable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any */
@@ -186,88 +215,93 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
 
         return [name, nest(definition)];
       })
-      .flatMap(function css([name, definition]: [string, unknown]): {
-        init: string;
-        rule?: string;
-      }[] {
-        if (!isHookSpec(definition)) {
-          return [];
-        }
-        if (typeof definition === "object") {
-          let a: HookSpec | undefined,
-            operator,
-            b: HookSpec | undefined,
-            extraCSS: ReturnType<typeof css> = [];
-          if ("or" in definition) {
-            operator = "or";
-            [a, b] = definition.or;
-            if (!a) {
-              return [];
-            }
-            if (!b) {
-              return css.bind(this)([name, a]);
-            }
-            extraCSS = [
-              {
-                init: (function aorb(x) {
-                  const a = `${x}A`;
-                  const b = `${x}B`;
-                  return [
-                    `--${x}-0:var(--${a}-0,var(--${b}-0));`,
-                    `--${x}-1:var(--${a}-1) var(--${b}-1);`,
-                  ].join("");
-                })(name),
-              },
-            ];
-          } else if ("and" in definition) {
-            operator = "and";
-            [a, b] = definition.and;
-            if (!a) {
-              return [];
-            }
-            if (!b) {
-              return css.bind(this)([name, a]);
-            }
-            extraCSS = [
-              {
-                init: (function aandb(x) {
-                  const a = `${x}A`;
-                  const b = `${x}B`;
-                  return [
-                    `--${x}-0:var(--${a}-0) var(--${b}-0);`,
-                    `--${x}-1:var(--${a}-1,var(--${b}-1));`,
-                  ].join("");
-                })(name),
-              },
-            ];
+      .flatMap(([name, definition]: [string, unknown]) =>
+        (function css(
+          name: string,
+          definition: unknown,
+        ): {
+          init: string;
+          rule?: string;
+        }[] {
+          if (!isHookSpec(definition)) {
+            return [];
           }
-          if (operator) {
-            return [
-              ...css.bind(this)([`${name}A`, a]),
-              ...css.bind(this)([`${name}B`, b]),
-              ...extraCSS,
-            ];
+          if (typeof definition === "object") {
+            let a: HookSpec | undefined,
+              operator,
+              b: HookSpec | undefined,
+              extraCSS: ReturnType<typeof css> = [];
+            if ("or" in definition) {
+              operator = "or";
+              [a, b] = definition.or;
+              if (!a) {
+                return [];
+              }
+              if (!b) {
+                return css(name, a);
+              }
+              extraCSS = [
+                {
+                  init: (function aorb(x) {
+                    const a = `${x}A`;
+                    const b = `${x}B`;
+                    return [
+                      `--${x}-0:var(--${a}-0,var(--${b}-0));`,
+                      `--${x}-1:var(--${a}-1) var(--${b}-1);`,
+                    ].join("");
+                  })(name),
+                },
+              ];
+            } else if ("and" in definition) {
+              operator = "and";
+              [a, b] = definition.and;
+              if (!a) {
+                return [];
+              }
+              if (!b) {
+                return css(name, a);
+              }
+              extraCSS = [
+                {
+                  init: (function aandb(x) {
+                    const a = `${x}A`;
+                    const b = `${x}B`;
+                    return [
+                      `--${x}-0:var(--${a}-0) var(--${b}-0);`,
+                      `--${x}-1:var(--${a}-1,var(--${b}-1));`,
+                    ].join("");
+                  })(name),
+                },
+              ];
+            }
+            if (operator) {
+              return [
+                ...css(`${name}A`, a),
+                ...css(`${name}B`, b),
+                ...extraCSS,
+              ];
+            }
           }
-        }
 
-        const init = `--${name}-0:initial;--${name}-1: ;`;
-        let rule;
+          const init = `--${name}-0:initial;--${name}-1: ;`;
+          let rule;
 
-        if (typeof definition === "string") {
-          if (definition.includes("&")) {
-            rule = `${definition.replace(
-              /&/g,
-              "*",
-            )}{--${name}-0: ;--${name}-1:initial;}`;
-          } else if (definition.startsWith(":")) {
-            rule = `${definition}{--${name}-0: ;--${name}-1:initial;}`;
-          } else if (definition.startsWith("@")) {
-            rule = `${definition}{*{--${name}-0: ;--${name}-1:initial;}}`;
+          if (typeof definition === "string") {
+            if (definition.includes("&")) {
+              rule = `${definition.replace(
+                /&/g,
+                "*",
+              )}{--${name}-0: ;--${name}-1:initial;}`;
+            } else if (definition.startsWith(":")) {
+              rule = `${definition}{--${name}-0: ;--${name}-1:initial;}`;
+            } else if (definition.startsWith("@")) {
+              rule = `${definition}{*{--${name}-0: ;--${name}-1:initial;}}`;
+            }
           }
-        }
 
-        return rule === undefined ? [] : [{ init, rule }];
-      })
+          return rule === undefined ? [] : [{ init, rule }];
+        })(hookId(name as Parameters<typeof hookId>[0]), definition),
+      )
       .reduce(
         (acc, { init = "", rule = "" }) => ({
           init: acc.init + init,

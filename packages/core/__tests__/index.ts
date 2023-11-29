@@ -6,7 +6,9 @@ function normalizeCSS(css: string) {
 }
 
 describe("css renderer", () => {
-  const createHooks = buildHooksSystem(() => "");
+  const createHooksImpl = buildHooksSystem(() => "");
+  const createHooks = (config: Parameters<typeof createHooksImpl>[0]) =>
+    createHooksImpl(config, { hookNameToId: x => x });
 
   it("renders pseudo-class hooks", () => {
     const [css] = createHooks({
@@ -347,11 +349,14 @@ describe("hooks function", () => {
     const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
       typeof value === "string" ? value : null,
     );
-    const [, hooks] = createHooks({
-      testHookA: ":a",
-      testHookB: ":b",
-      testHookC: ":c",
-    });
+    const [, hooks] = createHooks(
+      {
+        testHookA: ":a",
+        testHookB: ":b",
+        testHookC: ":c",
+      },
+      { hookNameToId: x => x },
+    );
     expect(
       hooks({
         color: "red",
@@ -380,9 +385,12 @@ describe("hooks function", () => {
     const createHooks = buildHooksSystem<{ "text-decoration": string }>(
       (_, value) => (typeof value === "string" ? value : null),
     );
-    const [, hooks] = createHooks({
-      "test-hook": ":test-hook",
-    });
+    const [, hooks] = createHooks(
+      {
+        "test-hook": ":test-hook",
+      },
+      { hookNameToId: x => x },
+    );
     expect(
       hooks({
         "test-hook": { "text-decoration": "underline" },
@@ -417,9 +425,12 @@ describe("hooks function", () => {
     const createHooks = buildHooksSystem<{
       color?: string;
     }>((_, value) => (typeof value === "string" ? value : null));
-    const [, hooks] = createHooks({
-      "test-hook": ":test-hook",
-    });
+    const [, hooks] = createHooks(
+      {
+        "test-hook": ":test-hook",
+      },
+      { hookNameToId: x => x },
+    );
     expect(hooks({ "test-hook": { color: "red" } })).toEqual({
       color: "var(--test-hook-1, red) var(--test-hook-0, unset)",
     });
@@ -429,7 +440,10 @@ describe("hooks function", () => {
     const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
       value === "hook" ? value : null,
     );
-    const [, hooks] = createHooks({ testHook: ":test-hook" });
+    const [, hooks] = createHooks(
+      { testHook: ":test-hook" },
+      { hookNameToId: x => x },
+    );
     expect(hooks({ color: "invalid", testHook: { color: "hook" } })).toEqual({
       color: "var(--testHook-1, hook) var(--testHook-0, unset)",
     });
@@ -449,10 +463,13 @@ describe("hooks function", () => {
     const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
       typeof value === "string" ? `[${value}]` : null,
     );
-    const [, hooks] = createHooks({
-      "test-hook-a": ":test-hook-a",
-      "test-hook-b": ":test-hook-b",
-    });
+    const [, hooks] = createHooks(
+      {
+        "test-hook-a": ":test-hook-a",
+        "test-hook-b": ":test-hook-b",
+      },
+      { hookNameToId: x => x },
+    );
     expect(
       hooks({
         color: "blue",
@@ -473,10 +490,13 @@ describe("hooks function", () => {
     const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
       typeof value === "string" ? `[${value}]` : null,
     );
-    const [, hooks] = createHooks({
-      testHookA: ":test-hook-a",
-      testHookB: ":test-hook-b",
-    });
+    const [, hooks] = createHooks(
+      {
+        testHookA: ":test-hook-a",
+        testHookB: ":test-hook-b",
+      },
+      { hookNameToId: x => x },
+    );
     expect(
       hooks({
         color: "black",
@@ -497,10 +517,13 @@ describe("hooks function", () => {
     const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
       typeof value === "string" && value !== "invalid" ? `[${value}]` : null,
     );
-    const [, hooks] = createHooks({
-      "test-hook-a": ":test-hook-a",
-      "test-hook-b": ":test-hook-b",
-    });
+    const [, hooks] = createHooks(
+      {
+        "test-hook-a": ":test-hook-a",
+        "test-hook-b": ":test-hook-b",
+      },
+      { hookNameToId: x => x },
+    );
     expect(
       hooks({
         color: "black",
@@ -514,6 +537,98 @@ describe("hooks function", () => {
     ).toEqual({
       color:
         "var(--test-hook-a-1, var(--test-hook-b-1, [pink]) var(--test-hook-b-0, [black])) var(--test-hook-a-0, [black])",
+    });
+  });
+});
+
+describe("createHooks function", () => {
+  it("uses hash identifiers for variable names by default", () => {
+    const createHooks = buildHooksSystem();
+    const [css, hooks] = createHooks({
+      foo: ":disabled",
+      bar: {
+        or: [
+          ":hover",
+          {
+            and: ["&.hover", "&.debug"],
+          },
+        ],
+      },
+    });
+    expect(normalizeCSS(css)).toEqual(
+      normalizeCSS(`
+        * {
+          --5g7aa6-0:initial;
+          --5g7aa6-1: ;
+          --ilyuetA-0:initial;
+          --ilyuetA-1: ;
+          --ilyuetBA-0:initial;
+          --ilyuetBA-1: ;
+          --ilyuetBB-0:initial;
+          --ilyuetBB-1: ;
+          --ilyuetB-0:var(--ilyuetBA-0) var(--ilyuetBB-0);
+          --ilyuetB-1:var(--ilyuetBA-1,var(--ilyuetBB-1));
+          --ilyuet-0:var(--ilyuetA-0,var(--ilyuetB-0));
+          --ilyuet-1:var(--ilyuetA-1) var(--ilyuetB-1);
+        }
+        :disabled {
+          --5g7aa6-0: ;
+          --5g7aa6-1:initial;
+        }
+        :hover {
+          --ilyuetA-0: ;
+          --ilyuetA-1:initial;
+        }
+        *.hover {
+          --ilyuetBA-0: ;
+          --ilyuetBA-1:initial;
+        }
+        *.debug {
+          --ilyuetBB-0: ;
+          --ilyuetBB-1:initial;
+        }
+      `),
+    );
+    expect(
+      hooks({ color: "black", foo: { color: "gray" }, bar: { color: "red" } }),
+    ).toEqual({
+      color:
+        "var(--ilyuet-1, red) var(--ilyuet-0, var(--5g7aa6-1, gray) var(--5g7aa6-0, black))",
+    });
+  });
+
+  it("includes user-defined hook names in variable names in debug mode", () => {
+    const createHooks = buildHooksSystem();
+    const [css, hooks] = createHooks(
+      {
+        "@media (min-width: 1000px)": "@media (min-width: 1000px)",
+      },
+      { debug: true },
+    );
+    expect(normalizeCSS(css)).toEqual(
+      normalizeCSS(`
+        * {
+          --_media__min-width__1000px_-umzjoj-0:initial;
+          --_media__min-width__1000px_-umzjoj-1: ;
+        }
+        @media (min-width: 1000px) {
+          * {
+            --_media__min-width__1000px_-umzjoj-0: ;
+            --_media__min-width__1000px_-umzjoj-1:initial;
+          }
+        }
+      `),
+    );
+    expect(
+      hooks({
+        color: "blue",
+        "@media (min-width: 1000px)": {
+          color: "red",
+        },
+      }),
+    ).toEqual({
+      color:
+        "var(--_media__min-width__1000px_-umzjoj-1, red) var(--_media__min-width__1000px_-umzjoj-0, blue)",
     });
   });
 });
