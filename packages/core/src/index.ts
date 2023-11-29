@@ -88,19 +88,18 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
     };
 
     function forEachHook(
-      obj: WithHooks<HookProperties, Properties>,
+      properties: WithHooks<HookProperties, Properties>,
       callback: (
-        key: HookProperties,
-        obj: WithHooks<HookProperties, Properties>,
+        hookName: HookProperties,
+        innerProperties: WithHooks<HookProperties, Properties>,
       ) => void,
     ) {
-      return Object.entries(obj)
+      return Object.entries(properties)
         .filter(([key]) => key in config)
-        .forEach(([key, value]) => {
+        .forEach(([hookName, value]) => {
           callback(
-            key as HookProperties,
-            /* eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unsafe-argument */
-            value as any,
+            hookName as HookProperties,
+            value as WithHooks<HookProperties, Properties>,
           );
         });
     }
@@ -112,11 +111,11 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
       ) => string | null = propertyName =>
         stringifyImpl(propertyName, properties[propertyName]),
     ): Properties {
-      forEachHook(properties, (key, hook) => {
-        hooksImpl(hook, propertyName => {
+      forEachHook(properties, (hookName, innerProperties) => {
+        hooksImpl(innerProperties, propertyName => {
           let v = stringifyImpl(
             propertyName,
-            hook[propertyName as keyof typeof properties],
+            innerProperties[propertyName as keyof typeof innerProperties],
           );
           if (v === null) {
             v = fallback(propertyName);
@@ -126,10 +125,10 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
           }
           return v;
         });
-        for (const propertyName in hook) {
+        for (const propertyName in innerProperties) {
           const v1 = stringifyImpl(
             propertyName as keyof Properties,
-            hook[propertyName as keyof typeof hook],
+            innerProperties[propertyName as keyof typeof innerProperties],
           );
           if (v1 !== null) {
             let v0: string | null = fallback(propertyName as keyof Properties);
@@ -138,13 +137,13 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
             }
             /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any */
             properties[propertyName as keyof typeof properties] =
-              `var(--${String(key)}-1, ${v1}) var(--${String(
-                key,
+              `var(--${String(hookName)}-1, ${v1}) var(--${String(
+                hookName,
               )}-0, ${v0})` as any;
             /* eslint-enable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any */
           }
         }
-        delete properties[key as unknown as keyof typeof properties];
+        delete properties[hookName as unknown as keyof typeof properties];
       });
       return properties as Properties;
     }
