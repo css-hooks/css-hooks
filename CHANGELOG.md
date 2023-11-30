@@ -1,3 +1,16 @@
+## [1.3.0](https://github.com/css-hooks/css-hooks/compare/v1.2.1...v1.3.0) (2023-11-30)
+
+
+### Features
+
+* **core:** complex hook name support and debug option ([58d5448](https://github.com/css-hooks/css-hooks/commit/58d5448ccfbecfa1a701a8dc4d25ac67b74d7eef))
+
+
+### Bug Fixes
+
+* **example-preact:** avoid html-escaping style sheet ([d712e34](https://github.com/css-hooks/css-hooks/commit/d712e34146d24e7126c24f0740130333c8dbf057))
+* **example-react:** avoid html-escaping style sheet ([a5099b1](https://github.com/css-hooks/css-hooks/commit/a5099b1d35959fbbd4d4d78db144a3edf9d53c60))
+
 ## [1.2.1](https://github.com/css-hooks/css-hooks/compare/v1.2.0...v1.2.1) (2023-11-03)
 
 
