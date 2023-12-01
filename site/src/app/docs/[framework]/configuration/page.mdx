@@ -10,11 +10,13 @@ can extend or replace these with your own custom hooks as needed.
 To start, let's review the default configuration presented in the
 [Getting started](./getting-started) guide:
 
-```typescript
-import { createHooks, recommended } from "@css-hooks/react";
+<Pre>
+  <Code className="language-typescript">
+    {`import { createHooks, recommended } from "@css-hooks/${props.params.framework}";
 
-const [css, hooks] = createHooks(recommended);
-```
+    const [css, hooks] = createHooks(recommended);`}
+  </Code>
+</Pre>
 
 If you aren't interested in the recommended hooks, you can simply replace them
 with your own hooks:
