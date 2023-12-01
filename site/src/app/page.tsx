@@ -143,12 +143,7 @@ export default async function Home() {
                     <Link
                       href="/docs/react/getting-started"
                       className={className}
-                      style={hooks({
-                        ...style,
-                        desktop: {
-                          display: "none",
-                        },
-                      })}
+                      style={style}
                     >
                       <BookIcon aria-hidden="true" />
                       Docs
@@ -156,7 +151,7 @@ export default async function Home() {
                   )
                 }
               </CtaButton>
-              <CtaButton theme="purple">
+              <CtaButton theme="gray">
                 {({ className, style, ...restProps }) =>
                   exhausted(restProps) && (
                     <a
@@ -181,15 +176,15 @@ export default async function Home() {
                     <a
                       href="https://github.com/css-hooks/css-hooks"
                       className={className}
-                      style={style}
+                      style={hooks({
+                        ...style,
+                        desktop: {
+                          display: "none",
+                        },
+                      })}
                     >
                       <GitHubIcon aria-hidden="true" />
-                      <span>
-                        Star{" "}
-                        <span style={hooks({ mobile: { display: "none" } })}>
-                          on GitHub
-                        </span>
-                      </span>
+                      <span>Star</span>
                     </a>
                   )
                 }
