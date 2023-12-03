@@ -45,7 +45,7 @@ import {
 const codeExample = `
 <a
   href="https://css-hooks.com/"
-  style={hooks({
+  style={css({
     color: "#03f",
     dark: {
       color: "#4d70ff",
