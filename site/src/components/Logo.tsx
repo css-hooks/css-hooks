@@ -1,4 +1,4 @@
-import hooks from "@/css-hooks";
+import { css } from "@/css-hooks";
 import { CSSProperties } from "react";
 import { Assistant } from "next/font/google";
 import LogoIcon from "./LogoIcon";
@@ -25,7 +25,7 @@ export default function Logo({
     >
       <LogoIcon />
       <div
-        style={hooks({
+        style={css({
           color: gray90,
           dark: { color: gray10 },
         })}

@@ -1,6 +1,6 @@
 import cssGlobals from "./globals.css";
 import type { Metadata } from "next";
-import hooks, { css as cssHooks } from "@/css-hooks";
+import { css, hooks } from "@/css-hooks";
 import PageBlock from "@/components/PageBlock";
 import { exhausted } from "@/util/exhausted";
 import Logo from "@/components/Logo";
@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        style={hooks({
+        style={css({
           margin: 0,
           background: white,
           color: black,
@@ -37,7 +37,7 @@ export default function RootLayout({
           flexDirection: "column",
         })}
       >
-        <style>{`${cssGlobals} ${cssHooks}`}</style>
+        <style>{`${cssGlobals} ${hooks}`}</style>
         <div style={{ flex: 1 }}>{children}</div>
         <PageBlock>
           {({ style: pageBlockStyle, ...restProps }) =>

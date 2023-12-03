@@ -1,4 +1,4 @@
-import hooks from "@/css-hooks";
+import { css } from "@/css-hooks";
 import { CSSProperties, ReactNode } from "react";
 import { gray10, gray80 } from "varsace";
 
@@ -11,7 +11,7 @@ export default function Pre({
 }) {
   return (
     <pre
-      style={hooks({
+      style={css({
         marginBlock: "1.5em",
         lineHeight: 1.25,
         padding: "1.5em",

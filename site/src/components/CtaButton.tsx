@@ -2,7 +2,7 @@ import { O, U } from "ts-toolbelt";
 import Typography from "./Typography";
 import { CSSProperties, ComponentProps, ReactElement, forwardRef } from "react";
 import { exhausted } from "@/util/exhausted";
-import hooks from "@/css-hooks";
+import { css } from "@/css-hooks";
 import {
   blue40,
   blue50,
@@ -43,7 +43,7 @@ export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
 
           const forwardProps: ForwardProps = {
             className: `${className} ${typographyClassName}`,
-            style: hooks({
+            style: css({
               ...typographyStyle,
               textDecoration: "none",
               background: theme === "purple" ? purple50 : gray50,

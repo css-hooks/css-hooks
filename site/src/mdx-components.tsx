@@ -5,7 +5,7 @@ import { CSSProperties, ComponentPropsWithoutRef, ElementType } from "react";
 import Code from "./components/Code";
 import Link from "@/components/Link";
 import Pre from "./components/Pre";
-import hooks from "@/css-hooks";
+import { css } from "@/css-hooks";
 import { gray20, gray80 } from "varsace";
 
 function makeHeadingComponent(
@@ -103,7 +103,7 @@ function Paragraph({
 function HorizontalRule() {
   return (
     <hr
-      style={hooks({
+      style={css({
         background: gray20,
         marginBlock: "2.5rem 2rem",
         height: 1,

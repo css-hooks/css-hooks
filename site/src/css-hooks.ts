@@ -1,6 +1,6 @@
 import { createHooks, recommended } from "@css-hooks/react";
 
-const [css, hooks] = createHooks({
+export const [hooks, css] = createHooks({
   ...recommended,
   previousHover: ":hover + &",
   previousActive: ":active + &",
@@ -9,6 +9,3 @@ const [css, hooks] = createHooks({
   mobile: "@media (max-width: 499px)",
   desktop: "@media (min-width: 500px)",
 });
-
-export default hooks;
-export { css };
