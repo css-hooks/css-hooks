@@ -29,11 +29,8 @@ jobs:
       - name: install dependencies
         run: npm ci
 
-      - name: build packages
-        run: npm run prepublishOnly --workspace=packages
-
-      # Note that linting must be done after the `prepublishOnly` scripts are
-      # run. Otherwise, some types will be inferred as `any` leading to errors.
+      # Note that the packages must be built before linting. Otherwise, some
+      # types will be inferred as `any` leading to errors.
       - name: lint
         run: npm run lint --workspaces --if-present
 
