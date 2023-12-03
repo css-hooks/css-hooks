@@ -27,7 +27,7 @@ styles to a link:
 ```jsx
 <a
   href="https://css-hooks.com/"
-  style={hooks({
+  style={css({
     color: "#03f",
     hover: {
       color: "#09f",
@@ -41,8 +41,8 @@ styles to a link:
 </a>
 ```
 
-Notably, the `hooks` function is pure. It simply returns a flat style object
-that is compatible with the `style` prop, creating dynamic property values that
+Notably, the `css` function is pure. It simply returns a flat style object that
+is compatible with the `style` prop, creating dynamic property values that
 change under various conditions through CSS variables.
 
 ## Documentation
