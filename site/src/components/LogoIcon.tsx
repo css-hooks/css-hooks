@@ -1,4 +1,4 @@
-import hooks from "@/css-hooks";
+import { css } from "@/css-hooks";
 import { blue30, blue40, gray30, gray50 } from "varsace";
 
 export type Props = {
@@ -14,7 +14,7 @@ export default function LogoIcon({ color1, color2 }: Props) {
           style={
             color1
               ? { fill: color1 }
-              : hooks({
+              : css({
                   fill: blue40,
                   dark: { fill: blue30 },
                 })
@@ -25,7 +25,7 @@ export default function LogoIcon({ color1, color2 }: Props) {
           style={
             color2
               ? { fill: color2 }
-              : hooks({
+              : css({
                   fill: gray50,
                   dark: { fill: gray30 },
                 })

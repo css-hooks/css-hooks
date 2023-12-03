@@ -4,7 +4,7 @@ import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import * as prettier from "prettier/standalone";
 import * as prettierEstree from "prettier/plugins/estree";
 import * as prettierTypescript from "prettier/plugins/typescript";
-import hooks from "@/css-hooks";
+import { css } from "@/css-hooks";
 import Code from "@/components/Code";
 import Typography from "@/components/Typography";
 import { exhausted } from "@/util/exhausted";
@@ -71,7 +71,7 @@ export default async function Home() {
   return (
     <>
       <header
-        style={hooks({
+        style={css({
           background: gray10,
           dark: { background: gray80 },
         })}
@@ -127,7 +127,7 @@ export default async function Home() {
               </Typography>
             </div>
             <div
-              style={hooks({
+              style={css({
                 display: "grid",
                 gridTemplateColumns: "repeat(2, auto)",
                 gap: "1rem",
@@ -157,7 +157,7 @@ export default async function Home() {
                     <a
                       href="https://codesandbox.io/p/sandbox/github/css-hooks/css-hooks/tree/master/examples/react?file=/src/App.tsx:1,1"
                       className={className}
-                      style={hooks({
+                      style={css({
                         ...style,
                         mobile: {
                           display: "none",
@@ -176,7 +176,7 @@ export default async function Home() {
                     <a
                       href="https://github.com/css-hooks/css-hooks"
                       className={className}
-                      style={hooks({
+                      style={css({
                         ...style,
                         desktop: {
                           display: "none",
@@ -192,7 +192,7 @@ export default async function Home() {
             </div>
           </div>
           <section
-            style={hooks({
+            style={css({
               background: white,
               padding: "2rem",
               dark: { background: gray90 },
@@ -451,7 +451,7 @@ function Feature({
   return (
     <section style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
       <div
-        style={hooks({
+        style={css({
           display: "flex",
           gap: "1rem",
           alignItems: "center",
@@ -476,7 +476,7 @@ function Feature({
         })}
       >
         <div
-          style={hooks({
+          style={css({
             boxShadow: "0 0 0 2px currentColor",
             width: "3rem",
             height: "3rem",
@@ -538,7 +538,7 @@ function DesignedFor({
   return (
     <div
       className="group"
-      style={hooks({
+      style={css({
         flexBasis: "calc((44rem - 100%) * 999)",
         flexGrow: 1,
         background: gray10,
@@ -564,7 +564,7 @@ function DesignedFor({
       >
         <Typography
           variant="regularSmallCaps"
-          style={hooks({
+          style={css({
             color: gray60,
             dark: { color: gray40 },
           })}
@@ -589,7 +589,7 @@ function DesignedFor({
         }
       </CtaButton>
       <div
-        style={hooks({
+        style={css({
           opacity: 0.75,
           filter: "grayscale(0.75)",
           previousHover: { opacity: 1, filter: "grayscale(0)" },

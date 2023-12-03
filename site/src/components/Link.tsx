@@ -1,4 +1,4 @@
-import hooks from "@/css-hooks";
+import { css } from "@/css-hooks";
 import {
   ComponentProps,
   ComponentType,
@@ -25,7 +25,7 @@ export type Props = U.Strict<
 export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
   function Link({ children, selected, style, ...restProps }, ref) {
     const forwardProps: ForwardProps = {
-      style: hooks({
+      style: css({
         color: selected ? "inherit" : blue50,
         textDecoration: "none",
         cursor: selected ? "default" : "pointer",

@@ -8,7 +8,7 @@ import Logo from "@/components/Logo";
 import PageBlock from "@/components/PageBlock";
 import RadioLink from "@/components/RadioLink";
 import Typography from "@/components/Typography";
-import hooks from "@/css-hooks";
+import { css } from "@/css-hooks";
 import { exhausted } from "@/util/exhausted";
 import frameworks from "./frameworks";
 import guides from "./guides";
@@ -27,7 +27,7 @@ export default function Layout({
   return (
     <>
       <header
-        style={hooks({
+        style={css({
           padding: "2rem",
           background: gray10,
           dark: { background: gray80 },
