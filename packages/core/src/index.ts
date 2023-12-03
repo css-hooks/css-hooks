@@ -133,51 +133,7 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
         });
     }
 
-    function hooksImpl(
-      properties: WithHooks<HookProperties, Properties>,
-      fallback: (
-        propertyName: keyof Properties,
-      ) => string | null = propertyName =>
-        stringifyImpl(propertyName, properties[propertyName]),
-    ): Properties {
-      forEachHook(properties, (hookName, innerProperties) => {
-        hooksImpl(innerProperties, propertyName => {
-          let v = stringifyImpl(
-            propertyName,
-            innerProperties[propertyName as keyof typeof innerProperties],
-          );
-          if (v === null) {
-            v = fallback(propertyName);
-          }
-          if (v === null) {
-            v = "unset";
-          }
-          return v;
-        });
-        for (const propertyName in innerProperties) {
-          const v1 = stringifyImpl(
-            propertyName as keyof Properties,
-            innerProperties[propertyName as keyof typeof innerProperties],
-          );
-          if (v1 !== null) {
-            let v0: string | null = fallback(propertyName as keyof Properties);
-            if (v0 === null) {
-              v0 = "unset";
-            }
-            /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any */
-            properties[propertyName as keyof typeof properties] =
-              `var(--${hookId(hookName)}-1, ${v1}) var(--${hookId(
-                hookName,
-              )}-0, ${v0})` as any;
-            /* eslint-enable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any */
-          }
-        }
-        delete properties[hookName as unknown as keyof typeof properties];
-      });
-      return properties as Properties;
-    }
-
-    const css = Object.entries(config)
+    const hooks = Object.entries(config)
       .map(([name, definition]: [string, unknown]): [string, unknown] => {
         function nest(input: HookSpec): HookSpec {
           if (typeof input === "object") {
@@ -216,7 +172,7 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
         return [name, nest(definition)];
       })
       .flatMap(([name, definition]: [string, unknown]) =>
-        (function css(
+        (function hooksCSS(
           name: string,
           definition: unknown,
         ): {
@@ -230,7 +186,7 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
             let a: HookSpec | undefined,
               operator,
               b: HookSpec | undefined,
-              extraCSS: ReturnType<typeof css> = [];
+              extraHooksCSS: ReturnType<typeof hooksCSS> = [];
             if ("or" in definition) {
               operator = "or";
               [a, b] = definition.or;
@@ -238,9 +194,9 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
                 return [];
               }
               if (!b) {
-                return css(name, a);
+                return hooksCSS(name, a);
               }
-              extraCSS = [
+              extraHooksCSS = [
                 {
                   init: (function aorb(x) {
                     const a = `${x}A`;
@@ -259,9 +215,9 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
                 return [];
               }
               if (!b) {
-                return css(name, a);
+                return hooksCSS(name, a);
               }
-              extraCSS = [
+              extraHooksCSS = [
                 {
                   init: (function aandb(x) {
                     const a = `${x}A`;
@@ -276,9 +232,9 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
             }
             if (operator) {
               return [
-                ...css(`${name}A`, a),
-                ...css(`${name}B`, b),
-                ...extraCSS,
+                ...hooksCSS(`${name}A`, a),
+                ...hooksCSS(`${name}B`, b),
+                ...extraHooksCSS,
               ];
             }
           }
@@ -313,12 +269,56 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
         },
       );
 
+    function cssImpl(
+      properties: WithHooks<HookProperties, Properties>,
+      fallback: (
+        propertyName: keyof Properties,
+      ) => string | null = propertyName =>
+        stringifyImpl(propertyName, properties[propertyName]),
+    ): Properties {
+      forEachHook(properties, (hookName, innerProperties) => {
+        cssImpl(innerProperties, propertyName => {
+          let v = stringifyImpl(
+            propertyName,
+            innerProperties[propertyName as keyof typeof innerProperties],
+          );
+          if (v === null) {
+            v = fallback(propertyName);
+          }
+          if (v === null) {
+            v = "unset";
+          }
+          return v;
+        });
+        for (const propertyName in innerProperties) {
+          const v1 = stringifyImpl(
+            propertyName as keyof Properties,
+            innerProperties[propertyName as keyof typeof innerProperties],
+          );
+          if (v1 !== null) {
+            let v0: string | null = fallback(propertyName as keyof Properties);
+            if (v0 === null) {
+              v0 = "unset";
+            }
+            /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any */
+            properties[propertyName as keyof typeof properties] =
+              `var(--${hookId(hookName)}-1, ${v1}) var(--${hookId(
+                hookName,
+              )}-0, ${v0})` as any;
+            /* eslint-enable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any */
+          }
+        }
+        delete properties[hookName as unknown as keyof typeof properties];
+      });
+      return properties as Properties;
+    }
+
     return [
-      `*{${css.init}}${css.rule}`,
-      function hooks(
+      `*{${hooks.init}}${hooks.rule}`,
+      function css(
         properties: WithHooks<HookProperties, Properties>,
       ): Properties {
-        return hooksImpl(
+        return cssImpl(
           JSON.parse(JSON.stringify(properties)) as typeof properties,
         );
       },

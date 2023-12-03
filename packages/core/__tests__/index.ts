@@ -5,18 +5,18 @@ function normalizeCSS(css: string) {
   return csstree.generate(csstree.parse(css));
 }
 
-describe("css renderer", () => {
-  const createHooksImpl = buildHooksSystem(() => "");
+describe("hooks renderer", () => {
+  const createHooksImpl = buildHooksSystem();
   const createHooks = (config: Parameters<typeof createHooksImpl>[0]) =>
     createHooksImpl(config, { hookNameToId: x => x });
 
   it("renders pseudo-class hooks", () => {
-    const [css] = createHooks({
+    const [hooks] = createHooks({
       hover: ":hover",
       focusWithin: ":focus-within",
       oddChild: ":nth-child(odd)",
     });
-    expect(normalizeCSS(css)).toEqual(
+    expect(normalizeCSS(hooks)).toEqual(
       normalizeCSS(`
         * {
           --hover-0:initial;
@@ -46,11 +46,11 @@ describe("css renderer", () => {
   });
 
   it("renders media query hooks", () => {
-    const [css] = createHooks({
+    const [hooks] = createHooks({
       dark: "@media (prefers-color-scheme:dark)",
       light: "@media (prefers-color-scheme:light)",
     });
-    expect(normalizeCSS(css)).toEqual(
+    expect(normalizeCSS(hooks)).toEqual(
       normalizeCSS(`
         * {
           --dark-0:initial;
@@ -77,12 +77,12 @@ describe("css renderer", () => {
   });
 
   it("renders container query hooks", () => {
-    const [css] = createHooks({
+    const [hooks] = createHooks({
       small: "@container (max-width: 399.999px)",
       medium: "@container (min-width: 400px) and (max-width: 699.999px)",
       large: "@container (min-width: 700px)",
     });
-    expect(normalizeCSS(css)).toEqual(
+    expect(normalizeCSS(hooks)).toEqual(
       normalizeCSS(`
         * {
           --small-0:initial;
@@ -118,11 +118,11 @@ describe("css renderer", () => {
   });
 
   it("renders selector hooks", () => {
-    const [css] = createHooks({
+    const [hooks] = createHooks({
       checkedPrevious: ":checked + &",
       groupHover: ".hover-group &",
     });
-    expect(normalizeCSS(css)).toEqual(
+    expect(normalizeCSS(hooks)).toEqual(
       normalizeCSS(`
         * {
           --checkedPrevious-0:initial;
@@ -145,13 +145,13 @@ describe("css renderer", () => {
   });
 
   it("renders a mix of hooks", () => {
-    const [css] = createHooks({
+    const [hooks] = createHooks({
       "checked-previous": ":checked + &",
       "nth-custom": ":nth-child(3n+2)",
       dark: "@media (prefers-color-scheme: dark)",
       "extra-large": "@container (min-width: 2000px)",
     });
-    expect(normalizeCSS(css)).toEqual(
+    expect(normalizeCSS(hooks)).toEqual(
       normalizeCSS(`
         * {
           --checked-previous-0:initial;
@@ -192,12 +192,12 @@ describe("css renderer", () => {
   });
 
   it('renders "or" hooks', () => {
-    const [css] = createHooks({
+    const [hooks] = createHooks({
       dark: {
         or: ["@media (prefers-color-scheme: dark)", "[data-theme='dark'] &"],
       },
     });
-    expect(normalizeCSS(css)).toEqual(
+    expect(normalizeCSS(hooks)).toEqual(
       normalizeCSS(`
         * {
           --darkA-0:initial;
@@ -222,12 +222,12 @@ describe("css renderer", () => {
   });
 
   it('renders "and" hooks', () => {
-    const [css] = createHooks({
+    const [hooks] = createHooks({
       dark: {
         and: ["@media (prefers-color-scheme: dark)", "[data-theme='dark'] &"],
       },
     });
-    expect(normalizeCSS(css)).toEqual(
+    expect(normalizeCSS(hooks)).toEqual(
       normalizeCSS(`
         * {
           --darkA-0:initial;
@@ -252,7 +252,7 @@ describe("css renderer", () => {
   });
 
   it('renders nested "and" and "or" hooks', () => {
-    const [css] = createHooks({
+    const [hooks] = createHooks({
       dark: {
         or: [
           {
@@ -265,7 +265,7 @@ describe("css renderer", () => {
         ],
       },
     });
-    expect(normalizeCSS(css)).toEqual(
+    expect(normalizeCSS(hooks)).toEqual(
       normalizeCSS(`
         * {
           --darkAA-0:initial;
@@ -344,12 +344,12 @@ describe("css renderer", () => {
   });
 });
 
-describe("hooks function", () => {
-  it("renders hook values in the reverse of the specified order", () => {
+describe("css function", () => {
+  it("renders values in the reverse of the specified order", () => {
     const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
       typeof value === "string" ? value : null,
     );
-    const [, hooks] = createHooks(
+    const [, css] = createHooks(
       {
         testHookA: ":a",
         testHookB: ":b",
@@ -358,7 +358,7 @@ describe("hooks function", () => {
       { hookNameToId: x => x },
     );
     expect(
-      hooks({
+      css({
         color: "red",
         testHookA: { color: "yellow" },
         testHookB: { color: "green" },
@@ -369,7 +369,7 @@ describe("hooks function", () => {
         "var(--testHookC-1, blue) var(--testHookC-0, var(--testHookB-1, green) var(--testHookB-0, var(--testHookA-1, yellow) var(--testHookA-0, red)))",
     });
     expect(
-      hooks({
+      css({
         color: "red",
         testHookB: { color: "yellow" },
         testHookC: { color: "green" },
@@ -381,18 +381,18 @@ describe("hooks function", () => {
     });
   });
 
-  it("allows the default property value to be defined after hooks (mimicking specificity)", () => {
+  it("allows the default property value to be defined after hook styles", () => {
     const createHooks = buildHooksSystem<{ "text-decoration": string }>(
       (_, value) => (typeof value === "string" ? value : null),
     );
-    const [, hooks] = createHooks(
+    const [, css] = createHooks(
       {
         "test-hook": ":test-hook",
       },
       { hookNameToId: x => x },
     );
     expect(
-      hooks({
+      css({
         "test-hook": { "text-decoration": "underline" },
         "text-decoration": "none",
       }),
@@ -407,11 +407,11 @@ describe("hooks function", () => {
       color?: string;
       "background-color"?: string;
     }>((_, value) => (typeof value === "string" ? value : null));
-    const [, hooks] = createHooks({
+    const [, css] = createHooks({
       "test-hook": ":test-hook",
     });
     expect(
-      hooks({
+      css({
         color: "white",
         "background-color": "red",
         "test-hook": {
@@ -425,13 +425,13 @@ describe("hooks function", () => {
     const createHooks = buildHooksSystem<{
       color?: string;
     }>((_, value) => (typeof value === "string" ? value : null));
-    const [, hooks] = createHooks(
+    const [, css] = createHooks(
       {
         "test-hook": ":test-hook",
       },
       { hookNameToId: x => x },
     );
-    expect(hooks({ "test-hook": { color: "red" } })).toEqual({
+    expect(css({ "test-hook": { color: "red" } })).toEqual({
       color: "var(--test-hook-1, red) var(--test-hook-0, unset)",
     });
   });
@@ -440,11 +440,11 @@ describe("hooks function", () => {
     const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
       value === "hook" ? value : null,
     );
-    const [, hooks] = createHooks(
+    const [, css] = createHooks(
       { testHook: ":test-hook" },
       { hookNameToId: x => x },
     );
-    expect(hooks({ color: "invalid", testHook: { color: "hook" } })).toEqual({
+    expect(css({ color: "invalid", testHook: { color: "hook" } })).toEqual({
       color: "var(--testHook-1, hook) var(--testHook-0, unset)",
     });
   });
@@ -453,17 +453,17 @@ describe("hooks function", () => {
     const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
       value === "default" ? value : null,
     );
-    const [, hooks] = createHooks({ testHook: ":test-hook" });
-    expect(hooks({ color: "default", testHook: { color: "invalid" } })).toEqual(
-      { color: "default" },
-    );
+    const [, css] = createHooks({ testHook: ":test-hook" });
+    expect(css({ color: "default", testHook: { color: "invalid" } })).toEqual({
+      color: "default",
+    });
   });
 
   it('uses as-is a value that is already a string starting with "var("', () => {
     const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
       typeof value === "string" ? `[${value}]` : null,
     );
-    const [, hooks] = createHooks(
+    const [, css] = createHooks(
       {
         "test-hook-a": ":test-hook-a",
         "test-hook-b": ":test-hook-b",
@@ -471,7 +471,7 @@ describe("hooks function", () => {
       { hookNameToId: x => x },
     );
     expect(
-      hooks({
+      css({
         color: "blue",
         "test-hook-a": {
           color: "lightblue",
@@ -490,7 +490,7 @@ describe("hooks function", () => {
     const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
       typeof value === "string" ? `[${value}]` : null,
     );
-    const [, hooks] = createHooks(
+    const [, css] = createHooks(
       {
         testHookA: ":test-hook-a",
         testHookB: ":test-hook-b",
@@ -498,7 +498,7 @@ describe("hooks function", () => {
       { hookNameToId: x => x },
     );
     expect(
-      hooks({
+      css({
         color: "black",
         testHookA: {
           color: "red",
@@ -517,7 +517,7 @@ describe("hooks function", () => {
     const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
       typeof value === "string" && value !== "invalid" ? `[${value}]` : null,
     );
-    const [, hooks] = createHooks(
+    const [, css] = createHooks(
       {
         "test-hook-a": ":test-hook-a",
         "test-hook-b": ":test-hook-b",
@@ -525,7 +525,7 @@ describe("hooks function", () => {
       { hookNameToId: x => x },
     );
     expect(
-      hooks({
+      css({
         color: "black",
         "test-hook-a": {
           color: "invalid",
@@ -544,7 +544,7 @@ describe("hooks function", () => {
 describe("createHooks function", () => {
   it("uses hash identifiers for variable names by default", () => {
     const createHooks = buildHooksSystem();
-    const [css, hooks] = createHooks({
+    const [hooks, css] = createHooks({
       foo: ":disabled",
       bar: {
         or: [
@@ -555,7 +555,7 @@ describe("createHooks function", () => {
         ],
       },
     });
-    expect(normalizeCSS(css)).toEqual(
+    expect(normalizeCSS(hooks)).toEqual(
       normalizeCSS(`
         * {
           --5g7aa6-0:initial;
@@ -590,7 +590,7 @@ describe("createHooks function", () => {
       `),
     );
     expect(
-      hooks({ color: "black", foo: { color: "gray" }, bar: { color: "red" } }),
+      css({ color: "black", foo: { color: "gray" }, bar: { color: "red" } }),
     ).toEqual({
       color:
         "var(--ilyuet-1, red) var(--ilyuet-0, var(--5g7aa6-1, gray) var(--5g7aa6-0, black))",
@@ -599,13 +599,13 @@ describe("createHooks function", () => {
 
   it("includes user-defined hook names in variable names in debug mode", () => {
     const createHooks = buildHooksSystem();
-    const [css, hooks] = createHooks(
+    const [hooks, css] = createHooks(
       {
         "@media (min-width: 1000px)": "@media (min-width: 1000px)",
       },
       { debug: true },
     );
-    expect(normalizeCSS(css)).toEqual(
+    expect(normalizeCSS(hooks)).toEqual(
       normalizeCSS(`
         * {
           --_media__min-width__1000px_-umzjoj-0:initial;
@@ -620,7 +620,7 @@ describe("createHooks function", () => {
       `),
     );
     expect(
-      hooks({
+      css({
         color: "blue",
         "@media (min-width: 1000px)": {
           color: "red",
