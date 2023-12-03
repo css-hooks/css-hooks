@@ -1,11 +1,11 @@
 import * as V from "varsace";
 import Logo from "./Logo";
-import hooks from "./css-hooks";
+import { css } from "./css-hooks";
 
 function App() {
   return (
     <div
-      style={hooks({
+      style={css({
         position: "absolute",
         top: 0,
         right: 0,
@@ -25,7 +25,7 @@ function App() {
       </div>
       <a
         href="https://css-hooks.com/docs/preact/getting-started"
-        style={hooks({
+        style={css({
           fontFamily: "Inter, sans-serif",
           fontSize: "1.333rem",
           fontWeight: 700,
