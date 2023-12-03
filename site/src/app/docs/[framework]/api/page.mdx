@@ -2,27 +2,25 @@ import Code from "@/components/Code";
 
 # API
 
-## <Code className="language-typescript">createHooks(\_: HooksConfig) => [CSS extends string, HooksFn]</Code>
+## <Code className="language-typescript">createHooks(\_: Config, \_?: Options) => [StyleSheet, CssFn]</Code>
 
-Given a hook configuration, this function produces a static style sheet, which
-must be added to the document, along with a `hooks` function that supports the
-configured hooks.
+Given a hook configuration and (optional) options, this function produces a
+static style sheet, which must be added to the document, along with a `css`
+function that can leverage the configured hooks.
 
-## <Code className="language-typescript">type HooksFn = (\_: WithHooks&lt;CSSProperties&gt;) => CSSProperties</Code>
+## <Code className="language-typescript">type Config = Record&lt;HookName, HookSpec&gt;</Code>
 
-The `hooks` function accepts an object consisting of CSS properties and nested
-hook objects, flattening it to produce a properties object compatible with the
-`style` prop.
+This configuration object defines the hooks available for use in the `css`
+function.
 
-## <Code className="language-typescript">type HooksConfig = Record&lt;HookName extends string, HookSpec&gt;</Code>
+## <Code className="language-typescript">type HookName = String</Code>
 
-This configuration object defines which hooks to support, which is reflected in
-the `hooks` function and its corresponding style sheet.
+The alias used to reference the hook in the `css` function
 
 ## <Code className="language-typescript">type HookSpec</Code>
 
-A `HookSpec` is a specific type of string that defines the condition under which
-a hook applies, following one of these formats:
+A typical `HookSpec` is a specific type of string that defines the condition
+under which a hook applies, following one of these formats:
 
 - **`":<pseudo>"`**, where `<pseudo>` is any
   [pseudo-class](https://www.w3.org/TR/selectors/#pseudo-classes) such as
@@ -37,7 +35,26 @@ a hook applies, following one of these formats:
 - **`"@media <query>"`**, where `<query>` can be replaced with any
   [media query](https://www.w3.org/TR/mediaqueries-5/) condition.
 
-An additional type of `HookSpec` allows the hook to be activated whenever any
-one out of a list of conditions applies. It is defined using an object:
+Two additional types of `HookSpec` allow you to use boolean `and`/`or` logic to
+define the conditions under which the the hook should apply. These are defined
+using an object:
 
-- `{ or: (HookSpec & string)[] }`
+- `{ and: HookSpec[] }`
+- `{ or: HookSpec[] }`
+
+## <Code className="language-typescript">type Options = \{ debug?: boolean \}</Code>
+
+Options that affect how CSS content is rendered
+
+- `debug`: When enabled, uses human-readable CSS variable names.
+
+## <Code className="language-typescript">type StyleSheet = String</Code>
+
+A string of CSS content that must be added to the document to support the
+configured hooks
+
+## <Code className="language-typescript">type CssFn = (\_: WithHooks&lt;CSSProperties&gt;) => CSSProperties</Code>
+
+The `css` function accepts an object consisting of CSS properties and nested
+style objects, flattening it to produce a properties object compatible with the
+`style` prop.
