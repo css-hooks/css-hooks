@@ -2,8 +2,8 @@ import CodeExample from "./CodeExample";
 
 # Usage
 
-The main interface you will interact with throughout your application is that of
-the `hooks` function, created via `createHooks` as shown in the
+The main interface you'll interact with throughout your app is that of the `css`
+function, created via `createHooks` as shown in the
 [Getting started](./getting-started) guide.
 
 You can make use of hooks anywhere you find a `style` prop that you'd like to
@@ -12,9 +12,9 @@ to name just a few. For example, consider the case of a simple button:
 
 <CodeExample name="initial" framework={props.params.framework} />
 
-You can access hooks simply by "wrapping" the style object in a `hooks` call:
+You can access hooks simply by "wrapping" the style object in a `css()` call:
 
-<CodeExample name="hooksWrap" framework={props.params.framework} />
+<CodeExample name="cssWrap" framework={props.params.framework} />
 
 And now it's possible to add, say, a hover state:
 
