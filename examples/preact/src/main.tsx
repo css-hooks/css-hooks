@@ -2,12 +2,12 @@ import "@fontsource/inter/latin-700.css";
 
 import { render } from "preact";
 import App from "./App";
-import { css } from "./css-hooks";
+import { hooks } from "./css-hooks";
 
 render(
   <>
     {/* eslint-disable-next-line react/no-danger */}
-    <style dangerouslySetInnerHTML={{ __html: css }} />
+    <style dangerouslySetInnerHTML={{ __html: hooks }} />
     <App />
   </>,
   document.getElementById("root")!,
