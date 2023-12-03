@@ -22,7 +22,7 @@ const baseStyles = {
 
 const examples = {
   initial: example(baseStyles, true),
-  hooksWrap: example(baseStyles),
+  cssWrap: example(baseStyles),
   hoverHook: example({ ...baseStyles, hover: { background: "#444" } }),
   hookOrder: example({
     ...baseStyles,
@@ -77,13 +77,13 @@ export default function CodeExample({
 
 function example(style: Record<string, unknown>, noHooks = false) {
   return (framework: (typeof frameworks)[number]) => `
-    // src/Button.tsx${noHooks ? "" : '\n\nimport hooks from "./css-hooks";'}
+    // src/Button.tsx${noHooks ? "" : '\n\nimport { css } from "./css-hooks";'}
 
     export default function Button(props: Props) {
       return (
         <button
           {...props}
-          style={${noHooks ? "" : "hooks("}${JSON.stringify(
+          style={${noHooks ? "" : "css("}${JSON.stringify(
             framework === "solid" ? keybab(style) : style,
           )
             .replace(/"([A-Za-z]+)":/g, (_, x) => `${x}:`)
