@@ -31,10 +31,7 @@ You can copy and paste the following example as a starting point.
 
 import { createHooks, recommended } from "@css-hooks/${props.params.framework}";
     
-const [css, hooks] = createHooks(recommended);
-
-export default hooks;
-export { css }`}
+export const [hooks, css] = createHooks(recommended);`}
   </Code>
 </Pre>
 
@@ -42,7 +39,7 @@ export { css }`}
 
 ## 3. Add static CSS
 
-The `css` export from the module created in Step 2 consists of a static CSS
+The `hooks` export from the module created in Step 2 consists of a static CSS
 string that must be included somewhere on the page. This could be achieved in
 any number of ways, but the easiest is simply to add a `<style>` element in your
 root component, e.g.:
@@ -51,10 +48,10 @@ root component, e.g.:
   <Code className="language-tsx">
     {`// src/App.tsx
 
-import { css } from "./css-hooks";
+import { hooks } from "./css-hooks";
 
 export default function App() {
-  return (${"\n" + ["    <>", "      " + (props.params.framework === "solid" ? `<style>{css}</style>` : `<style dangerouslySetInnerHTML={{ __html: css }} />`), "      <h1>Hello world</h1>", "    </>", "  );", "}"].map(x => x + "\n").join("")}`}
+  return (${"\n" + ["    <>", "      " + (props.params.framework === "solid" ? `<style>{hooks}</style>` : `<style dangerouslySetInnerHTML={{ __html: hooks }} />`), "      <h1>Hello world</h1>", "    </>", "  );", "}"].map(x => x + "\n").join("")}`}
 
   </Code>
 </Pre>
@@ -63,7 +60,7 @@ export default function App() {
 
 ## 4. Use hooks
 
-Now you're ready to use the hooks. Simply import the `hooks` function and use it
+Now you're ready to use the hooks. Simply import the `css` function and use it
 in any `style` prop where you need it, e.g.:
 
 ```tsx
@@ -75,7 +72,7 @@ export default function Button(props: ButtonProps) {
   return (
     <button
       {...props}
-      style={hooks({
+      style={css({
         color: "black",
         hover: { color: "blue" },
       })}
