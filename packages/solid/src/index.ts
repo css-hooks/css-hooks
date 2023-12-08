@@ -43,6 +43,6 @@ function keybab<R extends Record<string, unknown>, K extends keyof R = keyof R>(
 /**
  * A list of hooks offered as a "sensible default" to solve the most common use cases.
  *
- * @deprecated
+ * @deprecated Use the `@css-hooks/recommended` package instead.
  */
 export const recommended = keybab(coreRecommended);
