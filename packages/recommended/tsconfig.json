@@ -1,0 +1,7 @@
+{
+  "extends": "@tsconfig/strictest",
+  "include": ["__tests__", "src"],
+  "compilerOptions": {
+    "noEmit": true
+  }
+}

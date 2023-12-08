@@ -17,6 +17,7 @@
     "url": "https://github.com/css-hooks/css-hooks.git"
   },
   "workspaces": [
+    "packages/recommended",
     "packages/core",
     "packages/preact",
     "packages/react",

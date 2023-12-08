@@ -1,0 +1,8 @@
+{
+  "extends": "@tsconfig/strictest",
+  "include": ["src"],
+  "compilerOptions": {
+    "target": "es2015",
+    "moduleResolution": "node"
+  }
+}
