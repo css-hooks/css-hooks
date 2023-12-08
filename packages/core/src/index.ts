@@ -328,6 +328,8 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
 
 /**
  * A list of hooks offered as a "sensible default" to solve the most common use cases.
+ *
+ * @deprecated Use the `@css-hooks/recommended` package instead.
  */
 export const recommended = {
   active: ":active",
