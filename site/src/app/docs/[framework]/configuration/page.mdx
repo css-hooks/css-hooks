@@ -3,23 +3,70 @@ import Pre from "@/components/Pre";
 
 # Configuration
 
-To address a wide range of use cases, hooks are fully configurable. A set of
-[recommended hooks](./hooks-reference) is provided for your convenience, but you
-can extend or replace these with your own custom hooks as needed.
+To address a wide range of use cases, hooks are fully configurable. This
+flexibility means you can use our "recommended" hooks as a starting point and/or
+create your own custom set of hooks if you prefer.
 
-To start, let's review the default configuration presented in the
-[Getting started](./getting-started) guide:
+---
+
+## Recommended hooks
+
+_Note: Requires TypeScript version 5.3 or later._
+
+To get up and running with some sensible defaults, you can install
+`@css-hooks/recommended` via NPM or your package manager of choice, e.g.:
+
+```bash
+npm install @css-hooks/recommended
+```
+
+Then, in your `src/css.ts` module (or equivalent), you can import and use the
+`recommended` function to conveniently configure a number of useful hooks:
 
 <Pre>
   <Code className="language-typescript">
-    {`import { createHooks, recommended } from "@css-hooks/${props.params.framework}";
+    {`import { createHooks } from "@css-hooks/${props.params.framework}";
+import { recommended } from "@css-hooks/recommended";
 
-export const [hooks, css] = createHooks(recommended);`}
+export const [hooks, css] = createHooks(recommended({
+  breakpoints: ["500px", "1000px"],
+  colorSchemes: ["dark", "light"],
+  pseudoClasses: [
+    ":hover",
+    ":focus",
+    ":active",
+    ":disabled",
+  ]
+}));`}
   </Code>
 </Pre>
 
-If you aren't interested in the recommended hooks, you can simply replace them
-with your own hooks:
+To combine these with additional custom hooks, simply spread the returned
+object:
+
+<Pre>
+  <Code className="language-typescript">
+    {`import { createHooks } from "@css-hooks/${props.params.framework}";
+import { recommended } from "@css-hooks/recommended";
+
+export const [hooks, css] = createHooks({
+  ...recommended({
+    // configuration for recommended hooks
+  }),
+  // custom hooks
+);`}
+  </Code>
+</Pre>
+
+---
+
+## Custom hooks
+
+In cases where the `recommended` function doesn't provide what you need, you can
+fall back to defining custom hooks using the base hook configuration format.
+That is, a record with each entry consisting of a _hook name_ (the alias used to
+reference the hook in the `css` function) and a _hook spec_ (a description of
+the hook's functionality). For example:
 
 <Pre>
   <Code className="language-typescript">
@@ -28,74 +75,18 @@ with your own hooks:
 export const [hooks, css] = createHooks({
   ${props.params.framework === "solid" ? '"my-hover"' : "myHover"}: ":hover",
   ${props.params.framework === "solid" ? '"my-active"' : "myActive"}: ":active",
-  ${props.params.framework === "solid" ? '"my-dark"' : "myDark"}: ".dark > &",
+  ${props.params.framework === "solid" ? '"my-dark"' : "myDark"}: ".dark &",
 });`}
   </Code>
 </Pre>
 
-Now the `css` function will allow you to use the three hooks you've configured:
+### Hook specs
 
-<Pre>
-  <Code className="language-typescript">
-    {`function Component() {
-  return (
-    <a
-      href="https://css-hooks.com"
-      style={css({
-        color: "blue",
-        ${
-          props.params.framework === "solid" ? '"my-hover"' : "myHover"
-        }: { color: "lightblue" },
-        ${
-          props.params.framework === "solid" ? '"my-active"' : "myActive"
-        }: { color: "red" },
-        ${props.params.framework === "solid" ? '"my-dark"' : "myDark"}: {
-          color: "lightblue",
-          ${
-            props.params.framework === "solid" ? '"my-hover"' : "myHover"
-          }: { color: "white" },
-          ${
-            props.params.framework === "solid" ? '"my-active"' : "myActive"
-          }: { color: "pink" },
-        },
-      })}
-    >
-      Hooks
-    </a>
-  );
-}`}
-  </Code>
-</Pre>
+A hook spec uses CSS syntax to define the functionality of the hook. It can
+consist of a pseudo-class, custom selector logic, a container query, a media
+query, or a logical combination of any of these.
 
-Another option is to include the recommended hooks along with any custom hooks
-you'd like to add. To do this, simply define a custom configuration object and
-spread the `recommended` hooks:
-
-<Pre>
-  <Code className="language-typescript">
-    {`import { createHooks, recommended } from "@css-hooks/${
-      props.params.framework
-    }";
-
-export const [hooks, css] = createHooks({
-  ...recommended,
-  ${
-    props.params.framework === "solid" ? '"group-hover"' : "groupHover"
-  }: ".group:hover &",
-  dark: ".dark &",
-});`}
-  </Code>
-</Pre>
-
----
-
-## Hook spec
-
-Each entry in the configuration object defines the name of a hook along with a
-spec describing its CSS representation. Let's take a look at each of the
-available hook types.
-
-### Basic pseudo-classes
+#### Basic pseudo-classes
 
 A hook that activates when the element matches a pseudo-class can usually be
 represented with a basic pseudo-class spec, e.g.
@@ -108,7 +99,7 @@ The spec must start with a `:` character and uses native CSS syntax for
 pseudo-classes. For an overview of pseudo-classes that you might use, see
 [Pseudo-classes (MDN)](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes).
 
-### Selectors
+#### Selectors
 
 A hook can also implement complex selector logic, e.g.
 
@@ -123,7 +114,7 @@ the element where the hook is applied (i.e. the element where the `hooks`
 function is used). For an overview of CSS selectors, see
 [CSS selectors (MDN)](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors).
 
-### Container queries
+#### Container queries
 
 A container query hook activates when the specified container condition(s) are
 matched, e.g.
@@ -136,7 +127,7 @@ Similar to pseudo-class and selector hooks, container query hooks support native
 CSS syntax. To learn more, see
 [@container (MDN)](https://developer.mozilla.org/en-US/docs/Web/CSS/@container).
 
-### Media queries
+#### Media queries
 
 A media query hook activates when certain media types and/or features are
 matched, e.g.
@@ -149,15 +140,25 @@ As with other types, media query hooks use native CSS syntax. For more
 information about media queries, see
 [@media (MDN)](https://developer.mozilla.org/en-US/docs/Web/CSS/@media).
 
-### Logical-or hooks
+#### Logical combination hooks
 
-A logical-or hook combines any of the previously-defined hook types, activating
-when one of the conditions is true.
+A logical combination hook combines any of the previously-defined hook types. It
+consists of an object with a single key `and` or `or`, whose value is an array
+of other hook specs joined by that operator.
 
-A common use case for this is adding vendor prefixes, e.g.
-`{ or: [":read-write", ":-moz-read-write"] }`.
+For example, the following hook could be used to implement an advanced dark mode
+that would allow you to override the `prefers-color-scheme` media query based on
+a user setting:
 
-### Logical-and hooks
-
-A logical-and hook combines any of the previously-defined hook types, activating
-when all of the conditions are true.
+```typescript
+export const [hooks, css] = createHooks({
+  dark: {
+    or: [
+      "[data-theme='dark'] &",
+      {
+        and: ["[data-theme='auto'] &", "@media (prefers-color-scheme: dark)"],
+      },
+    ],
+  },
+});
+```

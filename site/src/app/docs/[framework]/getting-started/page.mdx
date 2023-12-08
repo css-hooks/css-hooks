@@ -19,19 +19,20 @@ this via NPM or your package manager of choice, e.g.:
 
 ## 2. Create hooks
 
-To support a wide range of use cases, CSS Hooks allows you to define your own
-hooks, although a default set of "recommended" hooks is provided for your
-convenience. Whether you use the recommended hooks or start from scratch, you'll
-need to create a CSS Hooks module within your project, e.g. `src/css-hooks.ts`.
-You can copy and paste the following example as a starting point.
+To address a wide range of use cases, CSS Hooks is fully configurable, allowing
+you to define your own hooks. To keep things as simple as possible, let's start
+with a single `:hover` hook. Create a new module in your project, e.g.
+`src/css.ts`, and copy the following example:
 
 <Pre>
   <Code className="language-typescript">
-    {`// src/css-hooks.ts
+    {`// src/css.ts
 
-import { createHooks, recommended } from "@css-hooks/${props.params.framework}";
+import { createHooks } from "@css-hooks/${props.params.framework}";
     
-export const [hooks, css] = createHooks(recommended);`}
+export const [hooks, css] = createHooks({
+  ":hover": ":hover",
+});`}
   </Code>
 </Pre>
 
@@ -48,7 +49,7 @@ root component, e.g.:
   <Code className="language-tsx">
     {`// src/App.tsx
 
-import { hooks } from "./css-hooks";
+import { hooks } from "./css";
 
 export default function App() {
   return (${"\n" + ["    <>", "      " + (props.params.framework === "solid" ? `<style>{hooks}</style>` : `<style dangerouslySetInnerHTML={{ __html: hooks }} />`), "      <h1>Hello world</h1>", "    </>", "  );", "}"].map(x => x + "\n").join("")}`}
@@ -60,13 +61,16 @@ export default function App() {
 
 ## 4. Use hooks
 
-Now you're ready to use the hooks. Simply import the `css` function and use it
-in any `style` prop where you need it, e.g.:
+Now you're ready to use your configured hooks. Simply import the `css` function
+and apply it to your style object. The style object continues to work exactly
+the same as in {props.params.framework.replace(/^[a-z]/, x =>
+x.toUpperCase())}'s `style` prop API, except that it allows you to leverage your
+hooks by nesting additional style objects.
 
 ```tsx
 // src/Button.tsx
 
-import { css } from "./css-hooks";
+import { css } from "./css";
 
 export default function Button(props: ButtonProps) {
   return (
@@ -74,9 +78,16 @@ export default function Button(props: ButtonProps) {
       {...props}
       style={css({
         color: "black",
-        hover: { color: "blue" },
+        ":hover": { color: "blue" },
       })}
     />
   );
 }
 ```
+
+---
+
+## 5. Next steps
+
+Proceed to the [Configuration](./configuration) guide to learn how to configure
+additional hooks.

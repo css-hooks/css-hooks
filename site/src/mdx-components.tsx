@@ -46,6 +46,10 @@ const Heading2 = makeHeadingComponent("h2", "regular2XL");
 
 const Heading3 = makeHeadingComponent("h3", "regularXL");
 
+const Heading4 = makeHeadingComponent("h4", "boldLarge");
+
+const Heading5 = makeHeadingComponent("h5", "boldBase");
+
 function ListItem({
   className: liClassName = "",
   style: liStyle,
@@ -122,6 +126,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     h1: Heading1,
     h2: Heading2,
     h3: Heading3,
+    h4: Heading4,
+    h5: Heading5,
     hr: HorizontalRule,
     li: ListItem,
     p: Paragraph,
