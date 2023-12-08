@@ -81,8 +81,8 @@ type HooksConfig<C extends Config> = Display<
 >;
 
 /**
- * Based on your selections, produces a CSS Hooks configuration with a default
- * set of hooks to address the most common use cases.
+ * Based on your selections, produces a hook configuration with a default set of
+ * hooks to address the most common use cases.
  *
  * @param config
  * Use these settings to control which hooks to generate and their specific
@@ -90,6 +90,9 @@ type HooksConfig<C extends Config> = Display<
  *
  * @returns
  * The CSS Hooks configuration that you can pass to the `createHooks` function
+ *
+ * @remarks
+ * Requires TypeScript version 5.3 or later.
  */
 export function recommended<const C extends Config>(config: C): HooksConfig<C> {
   type PartialHooksConfig = HooksConfig<C>;
