@@ -1,3 +1,15 @@
+## [1.4.0](https://github.com/css-hooks/css-hooks/compare/v1.3.0...v1.4.0) (2023-12-08)
+
+
+### Features
+
+* **recommended:** provide configurable presets ([0be6a40](https://github.com/css-hooks/css-hooks/commit/0be6a401217176102899afb27b292f5d67191b47))
+
+
+### Bug Fixes
+
+* **core:** deprecate recommended export ([90aa251](https://github.com/css-hooks/css-hooks/commit/90aa251649c7125806ec3106dc370a2554b0d120))
+
 ## [1.3.0](https://github.com/css-hooks/css-hooks/compare/v1.2.1...v1.3.0) (2023-11-30)
 
 
