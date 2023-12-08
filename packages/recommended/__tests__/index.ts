@@ -101,8 +101,8 @@ describe("recommended", () => {
       const config = recommended({
         pseudoClasses: [":hover", ":nth-child(2n + 3)"],
       });
-      expect(config[":hover"]).toEqual(":hover");
-      expect(config[":nth-child(2n + 3)"]).toEqual(":nth-child(2n + 3)");
+      expect(config["&:hover"]).toEqual("&:hover");
+      expect(config["&:nth-child(2n + 3)"]).toEqual("&:nth-child(2n + 3)");
     });
   });
 });

@@ -65,7 +65,10 @@ type WithColorSchemes<C, I> = C extends { colorSchemes: (infer ColorScheme)[] }
 
 type WithPseudoClasses<C, I> = C extends { pseudoClasses: string[] }
   ? C["pseudoClasses"] extends (infer PseudoClass)[]
-    ? UnionToIntersection<StringToHook<PseudoClass>> & I
+    ? UnionToIntersection<
+        StringToHook<`&${PseudoClass extends string ? PseudoClass : never}`>
+      > &
+        I
     : never
   : I;
 
@@ -118,7 +121,7 @@ export function recommended<const C extends Config>(config: C): HooksConfig<C> {
     .reduce((obj, x) => ({ ...obj, [x]: x }), {}) || {}) as PartialHooksConfig;
 
   const pseudoClasses = (config.pseudoClasses?.reduce(
-    (obj, x) => ({ ...obj, [x]: x }),
+    (obj, x) => ({ ...obj, [`&${x}`]: `&${x}` }),
     {},
   ) || {}) as PartialHooksConfig;
 
