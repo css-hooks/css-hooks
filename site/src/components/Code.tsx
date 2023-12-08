@@ -8,7 +8,7 @@ import {
 import { O } from "ts-toolbelt";
 import { Inconsolata } from "next/font/google";
 import SyntaxHighlighter, { supportedLanguage } from "./SyntaxHighlighter";
-import { css } from "@/css-hooks";
+import { css } from "@/css";
 import { teal20, teal60 } from "varsace";
 
 export type Props = ComponentProps<"code">;

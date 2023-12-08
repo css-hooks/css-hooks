@@ -4,7 +4,7 @@ import SyntaxHighlighter from "@/components/SyntaxHighlighter";
 import * as prettier from "prettier/standalone";
 import * as prettierEstree from "prettier/plugins/estree";
 import * as prettierTypescript from "prettier/plugins/typescript";
-import { css } from "@/css-hooks";
+import { css } from "@/css";
 import Code from "@/components/Code";
 import Typography from "@/components/Typography";
 import { exhausted } from "@/util/exhausted";

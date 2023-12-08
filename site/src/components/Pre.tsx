@@ -1,4 +1,4 @@
-import { css } from "@/css-hooks";
+import { css } from "@/css";
 import { CSSProperties, ReactNode } from "react";
 import { gray10, gray80 } from "varsace";
 

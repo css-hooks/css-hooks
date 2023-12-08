@@ -1,4 +1,4 @@
-import { css } from "@/css-hooks";
+import { css } from "@/css";
 import {
   ComponentProps,
   ComponentType,
