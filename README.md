@@ -29,11 +29,15 @@ styles to a link:
   href="https://css-hooks.com/"
   style={css({
     color: "#03f",
-    hover: {
+    fontSize: "1rem",
+    "&:hover": {
       color: "#09f",
     },
-    active: {
+    "&:active": {
       color: "#e33",
+    },
+    "@media (1000px <= width)": {
+      fontSize: "1.25rem",
     },
   })}
 >
