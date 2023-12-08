@@ -47,16 +47,15 @@ const codeExample = `
   href="https://css-hooks.com/"
   style={css({
     color: "#03f",
-    dark: {
-      color: "#4d70ff",
-    },
-    hover: {
+    fontSize: "1rem",
+    "&:hover": {
       color: "#09f",
     },
-    active: {
-      color: "#e33",
-    },
-  })}>
+    "@media (1000px <= width)": {
+      fontSize: "1.25rem"
+    }
+  })}
+>
   Hooks
 </a>
 `;

@@ -23,8 +23,8 @@ And now it's possible to add, say, a `:hover` state:
 
 Note that hooks are prioritized by the order in which they are defined, with the
 last hook overriding any previously-defined properties. For example, in the
-typical case that _:disabled_ styles need to override other states, you should
-apply the `:disabled` hook last:
+typical case that `:disabled` styles need to override other states, you should
+apply the `&:disabled` hook last:
 
 <CodeExample name="hookOrder" framework={props.params.framework} />
 
