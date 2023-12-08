@@ -17,7 +17,7 @@ export default function Pre({
         padding: "1.5em",
         background: gray10,
         overflow: "auto",
-        dark: {
+        "@media (prefers-color-scheme: dark)": {
           background: gray80,
         },
         ...style,

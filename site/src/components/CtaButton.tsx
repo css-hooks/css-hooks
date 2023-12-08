@@ -53,18 +53,18 @@ export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
               alignItems: "center",
               justifyContent: "center",
               gap: "0.5em",
-              hover: {
+              ":hover": {
                 background: blue40,
               },
-              active: {
+              ":active": {
                 background: red40,
               },
-              dark: {
+              "@media (prefers-color-scheme: dark)": {
                 background: theme === "purple" ? purple60 : gray70,
-                hover: {
+                ":hover": {
                   background: blue50,
                 },
-                active: {
+                ":active": {
                   background: red50,
                 },
               },

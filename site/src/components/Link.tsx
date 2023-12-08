@@ -36,12 +36,12 @@ export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
           active: {
             color: red40,
           },
-          dark: {
+          "@media (prefers-color-scheme: dark)": {
             color: blue30,
-            hover: {
+            ":hover": {
               color: blue20,
             },
-            active: {
+            ":active": {
               color: red20,
             },
           },

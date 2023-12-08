@@ -52,7 +52,7 @@ export default forwardRef<HTMLElement, O.Omit<Props, "ref">>(function Code(
     : {
         style: css({
           color: teal60,
-          dark: {
+          "@media (prefers-color-scheme: dark)": {
             color: teal20,
           },
           ...style,

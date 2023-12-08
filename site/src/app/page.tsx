@@ -73,7 +73,7 @@ export default async function Home() {
       <header
         style={css({
           background: gray10,
-          dark: { background: gray80 },
+          "@media (prefers-color-scheme: dark)": { background: gray80 },
         })}
       >
         <PageBlock
@@ -134,7 +134,7 @@ export default async function Home() {
                 display: "grid",
                 gridTemplateColumns: "repeat(2, auto)",
                 gap: "1rem",
-                mobile: {
+                "@media (width < 500px)": {
                   width: "100%",
                   gridTemplateColumns: "repeat(2, 1fr)",
                 },
@@ -162,7 +162,7 @@ export default async function Home() {
                       className={className}
                       style={css({
                         ...style,
-                        mobile: {
+                        "@media (width < 500px)": {
                           display: "none",
                         },
                       })}
@@ -181,7 +181,7 @@ export default async function Home() {
                       className={className}
                       style={css({
                         ...style,
-                        desktop: {
+                        "@media (500px <= width)": {
                           display: "none",
                         },
                       })}
@@ -198,7 +198,7 @@ export default async function Home() {
             style={css({
               background: white,
               padding: "2rem",
-              dark: { background: gray90 },
+              "@media (prefers-color-scheme: dark)": { background: gray90 },
             })}
           >
             <Typography variant="codeBase">
@@ -466,7 +466,7 @@ function Feature({
             green: green50,
             teal: teal50,
           }[color],
-          dark: {
+          "@media (prefers-color-scheme: dark)": {
             color: {
               blue: blue20,
               purple: purple20,
@@ -486,7 +486,7 @@ function Feature({
             borderRadius: 9999,
             display: "grid",
             placeItems: "center",
-            dark: {
+            "@media (prefers-color-scheme: dark)": {
               boxShadow: `0 0 32px 0 ${
                 {
                   blue: blue60,
@@ -546,7 +546,7 @@ function DesignedFor({
         flexGrow: 1,
         background: gray10,
         color: gray80,
-        dark: {
+        "@media (prefers-color-scheme: dark)": {
           background: gray80,
           color: gray10,
         },
@@ -569,7 +569,7 @@ function DesignedFor({
           variant="regularSmallCaps"
           style={css({
             color: gray60,
-            dark: { color: gray40 },
+            "@media (prefers-color-scheme: dark)": { color: gray40 },
           })}
         >
           Designed for
@@ -595,7 +595,7 @@ function DesignedFor({
         style={css({
           opacity: 0.75,
           filter: "grayscale(0.75)",
-          previousHover: { opacity: 1, filter: "grayscale(0)" },
+          ":hover + &": { opacity: 1, filter: "grayscale(0)" },
         })}
       >
         {logo}

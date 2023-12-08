@@ -28,7 +28,7 @@ export default function RootLayout({
           margin: 0,
           background: white,
           color: black,
-          dark: {
+          "@media (prefers-color-scheme: dark)": {
             background: gray90,
             color: white,
           },
@@ -37,7 +37,7 @@ export default function RootLayout({
           flexDirection: "column",
         })}
       >
-        <style>{`${cssGlobals} ${hooks}`}</style>
+        <style dangerouslySetInnerHTML={{ __html: `${cssGlobals} ${hooks}` }} />
         <div style={{ flex: 1 }}>{children}</div>
         <PageBlock>
           {({ style: pageBlockStyle, ...restProps }) =>
