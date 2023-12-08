@@ -1,5 +1,5 @@
 import "@fontsource/inter/latin-700.css";
-import { hooks } from "./css-hooks";
+import { hooks } from "./css";
 
 import React from "react";
 import ReactDOM from "react-dom/client";
