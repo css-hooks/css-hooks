@@ -108,7 +108,7 @@ function HorizontalRule() {
         marginBlock: "2.5rem 2rem",
         height: 1,
         border: 0,
-        dark: { background: gray80 },
+        "@media (prefers-color-scheme: dark)": { background: gray80 },
       })}
     />
   );

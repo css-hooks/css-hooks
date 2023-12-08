@@ -27,7 +27,7 @@ export default function Logo({
       <div
         style={css({
           color: gray90,
-          dark: { color: gray10 },
+          "@media (prefers-color-scheme: dark)": { color: gray10 },
         })}
       >
         CSS Hooks

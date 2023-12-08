@@ -30,7 +30,7 @@ export default function Layout({
         style={css({
           padding: "2rem",
           background: gray10,
-          dark: { background: gray80 },
+          "@media (prefers-color-scheme: dark)": { background: gray80 },
         })}
       >
         <PageBlock
