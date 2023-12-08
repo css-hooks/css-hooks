@@ -14,7 +14,7 @@ export const stringifyValue = genericStringify;
  *
  * @param config - The hooks to build
  *
- * @returns The CSS required to enable the configured hooks, along with the corresponding `hooks` function for use in components.
+ * @returns The `hooks` CSS required to enable the configured hooks, along with the corresponding `css` function for use in components.
  */
 export const createHooks = buildHooksSystem<JSX.CSSProperties>(stringifyValue);
 
@@ -42,5 +42,7 @@ function keybab<R extends Record<string, unknown>, K extends keyof R = keyof R>(
 
 /**
  * A list of hooks offered as a "sensible default" to solve the most common use cases.
+ *
+ * @deprecated
  */
 export const recommended = keybab(coreRecommended);
