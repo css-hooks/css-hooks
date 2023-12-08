@@ -23,16 +23,16 @@ const baseStyles = {
 const examples = {
   initial: example(baseStyles, true),
   cssWrap: example(baseStyles),
-  hoverHook: example({ ...baseStyles, ":hover": { background: "#444" } }),
+  hoverHook: example({ ...baseStyles, "&:hover": { background: "#444" } }),
   hookOrder: example({
     ...baseStyles,
-    ":hover": { background: "#444" },
-    ":disabled": { background: "#333", color: "#666", cursor: "not-allowed" },
+    "&:hover": { background: "#444" },
+    "&:disabled": { background: "#333", color: "#666", cursor: "not-allowed" },
   }),
   composition: example({
     ...baseStyles,
-    ":enabled": {
-      ":hover": {
+    "&:enabled": {
+      "&:hover": {
         background: "#444",
       },
     },

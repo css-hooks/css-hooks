@@ -21,7 +21,7 @@ this via NPM or your package manager of choice, e.g.:
 
 To address a wide range of use cases, CSS Hooks is fully configurable, allowing
 you to define your own hooks. To keep things as simple as possible, let's start
-with a single `:hover` hook. Create a new module in your project, e.g.
+with a single `&:hover` hook. Create a new module in your project, e.g.
 `src/css.ts`, and copy the following example:
 
 <Pre>
@@ -31,7 +31,7 @@ with a single `:hover` hook. Create a new module in your project, e.g.
 import { createHooks } from "@css-hooks/${props.params.framework}";
     
 export const [hooks, css] = createHooks({
-  ":hover": ":hover",
+  "&:hover": "&:hover",
 });`}
   </Code>
 </Pre>
@@ -78,7 +78,7 @@ export default function Button(props: ButtonProps) {
       {...props}
       style={css({
         color: "black",
-        ":hover": { color: "blue" },
+        "&:hover": { color: "blue" },
       })}
     />
   );
