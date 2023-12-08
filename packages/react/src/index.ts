@@ -29,7 +29,7 @@ export function stringifyValue(
  *
  * @param config - The hooks to build
  *
- * @returns The CSS required to enable the configured hooks, along with the corresponding `hooks` function for use in components.
+ * @returns The `hooks` CSS required to enable the configured hooks, along with the corresponding `css` function for use in components.
  */
 export const createHooks = buildHooksSystem<CSSProperties>(stringifyValue);
 
