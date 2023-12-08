@@ -5,7 +5,7 @@ import { CSSProperties, ComponentPropsWithoutRef, ElementType } from "react";
 import Code from "./components/Code";
 import Link from "@/components/Link";
 import Pre from "./components/Pre";
-import { css } from "@/css-hooks";
+import { css } from "@/css";
 import { gray20, gray80 } from "varsace";
 
 function makeHeadingComponent(

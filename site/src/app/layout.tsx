@@ -1,6 +1,6 @@
 import cssGlobals from "./globals.css";
 import type { Metadata } from "next";
-import { css, hooks } from "@/css-hooks";
+import { css, hooks } from "@/css";
 import PageBlock from "@/components/PageBlock";
 import { exhausted } from "@/util/exhausted";
 import Logo from "@/components/Logo";

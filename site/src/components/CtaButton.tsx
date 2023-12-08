@@ -2,7 +2,7 @@ import { O, U } from "ts-toolbelt";
 import Typography from "./Typography";
 import { CSSProperties, ComponentProps, ReactElement, forwardRef } from "react";
 import { exhausted } from "@/util/exhausted";
-import { css } from "@/css-hooks";
+import { css } from "@/css";
 import {
   blue40,
   blue50,

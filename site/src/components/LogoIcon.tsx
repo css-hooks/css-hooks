@@ -1,4 +1,4 @@
-import { css } from "@/css-hooks";
+import { css } from "@/css";
 import { blue30, blue40, gray30, gray50 } from "varsace";
 
 export type Props = {
