@@ -55,6 +55,8 @@ Please visit [css-hooks.com](https://css-hooks.com) to get started.
 
 ## Packages
 
+- [@css-hooks/recommended](packages/recommended): Recommended hook configuration
+  with sensible defaults
 - [@css-hooks/react](packages/react): React framework integration
 - [@css-hooks/solid](packages/solid): Solid framework integration
 - [@css-hooks/preact](packages/preact): Preact framework integration
