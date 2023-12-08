@@ -1,6 +1,6 @@
 import * as V from "varsace";
 import Logo from "./Logo";
-import { css } from "./css-hooks";
+import { css } from "./css";
 
 function App() {
   return (
@@ -13,7 +13,10 @@ function App() {
         left: 0,
         background: V.white,
         color: V.black,
-        dark: { background: V.black, color: V.white },
+        "@media (prefers-color-scheme: dark)": {
+          background: V.black,
+          color: V.white,
+        },
         display: "flex",
         "flex-direction": "column",
         "align-items": "center",
@@ -36,18 +39,18 @@ function App() {
           color: V.white,
           padding: "0.5em 0.75em",
           display: "inline-block",
-          hover: {
+          "&:hover": {
             background: V.blue40,
           },
-          active: {
+          "&:active": {
             background: V.red40,
           },
-          dark: {
+          "@media (prefers-color-scheme: dark)": {
             background: V.gray70,
-            hover: {
+            "&:hover": {
               background: V.blue50,
             },
-            active: {
+            "&:active": {
               background: V.red50,
             },
           },
