@@ -1,0 +1,29 @@
+runs:
+  using: "composite"
+  steps:
+    - uses: wagoid/commitlint-github-action@v5
+
+    - uses: actionsx/prettier@v3
+      with:
+        args: --check .
+
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18.16.1
+
+    - run: npm ci
+      shell: bash
+
+    # Note that the packages must be built before linting. Otherwise, some
+    # types will be inferred as `any` leading to errors.
+    - run: npm run lint --workspaces --if-present
+      shell: bash
+
+    - run: npm test --workspaces --if-present
+      shell: bash
+
+    - run: npm run build --workspace=examples
+      shell: bash
+
+    - run: npm run build --workspace=site
+      shell: bash
