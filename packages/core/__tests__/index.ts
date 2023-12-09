@@ -421,31 +421,46 @@ describe("css function", () => {
     ).toEqual("white");
   });
 
-  it("falls back to `unset` when a default value is not present", () => {
-    const createHooks = buildHooksSystem<{
-      color?: string;
-    }>((_, value) => (typeof value === "string" ? value : null));
-    const [, css] = createHooks(
-      {
-        "test-hook": ":test-hook",
-      },
-      { hookNameToId: x => x },
-    );
-    expect(css({ "test-hook": { color: "red" } })).toEqual({
-      color: "var(--test-hook-1, red) var(--test-hook-0, unset)",
-    });
-  });
+  (["unset", "revert-layer"] as const).forEach(fallback => {
+    describe(`when fallback option is set to \`${fallback}\``, () => {
+      it(`falls back to \`${fallback}\` when a default value is not present (single level)`, () => {
+        const createHooks = buildHooksSystem<{
+          color?: string;
+        }>((_, value) => (typeof value === "string" ? value : null));
+        const [, css] = createHooks(
+          {
+            "test-hook": ":test-hook",
+          },
+          { fallback, hookNameToId: x => x },
+        );
+        expect(css({ "test-hook": { color: "red" } })).toEqual({
+          color: `var(--test-hook-1, red) var(--test-hook-0, ${fallback})`,
+        });
+      });
 
-  it("falls back to `unset` when the default value can't be stringified", () => {
-    const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
-      value === "hook" ? value : null,
-    );
-    const [, css] = createHooks(
-      { testHook: ":test-hook" },
-      { hookNameToId: x => x },
-    );
-    expect(css({ color: "invalid", testHook: { color: "hook" } })).toEqual({
-      color: "var(--testHook-1, hook) var(--testHook-0, unset)",
+      it(`falls back to \`${fallback}\` when the default value is not present (multiple levels)`, () => {
+        const createHooks = buildHooksSystem<{ color?: string }>();
+        const [, css] = createHooks(
+          { testHookA: ":test-hook-a", testHookB: ":test-hook-b" },
+          { fallback, hookNameToId: x => x },
+        );
+        expect(css({ testHookA: { testHookB: { color: "hook" } } })).toEqual({
+          color: `var(--testHookA-1, var(--testHookB-1, hook) var(--testHookB-0, ${fallback})) var(--testHookA-0, ${fallback})`,
+        });
+      });
+
+      it(`falls back to \`${fallback}\` when the default value can't be stringified`, () => {
+        const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
+          value === "hook" ? value : null,
+        );
+        const [, css] = createHooks(
+          { testHook: ":test-hook" },
+          { fallback, hookNameToId: x => x },
+        );
+        expect(css({ color: "invalid", testHook: { color: "hook" } })).toEqual({
+          color: `var(--testHook-1, hook) var(--testHook-0, ${fallback})`,
+        });
+      });
     });
   });
 
