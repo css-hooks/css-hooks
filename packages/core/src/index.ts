@@ -94,13 +94,18 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
 ) {
   return function createHooks<HookProperties extends string>(
     config: Record<HookProperties, HookSpec>,
-    options?:
+    options?: (
       | { debug?: boolean; /** @internal */ hookNameToId?: undefined }
       | {
           debug?: undefined;
           /** @internal */ hookNameToId?: (hookName: string) => string;
-        },
+        }
+    ) & {
+      fallback?: "unset" | "revert-layer";
+    },
   ) {
+    const fallbackKeyword = options?.fallback || "unset";
+
     const stringifyImpl = (propertyName: keyof Properties, value: unknown) => {
       return typeof value === "string" && value.startsWith("var(")
         ? value
@@ -286,7 +291,7 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
             v = fallback(propertyName);
           }
           if (v === null) {
-            v = "unset";
+            v = fallbackKeyword;
           }
           return v;
         });
@@ -298,7 +303,7 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
           if (v1 !== null) {
             let v0: string | null = fallback(propertyName as keyof Properties);
             if (v0 === null) {
-              v0 = "unset";
+              v0 = fallbackKeyword;
             }
             /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any */
             properties[propertyName as keyof typeof properties] =
