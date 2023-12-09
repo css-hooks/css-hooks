@@ -73,14 +73,7 @@ type WithPseudoClasses<C, I> = C extends { pseudoClasses: string[] }
   : I;
 
 type HooksConfig<C extends Config> = Display<
-  WithPseudoClasses<
-    C,
-    WithColorSchemes<C, WithBreakpoints<C, unknown>> extends infer O
-      ? unknown extends O
-        ? Record<string, never>
-        : O
-      : never
-  >
+  WithPseudoClasses<C, WithColorSchemes<C, WithBreakpoints<C, unknown>>>
 >;
 
 /**
