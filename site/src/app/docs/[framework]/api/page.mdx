@@ -50,7 +50,10 @@ using an object:
 
 Options that affect how CSS content is rendered
 
-- `debug: boolean` &ensp; When enabled, uses human-readable CSS variable names.
+- `debug?: boolean` &ensp; When enabled, uses human-readable CSS variable names.
+- `fallback?: "unset" | "revert-layer"` &ensp; Which fallback keyword to use.
+  `"revert-layer"` is the best choice, but it's
+  [highly experimental](https://caniuse.com/mdn-css_types_global_keywords_revert-layer).
 
 ### <Code className="language-typescript">type StyleSheet = String</Code>
 
@@ -79,12 +82,12 @@ common use cases.
 Use these settings to control which hooks to generate and their specific
 details.
 
-- `breakpoints: string[]` &ensp; A list of breakpoints used to produce `width`
+- `breakpoints?: string[]` &ensp; A list of breakpoints used to produce `width`
   media queries, e.g. `["500px", "1000px"]`. Note that these must be specified
   in ascending order.
-- `colorSchemes: ("dark" | "light")[]` &ensp; A list of color schemes used to
+- `colorSchemes?: ("dark" | "light")[]` &ensp; A list of color schemes used to
   produce `prefers-color-scheme` media queries.
-- `pseudoClasses`: `":<pseudo>"[]` &ensp; A list of pseudo-classes you want to
+- `pseudoClasses?: ":<pseudo>"[]` &ensp; A list of pseudo-classes you want to
   use, e.g. `[":hover", ":active", ":nth-child(odd)"]`
 
 ### <Code className="language-typescript">type HooksConfig = Parameters\<typeof createHooks\>[0]</Code>
