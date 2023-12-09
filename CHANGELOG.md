@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/css-hooks/css-hooks/compare/v1.4.0...v1.4.1) (2023-12-09)
+
+
+### Bug Fixes
+
+* **recommended:** type fix for pseudo only config ([e3cfe97](https://github.com/css-hooks/css-hooks/commit/e3cfe97f063461b1fd14bb2581af8e111cbb032d))
+
 ## [1.4.0](https://github.com/css-hooks/css-hooks/compare/v1.3.0...v1.4.0) (2023-12-08)
 
 
