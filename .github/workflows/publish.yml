@@ -1,46 +1,53 @@
 # prettier-ignore
 
-name: release
+name: publish
 
 on:
   workflow_dispatch:
+    inputs:
+      artifacts:
+        type: choice
+        description: Which items to publish
+        options:
+          - website
+          - release
+        default: 'website'
+        required: true
 
 jobs:
-  release:
+  publish:
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{github.ref}}
           fetch-depth: 0
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18.16.1
-          registry-url: "https://registry.npmjs.org"
+      - uses: ./.github/actions/build
 
-      - name: install dependencies
-        run: npm ci
-
-      - name: version bump (root)
+      - if: inputs.artifacts == 'release'
+        name: version bump (root)
         id: root
         run:
           echo "version=$(npm version $(npx conventional-recommended-bump -p
           conventionalcommits) --preid=alpha --git-tag-version=false
           --tag-version-prefix='')" >> $GITHUB_OUTPUT
 
-      - name: version bump (packages)
+      - if: inputs.artifacts == 'release'
+        name: version bump (packages)
         run:
           npm version ${{steps.root.outputs.version}} --workspaces
           --git-tag-version=false
 
-      - name: generate changelog
+      - if: inputs.artifacts == 'release'
+        name: generate changelog
         run:
           npx conventional-changelog -p conventionalcommits -i CHANGELOG.md -s
 
-      - name: commit version bump
+      - if: inputs.artifacts == 'release'
+        name: commit version bump
         id: commit
         uses: EndBug/add-and-commit@v9
         with:
@@ -48,7 +55,8 @@ jobs:
           author_email: 41898282+github-actions[bot]@users.noreply.github.com
           message: "release: v${{steps.root.outputs.version}}"
 
-      - name: tag version
+      - if: inputs.artifacts == 'release'
+        name: tag version
         uses: actions/github-script@v3
         with:
           github-token: ${{github.token}}
@@ -60,21 +68,34 @@ jobs:
               sha: "${{steps.commit.outputs.commit_long_sha}}"
             })
 
-      - name: fetch tag
+      - if: inputs.artifacts == 'release'
+        name: fetch tag
         run: git fetch --tags
 
-      - name: github release
+      - if: inputs.artifacts == 'release'
+        name: github release
         run: npx conventional-github-releaser -p conventionalcommits
         env:
           CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{secrets.GH_ACCESS_TOKEN}}
 
-      - name: prepare readme
+      - if: inputs.artifacts == 'release'
+        name: prepare readme
         run: node -e "require('fs').writeFileSync('./README.md', require('fs').readFileSync('./README.md', 'utf8').replace(/<\!-- npm-remove -->[\S\s]*<\!-- \/npm-remove -->/gm, ''))"
 
-      - name: propagate common files
+      - if: inputs.artifacts == 'release'
+        name: propagate common files
         run: for dir in ./packages/*; do cp LICENSE README.md "$dir"; done
 
-      - name: npm publish
+      - if: inputs.artifacts == 'release'
+        name: npm publish
         run: npm publish --access public --workspace="packages/**"
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
+      - uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site/out
+          cname: css-hooks.com
+          force_orphan: true
+          commit_message: ${{ github.event.head_commit.message }}
