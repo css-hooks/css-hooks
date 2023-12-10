@@ -9,9 +9,9 @@ on:
         type: choice
         description: Which items to publish
         options:
-          - website
+          - website_only
           - release
-        default: 'website'
+        default: 'website_only'
         required: true
 
 jobs:
@@ -26,6 +26,12 @@ jobs:
           fetch-depth: 0
 
       - uses: ./.github/actions/build
+
+      - if: inputs.artifacts == 'release'
+        name: verify npm auth
+        run: npm whoami
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
       - if: inputs.artifacts == 'release'
         name: version bump (root)
