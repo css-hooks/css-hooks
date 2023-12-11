@@ -38,6 +38,12 @@ jobs:
           node-version: 18.16.1
           registry-url: "https://registry.npmjs.org"
 
+      - if: inputs.artifacts == 'release'
+        name: verify npm auth
+        run: npm whoami
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+
       - run: npm ci
 
       # Note that the packages must be built before linting. Otherwise, some
@@ -49,12 +55,6 @@ jobs:
       - run: npm run build --workspace=examples
 
       - run: npm run build --workspace=site
-
-      - if: inputs.artifacts == 'release'
-        name: verify npm auth
-        run: npm whoami
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
       - if: inputs.artifacts == 'release'
         name: version bump (root)
