@@ -33,10 +33,10 @@ jobs:
         with:
           args: --check .
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18.16.1
-          registry-url: "https://registry.npmjs.org"
+          registry-url: 'https://registry.npmjs.org'
 
       - if: inputs.artifacts == 'release'
         name: verify npm auth
