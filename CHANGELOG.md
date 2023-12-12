@@ -1,3 +1,5 @@
+## 1.4.2 (2023-12-12)
+
 ## [1.4.1](https://github.com/css-hooks/css-hooks/compare/v1.4.0...v1.4.1) (2023-12-09)
 
 
