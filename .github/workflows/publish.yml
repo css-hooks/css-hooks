@@ -25,8 +25,6 @@ jobs:
           ref: ${{github.ref}}
           fetch-depth: 0
 
-      - uses: actions/checkout@v4
-
       - uses: wagoid/commitlint-github-action@v5
 
       - uses: actionsx/prettier@v3
@@ -70,6 +68,8 @@ jobs:
           npm version ${{steps.root.outputs.version}} --workspaces
           --git-tag-version=false
 
+      # Note that generating the changelog depends on the package.json version
+      # updated in the previous step.
       - if: inputs.artifacts == 'release'
         name: generate changelog
         run:
