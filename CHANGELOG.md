@@ -1,3 +1,10 @@
+## [1.5.0](https://github.com/css-hooks/css-hooks/compare/v1.4.2...v1.5.0) (2023-12-13)
+
+
+### Features
+
+* fix version number after new fallback feature ([2397c62](https://github.com/css-hooks/css-hooks/commit/2397c62554b8eb2eaa091d0d20a81970001daa64))
+
 ## [1.4.2](https://github.com/css-hooks/css-hooks/compare/v1.4.1...v1.4.2) (2023-12-13)
 
 
