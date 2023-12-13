@@ -1,4 +1,9 @@
-## 1.4.2 (2023-12-12)
+## [1.4.2](https://github.com/css-hooks/css-hooks/compare/v1.4.1...v1.4.2) (2023-12-13)
+
+
+### Features
+
+* **core:** option to customize fallback ([8576a36](https://github.com/css-hooks/css-hooks/commit/8576a3690486728edf3ded6957cf1e9cdcee6a70))
 
 ## [1.4.1](https://github.com/css-hooks/css-hooks/compare/v1.4.0...v1.4.1) (2023-12-09)
 
