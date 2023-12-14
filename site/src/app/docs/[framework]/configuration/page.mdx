@@ -37,7 +37,19 @@ export const [hooks, css] = createHooks(recommended({
     ":active",
     ":disabled",
   ]
-}));`}
+}));
+
+/* Hooks created:
+ - @media (width < 500px)
+ - @media (500px <= width < 1000px)
+ - @media (1000px <= width)
+ - @media (prefers-color-scheme: dark)
+ - @media (prefers-color-scheme: light)
+ - &:hover
+ - &:focus
+ - &:disabled
+ - &:active
+*/`}
   </Code>
 </Pre>
 
