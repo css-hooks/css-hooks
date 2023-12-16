@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/css-hooks/css-hooks/compare/v1.5.0...v1.5.1) (2023-12-16)
+
+
+### Bug Fixes
+
+* **react:** never add px unit to custom properties ([dc8dbdf](https://github.com/css-hooks/css-hooks/commit/dc8dbdf6f196eecff13511a9975315a9a0ca708b))
+
 ## [1.5.0](https://github.com/css-hooks/css-hooks/compare/v1.4.2...v1.5.0) (2023-12-13)
 
 
