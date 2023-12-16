@@ -4,8 +4,7 @@
   "version": "1.5.0",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "^1.5.0",
-    "@emotion/unitless": "^0.8.1"
+    "@css-hooks/core": "^1.5.0"
   },
   "devDependencies": {
     "@tsconfig/strictest": "^2.0.1",

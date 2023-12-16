@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { buildHooksSystem, recommended } from "@css-hooks/core";
-import unitless from "@emotion/unitless";
+import isUnitlessNumber from "./isUnitlessNumber";
 
 /**
  * @internal
@@ -18,7 +18,7 @@ export function stringifyValue(
   }
 
   if (typeof value === "number") {
-    return `${value}${!(propertyName in unitless) ? "px" : ""}`;
+    return `${value}${isUnitlessNumber(propertyName) ? "" : "px"}`;
   }
 
   return null;

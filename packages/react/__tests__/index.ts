@@ -1,5 +1,5 @@
 import { stringifyValue } from "../src";
-import unitless from "@emotion/unitless";
+import { unitlessNumbers } from "../src/isUnitlessNumber";
 
 describe("`stringifyValue` function", () => {
   it("returns a string as-is", () => {
@@ -9,9 +9,13 @@ describe("`stringifyValue` function", () => {
   });
 
   it("returns unitless numbers as direct string equivalents", () => {
-    Object.keys(unitless as Record<string, unknown>).forEach(propertyName => {
+    Object.keys(unitlessNumbers).forEach(propertyName => {
       expect(stringifyValue(propertyName, 1.5)).toEqual("1.5");
     });
+  });
+
+  it("assumes numbers assigned to custom properties are unitless values", () => {
+    expect(stringifyValue("--foo", 7)).toEqual("7");
   });
 
   it("returns non-unitless numbers as px values", () => {
