@@ -143,7 +143,7 @@ export default async function Home() {
                 {({ className, style, ...restProps }) =>
                   exhausted(restProps) && (
                     <Link
-                      href="/docs/react/getting-started"
+                      href="/docs/react/introduction"
                       className={className}
                       style={style}
                     >
