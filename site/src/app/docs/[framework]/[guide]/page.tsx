@@ -3,6 +3,7 @@ import guides from "../guides";
 import API from "../api/page.mdx";
 import Configuration from "../configuration/page.mdx";
 import GettingStarted from "../getting-started/page.mdx";
+import Introduction from "../introduction/page.mdx";
 import Usage from "../usage/page.mdx";
 
 export async function generateStaticParams() {
@@ -36,6 +37,8 @@ export default function Page(props: Props) {
       return <Configuration {...props} />;
     case "getting-started":
       return <GettingStarted {...props} />;
+    case "introduction":
+      return <Introduction {...props} />;
     case "usage":
       return <Usage {...props} />;
     default:

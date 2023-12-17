@@ -1,5 +1,10 @@
 export default [
   [
+    "Introduction",
+    "introduction",
+    "How CSS Hooks uses an obscure CSS technique to challenge assumptions about inline styles.",
+  ],
+  [
     "Getting started",
     "getting-started",
     "Get started with CSS Hooks in just a few simple steps.",
