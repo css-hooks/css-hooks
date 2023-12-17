@@ -2,10 +2,10 @@ const fs = require("fs/promises");
 const path = require("path");
 
 const redirects = {
-  "/docs": "/docs/react/getting-started",
-  "/docs/react": "/docs/react/getting-started",
-  "/docs/solid": "/docs/solid/getting-started",
-  "/docs/preact": "/docs/preact/getting-started",
+  "/docs": "/docs/react/introduction",
+  "/docs/react": "/docs/react/introduction",
+  "/docs/solid": "/docs/solid/introduction",
+  "/docs/preact": "/docs/preact/introduction",
 };
 
 Promise.all(
