@@ -318,16 +318,15 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
       return properties as Properties;
     }
 
-    return [
-      `*{${hooks.init}}${hooks.rule}`,
-      function css(
-        properties: WithHooks<HookProperties, Properties>,
-      ): Properties {
-        return cssImpl(
-          JSON.parse(JSON.stringify(properties)) as typeof properties,
-        );
-      },
-    ] as const;
+    function css(
+      properties: WithHooks<HookProperties, Properties>,
+    ): Properties {
+      return cssImpl(
+        JSON.parse(JSON.stringify(properties)) as typeof properties,
+      );
+    }
+
+    return [`*{${hooks.init}}${hooks.rule}`, css] as [string, typeof css];
   };
 }
 
