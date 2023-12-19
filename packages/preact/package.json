@@ -43,5 +43,11 @@
     "prepublishOnly": "tsc -p tsconfig.dist.json --outDir cjs --module commonjs && tsc -p tsconfig.dist.json --outDir esm --module es6 && tsc -p tsconfig.dist.json --declaration --emitDeclarationOnly --outDir types",
     "test": "jest"
   },
-  "types": "types"
+  "types": "types",
+  "exports": {
+    ".": {
+      "import": "./esm/index.js",
+      "require": "./cjs/index.js"
+    }
+  }
 }
