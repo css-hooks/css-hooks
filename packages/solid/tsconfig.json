@@ -2,8 +2,6 @@
   "extends": "@tsconfig/strictest",
   "include": ["__tests__", "src"],
   "compilerOptions": {
-    "module": "ES2015",
-    "moduleResolution": "Bundler",
     "noEmit": true
   }
 }
