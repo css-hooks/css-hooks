@@ -1,3 +1,17 @@
+## [1.5.2](https://github.com/css-hooks/css-hooks/compare/v1.5.1...v1.5.2) (2023-12-19)
+
+
+### Bug Fixes
+
+* add types to exports in package.json ([96767b2](https://github.com/css-hooks/css-hooks/commit/96767b2367b61af6ef5d4a29cef752fb532c3c9d))
+* **core:** add exports to package.json ([1e6fc5a](https://github.com/css-hooks/css-hooks/commit/1e6fc5a1a5d89318a08c60403f6abd99aa07a4e1))
+* **core:** improve display of style sheet type ([ad29e77](https://github.com/css-hooks/css-hooks/commit/ad29e77d707dbb3a8f95d9786b5e5784dc8bb27d))
+* **preact:** add exports to package.json ([a395e0d](https://github.com/css-hooks/css-hooks/commit/a395e0da9da5ec25f84475906b92f87424761fcd))
+* **react:** add exports to package.json ([f7a695a](https://github.com/css-hooks/css-hooks/commit/f7a695a36d2d1f24f242e1a0940aff1e5d2b87bf))
+* **recommended:** add exports to package.json ([b9770eb](https://github.com/css-hooks/css-hooks/commit/b9770ebb7d510b279de6e5ae74f2dcc6328df2b6))
+* **solid:** add exports to package.json ([7ae815c](https://github.com/css-hooks/css-hooks/commit/7ae815c9f5b94b3183206debf8bbd4edff814da3))
+* **solid:** remove special module options ([9d9941c](https://github.com/css-hooks/css-hooks/commit/9d9941c878d772c0624502afe92feb50d41f53f5))
+
 ## [1.5.1](https://github.com/css-hooks/css-hooks/compare/v1.5.0...v1.5.1) (2023-12-16)
 
 
