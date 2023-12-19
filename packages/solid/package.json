@@ -45,5 +45,11 @@
     "test": "jest"
   },
   "type": "module",
-  "types": "types"
+  "types": "types",
+  "exports": {
+    ".": {
+      "import": "./esm/index.js",
+      "require": "./cjs/index.js"
+    }
+  }
 }
