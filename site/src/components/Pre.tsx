@@ -1,6 +1,6 @@
 import { css } from "@/css";
 import { CSSProperties, ReactNode } from "react";
-import { gray10, gray80 } from "varsace";
+import * as V from "varsace";
 
 export default function Pre({
   style,
@@ -15,10 +15,12 @@ export default function Pre({
         marginBlock: "1.5em",
         lineHeight: 1.25,
         padding: "1.5em",
-        background: gray10,
+        background: V.white,
+        boxShadow: `0 0 0 1px ${V.gray20}`,
         overflow: "auto",
         "@media (prefers-color-scheme: dark)": {
-          background: gray80,
+          background: V.gray85,
+          boxShadow: "none",
         },
         ...style,
       })}

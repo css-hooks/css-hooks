@@ -9,7 +9,7 @@ import { O } from "ts-toolbelt";
 import { Inconsolata } from "next/font/google";
 import SyntaxHighlighter, { supportedLanguage } from "./SyntaxHighlighter";
 import { css } from "@/css";
-import { teal20, teal60 } from "varsace";
+import * as V from "varsace";
 
 export type Props = ComponentProps<"code">;
 
@@ -51,9 +51,9 @@ export default forwardRef<HTMLElement, O.Omit<Props, "ref">>(function Code(
     ? { style }
     : {
         style: css({
-          color: teal60,
+          color: V.teal70,
           "@media (prefers-color-scheme: dark)": {
-            color: teal20,
+            color: V.teal20,
           },
           ...style,
         }),

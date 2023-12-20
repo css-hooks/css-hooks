@@ -15,32 +15,8 @@ import frameworks from "./docs/[framework]/frameworks";
 import GitHubIcon from "@/components/GitHubIcon";
 import BookIcon from "@/components/BookIcon";
 import CodeSandboxIcon from "@/components/CodeSandboxIcon";
-import {
-  blue20,
-  blue50,
-  blue60,
-  gray10,
-  gray40,
-  gray60,
-  gray80,
-  gray90,
-  green20,
-  green50,
-  green70,
-  pink20,
-  pink50,
-  pink60,
-  purple20,
-  purple50,
-  purple60,
-  teal20,
-  teal50,
-  teal70,
-  white,
-  yellow20,
-  yellow50,
-  yellow70,
-} from "varsace";
+import * as V from "varsace";
+import Image from "next/image";
 
 const codeExample = `
 <a
@@ -71,8 +47,8 @@ export default async function Home() {
     <>
       <header
         style={css({
-          background: gray10,
-          "@media (prefers-color-scheme: dark)": { background: gray80 },
+          background: V.gray05,
+          "@media (prefers-color-scheme: dark)": { background: V.gray85 },
         })}
       >
         <PageBlock
@@ -195,9 +171,9 @@ export default async function Home() {
           </div>
           <section
             style={css({
-              background: white,
+              background: V.white,
               padding: "2rem",
-              "@media (prefers-color-scheme: dark)": { background: gray90 },
+              "@media (prefers-color-scheme: dark)": { background: V.gray90 },
             })}
           >
             <Typography variant="codeBase">
@@ -434,6 +410,121 @@ export default async function Home() {
             }
           />
         </PageBlock>
+        <PageBlock
+          style={{
+            marginTop: "4rem",
+          }}
+        >
+          <div
+            style={css({
+              display: "grid",
+              gap: "2rem",
+              gridTemplateColumns: "repeat(auto-fit, minmax(24rem, 1fr))",
+              padding: "2rem",
+              background: V.gray05,
+              "@media (prefers-color-scheme: dark)": {
+                background: V.black,
+              },
+            })}
+          >
+            <Testimonial
+              url="https://twitter.com/markdalgleish/status/1729399475494608923"
+              author={
+                <TestimonialAuthor
+                  name="Mark Dalgleish"
+                  handle="markdalgleish"
+                  avatar="https://pbs.twimg.com/profile_images/754886061872979968/BzaOWhs1_400x400.jpg"
+                />
+              }
+            >
+              <p style={{ margin: 0 }}>
+                Check out CSS Hooks. This is *very* cool.
+              </p>
+              <p style={{ margin: 0 }}>
+                It lets you write type-safe inline styles (literally the{" "}
+                {"`style`"}
+                attribute *BUT* with support for a custom set of pseudo-classes,
+                selectors, media/container queries — and nested too!
+              </p>
+            </Testimonial>
+            <Testimonial
+              url="https://twitter.com/ryanflorence/status/1729501647313748410"
+              author={
+                <TestimonialAuthor
+                  name="Ryan Florence"
+                  handle="ryanflorence"
+                  avatar="https://pbs.twimg.com/profile_images/1731841705668939776/_lNdemnU_400x400.jpg"
+                />
+              }
+            >
+              <p style={{ margin: 0 }}>
+                That&apos;s how I always wished the style prop worked!
+              </p>
+            </Testimonial>
+            <Testimonial
+              url="https://twitter.com/mryechkin/status/1730695960781545538"
+              author={
+                <TestimonialAuthor
+                  name="Mykhaylo"
+                  handle="mryechkin"
+                  avatar="https://pbs.twimg.com/profile_images/1636493509384454145/leeZkIAo_400x400.jpg"
+                />
+              }
+            >
+              <p style={{ margin: 0 }}>
+                I absolutely love it. There&apos;s just something
+                &quot;fresh&quot; about it. Simple to get started, practically
+                no overhead, and it just makes sense. Best part is that it does
+                this all using native CSS features, nothing fancy - just really
+                cleverly done.
+              </p>
+            </Testimonial>
+            <Testimonial
+              url="https://twitter.com/nicolas_dev_/status/1730744552372273644"
+              author={
+                <TestimonialAuthor
+                  name="Nicolas"
+                  handle="nicolas_dev_"
+                  avatar="https://pbs.twimg.com/profile_images/1524863101992157184/HtBSEHbV_400x400.jpg"
+                />
+              }
+            >
+              <p style={{ margin: 0 }}>
+                Looks exactly like what I always wanted the style property to be
+              </p>
+              <p style={{ margin: 0 }}>Will be trying it out for sure!</p>
+            </Testimonial>
+            <Testimonial
+              url="https://twitter.com/Julien_Delort/status/1730949885891842315"
+              author={
+                <TestimonialAuthor
+                  name="Julien Delort"
+                  handle="Julien_Delort"
+                  avatar="https://pbs.twimg.com/profile_images/1611356354031112192/rUtkE659_400x400.jpg"
+                />
+              }
+            >
+              <p style={{ margin: 0 }}>
+                I was _hooked_ at &quot;no build step&quot;!
+              </p>
+            </Testimonial>
+            <Testimonial
+              url="https://twitter.com/b_e_n_t_e_n_/status/1733210680030072993"
+              author={
+                <TestimonialAuthor
+                  name="Benton Boychuk-Chorney"
+                  handle="b_e_n_t_e_n_"
+                  avatar="https://pbs.twimg.com/profile_images/1734482045840297984/2CP_PyvE_400x400.jpg"
+                />
+              }
+            >
+              <p style={{ margin: 0 }}>
+                I&apos;m curious if there is a &quot;catch&quot; to css hooks,
+                because from first glance it seems too good to be true!
+              </p>
+            </Testimonial>
+          </div>
+        </PageBlock>
       </main>
     </>
   );
@@ -458,28 +549,45 @@ function Feature({
           gap: "1rem",
           alignItems: "center",
           color: {
-            blue: blue50,
-            purple: purple50,
-            pink: pink50,
-            yellow: yellow50,
-            green: green50,
-            teal: teal50,
+            blue: V.blue50,
+            purple: V.purple50,
+            pink: V.pink50,
+            yellow: V.yellow50,
+            green: V.green50,
+            teal: V.teal50,
           }[color],
           "@media (prefers-color-scheme: dark)": {
             color: {
-              blue: blue20,
-              purple: purple20,
-              pink: pink20,
-              yellow: yellow20,
-              green: green20,
-              teal: teal20,
+              blue: V.blue20,
+              purple: V.purple20,
+              pink: V.pink20,
+              yellow: V.yellow20,
+              green: V.green20,
+              teal: V.teal20,
             }[color],
           },
         })}
       >
         <div
           style={css({
-            boxShadow: "0 0 0 2px currentColor",
+            boxShadow: `0 0 0 1px ${
+              {
+                blue: V.blue30,
+                purple: V.purple30,
+                pink: V.pink30,
+                yellow: V.yellow30,
+                green: V.green30,
+                teal: V.teal30,
+              }[color]
+            }`,
+            background: {
+              blue: V.blue10,
+              purple: V.purple10,
+              pink: V.pink10,
+              yellow: V.yellow10,
+              green: V.green10,
+              teal: V.teal10,
+            }[color],
             width: "3rem",
             height: "3rem",
             borderRadius: 9999,
@@ -488,21 +596,21 @@ function Feature({
             "@media (prefers-color-scheme: dark)": {
               boxShadow: `0 0 32px 0 ${
                 {
-                  blue: blue60,
-                  purple: purple60,
-                  pink: pink60,
-                  yellow: yellow70,
-                  green: green70,
-                  teal: teal70,
+                  blue: V.blue60,
+                  purple: V.purple60,
+                  pink: V.pink60,
+                  yellow: V.yellow70,
+                  green: V.green70,
+                  teal: V.teal70,
                 }[color]
               }`,
               background: {
-                blue: blue50,
-                purple: purple50,
-                pink: pink50,
-                yellow: yellow50,
-                green: green50,
-                teal: teal50,
+                blue: V.blue50,
+                purple: V.purple50,
+                pink: V.pink50,
+                yellow: V.yellow50,
+                green: V.green50,
+                teal: V.teal50,
               }[color],
             },
           })}
@@ -543,11 +651,11 @@ function DesignedFor({
       style={css({
         flexBasis: "calc((44rem - 100%) * 999)",
         flexGrow: 1,
-        background: gray10,
-        color: gray80,
+        background: V.gray05,
+        color: V.gray80,
         "@media (prefers-color-scheme: dark)": {
-          background: gray80,
-          color: gray10,
+          background: V.gray85,
+          color: V.gray10,
         },
         padding: 32,
         display: "flex",
@@ -567,8 +675,8 @@ function DesignedFor({
         <Typography
           variant="regularSmallCaps"
           style={css({
-            color: gray60,
-            "@media (prefers-color-scheme: dark)": { color: gray40 },
+            color: V.gray70,
+            "@media (prefers-color-scheme: dark)": { color: V.gray40 },
           })}
         >
           Designed for
@@ -600,5 +708,90 @@ function DesignedFor({
         {logo}
       </div>
     </div>
+  );
+}
+
+function TestimonialAuthor({
+  name,
+  handle,
+  avatar,
+}: {
+  name: string;
+  handle: string;
+  avatar: string;
+}) {
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateAreas: "'avatar name' 'avatar handle'",
+        gridTemplateColumns: "auto 1fr",
+        gap: "0 1rem",
+      }}
+    >
+      <div
+        style={{ display: "flex", alignItems: "center", gridArea: "avatar" }}
+      >
+        <Image
+          src={avatar}
+          alt={name}
+          width={48}
+          height={48}
+          style={{ gridArea: "photo", borderRadius: 999 }}
+        />
+      </div>
+      <div style={{ gridArea: "name" }}>{name}</div>
+      <div style={{ gridArea: "handle", color: V.gray50 }}>{`@${handle}`}</div>
+    </div>
+  );
+}
+
+function Testimonial({
+  author,
+  children,
+  url,
+}: {
+  author: ReactNode;
+  children: ReactNode;
+  url: string;
+}) {
+  return (
+    <blockquote style={{ display: "contents" }} cite={url}>
+      <a
+        href={url}
+        style={css({
+          textDecoration: "none",
+          color: "inherit",
+          background: V.white,
+          flexDirection: "column",
+          gap: "1rem",
+          padding: "2rem",
+          "&:active": {
+            boxShadow: `0 0 0 1px ${V.red35}`,
+          },
+          "@media (prefers-color-scheme: dark)": {
+            boxShadow: `inset 0 0 0 1px ${V.gray70}`,
+            background: V.gray90,
+            "&:active": {
+              background: V.gray85,
+            },
+          },
+        })}
+      >
+        <Typography variant="regularBase">
+          <div>{author}</div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem",
+              marginTop: "1.5rem",
+            }}
+          >
+            {children}
+          </div>
+        </Typography>
+      </a>
+    </blockquote>
   );
 }

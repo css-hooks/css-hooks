@@ -2,7 +2,7 @@ import { css } from "@/css";
 import { CSSProperties } from "react";
 import { Assistant } from "next/font/google";
 import LogoIcon from "./LogoIcon";
-import { gray10, gray90 } from "varsace";
+import * as V from "varsace";
 
 const assistant = Assistant({ subsets: ["latin"], weight: ["400"] });
 
@@ -26,8 +26,8 @@ export default function Logo({
       <LogoIcon />
       <div
         style={css({
-          color: gray90,
-          "@media (prefers-color-scheme: dark)": { color: gray10 },
+          color: V.gray90,
+          "@media (prefers-color-scheme: dark)": { color: V.white },
         })}
       >
         CSS Hooks

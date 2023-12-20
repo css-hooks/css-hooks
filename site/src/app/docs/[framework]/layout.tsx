@@ -14,7 +14,7 @@ import frameworks from "./frameworks";
 import guides from "./guides";
 import GitHubIcon from "@/components/GitHubIcon";
 import CodeSandboxIcon from "@/components/CodeSandboxIcon";
-import { gray10, gray50, gray80 } from "varsace";
+import * as V from "varsace";
 
 export default function Layout({
   children,
@@ -29,8 +29,8 @@ export default function Layout({
       <header
         style={css({
           padding: "2rem",
-          background: gray10,
-          "@media (prefers-color-scheme: dark)": { background: gray80 },
+          background: V.gray10,
+          "@media (prefers-color-scheme: dark)": { background: V.gray85 },
         })}
       >
         <PageBlock
@@ -77,7 +77,7 @@ export default function Layout({
                     className={className}
                     style={{
                       ...style,
-                      color: gray50,
+                      color: V.gray50,
                     }}
                   >
                     Framework
@@ -122,7 +122,7 @@ export default function Layout({
                     className={className}
                     style={{
                       ...style,
-                      color: gray50,
+                      color: V.gray50,
                     }}
                   >
                     Guides

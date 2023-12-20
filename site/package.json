@@ -27,7 +27,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "typescript": "^5.3.3",
-    "varsace": "^0.1.0"
+    "varsace": "^0.2.0"
   },
   "devDependencies": {
     "@types/prismjs": "^1.26.0",

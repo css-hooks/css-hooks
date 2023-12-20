@@ -7,7 +7,7 @@ import Logo from "@/components/Logo";
 import NextLink from "next/link";
 import Link from "@/components/Link";
 import Typography from "@/components/Typography";
-import { black, gray90, white } from "varsace";
+import * as V from "varsace";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://css-hooks.com"),
@@ -26,11 +26,11 @@ export default function RootLayout({
       <body
         style={css({
           margin: 0,
-          background: white,
-          color: black,
+          background: V.white,
+          color: V.gray90,
           "@media (prefers-color-scheme: dark)": {
-            background: gray90,
-            color: white,
+            background: V.gray90,
+            color: V.white,
           },
           minHeight: "100dvh",
           display: "flex",
@@ -80,7 +80,7 @@ export default function RootLayout({
                             exhausted(restProps) && (
                               <NextLink
                                 key="Documentation"
-                                href="/docs/react/getting-started#top"
+                                href="/docs/react/introduction#top"
                                 style={style}
                               >
                                 Documentation
