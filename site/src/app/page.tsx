@@ -419,7 +419,8 @@ export default async function Home() {
             style={css({
               display: "grid",
               gap: "2rem",
-              gridTemplateColumns: "repeat(auto-fit, minmax(24rem, 1fr))",
+              gridTemplateColumns:
+                "repeat(auto-fit, minmax(min(24rem, 100%), 1fr))",
               padding: "2rem",
               background: V.gray05,
               "@media (prefers-color-scheme: dark)": {
