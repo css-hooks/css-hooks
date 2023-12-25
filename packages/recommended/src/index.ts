@@ -1,6 +1,45 @@
-type Config = {
+type RecommendedConfig = {
+  /**
+   * Color schemes used to configure `prefers-color-scheme` media query hooks
+   *
+   * @remarks
+   *
+   * Example value: `["dark", "light"]`
+   *
+   * Resulting hook names:
+   * - `@media (prefers-color-scheme: dark)`
+   * - `@media (prefers-color-scheme: light)`
+   */
   colorSchemes?: ("dark" | "light")[];
+
+  /**
+   * Breakpoints used to configure `width` media query hooks
+   *
+   * @remarks
+   *
+   * These must be specified in ascending order.
+   *
+   * Example value: `["500px", "1000px"]`
+   *
+   * Resulting hook names:
+   * - `@media (width < 500px)`
+   * - `@media (500px <= width < 1000px)`
+   * - `@media (1000px <= width)`
+   */
   breakpoints?: string[];
+
+  /**
+   * Pseudo-classes used to generate pseudo-class selector hooks
+   *
+   * @remarks
+   *
+   * Example value: `[":hover", ":disabled", ":nth-child(odd)"]`
+   *
+   * Resulting hook names:
+   * - `&:hover`
+   * - `&:disabled`
+   * - `&:nth-child(odd)`
+   */
   pseudoClasses?: `:${string}`[];
 };
 
@@ -72,30 +111,31 @@ type WithPseudoClasses<C, I> = C extends { pseudoClasses: string[] }
     : never
   : I;
 
-type HooksConfig<C extends Config> = Display<
+type HookConfig<C extends RecommendedConfig> = Display<
   WithPseudoClasses<C, WithColorSchemes<C, WithBreakpoints<C, unknown>>>
 >;
 
 /**
- * Based on your selections, produces a hook configuration with a default set of
- * hooks to address the most common use cases.
+ * Based on your settings, produces a hook configuration with an opinionated set
+ * of hooks to address the most common use cases.
  *
  * @param config
- * Use these settings to control which hooks to generate and their specific
- * details (e.g. media query breakpoints).
+ * A simplified configuration model for an opinionated set of hooks
  *
  * @returns
- * The CSS Hooks configuration that you can pass to the `createHooks` function
+ * An advanced hook configuration that you can pass to the `createHooks` function
  *
  * @remarks
  * Requires TypeScript version 5.3 or later.
  */
-export function recommended<const C extends Config>(config: C): HooksConfig<C> {
-  type PartialHooksConfig = HooksConfig<C>;
+export function recommended<const C extends RecommendedConfig>(
+  config: C & RecommendedConfig,
+): HookConfig<C> {
+  type PartialHookConfig = HookConfig<C>;
 
   const colorSchemes = (config.colorSchemes || [])
     .map(x => `@media (prefers-color-scheme: ${x})`)
-    .reduce((obj, x) => ({ ...obj, [x]: x }), {}) as PartialHooksConfig;
+    .reduce((obj, x) => ({ ...obj, [x]: x }), {}) as PartialHookConfig;
 
   const breakpoints = (config.breakpoints
     ?.flatMap((x, i, arr) => {
@@ -111,12 +151,12 @@ export function recommended<const C extends Config>(config: C): HooksConfig<C> {
         ...(i === arr.length - 1 ? [`@media (${x} <= width)`] : []),
       ];
     })
-    .reduce((obj, x) => ({ ...obj, [x]: x }), {}) || {}) as PartialHooksConfig;
+    .reduce((obj, x) => ({ ...obj, [x]: x }), {}) || {}) as PartialHookConfig;
 
   const pseudoClasses = (config.pseudoClasses?.reduce(
     (obj, x) => ({ ...obj, [`&${x}`]: `&${x}` }),
     {},
-  ) || {}) as PartialHooksConfig;
+  ) || {}) as PartialHookConfig;
 
   return {
     ...colorSchemes,
