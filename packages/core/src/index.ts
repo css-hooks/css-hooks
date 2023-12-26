@@ -283,10 +283,7 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
     ): Properties {
       forEachHook(properties, (hookName, innerProperties) => {
         cssImpl(innerProperties, propertyName => {
-          let v = stringifyImpl(
-            propertyName,
-            innerProperties[propertyName as keyof typeof innerProperties],
-          );
+          let v = stringifyImpl(propertyName, innerProperties[propertyName]);
           if (v === null) {
             v = fallback(propertyName);
           }
@@ -295,25 +292,22 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
           }
           return v;
         });
-        for (const propertyName in innerProperties) {
-          const v1 = stringifyImpl(
-            propertyName as keyof Properties,
-            innerProperties[propertyName as keyof typeof innerProperties],
-          );
+        for (const propertyNameStr in innerProperties) {
+          const propertyName = propertyNameStr as keyof Properties;
+          const v1 = stringifyImpl(propertyName, innerProperties[propertyName]);
           if (v1 !== null) {
-            let v0: string | null = fallback(propertyName as keyof Properties);
+            let v0: string | null = fallback(propertyName);
             if (v0 === null) {
               v0 = fallbackKeyword;
             }
-            /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any */
-            properties[propertyName as keyof typeof properties] =
-              `var(--${hookId(hookName)}-1, ${v1}) var(--${hookId(
-                hookName,
-              )}-0, ${v0})` as any;
-            /* eslint-enable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any */
+            properties[propertyName] = `var(--${hookId(
+              hookName,
+            )}-1, ${v1}) var(--${hookId(
+              hookName,
+            )}-0, ${v0})` as (typeof properties)[keyof Properties];
           }
         }
-        delete properties[hookName as unknown as keyof typeof properties];
+        delete properties[hookName as unknown as keyof Properties];
       });
       return properties as Properties;
     }
