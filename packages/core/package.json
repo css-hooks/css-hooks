@@ -30,7 +30,7 @@
   },
   "scripts": {
     "clean": "rimraf cjs esm out types",
-    "lint": "eslint __tests__ src .*.*js *.*js",
+    "lint": "eslint src .*.*js *.*js",
     "prepublishOnly": "tsc -p tsconfig.dist.json --outDir esm --module es6 && tsc -p tsconfig.dist.json --outDir cjs --module commonjs && tsc -p tsconfig.dist.json --outDir types --declaration --emitDeclarationOnly",
     "test": "tsc && node --test",
     "test.watch": "tsc-watch --onSuccess 'node --test'"
