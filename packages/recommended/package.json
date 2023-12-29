@@ -5,13 +5,10 @@
   "author": "Nick Saunders",
   "devDependencies": {
     "@tsconfig/strictest": "^2.0.1",
-    "@types/jest": "^29.5.3",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
     "eslint": "^8.47.0",
-    "jest": "^29.6.2",
     "rimraf": "^5.0.1",
-    "ts-jest": "^29.1.1",
     "typescript": "^5.3.3"
   },
   "files": [
@@ -29,11 +26,11 @@
     "directory": "packages/recommended"
   },
   "scripts": {
-    "clean": "rimraf cjs esm types",
-    "compile": "tsc",
-    "lint": "eslint __tests__ src .*.*js *.*js",
+    "clean": "rimraf cjs esm out types",
+    "lint": "eslint src .*.*js *.*js",
     "prepublishOnly": "tsc -p tsconfig.dist.json --outDir esm --module es6 && tsc -p tsconfig.dist.json --outDir cjs --module commonjs && tsc -p tsconfig.dist.json --outDir types --declaration --emitDeclarationOnly",
-    "test": "jest"
+    "test": "tsc && node --test",
+    "test.watch": "tsc-watch --onSuccess 'node --test'"
   },
   "types": "types",
   "exports": {
@@ -42,5 +39,8 @@
       "require": "./cjs/index.js",
       "types": "./types/index.d.ts"
     }
+  },
+  "dependencies": {
+    "ts-watch": "^1.0.8"
   }
 }

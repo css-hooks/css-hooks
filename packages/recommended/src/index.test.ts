@@ -1,4 +1,6 @@
-import { recommended } from "../src";
+import assert from "node:assert";
+import { describe, it } from "node:test";
+import { recommended } from ".";
 
 describe("recommended", () => {
   describe("when no color schemes are specified", () => {
@@ -9,7 +11,7 @@ describe("recommended", () => {
         }),
         recommended({}),
       ].forEach(config => {
-        expect(Object.keys(config).length).toEqual(0);
+        assert.equal(Object.keys(config).length, 0);
       });
     });
   });
@@ -20,7 +22,8 @@ describe("recommended", () => {
         const config = recommended({
           colorSchemes: [colorScheme],
         });
-        expect(config[`@media (prefers-color-scheme: ${colorScheme})`]).toEqual(
+        assert.equal(
+          config[`@media (prefers-color-scheme: ${colorScheme})`],
           `@media (prefers-color-scheme: ${colorScheme})`,
         );
       });
@@ -33,7 +36,8 @@ describe("recommended", () => {
         colorSchemes: ["dark", "light"],
       });
       (["dark", "light"] as const).forEach(colorScheme => {
-        expect(config[`@media (prefers-color-scheme: ${colorScheme})`]).toEqual(
+        assert.equal(
+          config[`@media (prefers-color-scheme: ${colorScheme})`],
           `@media (prefers-color-scheme: ${colorScheme})`,
         );
       });
@@ -48,7 +52,7 @@ describe("recommended", () => {
         }),
         recommended({}),
       ].forEach(config => {
-        expect(Object.keys(config).length).toEqual(0);
+        assert.equal(Object.keys(config).length, 0);
       });
     });
   });
@@ -60,7 +64,7 @@ describe("recommended", () => {
       });
       (["@media (width < 700px)", "@media (700px <= width)"] as const).forEach(
         mediaQuery => {
-          expect(config[mediaQuery]).toEqual(mediaQuery);
+          assert.equal(config[mediaQuery], mediaQuery);
         },
       );
     });
@@ -78,7 +82,7 @@ describe("recommended", () => {
           "@media (960px <= width)",
         ] as const
       ).forEach(mediaQuery => {
-        expect(config[mediaQuery]).toEqual(mediaQuery);
+        assert.equal(config[mediaQuery], mediaQuery);
       });
     });
   });
@@ -91,7 +95,7 @@ describe("recommended", () => {
         }),
         recommended({}),
       ].forEach(config => {
-        expect(Object.keys(config).length).toEqual(0);
+        assert.equal(Object.keys(config).length, 0);
       });
     });
   });
@@ -101,8 +105,8 @@ describe("recommended", () => {
       const config = recommended({
         pseudoClasses: [":hover", ":nth-child(2n + 3)"],
       });
-      expect(config["&:hover"]).toEqual("&:hover");
-      expect(config["&:nth-child(2n + 3)"]).toEqual("&:nth-child(2n + 3)");
+      assert.equal(config["&:hover"], "&:hover");
+      assert.equal(config["&:nth-child(2n + 3)"], "&:nth-child(2n + 3)");
     });
   });
 });
