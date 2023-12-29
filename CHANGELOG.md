@@ -1,3 +1,11 @@
+## [1.5.4](https://github.com/css-hooks/css-hooks/compare/v1.5.3...v1.5.4) (2023-12-29)
+
+
+### Bug Fixes
+
+* **example-solid:** avoid html escaping style sheet ([0846140](https://github.com/css-hooks/css-hooks/commit/08461409cc007c4edbb98b0e6ed0f5e3c332f10d))
+* **react:** react as types-only dependency ([fbf320c](https://github.com/css-hooks/css-hooks/commit/fbf320cb27f0a9d35f01842019b750fecb0bf018))
+
 ## [1.5.3](https://github.com/css-hooks/css-hooks/compare/v1.5.2...v1.5.3) (2023-12-29)
 
 ## [1.5.2](https://github.com/css-hooks/css-hooks/compare/v1.5.1...v1.5.2) (2023-12-19)

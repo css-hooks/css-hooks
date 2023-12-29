@@ -1,7 +1,7 @@
 {
   "name": "@css-hooks/core",
   "description": "CSS Hooks core library",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "author": "Nick Saunders",
   "devDependencies": {
     "@tsconfig/strictest": "^2.0.1",
