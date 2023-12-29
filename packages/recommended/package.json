@@ -9,6 +9,7 @@
     "@typescript-eslint/parser": "^6.3.0",
     "eslint": "^8.47.0",
     "rimraf": "^5.0.1",
+    "ts-watch": "^1.0.8",
     "typescript": "^5.3.3"
   },
   "files": [
@@ -39,8 +40,5 @@
       "require": "./cjs/index.js",
       "types": "./types/index.d.ts"
     }
-  },
-  "dependencies": {
-    "ts-watch": "^1.0.8"
   }
 }
