@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { describe, it } from "node:test";
-import { recommended } from ".";
+import { recommended } from "./index.js";
 
 describe("recommended", () => {
   describe("when no color schemes are specified", () => {

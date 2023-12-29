@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { buildHooksSystem, recommended } from "@css-hooks/core";
-import isUnitlessNumber from "./isUnitlessNumber";
+import isUnitlessNumber from "./isUnitlessNumber.js";
 
 /**
  * @internal

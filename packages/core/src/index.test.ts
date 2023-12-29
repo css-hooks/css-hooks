@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { describe, it } from "node:test";
-import { buildHooksSystem, genericStringify } from ".";
+import { buildHooksSystem, genericStringify } from "./index.js";
 import * as csstree from "css-tree";
 
 function normalizeCSS(css: string) {

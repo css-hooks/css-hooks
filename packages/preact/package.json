@@ -24,6 +24,7 @@
   "license": "MIT",
   "main": "cjs",
   "module": "esm",
+  "type": "module",
   "peerDependencies": {
     "preact": ">=10.0.0 <11.0.0"
   },
