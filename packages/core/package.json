@@ -22,6 +22,7 @@
   "license": "MIT",
   "main": "cjs",
   "module": "esm",
+  "type": "module",
   "private": false,
   "repository": {
     "type": "git",
