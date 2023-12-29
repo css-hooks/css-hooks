@@ -1,7 +1,7 @@
 {
   "name": "css-hooks",
   "description": "Monorepo for @css-hooks/* packages",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "scripts": {
     "prepare": "npm run prepublishOnly --workspace=packages"
   },

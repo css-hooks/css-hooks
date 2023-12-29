@@ -1,10 +1,10 @@
 {
   "name": "@css-hooks/solid",
   "description": "CSS Hooks for Solid",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "^1.5.2",
+    "@css-hooks/core": "^1.5.3",
     "ts-toolbelt": "^9.6.0"
   },
   "devDependencies": {
