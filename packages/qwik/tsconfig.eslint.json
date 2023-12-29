@@ -1,0 +1,4 @@
+{
+  "extends": "@tsconfig/strictest",
+  "include": [".eslintrc.cjs", "src"]
+}

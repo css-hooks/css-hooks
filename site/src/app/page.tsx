@@ -285,6 +285,45 @@ export default async function Home() {
             }
           />
           <DesignedFor
+            framework="preact"
+            logo={
+              <svg
+                viewBox="0 0 512 512"
+                style={{ height: 160, maxWidth: "100%" }}
+              >
+                <g transform="translate(256,256)">
+                  <path
+                    d="M0,-256 222,-128 222,128 0,256 -222,128 -222,-128z"
+                    fill="#673ab8"
+                  />
+                  <ellipse
+                    cx="0"
+                    cy="0"
+                    strokeWidth="16"
+                    rx="75"
+                    ry="196"
+                    fill="none"
+                    stroke="#ffffff"
+                    transform="rotate(52.5)"
+                  />
+
+                  <ellipse
+                    cx="0"
+                    cy="0"
+                    strokeWidth="16"
+                    rx="75"
+                    ry="196"
+                    fill="none"
+                    stroke="#ffffff"
+                    transform="rotate(-52.5)"
+                  />
+
+                  <circle cx="0" cy="0" r="34" fill="#ffffff" />
+                </g>
+              </svg>
+            }
+          />
+          <DesignedFor
             framework="solid"
             logo={
               <svg
@@ -371,41 +410,29 @@ export default async function Home() {
             }
           />
           <DesignedFor
-            framework="preact"
+            framework="qwik"
             logo={
               <svg
-                viewBox="0 0 512 512"
+                width="500"
+                height="506"
+                viewBox="0 0 500 506"
+                fill="none"
                 style={{ height: 160, maxWidth: "100%" }}
               >
-                <g transform="translate(256,256)">
-                  <path
-                    d="M0,-256 222,-128 222,128 0,256 -222,128 -222,-128z"
-                    fill="#673ab8"
-                  />
-                  <ellipse
-                    cx="0"
-                    cy="0"
-                    strokeWidth="16"
-                    rx="75"
-                    ry="196"
-                    fill="none"
-                    stroke="#ffffff"
-                    transform="rotate(52.5)"
-                  />
-
-                  <ellipse
-                    cx="0"
-                    cy="0"
-                    strokeWidth="16"
-                    rx="75"
-                    ry="196"
-                    fill="none"
-                    stroke="#ffffff"
-                    transform="rotate(-52.5)"
-                  />
-
-                  <circle cx="0" cy="0" r="34" fill="#ffffff" />
-                </g>
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M250 449.707L431.102 505.511L343.037 423.652L129.174 224.859L179.178 174.86L156.157 16.117L8.34822 193.702C-2.78296 212.982 -2.78273 236.736 8.34883 256.016L102.191 418.551C113.323 437.831 133.894 449.707 156.156 449.707L250 449.707Z"
+                  fill="#18B6F6"
+                />
+                <path
+                  d="M343.843 0L156.157 1.74069e-05C133.894 1.94717e-05 113.323 11.8771 102.192 31.1573L8.34822 193.702L156.157 16.117L370.826 224.859L330.828 264.86L343.037 423.652L431.102 505.511C436.18 507.075 440.635 501.755 438.204 497.031L397.809 418.551L491.651 256.016C502.783 236.736 502.783 212.982 491.652 193.702L397.808 31.1572C386.677 11.8771 366.106 -2.06475e-06 343.843 0Z"
+                  fill="#AC7EF4"
+                />
+                <path
+                  d="M370.826 224.859L156.157 16.117L179.178 174.86L129.174 224.859L343.037 423.652L330.828 264.86L370.826 224.859Z"
+                  fill="white"
+                />
               </svg>
             }
           />
@@ -650,8 +677,9 @@ function DesignedFor({
     <div
       className="group"
       style={css({
-        flexBasis: "calc((44rem - 100%) * 999)",
+        flexBasis: "calc((60rem - 100%) * 999)",
         flexGrow: 1,
+        flexShrink: 1,
         background: V.gray05,
         color: V.gray80,
         "@media (prefers-color-scheme: dark)": {
