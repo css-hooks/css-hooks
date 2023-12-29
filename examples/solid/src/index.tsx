@@ -7,7 +7,8 @@ import App from "./App";
 render(
   () => (
     <>
-      <style>{hooks}</style>
+      {/* eslint-disable-next-line solid/no-innerhtml */}
+      <style innerHTML={hooks} />
       <App />
     </>
   ),
