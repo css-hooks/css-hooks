@@ -1,21 +1,23 @@
-import { stringifyValue } from "../src";
+import assert from "node:assert";
+import { describe, it } from "node:test";
+import { stringifyValue } from ".";
 
 describe("`stringifyValue` function", () => {
   it("returns a string as-is", () => {
     ["a", "red", ""].forEach(x => {
-      expect(stringifyValue("", x)).toEqual(x);
+      assert.equal(stringifyValue("", x), x);
     });
   });
 
   it("returns unitless numbers as direct string equivalents", () => {
     ["lineHeight", "flexGrow", "zIndex"].forEach(propertyName => {
-      expect(stringifyValue(propertyName, 1.5)).toEqual("1.5");
+      assert.equal(stringifyValue(propertyName, 1.5), "1.5");
     });
   });
 
   it("returns non-unitless numbers as px values", () => {
     ["width", "marginTop", "fontSize"].forEach(propertyName => {
-      expect(stringifyValue(propertyName, 15.5)).toEqual("15.5px");
+      assert.equal(stringifyValue(propertyName, 15.5), "15.5px");
     });
   });
 });

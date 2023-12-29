@@ -11,4 +11,12 @@ module.exports = {
     tsconfigRootDir: __dirname,
   },
   root: true,
+  overrides: [
+    {
+      files: ["src/**/*.test.*"],
+      rules: {
+        "@typescript-eslint/no-floating-promises": "off",
+      },
+    },
+  ],
 };
