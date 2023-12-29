@@ -1,4 +1,6 @@
-import { buildHooksSystem, genericStringify } from "../src";
+import assert from "node:assert";
+import { describe, it } from "node:test";
+import { buildHooksSystem, genericStringify } from ".";
 import * as csstree from "css-tree";
 
 function normalizeCSS(css: string) {
@@ -16,7 +18,8 @@ describe("hooks renderer", () => {
       focusWithin: ":focus-within",
       oddChild: ":nth-child(odd)",
     });
-    expect(normalizeCSS(hooks)).toEqual(
+    assert.equal(
+      normalizeCSS(hooks),
       normalizeCSS(`
         * {
           --hover-0:initial;
@@ -50,7 +53,8 @@ describe("hooks renderer", () => {
       dark: "@media (prefers-color-scheme:dark)",
       light: "@media (prefers-color-scheme:light)",
     });
-    expect(normalizeCSS(hooks)).toEqual(
+    assert.equal(
+      normalizeCSS(hooks),
       normalizeCSS(`
         * {
           --dark-0:initial;
@@ -82,7 +86,8 @@ describe("hooks renderer", () => {
       medium: "@container (min-width: 400px) and (max-width: 699.999px)",
       large: "@container (min-width: 700px)",
     });
-    expect(normalizeCSS(hooks)).toEqual(
+    assert.equal(
+      normalizeCSS(hooks),
       normalizeCSS(`
         * {
           --small-0:initial;
@@ -122,7 +127,8 @@ describe("hooks renderer", () => {
       checkedPrevious: ":checked + &",
       groupHover: ".hover-group &",
     });
-    expect(normalizeCSS(hooks)).toEqual(
+    assert.equal(
+      normalizeCSS(hooks),
       normalizeCSS(`
         * {
           --checkedPrevious-0:initial;
@@ -151,7 +157,8 @@ describe("hooks renderer", () => {
       dark: "@media (prefers-color-scheme: dark)",
       "extra-large": "@container (min-width: 2000px)",
     });
-    expect(normalizeCSS(hooks)).toEqual(
+    assert.equal(
+      normalizeCSS(hooks),
       normalizeCSS(`
         * {
           --checked-previous-0:initial;
@@ -197,7 +204,8 @@ describe("hooks renderer", () => {
         or: ["@media (prefers-color-scheme: dark)", "[data-theme='dark'] &"],
       },
     });
-    expect(normalizeCSS(hooks)).toEqual(
+    assert.equal(
+      normalizeCSS(hooks),
       normalizeCSS(`
         * {
           --darkA-0:initial;
@@ -227,7 +235,8 @@ describe("hooks renderer", () => {
         and: ["@media (prefers-color-scheme: dark)", "[data-theme='dark'] &"],
       },
     });
-    expect(normalizeCSS(hooks)).toEqual(
+    assert.equal(
+      normalizeCSS(hooks),
       normalizeCSS(`
         * {
           --darkA-0:initial;
@@ -265,7 +274,8 @@ describe("hooks renderer", () => {
         ],
       },
     });
-    expect(normalizeCSS(hooks)).toEqual(
+    assert.equal(
+      normalizeCSS(hooks),
       normalizeCSS(`
         * {
           --darkAA-0:initial;
@@ -304,7 +314,7 @@ describe("hooks renderer", () => {
       },
     });
     const [b] = createHooks({});
-    expect(a).toEqual(b);
+    assert.equal(a, b);
   });
 
   it('unwraps a unary "and" hook', () => {
@@ -317,7 +327,7 @@ describe("hooks renderer", () => {
     const [b] = createHooks({
       foo: spec,
     });
-    expect(a).toEqual(b);
+    assert.equal(a, b);
   });
 
   it('ignores empty "or" hooks', () => {
@@ -327,7 +337,7 @@ describe("hooks renderer", () => {
       },
     });
     const [b] = createHooks({});
-    expect(a).toEqual(b);
+    assert.equal(a, b);
   });
 
   it('unwraps a unary "or" hook', () => {
@@ -340,7 +350,7 @@ describe("hooks renderer", () => {
     const [b] = createHooks({
       foo: spec,
     });
-    expect(a).toEqual(b);
+    assert.equal(a, b);
   });
 });
 
@@ -357,28 +367,30 @@ describe("css function", () => {
       },
       { hookNameToId: x => x },
     );
-    expect(
+    assert.deepEqual(
       css({
         color: "red",
         testHookA: { color: "yellow" },
         testHookB: { color: "green" },
         testHookC: { color: "blue" },
       }),
-    ).toEqual({
-      color:
-        "var(--testHookC-1, blue) var(--testHookC-0, var(--testHookB-1, green) var(--testHookB-0, var(--testHookA-1, yellow) var(--testHookA-0, red)))",
-    });
-    expect(
+      {
+        color:
+          "var(--testHookC-1, blue) var(--testHookC-0, var(--testHookB-1, green) var(--testHookB-0, var(--testHookA-1, yellow) var(--testHookA-0, red)))",
+      },
+    );
+    assert.deepEqual(
       css({
         color: "red",
         testHookB: { color: "yellow" },
         testHookC: { color: "green" },
         testHookA: { color: "blue" },
       }),
-    ).toEqual({
-      color:
-        "var(--testHookA-1, blue) var(--testHookA-0, var(--testHookC-1, green) var(--testHookC-0, var(--testHookB-1, yellow) var(--testHookB-0, red)))",
-    });
+      {
+        color:
+          "var(--testHookA-1, blue) var(--testHookA-0, var(--testHookC-1, green) var(--testHookC-0, var(--testHookB-1, yellow) var(--testHookB-0, red)))",
+      },
+    );
   });
 
   it("allows the default property value to be defined after hook styles", () => {
@@ -391,15 +403,16 @@ describe("css function", () => {
       },
       { hookNameToId: x => x },
     );
-    expect(
+    assert.deepEqual(
       css({
         "test-hook": { "text-decoration": "underline" },
         "text-decoration": "none",
       }),
-    ).toEqual({
-      "text-decoration":
-        "var(--test-hook-1, underline) var(--test-hook-0, none)",
-    });
+      {
+        "text-decoration":
+          "var(--test-hook-1, underline) var(--test-hook-0, none)",
+      },
+    );
   });
 
   it("leaves non-hooks values as-is", () => {
@@ -410,7 +423,7 @@ describe("css function", () => {
     const [, css] = createHooks({
       "test-hook": ":test-hook",
     });
-    expect(
+    assert.equal(
       css({
         color: "white",
         "background-color": "red",
@@ -418,7 +431,8 @@ describe("css function", () => {
           "background-color": "blue",
         },
       }).color,
-    ).toEqual("white");
+      "white",
+    );
   });
 
   (["unset", "revert-layer"] as const).forEach(fallback => {
@@ -433,7 +447,7 @@ describe("css function", () => {
           },
           { fallback, hookNameToId: x => x },
         );
-        expect(css({ "test-hook": { color: "red" } })).toEqual({
+        assert.deepEqual(css({ "test-hook": { color: "red" } }), {
           color: `var(--test-hook-1, red) var(--test-hook-0, ${fallback})`,
         });
       });
@@ -444,7 +458,7 @@ describe("css function", () => {
           { testHookA: ":test-hook-a", testHookB: ":test-hook-b" },
           { fallback, hookNameToId: x => x },
         );
-        expect(css({ testHookA: { testHookB: { color: "hook" } } })).toEqual({
+        assert.deepEqual(css({ testHookA: { testHookB: { color: "hook" } } }), {
           color: `var(--testHookA-1, var(--testHookB-1, hook) var(--testHookB-0, ${fallback})) var(--testHookA-0, ${fallback})`,
         });
       });
@@ -457,9 +471,12 @@ describe("css function", () => {
           { testHook: ":test-hook" },
           { fallback, hookNameToId: x => x },
         );
-        expect(css({ color: "invalid", testHook: { color: "hook" } })).toEqual({
-          color: `var(--testHook-1, hook) var(--testHook-0, ${fallback})`,
-        });
+        assert.deepEqual(
+          css({ color: "invalid", testHook: { color: "hook" } }),
+          {
+            color: `var(--testHook-1, hook) var(--testHook-0, ${fallback})`,
+          },
+        );
       });
     });
   });
@@ -469,9 +486,12 @@ describe("css function", () => {
       value === "default" ? value : null,
     );
     const [, css] = createHooks({ testHook: ":test-hook" });
-    expect(css({ color: "default", testHook: { color: "invalid" } })).toEqual({
-      color: "default",
-    });
+    assert.deepEqual(
+      css({ color: "default", testHook: { color: "invalid" } }),
+      {
+        color: "default",
+      },
+    );
   });
 
   it('uses as-is a value that is already a string starting with "var("', () => {
@@ -485,7 +505,7 @@ describe("css function", () => {
       },
       { hookNameToId: x => x },
     );
-    expect(
+    assert.deepEqual(
       css({
         color: "blue",
         "test-hook-a": {
@@ -495,10 +515,11 @@ describe("css function", () => {
           color: "red",
         },
       }),
-    ).toEqual({
-      color:
-        "var(--test-hook-b-1, [red]) var(--test-hook-b-0, var(--test-hook-a-1, [lightblue]) var(--test-hook-a-0, [blue]))",
-    });
+      {
+        color:
+          "var(--test-hook-b-1, [red]) var(--test-hook-b-0, var(--test-hook-a-1, [lightblue]) var(--test-hook-a-0, [blue]))",
+      },
+    );
   });
 
   it("allows hooks to be combined via nesting", () => {
@@ -512,7 +533,7 @@ describe("css function", () => {
       },
       { hookNameToId: x => x },
     );
-    expect(
+    assert.deepEqual(
       css({
         color: "black",
         testHookA: {
@@ -522,10 +543,11 @@ describe("css function", () => {
           },
         },
       }),
-    ).toEqual({
-      color:
-        "var(--testHookA-1, var(--testHookB-1, [pink]) var(--testHookB-0, [red])) var(--testHookA-0, [black])",
-    });
+      {
+        color:
+          "var(--testHookA-1, var(--testHookB-1, [pink]) var(--testHookB-0, [red])) var(--testHookA-0, [black])",
+      },
+    );
   });
 
   it("falls back multiple levels if needed", () => {
@@ -539,7 +561,7 @@ describe("css function", () => {
       },
       { hookNameToId: x => x },
     );
-    expect(
+    assert.deepEqual(
       css({
         color: "black",
         "test-hook-a": {
@@ -549,10 +571,11 @@ describe("css function", () => {
           },
         },
       }),
-    ).toEqual({
-      color:
-        "var(--test-hook-a-1, var(--test-hook-b-1, [pink]) var(--test-hook-b-0, [black])) var(--test-hook-a-0, [black])",
-    });
+      {
+        color:
+          "var(--test-hook-a-1, var(--test-hook-b-1, [pink]) var(--test-hook-b-0, [black])) var(--test-hook-a-0, [black])",
+      },
+    );
   });
 });
 
@@ -570,7 +593,8 @@ describe("createHooks function", () => {
         ],
       },
     });
-    expect(normalizeCSS(hooks)).toEqual(
+    assert.equal(
+      normalizeCSS(hooks),
       normalizeCSS(`
         * {
           --5g7aa6-0:initial;
@@ -604,12 +628,13 @@ describe("createHooks function", () => {
         }
       `),
     );
-    expect(
+    assert.deepEqual(
       css({ color: "black", foo: { color: "gray" }, bar: { color: "red" } }),
-    ).toEqual({
-      color:
-        "var(--ilyuet-1, red) var(--ilyuet-0, var(--5g7aa6-1, gray) var(--5g7aa6-0, black))",
-    });
+      {
+        color:
+          "var(--ilyuet-1, red) var(--ilyuet-0, var(--5g7aa6-1, gray) var(--5g7aa6-0, black))",
+      },
+    );
   });
 
   it("includes user-defined hook names in variable names in debug mode", () => {
@@ -620,7 +645,8 @@ describe("createHooks function", () => {
       },
       { debug: true },
     );
-    expect(normalizeCSS(hooks)).toEqual(
+    assert.equal(
+      normalizeCSS(hooks),
       normalizeCSS(`
         * {
           --_media__min-width__1000px_-umzjoj-0:initial;
@@ -634,26 +660,27 @@ describe("createHooks function", () => {
         }
       `),
     );
-    expect(
+    assert.deepEqual(
       css({
         color: "blue",
         "@media (min-width: 1000px)": {
           color: "red",
         },
       }),
-    ).toEqual({
-      color:
-        "var(--_media__min-width__1000px_-umzjoj-1, red) var(--_media__min-width__1000px_-umzjoj-0, blue)",
-    });
+      {
+        color:
+          "var(--_media__min-width__1000px_-umzjoj-1, red) var(--_media__min-width__1000px_-umzjoj-0, blue)",
+      },
+    );
   });
 });
 
 describe("default stringify function", () => {
   it("returns a string value as-is", () => {
-    expect(genericStringify("display", "block")).toEqual("block");
+    assert.equal(genericStringify("display", "block"), "block");
   });
   it("returns a number value as a string", () => {
-    expect(genericStringify("width", 1)).toEqual("1");
+    assert.equal(genericStringify("width", 1), "1");
   });
   it("returns null for invalid values", () => {
     [
@@ -665,7 +692,7 @@ describe("default stringify function", () => {
         /*noop*/
       },
     ].forEach(value => {
-      expect(genericStringify("property", value)).toBeNull();
+      assert.strictEqual(genericStringify("property", value), null);
     });
   });
 });
