@@ -20,6 +20,7 @@
     "packages/recommended",
     "packages/core",
     "packages/preact",
+    "packages/qwik",
     "packages/react",
     "packages/solid",
     "site",

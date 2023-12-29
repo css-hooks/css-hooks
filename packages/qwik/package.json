@@ -1,0 +1,58 @@
+{
+  "name": "@css-hooks/qwik",
+  "description": "CSS Hooks for Qwik",
+  "version": "1.5.3",
+  "author": "Nick Saunders",
+  "dependencies": {
+    "@css-hooks/core": "^1.5.3"
+  },
+  "devDependencies": {
+    "@builder.io/qwik": "^1.3.0",
+    "@tsconfig/strictest": "^2.0.1",
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "@typescript-eslint/parser": "^6.7.2",
+    "eslint": "^8.50.0",
+    "rimraf": "^5.0.1",
+    "ts-watch": "^1.0.8",
+    "typescript": "^5.1.6"
+  },
+  "files": [
+    "cjs",
+    "esm",
+    "types"
+  ],
+  "license": "MIT",
+  "main": "cjs",
+  "module": "esm",
+  "type": "module",
+  "peerDependencies": {
+    "@builder.io/qwik": ">=1.2.0 <2"
+  },
+  "peerDependenciesMeta": {
+    "@builder.io/qwik": {
+      "optional": true
+    }
+  },
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/css-hooks/css-hooks.git",
+    "directory": "packages/qwik"
+  },
+  "scripts": {
+    "clean": "rimraf cjs esm out types",
+    "lint": "eslint src .*.*js *.*js",
+    "postversion": "npm install @css-hooks/core@^$npm_package_version --force",
+    "prepublishOnly": "tsc -p tsconfig.dist.json --outDir cjs --module commonjs && tsc -p tsconfig.dist.json --outDir esm --module es6 && tsc -p tsconfig.dist.json --declaration --emitDeclarationOnly --outDir types",
+    "test": "tsc && node --test",
+    "test.watch": "tsc-watch --onSuccess 'node --test'"
+  },
+  "types": "types",
+  "exports": {
+    ".": {
+      "import": "./esm/index.js",
+      "require": "./cjs/index.js",
+      "types": "./types/index.d.ts"
+    }
+  }
+}

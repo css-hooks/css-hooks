@@ -59,6 +59,8 @@ export default function App() {
       "      " +
         (props.params.framework === "solid"
           ? `<style innerHTML={hooks} />`
+          : props.params.framework === "qwik"
+          ? `<style dangerouslySetInnerHTML={hooks} />`
           : `<style dangerouslySetInnerHTML={{ __html: hooks }} />`),
       "      <h1>Hello world</h1>",
       "    </>",

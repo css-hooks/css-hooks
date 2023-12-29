@@ -1,1 +1,1 @@
-export default ["react", "solid", "preact"] as const;
+export default ["react", "preact", "solid", "qwik"] as const;
