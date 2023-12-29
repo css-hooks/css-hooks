@@ -1,26 +1,28 @@
-import { stringifyValue } from "../src";
-import { unitlessNumbers } from "../src/isUnitlessNumber";
+import assert from "node:assert";
+import { describe, it } from "node:test";
+import { stringifyValue } from ".";
+import { unitlessNumbers } from "./isUnitlessNumber";
 
 describe("`stringifyValue` function", () => {
   it("returns a string as-is", () => {
     ["a", "red", ""].forEach(x => {
-      expect(stringifyValue("", x)).toEqual(x);
+      assert.equal(stringifyValue("", x), x);
     });
   });
 
   it("returns unitless numbers as direct string equivalents", () => {
-    Object.keys(unitlessNumbers).forEach(propertyName => {
-      expect(stringifyValue(propertyName, 1.5)).toEqual("1.5");
+    unitlessNumbers.forEach(propertyName => {
+      assert.equal(stringifyValue(propertyName, 1.5), "1.5");
     });
   });
 
   it("assumes numbers assigned to custom properties are unitless values", () => {
-    expect(stringifyValue("--foo", 7)).toEqual("7");
+    assert.equal(stringifyValue("--foo", 7), "7");
   });
 
   it("returns non-unitless numbers as px values", () => {
     ["width", "marginTop", "fontSize"].forEach(propertyName => {
-      expect(stringifyValue(propertyName, 15.5)).toEqual("15.5px");
+      assert.equal(stringifyValue(propertyName, 15.5), "15.5px");
     });
   });
 });

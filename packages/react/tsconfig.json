@@ -1,7 +1,9 @@
 {
   "extends": "@tsconfig/strictest",
-  "include": ["__tests__", "src"],
+  "include": ["src"],
   "compilerOptions": {
-    "noEmit": true
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "outDir": "out"
   }
 }
