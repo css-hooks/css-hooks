@@ -60,7 +60,7 @@ Please visit [css-hooks.com](https://css-hooks.com) to get started.
 - [@css-hooks/react](packages/react): React framework integration
 - [@css-hooks/preact](packages/preact): Preact framework integration
 - [@css-hooks/solid](packages/solid): Solid framework integration
-- [@css-hooks/solid](packages/qwik): Qwik framework integration
+- [@css-hooks/awik](packages/qwik): Qwik framework integration
 - [@css-hooks/core](packages/core): Core package (internal / advanced use cases)
 
 ## Contributing
