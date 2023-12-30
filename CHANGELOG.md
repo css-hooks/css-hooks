@@ -1,3 +1,10 @@
+## [1.6.0](https://github.com/css-hooks/css-hooks/compare/v1.5.4...v1.6.0) (2023-12-30)
+
+
+### Features
+
+* qwik integration ([c482217](https://github.com/css-hooks/css-hooks/commit/c48221707431157fd6249937ac25160632081871))
+
 ## [1.5.4](https://github.com/css-hooks/css-hooks/compare/v1.5.3...v1.5.4) (2023-12-29)
 
 

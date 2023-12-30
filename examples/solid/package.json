@@ -1,7 +1,7 @@
 {
   "name": "example-solid",
   "private": true,
-  "version": "1.5.4",
+  "version": "1.6.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,7 +12,7 @@
     "postversion": "npm install @css-hooks/solid@^$npm_package_version --force"
   },
   "dependencies": {
-    "@css-hooks/solid": "^1.5.4",
+    "@css-hooks/solid": "^1.6.0",
     "@fontsource/inter": "^5.0.8",
     "solid-js": "^1.7.6",
     "varsace": "^0.0.4"
