@@ -57,11 +57,16 @@ Please visit [css-hooks.com](https://css-hooks.com) to get started.
 
 - [@css-hooks/recommended](packages/recommended): Recommended hook configuration
   with sensible defaults
-- [@css-hooks/react](https://github.com/css-hooks/css-hooks/tree/master/packages/react): React framework integration
-- [@css-hooks/preact](https://github.com/css-hooks/css-hooks/tree/master/packages/preact): Preact framework integration
-- [@css-hooks/solid](https://github.com/css-hooks/css-hooks/tree/master/packages/solid): Solid framework integration
-- [@css-hooks/qwik](https://github.com/css-hooks/css-hooks/tree/master/packages/qwik): Qwik framework integration
-- [@css-hooks/core](https://github.com/css-hooks/css-hooks/tree/master/packages/core): Core package (internal / advanced use cases)
+- [@css-hooks/react](https://github.com/css-hooks/css-hooks/tree/master/packages/react):
+  React framework integration
+- [@css-hooks/preact](https://github.com/css-hooks/css-hooks/tree/master/packages/preact):
+  Preact framework integration
+- [@css-hooks/solid](https://github.com/css-hooks/css-hooks/tree/master/packages/solid):
+  Solid framework integration
+- [@css-hooks/qwik](https://github.com/css-hooks/css-hooks/tree/master/packages/qwik):
+  Qwik framework integration
+- [@css-hooks/core](https://github.com/css-hooks/css-hooks/tree/master/packages/core):
+  Core package (internal / advanced use cases)
 
 ## Contributing
 
