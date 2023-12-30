@@ -30,7 +30,7 @@ function makeHeadingComponent(
           exhausted(typographyRest) && (
             <Tag
               className={`${typographyClassName} ${headingClassName}`}
-              style={{ ...typographyStyle, ...headingStyle }}
+              style={{ ...typographyStyle, lineHeight: 1.5, ...headingStyle }}
               {...headingRest}
             />
           )
@@ -49,6 +49,19 @@ const Heading3 = makeHeadingComponent("h3", "regularXL");
 const Heading4 = makeHeadingComponent("h4", "boldLarge");
 
 const Heading5 = makeHeadingComponent("h5", "boldBase");
+
+function OrderedList({ style: olStyle, ...olRest }: { style?: CSSProperties }) {
+  return <ol style={{ marginBlock: "1.5rem", ...olStyle }} {...olRest} />;
+}
+
+function UnorderedList({
+  style: ulStyle,
+  ...ulRest
+}: {
+  style?: CSSProperties;
+}) {
+  return <ol style={{ marginBlock: "1.5rem", ...ulStyle }} {...ulRest} />;
+}
 
 function ListItem({
   className: liClassName = "",
@@ -129,6 +142,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     h4: Heading4,
     h5: Heading5,
     hr: HorizontalRule,
+    ol: OrderedList,
+    ul: UnorderedList,
     li: ListItem,
     p: Paragraph,
     pre: Pre,
