@@ -1,0 +1,198 @@
+1:HL["/_next/static/media/a867b47a386517bf-s.p.woff2",{"as":"font","type":"font/woff2"}]
+2:HL["/_next/static/media/af8b37939320161a-s.p.woff2",{"as":"font","type":"font/woff2"}]
+3:HL["/_next/static/media/c9a5bc6a7c948fb0-s.p.woff2",{"as":"font","type":"font/woff2"}]
+4:HL["/_next/static/css/7801db5203f5b3b0.css",{"as":"style"}]
+0:["zLFZccvW_ckV8dthUYeqQ",[[["",{"children":["docs",{"children":[["framework","solid","d"],{"children":[["guide","getting-started","d"],{"children":["__PAGE__?{\"framework\":\"solid\",\"guide\":\"getting-started\"}",{}]}]}]}]},"$undefined","$undefined",true],"$L5",[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/7801db5203f5b3b0.css","precedence":"next"}]],"$L6"]]]]
+7:HL["/_next/static/css/9e2a2f3efddfdb99.css",{"as":"style"}]
+8:HL["/_next/static/media/a6f8c6b7131e657a-s.p.woff2",{"as":"font","type":"font/woff2"}]
+9:HL["/_next/static/css/831423059f02cb67.css",{"as":"style"}]
+b:I{"id":6094,"chunks":["272:static/chunks/webpack-40bae1693b0ee2fd.js","115:static/chunks/618f8807-d47dc677de44cb03.js","443:static/chunks/443-f3d5b1cd9317c21a.js"],"name":"default","async":false}
+c:I{"id":5658,"chunks":["272:static/chunks/webpack-40bae1693b0ee2fd.js","115:static/chunks/618f8807-d47dc677de44cb03.js","443:static/chunks/443-f3d5b1cd9317c21a.js"],"name":"default","async":false}
+d:I{"id":37,"chunks":["118:static/chunks/118-a22d5d5e691ca743.js","228:static/chunks/app/docs/[framework]/layout-bbc711feb558e72d.js"],"name":"","async":false}
+11:I{"id":6118,"chunks":["118:static/chunks/118-a22d5d5e691ca743.js","185:static/chunks/app/layout-165e93941494b882.js"],"name":"","async":false}
+a:Tcc2,
+  /* syntax highlighting */
+
+  .syntax-highlighter {
+    color: #0d0f14;
+  }
+
+  .syntax-highlighter .keyword {
+    color: #33154c;
+  }
+
+  .syntax-highlighter .punctuation {
+    color: #1e222c;
+  }
+
+  .syntax-highlighter .attr-name {
+    color: #00284e;
+  }
+
+  .syntax-highlighter .attr-value {
+    color: #4c0000;
+  }
+
+  .syntax-highlighter .script {
+    color: #0d0f14;
+  }
+
+  .syntax-highlighter .operator {
+    color: #313744;
+  }
+
+  .syntax-highlighter .plain-text {
+    color: #0d0f14;
+  }
+
+  .syntax-highlighter .tag {
+    color: #114c28;
+  }
+
+  .syntax-highlighter .function {
+    color: #33154c;
+  }
+
+  .syntax-highlighter .language-javascript {
+    color: #0d0f14;
+  }
+
+  .syntax-highlighter .language-tsx {
+    color: #0d0f14;
+  }
+
+  /* Highlighting specific cases */
+
+  .syntax-highlighter .language-tsx .token.string {
+    color: #00284e;
+  }
+
+  .syntax-highlighter .token.comment {
+    color: #464e5c;
+  }
+
+  .syntax-highlighter .language-tsx .token.plain-text {
+    color: #0d0f14;
+  }
+
+  .syntax-highlighter .language-tsx .token.script-punctuation {
+    color: #1e222c;
+  }
+
+  .syntax-highlighter .language-tsx .token.function-variable {
+    color: #00284e;
+  }
+
+  .syntax-highlighter .language-tsx .token.boolean {
+    color: #33154c;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .syntax-highlighter {
+      color: #eeeff0;
+    }
+
+    .syntax-highlighter .keyword {
+      color: #c2add6;
+    }
+
+    .syntax-highlighter .punctuation {
+      color: #9099a4;
+    }
+
+    .syntax-highlighter .attr-name {
+      color: #7dadd0;
+    }
+
+    .syntax-highlighter .attr-value {
+      color: #d69191;
+    }
+
+    .syntax-highlighter .script {
+      color: #eeeff0;
+    }
+
+    .syntax-highlighter .operator {
+      color: #adb4bc;
+    }
+
+    .syntax-highlighter .plain-text {
+      color: #eeeff0;
+    }
+
+    .syntax-highlighter .tag {
+      color: #87d6a0;
+    }
+
+    .syntax-highlighter .function {
+      color: #c2add6;
+    }
+
+    .syntax-highlighter .language-javascript {
+      color: #eeeff0;
+    }
+
+    .syntax-highlighter .language-tsx {
+      color: #eeeff0;
+    }
+
+    /* Highlighting specific cases */
+
+    .syntax-highlighter .language-tsx .token.string {
+      color: #7dadd0;
+    }
+
+    .syntax-highlighter .token.comment {
+      color: #767f8c;
+    }
+
+    .syntax-highlighter .language-tsx .token.plain-text {
+      color: #eeeff0;
+    }
+
+    .syntax-highlighter .language-tsx .token.script-punctuation {
+      color: #9099a4;
+    }
+
+    .syntax-highlighter .language-tsx .token.function-variable {
+      color: #7dadd0;
+    }
+
+    .syntax-highlighter .language-tsx .token.boolean {
+      color: #c2add6;
+    }
+  }
+
+  html {
+    overflow-y: scroll;
+  }
+ *{--i73cho-0:initial;--i73cho-1: ;--1a96iy-0:initial;--1a96iy-1: ;--6w221d-0:initial;--6w221d-1: ;--mbscpo-0:initial;--mbscpo-1: ;--fg65d2-0:initial;--fg65d2-1: ;--lm9hn1-0:initial;--lm9hn1-1: ;--bhddg3-0:initial;--bhddg3-1: ;}@media (prefers-color-scheme: dark){*{--i73cho-0: ;--i73cho-1:initial;}}@media (width < 500px){*{--1a96iy-0: ;--1a96iy-1:initial;}}@media (500px <= width){*{--6w221d-0: ;--6w221d-1:initial;}}*:hover{--mbscpo-0: ;--mbscpo-1:initial;}*:active{--fg65d2-0: ;--fg65d2-1:initial;}:hover + *{--lm9hn1-0: ;--lm9hn1-1:initial;}:active + *{--bhddg3-0: ;--bhddg3-1:initial;}f:T7b5,<span class="token comment">// src/App.tsx</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">{</span> hooks <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"./css"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">App</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span></span><span class="token punctuation">></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span> <span class="token attr-name">innerHTML</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span>hooks<span class="token punctuation">}</span></span> <span class="token punctuation">/></span></span><span class="token plain-text">
+      </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">Hello world</span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span><span class="token plain-text">
+    </span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span></span><span class="token punctuation">></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+10:T826,<span class="token comment">// src/Button.tsx</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">{</span> css <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">"./css"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span> <span class="token function">Button</span><span class="token punctuation">(</span>props<span class="token operator">:</span> ButtonProps<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span>
+      <span class="token spread"><span class="token punctuation">{</span><span class="token operator">...</span>props<span class="token punctuation">}</span></span>
+      <span class="token attr-name">style</span><span class="token script language-javascript"><span class="token script-punctuation punctuation">=</span><span class="token punctuation">{</span><span class="token function">css</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+        color<span class="token operator">:</span> <span class="token string">"black"</span><span class="token punctuation">,</span>
+        <span class="token string-property property">"&amp;:hover"</span><span class="token operator">:</span> <span class="token punctuation">{</span> color<span class="token operator">:</span> <span class="token string">"blue"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">}</span></span>
+    <span class="token punctuation">/></span></span>
+  <span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+5:[null,["$","html",null,{"lang":"en","children":["$","body",null,{"style":{"margin":0,"background":"var(--i73cho-1, #0d0f14) var(--i73cho-0, #eeeff0)","color":"var(--i73cho-1, #eeeff0) var(--i73cho-0, #0d0f14)","minHeight":"100dvh","display":"flex","flexDirection":"column"},"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"$a"}}],["$","div",null,{"style":{"flex":1},"children":["$","$Lb",null,{"parallelRouterKey":"children","segmentPath":["children"],"loading":"$undefined","loadingStyles":"$undefined","hasLoading":false,"error":"$undefined","errorStyles":"$undefined","template":["$","$Lc",null,{}],"templateStyles":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[],"childProp":{"current":["$","$Lb",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children"],"loading":"$undefined","loadingStyles":"$undefined","hasLoading":false,"error":"$undefined","errorStyles":"$undefined","template":["$","$Lc",null,{}],"templateStyles":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined","childProp":{"current":[null,["$","$Ld",null,{"children":["$","$Lb",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children",["framework","solid","d"],"children"],"loading":"$undefined","loadingStyles":"$undefined","hasLoading":false,"error":"$undefined","errorStyles":"$undefined","template":["$","$Lc",null,{}],"templateStyles":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined","childProp":{"current":["$","$Lb",null,{"parallelRouterKey":"children","segmentPath":["children","docs","children",["framework","solid","d"],"children",["guide","getting-started","d"],"children"],"loading":"$undefined","loadingStyles":"$undefined","hasLoading":false,"error":"$undefined","errorStyles":"$undefined","template":["$","$Lc",null,{}],"templateStyles":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined","childProp":{"current":["$Le",[["$","h1",null,{"className":" __className_e66fe9 ","style":{"fontSize":"2.333rem","fontWeight":400,"lineHeight":1.5,"marginBlock":"0.6429489927132447rem","textTransform":"$undefined","letterSpacing":"-0.03em","display":"block"},"children":"Getting started"}],"\n",["$","hr",null,{"style":{"background":"var(--i73cho-1, #1e222c) var(--i73cho-0, #adb4bc)","marginBlock":"2.5rem 2rem","height":1,"border":0}}],"\n",["$","h2",null,{"className":" __className_e66fe9 ","style":{"fontSize":"2rem","fontWeight":400,"lineHeight":1.5,"marginBlock":"0.75rem","textTransform":"$undefined","letterSpacing":"-0.03em","display":"block"},"children":"1. Installation"}],"\n",["$","p",null,{"className":" __className_e66fe9 ","style":{"fontSize":"1rem","fontWeight":400,"lineHeight":1.5,"marginBlock":"1.5rem","textTransform":"$undefined","letterSpacing":"$undefined","display":"block"},"children":["CSS Hooks offers a dedicated ","Solid"," integration to ensure a seamless developer experience. Install\nthis via NPM or your package manager of choice, e.g.:"]}],"\n",["$","pre",null,{"style":{"marginBlock":"1.5em","lineHeight":1.25,"padding":"1.5em","background":"var(--i73cho-1, #151820) var(--i73cho-0, #eeeff0)","boxShadow":"var(--i73cho-1, none) var(--i73cho-0, 0 0 0 1px #adb4bc)","overflow":"auto"},"children":["$","code",null,{"style":{"color":"var(--i73cho-1, #b6d5cf) var(--i73cho-0, #004b45)"},"className":"__className_04905e","children":["npm install @css-hooks/","solid"]}]}],"\n",["$","hr",null,{"style":{"background":"var(--i73cho-1, #1e222c) var(--i73cho-0, #adb4bc)","marginBlock":"2.5rem 2rem","height":1,"border":0}}],"\n",["$","h2",null,{"className":" __className_e66fe9 ","style":{"fontSize":"2rem","fontWeight":400,"lineHeight":1.5,"marginBlock":"0.75rem","textTransform":"$undefined","letterSpacing":"-0.03em","display":"block"},"children":"2. Create hooks"}],"\n",["$","p",null,{"className":" __className_e66fe9 ","style":{"fontSize":"1rem","fontWeight":400,"lineHeight":1.5,"marginBlock":"1.5rem","textTransform":"$undefined","letterSpacing":"$undefined","display":"block"},"children":["To address a wide range of use cases, CSS Hooks is fully configurable, allowing\nyou to define your own hooks. To keep things as simple as possible, let's start\nwith a single ",["$","code",null,{"style":{"color":"var(--i73cho-1, #b6d5cf) var(--i73cho-0, #004b45)"},"className":"__className_04905e","children":"&:hover"}]," hook. Create a new module in your project, e.g.\n",["$","code",null,{"style":{"color":"var(--i73cho-1, #b6d5cf) var(--i73cho-0, #004b45)"},"className":"__className_04905e","children":"src/css.ts"}],", and copy the following example:"]}],"\n",["$","pre",null,{"style":{"marginBlock":"1.5em","lineHeight":1.25,"padding":"1.5em","background":"var(--i73cho-1, #151820) var(--i73cho-0, #eeeff0)","boxShadow":"var(--i73cho-1, none) var(--i73cho-0, 0 0 0 1px #adb4bc)","overflow":"auto"},"children":["$","code",null,{"style":"$undefined","children":["$","div",null,{"className":"syntax-highlighter __className_04905e","style":"$undefined","dangerouslySetInnerHTML":{"__html":"<span class=\"token comment\">// src/css.ts</span>\n\n<span class=\"token keyword\">import</span> <span class=\"token punctuation\">{</span> createHooks <span class=\"token punctuation\">}</span> <span class=\"token keyword\">from</span> <span class=\"token string\">\"@css-hooks/solid\"</span><span class=\"token punctuation\">;</span>\n    \n<span class=\"token keyword\">export</span> <span class=\"token keyword\">const</span> <span class=\"token punctuation\">[</span>hooks<span class=\"token punctuation\">,</span> css<span class=\"token punctuation\">]</span> <span class=\"token operator\">=</span> <span class=\"token function\">createHooks</span><span class=\"token punctuation\">(</span><span class=\"token punctuation\">{</span>\n  <span class=\"token string-property property\">\"&amp;:hover\"</span><span class=\"token operator\">:</span> <span class=\"token string\">\"&amp;:hover\"</span><span class=\"token punctuation\">,</span>\n<span class=\"token punctuation\">}</span><span class=\"token punctuation\">)</span><span class=\"token punctuation\">;</span>"}}]}]}],"\n",["$","hr",null,{"style":{"background":"var(--i73cho-1, #1e222c) var(--i73cho-0, #adb4bc)","marginBlock":"2.5rem 2rem","height":1,"border":0}}],"\n",["$","h2",null,{"className":" __className_e66fe9 ","style":{"fontSize":"2rem","fontWeight":400,"lineHeight":1.5,"marginBlock":"0.75rem","textTransform":"$undefined","letterSpacing":"-0.03em","display":"block"},"children":"3. Add static CSS"}],"\n",["$","p",null,{"className":" __className_e66fe9 ","style":{"fontSize":"1rem","fontWeight":400,"lineHeight":1.5,"marginBlock":"1.5rem","textTransform":"$undefined","letterSpacing":"$undefined","display":"block"},"children":["The ",["$","code",null,{"style":{"color":"var(--i73cho-1, #b6d5cf) var(--i73cho-0, #004b45)"},"className":"__className_04905e","children":"hooks"}]," export from the module created in Step 2 consists of a static CSS\nstring that must be included somewhere on the page. This could be achieved in\nany number of ways, but the easiest is simply to add a ",["$","code",null,{"style":{"color":"var(--i73cho-1, #b6d5cf) var(--i73cho-0, #004b45)"},"className":"__className_04905e","children":"<style>"}]," element in your\nroot component, e.g.:"]}],"\n",["$","pre",null,{"style":{"marginBlock":"1.5em","lineHeight":1.25,"padding":"1.5em","background":"var(--i73cho-1, #151820) var(--i73cho-0, #eeeff0)","boxShadow":"var(--i73cho-1, none) var(--i73cho-0, 0 0 0 1px #adb4bc)","overflow":"auto"},"children":["$","code",null,{"style":"$undefined","children":["$","div",null,{"className":"syntax-highlighter __className_04905e","style":"$undefined","dangerouslySetInnerHTML":{"__html":"$f"}}]}]}],"\n",["$","hr",null,{"style":{"background":"var(--i73cho-1, #1e222c) var(--i73cho-0, #adb4bc)","marginBlock":"2.5rem 2rem","height":1,"border":0}}],"\n",["$","h2",null,{"className":" __className_e66fe9 ","style":{"fontSize":"2rem","fontWeight":400,"lineHeight":1.5,"marginBlock":"0.75rem","textTransform":"$undefined","letterSpacing":"-0.03em","display":"block"},"children":"4. Use hooks"}],"\n",["$","p",null,{"className":" __className_e66fe9 ","style":{"fontSize":"1rem","fontWeight":400,"lineHeight":1.5,"marginBlock":"1.5rem","textTransform":"$undefined","letterSpacing":"$undefined","display":"block"},"children":["Now you're ready to use your configured hooks. Simply import the ",["$","code",null,{"style":{"color":"var(--i73cho-1, #b6d5cf) var(--i73cho-0, #004b45)"},"className":"__className_04905e","children":"css"}]," function\nand apply it to your style object. The style object continues to work exactly\nthe same as in ","Solid","'s ",["$","code",null,{"style":{"color":"var(--i73cho-1, #b6d5cf) var(--i73cho-0, #004b45)"},"className":"__className_04905e","children":"style"}]," prop API, except that it allows you to leverage your\nhooks by nesting additional style objects."]}],"\n",["$","pre",null,{"style":{"marginBlock":"1.5em","lineHeight":1.25,"padding":"1.5em","background":"var(--i73cho-1, #151820) var(--i73cho-0, #eeeff0)","boxShadow":"var(--i73cho-1, none) var(--i73cho-0, 0 0 0 1px #adb4bc)","overflow":"auto"},"children":["$","code",null,{"style":"$undefined","children":["$","div",null,{"className":"syntax-highlighter __className_04905e","style":"$undefined","dangerouslySetInnerHTML":{"__html":"$10"}}]}]}],"\n",["$","hr",null,{"style":{"background":"var(--i73cho-1, #1e222c) var(--i73cho-0, #adb4bc)","marginBlock":"2.5rem 2rem","height":1,"border":0}}],"\n",["$","h2",null,{"className":" __className_e66fe9 ","style":{"fontSize":"2rem","fontWeight":400,"lineHeight":1.5,"marginBlock":"0.75rem","textTransform":"$undefined","letterSpacing":"-0.03em","display":"block"},"children":"5. Next steps"}],"\n",["$","p",null,{"className":" __className_e66fe9 ","style":{"fontSize":"1rem","fontWeight":400,"lineHeight":1.5,"marginBlock":"1.5rem","textTransform":"$undefined","letterSpacing":"$undefined","display":"block"},"children":["Proceed to the ",["$","a",null,{"style":{"textDecoration":"none","cursor":"pointer","color":"var(--i73cho-1, var(--fg65d2-1, #d69191) var(--fg65d2-0, var(--mbscpo-1, #7dadd0) var(--mbscpo-0, #4687b6))) var(--i73cho-0, var(--fg65d2-1, #ad4545) var(--fg65d2-0, var(--mbscpo-1, #2f75a9) var(--mbscpo-0, #0a558f)))"},"href":"./configuration","children":"Configuration"}]," guide to learn how to configure\nadditional hooks."]}]],null],"segment":"__PAGE__?{\"framework\":\"solid\",\"guide\":\"getting-started\"}"},"styles":[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/831423059f02cb67.css","precedence":"next"}]]}],"segment":["guide","getting-started","d"]},"styles":[]}],"params":{"framework":"solid"}}],null],"segment":["framework","solid","d"]},"styles":[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/9e2a2f3efddfdb99.css","precedence":"next"}]]}],"segment":"docs"},"styles":[]}]}],["$","footer",null,{"className":" __className_e66fe9","style":{"fontSize":"1rem","fontWeight":400,"lineHeight":1.5,"marginBlock":0,"textTransform":"$undefined","letterSpacing":"$undefined","margin":"0 auto","boxSizing":"border-box","width":"calc(100vw - 4rem)","maxWidth":"80rem","paddingTop":"4rem","paddingBottom":"1rem","display":"flex","flexWrap":"wrap","alignItems":"flex-end","justifyContent":"center","textAlign":"center","gap":"0.5rem 2rem"},"children":[["$","div",null,{"className":"__className_6ce12c","style":{"fontSize":"1.5rem","letterSpacing":"-0.05em","display":"flex","alignItems":"center","gap":"0.125em","lineHeight":1},"children":[["$","svg",null,{"viewBox":"0 0 334 400","style":{"width":"0.835em","height":"1em"},"children":["$","g",null,{"children":[["$","path",null,{"style":{"fill":"var(--i73cho-1, #4687b6) var(--i73cho-0, #1b659c)"},"d":"M53.97 301.25c-10.82-29.94 17.02-61.84 30.92-85.7 2.11-3.63 5.34-4.47 7.42-7.61 1.89-2.85 3.85-5.78 6.2-8.35 39.77-43.45 92.75-94.89 91.75-161.36-.16-10.85-2.6-21.67-5.68-32.18a.66.66 0 0 1 1.18-.55c12.98 19.36 21.86 38.8 19.91 62q-2.75 32.73-20.62 61.43c-12.8 20.56-28.8 40.08-45.65 57.46q-18.38 18.98-34.91 39.56-9.79 12.19-12.28 15.76c-9.12 13.11-17.88 32.62-16.54 48.48 2.39 28.3 29.27 37.48 53.6 37.38 22.93-.09 44.59-11.89 59.52-29.04q7.47-8.58 14.29-17.68c10.2-13.62 19.82-27.62 33.21-38.37 6.41-5.14 15.39-10.23 23.03-15.44q.73-.5.32.28c-.81 1.53-2.33 3.01-3 4.39-14.02 28.86-30.43 54.44-52.37 78.56-25.61 28.14-60.26 42.83-98.49 34.32-23.76-5.3-43.4-20.1-51.81-43.34Z"}],["$","path",null,{"style":{"fill":"var(--i73cho-1, #9099a4) var(--i73cho-0, #5d6674)"},"d":"M16.19 224.94c6.46-12.92 12.73-24.06 21.38-35.58q12.57-16.75 26.89-32c26.85-28.61 45-54 65.37-86.3 5.88-9.33 10.46-18.93 15.04-28.8a.48.48 0 0 1 .92.25q-2.69 26.77-12.42 51.84c-10.8 27.84-29.9 51.97-49.7 73.32-9.45 10.19-17.96 19.16-25.33 28.77-1.93 2.51-4.46 4.55-6.1 7.03q-4.32 6.49-7.66 13.53c-7 14.77-14 30.95-16.9 47.08-2.7 15-1.61 31.31 1.95 46.15 4.69 19.54 21.41 38.03 37.67 49.2q4.63 3.18 18.61 10.55 4.02 2.12 8.13 3.05c23.18 5.24 46.03 7.14 69.25.09 28.81-8.75 52.07-28.09 71.87-51.53q24.09-28.53 43.97-60.2c9.61-15.31 18.47-31.67 31.3-44.98 5.32-5.52 13.22-11.26 19.48-17.37a.41.41 0 0 1 .64.51c-10.26 16.88-16.09 36.07-25.58 53.46-21.46 39.3-46.77 75.08-80.21 104.66-17.45 15.44-38.35 27.07-60.21 34.65q-12.25 4.25-25.63 5.37c-7.35.61-15.79-.14-23.67-.49-20.09-.89-35.98-7.54-52.99-17.88-14.03-8.53-28.62-18.76-38.27-32.38q-16.01-22.61-20.71-50c-4.24-24.71 1.79-49.77 12.91-72Z"}]]}]}],["$","div",null,{"style":{"color":"var(--i73cho-1, #eeeff0) var(--i73cho-0, #0d0f14)"},"children":"CSS Hooks"}]]}],["$","div",null,{"style":{"flexBasis":"calc((60rem - 100%) * 999)","flexGrow":1}}],["$","nav",null,{"style":{"display":"flex","flexWrap":"wrap","justifyContent":"center","gap":"inherit"},"children":[["$","$L11","Documentation",{"href":"/docs/react/introduction#top","style":{"textDecoration":"none","cursor":"pointer","color":"var(--i73cho-1, var(--fg65d2-1, #d69191) var(--fg65d2-0, var(--mbscpo-1, #7dadd0) var(--mbscpo-0, #4687b6))) var(--i73cho-0, var(--fg65d2-1, #ad4545) var(--fg65d2-0, var(--mbscpo-1, #2f75a9) var(--mbscpo-0, #0a558f)))"},"children":"Documentation"}],[["$","a",null,{"style":{"textDecoration":"none","cursor":"pointer","color":"var(--i73cho-1, var(--fg65d2-1, #d69191) var(--fg65d2-0, var(--mbscpo-1, #7dadd0) var(--mbscpo-0, #4687b6))) var(--i73cho-0, var(--fg65d2-1, #ad4545) var(--fg65d2-0, var(--mbscpo-1, #2f75a9) var(--mbscpo-0, #0a558f)))"},"href":"https://github.com/css-hooks/css-hooks","children":"GitHub"}],["$","a",null,{"style":{"textDecoration":"none","cursor":"pointer","color":"var(--i73cho-1, var(--fg65d2-1, #d69191) var(--fg65d2-0, var(--mbscpo-1, #7dadd0) var(--mbscpo-0, #4687b6))) var(--i73cho-0, var(--fg65d2-1, #ad4545) var(--fg65d2-0, var(--mbscpo-1, #2f75a9) var(--mbscpo-0, #0a558f)))"},"href":"https://www.npmjs.com/org/css-hooks","children":"NPM"}],["$","a",null,{"style":{"textDecoration":"none","cursor":"pointer","color":"var(--i73cho-1, var(--fg65d2-1, #d69191) var(--fg65d2-0, var(--mbscpo-1, #7dadd0) var(--mbscpo-0, #4687b6))) var(--i73cho-0, var(--fg65d2-1, #ad4545) var(--fg65d2-0, var(--mbscpo-1, #2f75a9) var(--mbscpo-0, #0a558f)))"},"href":"https://www.twitter.com/csshooks","children":"Twitter"}],["$","a",null,{"style":{"textDecoration":"none","cursor":"pointer","color":"var(--i73cho-1, var(--fg65d2-1, #d69191) var(--fg65d2-0, var(--mbscpo-1, #7dadd0) var(--mbscpo-0, #4687b6))) var(--i73cho-0, var(--fg65d2-1, #ad4545) var(--fg65d2-0, var(--mbscpo-1, #2f75a9) var(--mbscpo-0, #0a558f)))"},"href":"https://www.facebook.com/csshooks","children":"Facebook"}]]]}]]}],["$","script",null,{"defer":true,"src":"https://static.cloudflareinsights.com/beacon.min.js","data-cf-beacon":"{\"token\": \"b1c573f33b1d41c7bb345f7a741ed5f2\"}"}]]}]}],null]
+6:[["$","meta","0",{"charSet":"utf-8"}],["$","title","1",{"children":"Getting started - CSS Hooks for Solid"}],["$","meta","2",{"name":"description","content":"Get started with CSS Hooks in just a few simple steps."}],["$","meta","3",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","4",{"property":"og:image:type","content":"image/png"}],["$","meta","5",{"property":"og:image","content":"https://css-hooks.com/opengraph-image?e223aa0c4475c31c"}],["$","meta","6",{"property":"og:image:width","content":"1200"}],["$","meta","7",{"property":"og:image:height","content":"630"}],["$","meta","8",{"name":"twitter:card","content":"summary_large_image"}],["$","meta","9",{"name":"twitter:image:type","content":"image/png"}],["$","meta","10",{"name":"twitter:image","content":"https://css-hooks.com/opengraph-image?e223aa0c4475c31c"}],["$","meta","11",{"name":"twitter:image:width","content":"1200"}],["$","meta","12",{"name":"twitter:image:height","content":"630"}],["$","link","13",{"rel":"icon","href":"/icon?e4063331efbe0367","alt":"$undefined","type":"image/png","sizes":"32x32"}],["$","meta","14",{"name":"next-size-adjust"}]]
+e:null
