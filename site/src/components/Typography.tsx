@@ -1,6 +1,7 @@
 import { CSSProperties, ComponentProps, ReactElement, forwardRef } from "react";
 import { Inconsolata, Inter } from "next/font/google";
 import { O, U } from "ts-toolbelt";
+import { css } from "@/css";
 
 export type ForwardProps = {
   className?: string;
@@ -59,18 +60,21 @@ export default forwardRef<HTMLSpanElement, O.Omit<Props, "ref">>(
       className: `${className} ${
         variant === "codeBase" ? inconsolata.className : inter.className
       }`,
-      style: {
-        ...variantStyles[variant === "codeBase" ? "regularBase" : variant],
-        textTransform: variant === "regularSmallCaps" ? "uppercase" : undefined,
-        letterSpacing:
-          variant === "codeBase" || variant === "regularBase"
-            ? undefined
-            : variant === "regularSmallCaps"
-            ? "0.1em"
-            : "-0.03em",
-        ...(margins ? { display: "block" } : { margin: 0, marginBlock: 0 }),
-        ...style,
-      },
+      style: css(
+        variantStyles[variant === "codeBase" ? "regularBase" : variant],
+        {
+          textTransform:
+            variant === "regularSmallCaps" ? "uppercase" : undefined,
+          letterSpacing:
+            variant === "codeBase" || variant === "regularBase"
+              ? undefined
+              : variant === "regularSmallCaps"
+              ? "0.1em"
+              : "-0.03em",
+        },
+        margins ? { display: "block" } : { margin: 0, marginBlock: 0 },
+        style,
+      ),
     };
     return typeof children === "function" ? (
       children(forwardProps)
