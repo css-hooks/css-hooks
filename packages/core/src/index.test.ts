@@ -393,28 +393,6 @@ describe("css function", () => {
     );
   });
 
-  it("allows the default property value to be defined after hook styles", () => {
-    const createHooks = buildHooksSystem<{ "text-decoration": string }>(
-      (_, value) => (typeof value === "string" ? value : null),
-    );
-    const [, css] = createHooks(
-      {
-        "test-hook": ":test-hook",
-      },
-      { hookNameToId: x => x },
-    );
-    assert.deepEqual(
-      css({
-        "test-hook": { "text-decoration": "underline" },
-        "text-decoration": "none",
-      }),
-      {
-        "text-decoration":
-          "var(--test-hook-1, underline) var(--test-hook-0, none)",
-      },
-    );
-  });
-
   it("leaves non-hooks values as-is", () => {
     const createHooks = buildHooksSystem<{
       color?: string;
@@ -574,6 +552,104 @@ describe("css function", () => {
       {
         color:
           "var(--test-hook-a-1, var(--test-hook-b-1, [pink]) var(--test-hook-b-0, [black])) var(--test-hook-a-0, [black])",
+      },
+    );
+  });
+
+  it("prioritizes declarations by their order, with last one having highest priority", () => {
+    const createHooks = buildHooksSystem<{
+      color?: string;
+      background?: string;
+    }>();
+
+    const [, css] = createHooks(
+      {
+        foo: "&.foo",
+        bar: "&.bar",
+      },
+      { hookNameToId: x => x },
+    );
+
+    assert.deepStrictEqual(
+      css({
+        foo: { color: "black", background: "white" },
+        color: "blue",
+      }),
+      {
+        background: "var(--foo-1, white) var(--foo-0, unset)",
+        color: "blue",
+      },
+    );
+
+    assert.deepStrictEqual(
+      css({
+        foo: { color: "black" },
+        color: "blue",
+        bar: { color: "red" },
+      }),
+      {
+        color: "var(--bar-1, red) var(--bar-0, blue)",
+      },
+    );
+
+    assert.deepStrictEqual(
+      css({
+        foo: { bar: { color: "black" }, color: "blue" },
+      }),
+      {
+        color: "var(--foo-1, blue) var(--foo-0, unset)",
+      },
+    );
+
+    {
+      const actual = css({
+        color: "black",
+        background: "white",
+        foo: { color: "blue" },
+      });
+      const expected = {
+        background: "white",
+        color: "var(--foo-1, blue) var(--foo-0, black)",
+      };
+      assert.deepStrictEqual(actual, expected);
+      assert.deepStrictEqual(Object.keys(actual), Object.keys(expected));
+    }
+  });
+
+  it("merges successive style objects with last property declaration always having highest priority", () => {
+    const createHooks = buildHooksSystem<{
+      background?: string;
+      backgroundColor?: string;
+    }>();
+
+    const [, css] = createHooks(
+      { foo: "&.foo", bar: "&.bar" },
+      { hookNameToId: x => x },
+    );
+
+    {
+      const actual = css(
+        {
+          backgroundColor: "blue",
+          background: "orange",
+        },
+        {
+          backgroundColor: "black",
+        },
+      );
+      const expected = {
+        background: "orange",
+        backgroundColor: "black",
+      };
+      assert.deepStrictEqual(actual, expected);
+      assert.deepStrictEqual(Object.keys(actual), Object.keys(expected));
+    }
+
+    assert.deepStrictEqual(
+      css({ foo: { background: "black" } }, { bar: { background: "blue" } }),
+      {
+        background:
+          "var(--bar-1, blue) var(--bar-0, var(--foo-1, black) var(--foo-0, unset))",
       },
     );
   });

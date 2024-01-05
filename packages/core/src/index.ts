@@ -281,6 +281,7 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
       ) => string | null = propertyName =>
         stringifyImpl(propertyName, properties[propertyName]),
     ): Properties {
+      const keys = Object.keys(properties);
       forEachHook(properties, (hookName, innerProperties) => {
         cssImpl(innerProperties, propertyName => {
           let v = stringifyImpl(propertyName, innerProperties[propertyName]);
@@ -293,6 +294,9 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
           return v;
         });
         for (const propertyNameStr in innerProperties) {
+          if (keys.indexOf(propertyNameStr) > keys.indexOf(hookName)) {
+            continue;
+          }
           const propertyName = propertyNameStr as keyof Properties;
           const v1 = stringifyImpl(propertyName, innerProperties[propertyName]);
           if (v1 !== null) {
@@ -300,6 +304,7 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
             if (v0 === null) {
               v0 = fallbackKeyword;
             }
+            delete properties[propertyName];
             properties[propertyName] = `var(--${hookId(
               hookName,
             )}-1, ${v1}) var(--${hookId(
@@ -313,10 +318,26 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
     }
 
     function css(
-      properties: WithHooks<HookProperties, Properties>,
+      ...properties: [
+        WithHooks<HookProperties, Properties>,
+        ...(WithHooks<HookProperties, Properties> | undefined)[],
+      ]
     ): Properties {
-      return cssImpl(
-        JSON.parse(JSON.stringify(properties)) as typeof properties,
+      return (
+        (JSON.parse(JSON.stringify(properties)) as typeof properties).filter(
+          x => x,
+        ) as WithHooks<HookProperties, Properties>[]
+      ).reduce(
+        (a, b) =>
+          cssImpl({
+            ...Object.fromEntries(
+              Object.entries(
+                cssImpl(a) as WithHooks<HookProperties, Properties>,
+              ).filter(([k]) => !(k in b)),
+            ),
+            ...b,
+          }) as WithHooks<HookProperties, Properties>,
+        {} as WithHooks<HookProperties, Properties>,
       );
     }
 
