@@ -323,22 +323,24 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
         ...(WithHooks<HookProperties, Properties> | undefined)[],
       ]
     ): Properties {
-      return (
-        (JSON.parse(JSON.stringify(properties)) as typeof properties).filter(
-          x => x,
-        ) as WithHooks<HookProperties, Properties>[]
-      ).reduce(
-        (a, b) =>
-          cssImpl({
-            ...Object.fromEntries(
-              Object.entries(
-                cssImpl(a) as WithHooks<HookProperties, Properties>,
-              ).filter(([k]) => !(k in b)),
-            ),
-            ...b,
-          }) as WithHooks<HookProperties, Properties>,
-        {} as WithHooks<HookProperties, Properties>,
-      );
+      const styles = [{}].concat(
+        JSON.parse(JSON.stringify(properties)) as typeof properties,
+      ) as typeof properties;
+      do {
+        const current = styles[0];
+        const next = styles[1] || ({} as WithHooks<HookProperties, Properties>);
+        for (const k in next) {
+          if (k in current) {
+            delete current[k as keyof typeof current];
+          }
+        }
+        styles[0] = cssImpl(Object.assign(current, next)) as WithHooks<
+          HookProperties,
+          Properties
+        >;
+        styles.splice(1, 1);
+      } while (styles[1]);
+      return styles[0];
     }
 
     return [`*{${hooks.init}}${hooks.rule}`, css] as [string, typeof css];
