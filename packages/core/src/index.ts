@@ -101,7 +101,8 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
           /** @internal */ hookNameToId?: (hookName: string) => string;
         }
     ) & {
-      fallback?: "unset" | "revert-layer";
+      fallback?: "unset" | "revert-layer" | undefined;
+      noSort?: boolean | undefined;
     },
   ) {
     const fallbackKeyword = options?.fallback || "unset";
@@ -281,7 +282,8 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
       ) => string | null = propertyName =>
         stringifyImpl(propertyName, properties[propertyName]),
     ): Properties {
-      const keys = Object.keys(properties);
+      const { noSort = false } = options || {};
+      const keys = noSort ? [] : Object.keys(properties);
       forEachHook(properties, (hookName, innerProperties) => {
         cssImpl(innerProperties, propertyName => {
           let v = stringifyImpl(propertyName, innerProperties[propertyName]);
@@ -304,7 +306,9 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
             if (v0 === null) {
               v0 = fallbackKeyword;
             }
-            delete properties[propertyName];
+            if (!noSort) {
+              delete properties[propertyName];
+            }
             properties[propertyName] = `var(--${hookId(
               hookName,
             )}-1, ${v1}) var(--${hookId(
@@ -329,9 +333,11 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
       do {
         const current = styles[0];
         const next = styles[1] || ({} as WithHooks<HookProperties, Properties>);
-        for (const k in next) {
-          if (k in current) {
-            delete current[k as keyof typeof current];
+        if (!options?.noSort) {
+          for (const k in next) {
+            if (k in current) {
+              delete current[k as keyof typeof current];
+            }
           }
         }
         styles[0] = cssImpl(Object.assign(current, next)) as WithHooks<

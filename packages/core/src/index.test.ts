@@ -653,6 +653,80 @@ describe("css function", () => {
       },
     );
   });
+
+  describe("with noSort option", () => {
+    it("does not reorder properties", () => {
+      const createHooks = buildHooksSystem<{
+        background?: string;
+        color?: string;
+      }>();
+
+      const [, css] = createHooks(
+        {
+          foo: "&.foo",
+        },
+        { hookNameToId: x => x, noSort: true },
+      );
+
+      assert.deepStrictEqual(
+        css({
+          foo: { color: "red" },
+          color: "blue",
+        }),
+        {
+          color: "var(--foo-1, red) var(--foo-0, blue)",
+        },
+      );
+
+      {
+        const expected = {
+          background: "var(--foo-1, gray) var(--foo-0, black)",
+          color: "white",
+        };
+        const actual = css({
+          background: "black",
+          color: "white",
+          foo: { background: "gray" },
+        });
+        assert.deepStrictEqual(actual, expected);
+        assert.deepStrictEqual(Object.keys(actual), Object.keys(expected));
+      }
+    });
+
+    it("merges successive style objects without reordering properties", () => {
+      const createHooks = buildHooksSystem<{
+        background?: string;
+        backgroundColor?: string;
+      }>();
+
+      const [, css] = createHooks(
+        {
+          foo: "&.foo",
+        },
+        { hookNameToId: x => x, noSort: true },
+      );
+
+      const expected = {
+        backgroundColor: "var(--foo-1, blue) var(--foo-0, black)",
+        background: "orange",
+      };
+
+      const actual = css(
+        {
+          backgroundColor: "black",
+          background: "orange",
+        },
+        {
+          foo: {
+            backgroundColor: "blue",
+          },
+        },
+      );
+
+      assert.deepStrictEqual(actual, expected);
+      assert.deepStrictEqual(Object.keys(actual), Object.keys(expected));
+    });
+  });
 });
 
 describe("createHooks function", () => {
