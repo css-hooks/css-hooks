@@ -1,3 +1,4 @@
+import { css } from "@/css";
 import { CSSProperties, ComponentProps, ReactElement, forwardRef } from "react";
 import { O, U } from "ts-toolbelt";
 
@@ -13,13 +14,15 @@ export type Props = U.Strict<
 export default forwardRef<HTMLDivElement, O.Omit<Props, "ref">>(
   function PageBlock({ children, style, ...restProps }, ref) {
     const forwardProps: ForwardProps = {
-      style: {
-        margin: "0 auto",
-        boxSizing: "border-box",
-        width: "calc(100vw - 4rem)",
-        maxWidth: "80rem",
-        ...style,
-      },
+      style: css(
+        {
+          margin: "0 auto",
+          boxSizing: "border-box",
+          width: "calc(100vw - 4rem)",
+          maxWidth: "80rem",
+        },
+        style,
+      ),
     };
 
     return typeof children === "function" ? (
