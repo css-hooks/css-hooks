@@ -1,3 +1,10 @@
+## [1.7.0](https://github.com/css-hooks/css-hooks/compare/v1.6.0...v1.7.0) (2024-01-12)
+
+
+### Features
+
+* **core:** sort option ([20f8765](https://github.com/css-hooks/css-hooks/commit/20f8765bbed57b78125283f34b51db45d08663a4))
+
 ## [1.6.0](https://github.com/css-hooks/css-hooks/compare/v1.5.4...v1.6.0) (2023-12-30)
 
 
