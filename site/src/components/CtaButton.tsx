@@ -33,33 +33,35 @@ export default forwardRef<HTMLAnchorElement, O.Omit<Props, "ref">>(
 
           const forwardProps: ForwardProps = {
             className: `${className} ${typographyClassName}`,
-            style: css({
-              ...typographyStyle,
-              textDecoration: "none",
-              background: theme === "purple" ? V.purple45 : V.gray45,
-              color: V.white,
-              padding: "0.5em 0.75em",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "0.5em",
-              "&:hover": {
-                background: V.blue35,
-              },
-              "&:active": {
-                background: V.red35,
-              },
-              "@media (prefers-color-scheme: dark)": {
-                background: theme === "purple" ? V.purple60 : V.gray70,
+            style: css(
+              typographyStyle || {},
+              {
+                textDecoration: "none",
+                background: theme === "purple" ? V.purple45 : V.gray45,
+                color: V.white,
+                padding: "0.5em 0.75em",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "0.5em",
                 "&:hover": {
-                  background: V.blue50,
+                  background: V.blue35,
                 },
                 "&:active": {
-                  background: V.red50,
+                  background: V.red35,
+                },
+                "@media (prefers-color-scheme: dark)": {
+                  background: theme === "purple" ? V.purple60 : V.gray70,
+                  "&:hover": {
+                    background: V.blue50,
+                  },
+                  "&:active": {
+                    background: V.red50,
+                  },
                 },
               },
-              ...style,
-            }),
+              style,
+            ),
           };
 
           return typeof children === "function" ? (
