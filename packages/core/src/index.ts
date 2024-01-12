@@ -102,6 +102,9 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
         }
     ) & {
       fallback?: "unset" | "revert-layer";
+
+      /** @experimental */
+      sort?: boolean;
     },
   ) {
     const fallbackKeyword = options?.fallback || "unset";
@@ -120,23 +123,6 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
           ? `${hookName.replace(/[^A-Za-z0-9-]/g, "_")}-${specHash}`
           : specHash;
       });
-
-    function forEachHook(
-      properties: WithHooks<HookProperties, Properties>,
-      callback: (
-        hookName: HookProperties,
-        innerProperties: WithHooks<HookProperties, Properties>,
-      ) => void,
-    ) {
-      return Object.entries(properties)
-        .filter(([key]) => key in config)
-        .forEach(([hookName, value]) => {
-          callback(
-            hookName as HookProperties,
-            value as WithHooks<HookProperties, Properties>,
-          );
-        });
-    }
 
     const hooks = Object.entries(config)
       .map(([name, definition]: [string, unknown]): [string, unknown] => {
@@ -281,43 +267,83 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
       ) => string | null = propertyName =>
         stringifyImpl(propertyName, properties[propertyName]),
     ): Properties {
-      forEachHook(properties, (hookName, innerProperties) => {
-        cssImpl(innerProperties, propertyName => {
-          let v = stringifyImpl(propertyName, innerProperties[propertyName]);
-          if (v === null) {
-            v = fallback(propertyName);
-          }
-          if (v === null) {
-            v = fallbackKeyword;
-          }
-          return v;
-        });
-        for (const propertyNameStr in innerProperties) {
-          const propertyName = propertyNameStr as keyof Properties;
-          const v1 = stringifyImpl(propertyName, innerProperties[propertyName]);
-          if (v1 !== null) {
-            let v0: string | null = fallback(propertyName);
-            if (v0 === null) {
-              v0 = fallbackKeyword;
+      const sort = options?.sort;
+      const keys = sort ? Object.keys(properties) : [];
+      for (const k in properties) {
+        const key = k as keyof typeof properties;
+        const value = properties[key];
+        if (key in config) {
+          const hookName = key as unknown as HookProperties;
+          const innerProperties = value as Parameters<typeof cssImpl>[0];
+          cssImpl(innerProperties, propertyName => {
+            let v = stringifyImpl(propertyName, innerProperties[propertyName]);
+            if (v === null) {
+              v = fallback(propertyName);
             }
-            properties[propertyName] = `var(--${hookId(
-              hookName,
-            )}-1, ${v1}) var(--${hookId(
-              hookName,
-            )}-0, ${v0})` as (typeof properties)[keyof Properties];
+            if (v === null) {
+              v = fallbackKeyword;
+            }
+            return v;
+          });
+          for (const propertyNameStr in innerProperties) {
+            if (keys.indexOf(propertyNameStr) > keys.indexOf(hookName)) {
+              continue;
+            }
+            const propertyName = propertyNameStr as keyof Properties;
+            const v1 = stringifyImpl(
+              propertyName,
+              innerProperties[propertyName],
+            );
+            if (v1 !== null) {
+              let v0: string | null = fallback(propertyName);
+              if (v0 === null) {
+                v0 = fallbackKeyword;
+              }
+              if (sort) {
+                delete properties[propertyName];
+              }
+              properties[propertyName] = `var(--${hookId(
+                hookName,
+              )}-1, ${v1}) var(--${hookId(
+                hookName,
+              )}-0, ${v0})` as (typeof properties)[keyof Properties];
+            }
           }
+          delete properties[hookName as unknown as keyof Properties];
+        } else if (sort) {
+          delete properties[key];
+          Object.assign(properties, { [key]: value });
         }
-        delete properties[hookName as unknown as keyof Properties];
-      });
+      }
       return properties as Properties;
     }
 
     function css(
-      properties: WithHooks<HookProperties, Properties>,
+      ...properties: [
+        WithHooks<HookProperties, Properties>,
+        ...(WithHooks<HookProperties, Properties> | undefined)[],
+      ]
     ): Properties {
-      return cssImpl(
+      const styles = [{}].concat(
         JSON.parse(JSON.stringify(properties)) as typeof properties,
-      );
+      ) as typeof properties;
+      do {
+        const current = styles[0];
+        const next = styles[1] || ({} as WithHooks<HookProperties, Properties>);
+        if (options?.sort) {
+          for (const k in next) {
+            if (k in current) {
+              delete current[k as keyof typeof current];
+            }
+          }
+        }
+        styles[0] = cssImpl(Object.assign(current, next)) as WithHooks<
+          HookProperties,
+          Properties
+        >;
+        styles.splice(1, 1);
+      } while (styles[1]);
+      return styles[0];
     }
 
     return [`*{${hooks.init}}${hooks.rule}`, css] as [string, typeof css];
