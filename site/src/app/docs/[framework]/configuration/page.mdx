@@ -95,26 +95,15 @@ export const [hooks, css] = createHooks({
 ### Hook specs
 
 A hook spec uses CSS syntax to define the functionality of the hook. It can
-consist of a pseudo-class, custom selector logic, a container query, a media
-query, or a logical combination of any of these.
-
-#### Basic pseudo-classes
-
-A hook that activates when the element matches a pseudo-class can usually be
-represented with a basic pseudo-class spec, e.g.
-
-- `":hover"`
-- `":active"`
-- `":nth-child(2n+3)"`
-
-The spec must start with a `:` character and uses native CSS syntax for
-pseudo-classes. For an overview of pseudo-classes that you might use, see
-[Pseudo-classes (MDN)](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes).
+consist of selector logic, a container query, a media query, or a logical
+combination of any of these.
 
 #### Selectors
 
-A hook can also implement complex selector logic, e.g.
+A hook that activates when the element matches a selector can be represented
+with a _selector_ spec, e.g.
 
+- **`"&:hover"`**: Activates when the cursor is positioned over the element.
 - **`":checked + &"`**: Activates when the previous sibling matches the
   `:checked` pseudo-class.
 - **`".group:hover &"`**: Activates when an ancestor element has the `group`

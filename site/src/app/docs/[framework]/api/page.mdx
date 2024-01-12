@@ -28,7 +28,8 @@ under which a hook applies, following one of these formats:
 
 - **`":<pseudo>"`**, where `<pseudo>` is any
   [pseudo-class](https://www.w3.org/TR/selectors/#pseudo-classes) such as
-  `hover`, `active`, or `focus`.
+  `hover`, `active`, or `focus`. _This is deprecated, and we recommend to use a
+  selector spec instead._
 - **`"<selector>"`**, where `<selector>` must contain an `&` character
   functioning as a placeholder for a base selector. For example, a value of
   `":checked + &"` would produce a hook that is activated whenever the element
@@ -54,17 +55,20 @@ Options that affect how CSS content is rendered
 - `fallback?: "unset" | "revert-layer"` &ensp; Which fallback keyword to use.
   `"revert-layer"` is the best choice, but it's
   [highly experimental](https://caniuse.com/mdn-css_types_global_keywords_revert-layer).
+- `sort?: boolean` &ensp; _experimental_ &ensp; When enabled, the last
+  declaration specified always has the highest priority.
 
 ### <Code className="language-typescript">type StyleSheet = string</Code>
 
 A string of CSS content that must be added to the document to support the
 configured hooks
 
-### <Code className="language-typescript">type CssFn = (\_: WithHooks&lt;CSSProperties&gt;) => CSSProperties</Code>
+### <Code className="language-typescript">type CssFn = (...styles: WithHooks&lt;CSSProperties&gt;[]) => CSSProperties</Code>
 
 The `css` function accepts an object consisting of CSS properties and nested
 style objects, flattening it to produce a properties object compatible with the
-`style` prop.
+`style` prop. When multiple style objects are specified, each one is flattened
+in order to provide fallback values for the next.
 
 ---
 
