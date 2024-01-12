@@ -13,5 +13,6 @@ export const [hooks, css] = createHooks(
   },
   {
     debug: process.env.NODE_ENV !== "production",
+    sort: true,
   },
 );
