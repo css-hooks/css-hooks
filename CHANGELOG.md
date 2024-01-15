@@ -1,3 +1,10 @@
+## [1.8.0](https://github.com/css-hooks/css-hooks/compare/v1.7.0...v1.8.0) (2024-01-15)
+
+
+### Features
+
+* **core:** feature query support ([17fdfc6](https://github.com/css-hooks/css-hooks/commit/17fdfc67bf7f4376df4624deb5aafbf0cf3d8890))
+
 ## [1.7.0](https://github.com/css-hooks/css-hooks/compare/v1.6.0...v1.7.0) (2024-01-12)
 
 
