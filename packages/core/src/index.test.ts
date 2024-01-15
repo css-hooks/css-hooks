@@ -122,6 +122,50 @@ describe("hooks renderer", () => {
     );
   });
 
+  it("renders feature query hooks", () => {
+    const [hooks] = createHooks({
+      grid: "@supports (display: grid)",
+      woff2: "@supports font-format(woff2)",
+      preserve:
+        "@supports (transform-style: preserve) or (-moz-transform-style: preserve)",
+    });
+
+    assert.strictEqual(
+      normalizeCSS(hooks),
+      normalizeCSS(`
+        * {
+          --grid-0:initial;
+          --grid-1: ;
+          --woff2-0:initial;
+          --woff2-1: ;
+          --preserve-0:initial;
+          --preserve-1: ;
+        }
+
+        @supports (display: grid) {
+          * {
+            --grid-0: ;
+            --grid-1:initial;
+          }
+        }
+
+        @supports font-format(woff2) {
+          * {
+            --woff2-0: ;
+            --woff2-1:initial;
+          }
+        }
+
+        @supports (transform-style: preserve) or (-moz-transform-style: preserve) {
+          * {
+            --preserve-0: ;
+            --preserve-1:initial;
+          }
+        }
+      `),
+    );
+  });
+
   it("renders selector hooks", () => {
     const [hooks] = createHooks({
       checkedPrevious: ":checked + &",
@@ -156,6 +200,7 @@ describe("hooks renderer", () => {
       "nth-custom": ":nth-child(3n+2)",
       dark: "@media (prefers-color-scheme: dark)",
       "extra-large": "@container (min-width: 2000px)",
+      grid: "@supports (display: grid)",
     });
     assert.equal(
       normalizeCSS(hooks),
@@ -169,6 +214,8 @@ describe("hooks renderer", () => {
           --dark-1: ;
           --extra-large-0:initial;
           --extra-large-1: ;
+          --grid-0:initial;
+          --grid-1: ;
         }
 
         :checked + * {
@@ -192,6 +239,13 @@ describe("hooks renderer", () => {
           * {
             --extra-large-0: ;
             --extra-large-1:initial;
+          }
+        }
+
+        @supports (display: grid) {
+          * {
+            --grid-0: ;
+            --grid-1:initial;
           }
         }
       `),
