@@ -7,7 +7,7 @@ type UnionToIntersection<T> = (T extends any ? (t: T) => any : never) extends (
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
 type HookSpec =
-  | `@${"media" | "container"} ${string}`
+  | `@${"media" | "container" | "supports"} ${string}`
   | `:${string}`
   | `${string}&${string}`
   | { or: Readonly<HookSpec[]> }
@@ -22,6 +22,7 @@ function isHookSpec(x: unknown): x is HookSpec {
       x.startsWith(":") ||
       x.startsWith("@media ") ||
       x.startsWith("@container ") ||
+      x.startsWith("@supports ") ||
       x.includes("&")
     );
   }

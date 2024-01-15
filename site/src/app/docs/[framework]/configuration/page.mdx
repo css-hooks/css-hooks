@@ -141,6 +141,18 @@ As with other types, media query hooks use native CSS syntax. For more
 information about media queries, see
 [@media (MDN)](https://developer.mozilla.org/en-US/docs/Web/CSS/@media).
 
+#### Feature queries
+
+A feature query hook activates when certain support conditions are matched, e.g.
+
+- `"@supports (display: grid)"`
+- `"@supports (transform-origin: 5% 10%)"`
+- `"@supports font-format(woff2)"`
+
+Feature query hooks, like others, use native CSS syntax. For more information
+about feature queries, see
+[@supports (MDN)](https://developer.mozilla.org/en-US/docs/Web/CSS/@supports).
+
 #### Logical combination hooks
 
 A logical combination hook combines any of the previously-defined hook types. It

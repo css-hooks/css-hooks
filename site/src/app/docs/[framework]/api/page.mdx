@@ -39,6 +39,9 @@ under which a hook applies, following one of these formats:
   condition.
 - **`"@media <query>"`**, where `<query>` can be replaced with any
   [media query](https://www.w3.org/TR/mediaqueries-5/) condition.
+- **`"@supports <query>"`**, where `<query>` can be replaced with any
+  [feature query](https://www.w3.org/TR/css-conditional-3/#at-supports)
+  condition.
 
 Two additional types of `HookSpec` allow you to use boolean `and`/`or` logic to
 define the conditions under which the the hook should apply. These are defined
