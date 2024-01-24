@@ -313,38 +313,35 @@ export function buildHooksSystem<Properties = Record<string, unknown>>(
           delete properties[hookName as unknown as keyof Properties];
         } else if (sort) {
           delete properties[key];
-          Object.assign(properties, { [key]: value });
+          properties[key as keyof Properties] =
+            value as (typeof properties)[keyof Properties];
         }
       }
       return properties as Properties;
     }
 
     function css(
-      ...properties: [
+      ...styles: [
         WithHooks<HookProperties, Properties>,
         ...(WithHooks<HookProperties, Properties> | undefined)[],
       ]
     ): Properties {
-      const styles = [{}].concat(
-        JSON.parse(JSON.stringify(properties)) as typeof properties,
-      ) as typeof properties;
       do {
         const current = styles[0];
         const next = styles[1] || ({} as WithHooks<HookProperties, Properties>);
-        if (options?.sort) {
-          for (const k in next) {
+        for (const k in next) {
+          if (options?.sort) {
             if (k in current) {
               delete current[k as keyof typeof current];
             }
           }
+
+          current[k as keyof Properties] = next[k as keyof Properties];
         }
-        styles[0] = cssImpl(Object.assign(current, next)) as WithHooks<
-          HookProperties,
-          Properties
-        >;
+
         styles.splice(1, 1);
       } while (styles[1]);
-      return styles[0];
+      return cssImpl(styles[0]) as WithHooks<HookProperties, Properties>;
     }
 
     return [`*{${hooks.init}}${hooks.rule}`, css] as [string, typeof css];
