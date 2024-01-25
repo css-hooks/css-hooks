@@ -1,7 +1,7 @@
 {
   "name": "@css-hooks/recommended",
   "description": "A recommended set of hooks to jump-start development",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "author": "Nick Saunders",
   "devDependencies": {
     "@tsconfig/strictest": "^2.0.1",
