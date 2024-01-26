@@ -1,928 +1,719 @@
 import assert from "node:assert";
-import { describe, it } from "node:test";
-import { buildHooksSystem, genericStringify } from "./index.js";
-import * as csstree from "css-tree";
+import events from "node:events";
+import { after, afterEach, before, beforeEach, describe, it } from "node:test";
+import * as CSS from "csstype";
+import puppeteer, { Browser, Page } from "puppeteer";
+import Color from "color";
+import * as lightningcss from "lightningcss";
+import { buildHooksSystem } from "./index.js";
 
-function normalizeCSS(css: string) {
-  return csstree.generate(csstree.parse(css));
-}
+events.setMaxListeners(50);
 
-describe("hooks renderer", () => {
-  const createHooksImpl = buildHooksSystem();
-  const createHooks = (config: Parameters<typeof createHooksImpl>[0]) =>
-    createHooksImpl(config, { hookNameToId: x => x });
+describe("in browser", () => {
+  const createHooks = buildHooksSystem<CSS.Properties>();
 
-  it("renders pseudo-class hooks", () => {
-    const [hooks] = createHooks({
-      hover: ":hover",
-      focusWithin: ":focus-within",
-      oddChild: ":nth-child(odd)",
+  let browser: Browser, page: Page;
+
+  before(async () => {
+    browser = await puppeteer.launch({
+      headless: "new",
     });
-    assert.equal(
-      normalizeCSS(hooks),
-      normalizeCSS(`
-        * {
-          --hover-0:initial;
-          --hover-1: ;
-          --focusWithin-0:initial;
-          --focusWithin-1: ;
-          --oddChild-0:initial;
-          --oddChild-1: ;
-        }
+  });
 
-        :hover {
-          --hover-0: ;
-          --hover-1:initial;
-        }
-
-        :focus-within {
-          --focusWithin-0: ;
-          --focusWithin-1:initial;
-        }
-
-        :nth-child(odd) {
-          --oddChild-0: ;
-          --oddChild-1:initial;
-        }
-      `),
+  beforeEach(async () => {
+    page = await browser.newPage();
+    await page.setContent(
+      "<!DOCTYPE html><html><head></head><body></body></html>",
     );
   });
 
-  it("renders media query hooks", () => {
-    const [hooks] = createHooks({
-      dark: "@media (prefers-color-scheme:dark)",
-      light: "@media (prefers-color-scheme:light)",
-    });
-    assert.equal(
-      normalizeCSS(hooks),
-      normalizeCSS(`
-        * {
-          --dark-0:initial;
-          --dark-1: ;
-          --light-0:initial;
-          --light-1: ;
-        }
-
-        @media (prefers-color-scheme:dark) {
-          * {
-            --dark-0: ;
-            --dark-1:initial;
-          }
-        }
-
-        @media (prefers-color-scheme:light) {
-          * {
-            --light-0: ;
-            --light-1:initial;
-          }
-        }
-      `),
-    );
+  afterEach(() => {
+    page.close();
   });
 
-  it("renders container query hooks", () => {
-    const [hooks] = createHooks({
-      small: "@container (max-width: 399.999px)",
-      medium: "@container (min-width: 400px) and (max-width: 699.999px)",
-      large: "@container (min-width: 700px)",
-    });
-    assert.equal(
-      normalizeCSS(hooks),
-      normalizeCSS(`
-        * {
-          --small-0:initial;
-          --small-1: ;
-          --medium-0:initial;
-          --medium-1: ;
-          --large-0:initial;
-          --large-1: ;
-        }
-
-        @container (max-width: 399.999px) {
-          * {
-            --small-0: ;
-            --small-1:initial;
-          }
-        }
-
-        @container (min-width: 400px) and (max-width: 699.999px) {
-          * {
-            --medium-0: ;
-            --medium-1:initial;
-          }
-        }
-
-        @container (min-width: 700px) {
-          * {
-            --large-0: ;
-            --large-1:initial;
-          }
-        }
-      `),
-    );
+  after(() => {
+    browser.close();
   });
 
-  it("renders feature query hooks", () => {
-    const [hooks] = createHooks({
-      grid: "@supports (display: grid)",
-      woff2: "@supports font-format(woff2)",
-      preserve:
-        "@supports (transform-style: preserve) or (-moz-transform-style: preserve)",
-    });
-
-    assert.strictEqual(
-      normalizeCSS(hooks),
-      normalizeCSS(`
-        * {
-          --grid-0:initial;
-          --grid-1: ;
-          --woff2-0:initial;
-          --woff2-1: ;
-          --preserve-0:initial;
-          --preserve-1: ;
-        }
-
-        @supports (display: grid) {
-          * {
-            --grid-0: ;
-            --grid-1:initial;
-          }
-        }
-
-        @supports font-format(woff2) {
-          * {
-            --woff2-0: ;
-            --woff2-1:initial;
-          }
-        }
-
-        @supports (transform-style: preserve) or (-moz-transform-style: preserve) {
-          * {
-            --preserve-0: ;
-            --preserve-1:initial;
-          }
-        }
-      `),
-    );
-  });
-
-  it("renders selector hooks", () => {
-    const [hooks] = createHooks({
-      checkedPrevious: ":checked + &",
-      groupHover: ".hover-group &",
-    });
-    assert.equal(
-      normalizeCSS(hooks),
-      normalizeCSS(`
-        * {
-          --checkedPrevious-0:initial;
-          --checkedPrevious-1: ;
-          --groupHover-0:initial;
-          --groupHover-1: ;
-        }
-
-        :checked + * {
-          --checkedPrevious-0: ;
-          --checkedPrevious-1:initial;
-        }
-
-        .hover-group * {
-          --groupHover-0: ;
-          --groupHover-1:initial;
-        }
-      `),
-    );
-  });
-
-  it("renders a mix of hooks", () => {
-    const [hooks] = createHooks({
-      "checked-previous": ":checked + &",
-      "nth-custom": ":nth-child(3n+2)",
-      dark: "@media (prefers-color-scheme: dark)",
-      "extra-large": "@container (min-width: 2000px)",
-      grid: "@supports (display: grid)",
-    });
-    assert.equal(
-      normalizeCSS(hooks),
-      normalizeCSS(`
-        * {
-          --checked-previous-0:initial;
-          --checked-previous-1: ;
-          --nth-custom-0:initial;
-          --nth-custom-1: ;
-          --dark-0:initial;
-          --dark-1: ;
-          --extra-large-0:initial;
-          --extra-large-1: ;
-          --grid-0:initial;
-          --grid-1: ;
-        }
-
-        :checked + * {
-          --checked-previous-0: ;
-          --checked-previous-1:initial;
-        }
-
-        :nth-child(3n+2) {
-          --nth-custom-0: ;
-          --nth-custom-1:initial;
-        }
-
-        @media (prefers-color-scheme: dark) {
-          * {
-            --dark-0: ;
-            --dark-1:initial;
-          }
-        }
-
-        @container (min-width: 2000px) {
-          * {
-            --extra-large-0: ;
-            --extra-large-1:initial;
-          }
-        }
-
-        @supports (display: grid) {
-          * {
-            --grid-0: ;
-            --grid-1:initial;
-          }
-        }
-      `),
-    );
-  });
-
-  it('renders "or" hooks', () => {
-    const [hooks] = createHooks({
-      dark: {
-        or: ["@media (prefers-color-scheme: dark)", "[data-theme='dark'] &"],
+  function createStyledElement(
+    tag: keyof HTMLElementTagNameMap,
+    style: CSS.Properties,
+  ) {
+    return page.evaluate(
+      ({ tag, style }) => {
+        const el = document.createElement(tag);
+        el.setAttribute("style", style);
+        document.body.appendChild(el);
       },
-    });
-    assert.equal(
-      normalizeCSS(hooks),
-      normalizeCSS(`
-        * {
-          --darkA-0:initial;
-          --darkA-1: ;
-          --darkB-0:initial;
-          --darkB-1: ;
-          --dark-0:var(--darkA-0,var(--darkB-0));
-          --dark-1:var(--darkA-1) var(--darkB-1);
-        }
-        @media (prefers-color-scheme: dark) {
-          * {
-            --darkA-0: ;
-            --darkA-1:initial;
-          }
-        }
-        [data-theme="dark"] * {
-          --darkB-0: ;
-          --darkB-1:initial;
-        }
-      `),
-    );
-  });
-
-  it('renders "and" hooks', () => {
-    const [hooks] = createHooks({
-      dark: {
-        and: ["@media (prefers-color-scheme: dark)", "[data-theme='dark'] &"],
+      {
+        tag,
+        style: Object.entries(style)
+          .map(
+            ([property, value]) =>
+              `${
+                property.startsWith("--")
+                  ? property
+                  : property.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`)
+              }:${value}`,
+          )
+          .join(";"),
       },
-    });
-    assert.equal(
-      normalizeCSS(hooks),
-      normalizeCSS(`
-        * {
-          --darkA-0:initial;
-          --darkA-1: ;
-          --darkB-0:initial;
-          --darkB-1: ;
-          --dark-0:var(--darkA-0) var(--darkB-0);
-          --dark-1:var(--darkA-1,var(--darkB-1));
-        }
-        @media (prefers-color-scheme: dark) {
-          * {
-            --darkA-0: ;
-            --darkA-1:initial;
-          }
-        }
-        [data-theme="dark"] * {
-          --darkB-0: ;
-          --darkB-1:initial;
-        }
-      `),
     );
-  });
+  }
 
-  it('renders nested "and" and "or" hooks', () => {
-    const [hooks] = createHooks({
-      dark: {
-        or: [
-          {
-            and: [
-              "@media (prefers-color-scheme: dark)",
-              "[data-theme='auto'] &",
+  async function queryComputedStyle(
+    selector: string,
+  ): Promise<ReturnType<typeof getComputedStyle> | undefined> {
+    const computedStyle = await page.evaluate(selector => {
+      const el = document.querySelector(selector);
+      return JSON.stringify(el ? getComputedStyle(el) : undefined);
+    }, selector);
+    return JSON.parse(computedStyle) as ReturnType<typeof queryComputedStyle>;
+  }
+
+  function querySetClassName(selector: string, className: string) {
+    return page.evaluate(
+      ({ selector, className }) => {
+        const el = document.querySelector(selector);
+        if (el) {
+          el.className = className;
+        }
+      },
+      { selector, className },
+    );
+  }
+
+  function computedToColor(computed: string | undefined) {
+    return computed ? Color(computed) : undefined;
+  }
+
+  for (const mode of [true, false].map(debug => ({ debug }))) {
+    describe(`with configuration ${JSON.stringify(mode)}`, () => {
+      it("supports selector hooks", async () => {
+        const { styleSheet, css } = createHooks({
+          hooks: {
+            hover: "&:hover",
+          },
+          ...mode,
+        });
+
+        await page.addStyleTag({ content: styleSheet() });
+
+        const expectedDefaultColor = Color("gray"),
+          expectedHoverColor = Color("blue");
+
+        await createStyledElement(
+          "button",
+          css({
+            color: expectedDefaultColor.string(),
+            match: on => [on("hover", { color: expectedHoverColor.string() })],
+          }),
+        );
+
+        const actualDefaultColor = computedToColor(
+          (await queryComputedStyle("button"))?.color,
+        );
+
+        assert.deepStrictEqual(actualDefaultColor, expectedDefaultColor);
+
+        await page.hover("button");
+
+        const actualHoverColor = computedToColor(
+          (await queryComputedStyle("button"))?.color,
+        );
+
+        assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
+      });
+
+      it("supports at-rule hooks", async () => {
+        const { styleSheet, css } = createHooks({
+          hooks: {
+            mobile: "@media (width < 600px)",
+          },
+          ...mode,
+        });
+
+        await page.addStyleTag({ content: styleSheet() });
+
+        const expectedDefaultPadding = "64px",
+          expectedMobilePadding = "16px";
+
+        await createStyledElement(
+          "div",
+          css({
+            padding: expectedDefaultPadding,
+            match: on => [
+              on("mobile", {
+                padding: expectedMobilePadding,
+              }),
             ],
+          }),
+        );
+
+        const actualDefaultPadding = (await queryComputedStyle("div"))?.padding;
+
+        assert.strictEqual(actualDefaultPadding, expectedDefaultPadding);
+
+        await page.setViewport({
+          width: 480,
+          height: 800,
+          deviceScaleFactor: 1,
+        });
+
+        const actualMobilePadding = (await queryComputedStyle("div"))?.padding;
+
+        assert.strictEqual(actualMobilePadding, expectedMobilePadding);
+      });
+
+      it("supports hook-level combinational logic", async () => {
+        const { styleSheet, css } = createHooks({
+          hooks: ({ all, any, not }) => ({
+            "&.a:not(&.b,&.c)": all("&.a", not(any("&.b", "&.c"))),
+          }),
+          ...mode,
+        });
+
+        await page.addStyleTag({ content: styleSheet() });
+
+        const expectedDefaultDisplay = "none",
+          expectedConditionMetDisplay = "block";
+
+        await createStyledElement(
+          "div",
+          css({
+            display: expectedDefaultDisplay,
+            match: on => [
+              on("&.a:not(&.b,&.c)", {
+                display: expectedConditionMetDisplay,
+              }),
+            ],
+          }),
+        );
+
+        let actualDefaultDisplay = (await queryComputedStyle("div"))?.display;
+
+        assert.strictEqual(actualDefaultDisplay, expectedDefaultDisplay);
+
+        for (const className of ["a b", "a c"]) {
+          await querySetClassName("div", className);
+          actualDefaultDisplay = (await queryComputedStyle("div"))?.display;
+          assert.strictEqual(actualDefaultDisplay, expectedDefaultDisplay);
+        }
+
+        assert.strictEqual(actualDefaultDisplay, expectedDefaultDisplay);
+
+        for (const className of ["a", "a d"]) {
+          await querySetClassName("div", className);
+          const actualConditionMetDisplay = (await queryComputedStyle("div"))
+            ?.display;
+          assert.strictEqual(
+            actualConditionMetDisplay,
+            expectedConditionMetDisplay,
+          );
+        }
+      });
+
+      it("supports local combinational logic", async () => {
+        const { styleSheet, css } = createHooks({
+          hooks: {
+            "&.a": "&.a",
+            "&.b": "&.b",
+            "&.c": "&.c",
           },
-          "[data-theme='dark'] &",
-        ],
-      },
+          ...mode,
+        });
+
+        await page.addStyleTag({ content: styleSheet() });
+
+        const expectedDefaultFontSize = "18px",
+          expectedConditionMetFontSize = "24px";
+
+        await createStyledElement(
+          "div",
+          css({
+            fontSize: expectedDefaultFontSize,
+            match: (on, { all, any, not }) => [
+              on(all("&.a", not(any("&.b", "&.c"))), {
+                fontSize: expectedConditionMetFontSize,
+              }),
+            ],
+          }),
+        );
+
+        let actualDefaultFontSize = (await queryComputedStyle("div"))?.fontSize;
+
+        assert.strictEqual(actualDefaultFontSize, expectedDefaultFontSize);
+
+        for (const className of ["a b", "a c"]) {
+          await querySetClassName("div", className);
+          actualDefaultFontSize = (await queryComputedStyle("div"))?.fontSize;
+          assert.deepStrictEqual(
+            actualDefaultFontSize,
+            expectedDefaultFontSize,
+          );
+        }
+
+        assert.strictEqual(actualDefaultFontSize, expectedDefaultFontSize);
+
+        for (const className of ["a", "a d"]) {
+          await querySetClassName("div", className);
+          const actualConditionMetFontSize = (await queryComputedStyle("div"))
+            ?.fontSize;
+          assert.strictEqual(
+            actualConditionMetFontSize,
+            expectedConditionMetFontSize,
+          );
+        }
+      });
     });
-    assert.equal(
-      normalizeCSS(hooks),
-      normalizeCSS(`
-        * {
-          --darkAA-0:initial;
-          --darkAA-1: ;
-          --darkAB-0:initial;
-          --darkAB-1: ;
-          --darkA-0:var(--darkAA-0) var(--darkAB-0);
-          --darkA-1:var(--darkAA-1,var(--darkAB-1));
-          --darkB-0:initial;
-          --darkB-1: ;
-          --dark-0:var(--darkA-0,var(--darkB-0));
-          --dark-1:var(--darkA-1) var(--darkB-1);
-        }
-        @media (prefers-color-scheme: dark) {
-          * {
-            --darkAA-0: ;
-            --darkAA-1:initial;
-          }
-        }
-        [data-theme="auto"] * {
-          --darkAB-0: ;
-          --darkAB-1:initial;
-        }
-        [data-theme="dark"] * {
-          --darkB-0: ;
-          --darkB-1:initial;
-        }
-      `),
-    );
+  }
+
+  for (const mode of [true, false].flatMap(properties =>
+    [true, false].map(conditionalStyles => ({
+      sort: {
+        properties,
+        conditionalStyles,
+      },
+    })),
+  )) {
+    describe(`with configuration ${JSON.stringify(mode)}`, () => {
+      it("prioritizes conditional styles over base styles", async () => {
+        const expectedDefaultColor = Color("blue"),
+          expectedHoverColor = Color("red");
+
+        const { styleSheet, css } = createHooks({
+          hooks: {
+            "&:hover": "&:hover",
+          },
+          ...mode,
+        });
+
+        await page.addStyleTag({ content: styleSheet() });
+
+        createStyledElement(
+          "button",
+          css({
+            match: on => [
+              on("&:hover", {
+                color: expectedHoverColor.string(),
+              }),
+            ],
+            color: expectedDefaultColor.string(),
+          }),
+        );
+
+        const actualDefaultColor = computedToColor(
+          (await queryComputedStyle("button"))?.color,
+        );
+
+        assert.deepStrictEqual(actualDefaultColor, expectedDefaultColor);
+
+        await page.hover("button");
+
+        const actualHoverColor = computedToColor(
+          (await queryComputedStyle("button"))?.color,
+        );
+
+        assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
+      });
+    });
+
+    it("prioritizes conditional styles that appear later", async () => {
+      const expectedDefaultColor = Color("red"),
+        expectedClassColor = Color("green"),
+        expectedHoverColor = Color("blue");
+
+      const { styleSheet, css } = createHooks({
+        hooks: {
+          "&.class": "&.class",
+          "&:hover": "&:hover",
+        },
+        ...mode,
+      });
+
+      await page.addStyleTag({ content: styleSheet() });
+
+      await createStyledElement(
+        "button",
+        css({
+          color: expectedDefaultColor.string(),
+          match: on => [
+            on("&:hover", {
+              color: expectedHoverColor.string(),
+            }),
+            on("&.class", {
+              color: expectedClassColor.string(),
+            }),
+          ],
+        }),
+      );
+
+      const actualDefaultColor = computedToColor(
+        (await queryComputedStyle("button"))?.color,
+      );
+
+      assert.deepStrictEqual(actualDefaultColor, expectedDefaultColor);
+
+      await querySetClassName("button", "class");
+
+      await page.hover("button");
+
+      const actualClassColor = computedToColor(
+        (await queryComputedStyle("button"))?.color,
+      );
+
+      assert.deepStrictEqual(actualClassColor, expectedClassColor);
+
+      await querySetClassName("button", "");
+
+      const actualHoverColor = computedToColor(
+        (await queryComputedStyle("button"))?.color,
+      );
+
+      assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
+    });
+  }
+
+  describe("when multiple style rules are passed (experimental)", () => {
+    for (const mode of [true, false].map(conditionalStyles => ({
+      sort: { properties: true, conditionalStyles },
+    }))) {
+      describe(`with ${JSON.stringify(mode)}`, () => {
+        it("gives the last declaration the highest priority", async () => {
+          const expectedColor = Color("black");
+
+          const { css } = createHooks({ hooks: {}, ...mode });
+
+          await createStyledElement(
+            "div",
+            css(
+              {
+                backgroundColor: Color("blue").string(),
+              },
+              {
+                background: Color("orange").string(),
+                backgroundColor: expectedColor.string(),
+              },
+            ),
+          );
+
+          const actualColor = computedToColor(
+            (await queryComputedStyle("div"))?.backgroundColor,
+          );
+
+          assert.deepStrictEqual(actualColor, expectedColor);
+        });
+      });
+    }
+
+    for (const mode of [true, false].map(conditionalStyles => ({
+      sort: { properties: false, conditionalStyles },
+    }))) {
+      describe(`with ${JSON.stringify(mode)}`, () => {
+        it("does not reorder properties", async () => {
+          const notExpectedColor = Color("blue"),
+            expectedColor = Color("black");
+
+          const { styleSheet, css } = createHooks({
+            hooks: { "&:hover": "&:hover" },
+            ...mode,
+          });
+
+          await page.addStyleTag({ content: styleSheet() });
+
+          await createStyledElement(
+            "button",
+            css(
+              {
+                backgroundColor: notExpectedColor.string(),
+                background: expectedColor.string(),
+                match: on => [
+                  on("&:hover", {
+                    backgroundColor: notExpectedColor.string(),
+                  }),
+                ],
+              },
+              {
+                backgroundColor: notExpectedColor.string(),
+              },
+            ),
+          );
+
+          await page.hover("button");
+
+          const actualColor = computedToColor(
+            (await queryComputedStyle("button"))?.backgroundColor,
+          );
+
+          assert.deepStrictEqual(actualColor, expectedColor);
+        });
+      });
+    }
+
+    for (const mode of [true, false].map(properties => ({
+      sort: { properties, conditionalStyles: true },
+    }))) {
+      describe(`with ${JSON.stringify(mode)}`, () => {
+        it("gives conditional styles higher priority over all base styles", async () => {
+          const notExpectedDefaultWidth = "1000px",
+            expectedDefaultWidth = "500px",
+            expectedMobileWidth = "400px";
+
+          const { styleSheet, css } = createHooks({
+            hooks: {
+              "@media (max-width: 599.99px)": "@media (max-width: 599.99px)",
+            },
+            ...mode,
+          });
+
+          await page.addStyleTag({ content: styleSheet() });
+
+          await createStyledElement(
+            "div",
+            css(
+              {
+                width: notExpectedDefaultWidth,
+                match: on => [
+                  on("@media (max-width: 599.99px)", {
+                    width: expectedMobileWidth,
+                  }),
+                ],
+              },
+              {
+                width: expectedDefaultWidth,
+              },
+            ),
+          );
+
+          const actualDefaultWidth = (await queryComputedStyle("div"))?.width;
+
+          assert.strictEqual(actualDefaultWidth, expectedDefaultWidth);
+
+          await page.setViewport({
+            width: 480,
+            height: 800,
+            deviceScaleFactor: 1,
+          });
+
+          const actualMobileWidth = (await queryComputedStyle("div"))?.width;
+
+          assert.strictEqual(actualMobileWidth, expectedMobileWidth);
+        });
+      });
+    }
+
+    for (const mode of [true, false].map(properties => ({
+      sort: {
+        properties,
+        conditionalStyles: false,
+      },
+    }))) {
+      describe(`with ${JSON.stringify(mode)}`, () => {
+        it("replaces previous declarations with base styles", async () => {
+          const notExpectedColor = Color("blue"),
+            expectedColor = Color("orange");
+
+          const { styleSheet, css } = createHooks({
+            hooks: { "&:hover": "&:hover" },
+            ...mode,
+          });
+
+          await page.addStyleTag({ content: styleSheet() });
+
+          await createStyledElement(
+            "button",
+            css(
+              {
+                match: on => [
+                  on("&:hover", {
+                    background: notExpectedColor.string(),
+                  }),
+                ],
+              },
+              {
+                background: expectedColor.string(),
+              },
+            ),
+          );
+
+          await page.hover("button");
+
+          const actualColor = computedToColor(
+            (await queryComputedStyle("button"))?.backgroundColor,
+          );
+
+          assert.deepStrictEqual(actualColor, expectedColor);
+        });
+      });
+    }
   });
 
-  it('ignores empty "and" hooks', () => {
-    const [a] = createHooks({
-      dark: {
-        and: [],
-      },
-    });
-    const [b] = createHooks({});
-    assert.equal(a, b);
-  });
+  describe("when a style condition is not met", () => {
+    describe(`with ${JSON.stringify({ fallback: "revert-layer" })}`, () => {
+      it("rolls back to the previous cascade layer", async () => {
+        const { styleSheet, css } = createHooks({
+          hooks: { "&:hover": "&:hover" },
+          fallback: "revert-layer",
+        });
 
-  it('unwraps a unary "and" hook', () => {
-    const spec = ":foo";
-    const [a] = createHooks({
-      foo: {
-        and: [spec],
-      },
-    });
-    const [b] = createHooks({
-      foo: spec,
-    });
-    assert.equal(a, b);
-  });
+        const expectedDefaultColor = Color("gray"),
+          expectedHoverColor = Color("blue");
 
-  it('ignores empty "or" hooks', () => {
-    const [a] = createHooks({
-      dark: {
-        or: [],
-      },
-    });
-    const [b] = createHooks({});
-    assert.equal(a, b);
-  });
+        await page.addStyleTag({
+          content: `button { color: ${expectedDefaultColor.string()} } ${styleSheet()}`,
+        });
 
-  it('unwraps a unary "or" hook', () => {
-    const spec = ":foo";
-    const [a] = createHooks({
-      foo: {
-        or: [spec],
-      },
+        await createStyledElement(
+          "button",
+          css({
+            match: on => [
+              on("&:hover", { color: expectedHoverColor.string() }),
+            ],
+          }),
+        );
+
+        const actualDefaultColor = computedToColor(
+          (await queryComputedStyle("button"))?.color,
+        );
+
+        assert.deepStrictEqual(actualDefaultColor, expectedDefaultColor);
+
+        await page.hover("button");
+
+        const actualHoverColor = computedToColor(
+          (await queryComputedStyle("button"))?.color,
+        );
+
+        assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
+      });
     });
-    const [b] = createHooks({
-      foo: spec,
+
+    describe(`with ${JSON.stringify({ fallback: "unset" })}`, () => {
+      it("rolls back to the browser default value", async () => {
+        const { styleSheet, css } = createHooks({
+          hooks: { "&:hover": "&:hover" },
+          fallback: "unset",
+        });
+
+        const expectedHoverColor = Color("blue");
+
+        await createStyledElement(
+          "button",
+          css({
+            match: on => [
+              on("&:hover", { color: expectedHoverColor.string() }),
+            ],
+          }),
+        );
+
+        const expectedDefaultColor = computedToColor(
+            (await queryComputedStyle("button"))?.color,
+          ),
+          notExpectedDefaultColor = [Color("pink"), Color("purple")].find(
+            x => x.string() !== expectedDefaultColor?.string(),
+          )!;
+
+        await page.addStyleTag({
+          content: `button { color: ${notExpectedDefaultColor.string()} } ${styleSheet()}`,
+        });
+
+        const actualDefaultColor = computedToColor(
+          (await queryComputedStyle("button"))?.color,
+        );
+
+        assert.deepStrictEqual(actualDefaultColor, expectedDefaultColor);
+
+        await page.hover("button");
+
+        const actualHoverColor = computedToColor(
+          (await queryComputedStyle("button"))?.color,
+        );
+
+        assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
+      });
     });
-    assert.equal(a, b);
   });
 });
 
-describe("css function", () => {
-  it("renders values in the reverse of the specified order", () => {
-    const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
-      typeof value === "string" ? value : null,
-    );
-    const [, css] = createHooks(
-      {
-        testHookA: ":a",
-        testHookB: ":b",
-        testHookC: ":c",
-      },
-      { hookNameToId: x => x },
-    );
-    assert.deepEqual(
-      css({
-        color: "red",
-        testHookA: { color: "yellow" },
-        testHookB: { color: "green" },
-        testHookC: { color: "blue" },
-      }),
-      {
-        color:
-          "var(--testHookC-1, blue) var(--testHookC-0, var(--testHookB-1, green) var(--testHookB-0, var(--testHookA-1, yellow) var(--testHookA-0, red)))",
-      },
-    );
-    assert.deepEqual(
-      css({
-        color: "red",
-        testHookB: { color: "yellow" },
-        testHookC: { color: "green" },
-        testHookA: { color: "blue" },
-      }),
-      {
-        color:
-          "var(--testHookA-1, blue) var(--testHookA-0, var(--testHookC-1, green) var(--testHookC-0, var(--testHookB-1, yellow) var(--testHookB-0, red)))",
-      },
-    );
+it("uses the specified stringify function when merging values", () => {
+  const createHooks = buildHooksSystem<CSS.Properties>(
+    (propertyName, value) => `${propertyName}__${value}`,
+  );
+  const { css } = createHooks({ hooks: { "&.class": "&.class" } });
+  const { fontSize = "" } = css({
+    fontSize: "18px",
+    match: on => [on("&.class", { fontSize: "24px" })],
   });
-
-  describe("with sort option enabled", () => {
-    it("prioritizes declarations by input order, with last one having highest priority", () => {
-      const createHooks = buildHooksSystem<{
-        color?: string;
-        background?: string;
-      }>();
-
-      const [, css] = createHooks(
-        {
-          foo: "&.foo",
-          bar: "&.bar",
-        },
-        { hookNameToId: x => x, sort: true },
-      );
-
-      {
-        const actual = css({
-          foo: { color: "black", background: "white" },
-          color: "blue",
-        });
-        const expected = {
-          background: "var(--foo-1, white) var(--foo-0, unset)",
-          color: "blue",
-        };
-        assert.deepStrictEqual(actual, expected);
-        assert.deepStrictEqual(Object.keys(actual), Object.keys(expected));
-      }
-
-      assert.deepStrictEqual(
-        css({
-          foo: { color: "black" },
-          color: "blue",
-          bar: { color: "red" },
-        }),
-        {
-          color: "var(--bar-1, red) var(--bar-0, blue)",
-        },
-      );
-
-      assert.deepStrictEqual(
-        css({
-          foo: { bar: { color: "black" }, color: "blue" },
-        }),
-        {
-          color: "var(--foo-1, blue) var(--foo-0, unset)",
-        },
-      );
-
-      {
-        const actual = css({
-          color: "black",
-          background: "white",
-          foo: { color: "blue" },
-        });
-        const expected = {
-          background: "white",
-          color: "var(--foo-1, blue) var(--foo-0, black)",
-        };
-        assert.deepStrictEqual(actual, expected);
-        assert.deepStrictEqual(Object.keys(actual), Object.keys(expected));
-      }
-    });
-
-    it("merges successive style objects with last property declaration always having highest priority", () => {
-      const createHooks = buildHooksSystem<{
-        background?: string;
-        backgroundColor?: string;
-      }>();
-
-      const [, css] = createHooks(
-        { foo: "&.foo", bar: "&.bar" },
-        { hookNameToId: x => x, sort: true },
-      );
-
-      {
-        const actual = css(
-          {
-            backgroundColor: "blue",
-            background: "orange",
-          },
-          {
-            backgroundColor: "black",
-          },
-        );
-        const expected = {
-          background: "orange",
-          backgroundColor: "black",
-        };
-        assert.deepStrictEqual(actual, expected);
-        assert.deepStrictEqual(Object.keys(actual), Object.keys(expected));
-      }
-
-      assert.deepStrictEqual(
-        css({ foo: { background: "black" } }, { bar: { background: "blue" } }),
-        {
-          background:
-            "var(--bar-1, blue) var(--bar-0, var(--foo-1, black) var(--foo-0, unset))",
-        },
-      );
-    });
-  });
-
-  describe("with sort option disabled (default)", () => {
-    it("allows the default property value to be defined after hook styles", () => {
-      const createHooks = buildHooksSystem<{ "text-decoration": string }>(
-        (_, value) => (typeof value === "string" ? value : null),
-      );
-      const [, css] = createHooks(
-        {
-          "test-hook": ":test-hook",
-        },
-        { hookNameToId: x => x },
-      );
-      assert.deepStrictEqual(
-        css({
-          "test-hook": { "text-decoration": "underline" },
-          "text-decoration": "none",
-        }),
-        {
-          "text-decoration":
-            "var(--test-hook-1, underline) var(--test-hook-0, none)",
-        },
-      );
-    });
-
-    it("does not reorder properties", () => {
-      const createHooks = buildHooksSystem<{
-        background?: string;
-        color?: string;
-      }>();
-
-      const [, css] = createHooks(
-        {
-          foo: "&.foo",
-        },
-        { hookNameToId: x => x },
-      );
-
-      assert.deepStrictEqual(
-        css({
-          foo: { color: "red" },
-          color: "blue",
-        }),
-        {
-          color: "var(--foo-1, red) var(--foo-0, blue)",
-        },
-      );
-
-      {
-        const expected = {
-          background: "var(--foo-1, gray) var(--foo-0, black)",
-          color: "white",
-        };
-        const actual = css({
-          background: "black",
-          color: "white",
-          foo: { background: "gray" },
-        });
-        assert.deepStrictEqual(actual, expected);
-        assert.deepStrictEqual(Object.keys(actual), Object.keys(expected));
-      }
-    });
-
-    it("merges successive style objects without reordering properties", () => {
-      const createHooks = buildHooksSystem<{
-        background?: string;
-        backgroundColor?: string;
-      }>();
-
-      const [, css] = createHooks(
-        {
-          foo: "&.foo",
-        },
-        { hookNameToId: x => x },
-      );
-
-      const expected = {
-        backgroundColor: "var(--foo-1, blue) var(--foo-0, black)",
-        background: "orange",
-      };
-
-      const actual = css(
-        {
-          backgroundColor: "black",
-          background: "orange",
-        },
-        {
-          foo: {
-            backgroundColor: "blue",
-          },
-        },
-      );
-
-      assert.deepStrictEqual(actual, expected);
-      assert.deepStrictEqual(Object.keys(actual), Object.keys(expected));
-    });
-  });
-
-  it("leaves non-hooks values as-is", () => {
-    const createHooks = buildHooksSystem<{
-      color?: string;
-      "background-color"?: string;
-    }>((_, value) => (typeof value === "string" ? value : null));
-    const [, css] = createHooks({
-      "test-hook": ":test-hook",
-    });
-    assert.equal(
-      css({
-        color: "white",
-        "background-color": "red",
-        "test-hook": {
-          "background-color": "blue",
-        },
-      }).color,
-      "white",
-    );
-  });
-
-  (["unset", "revert-layer"] as const).forEach(fallback => {
-    describe(`when fallback option is set to \`${fallback}\``, () => {
-      it(`falls back to \`${fallback}\` when a default value is not present (single level)`, () => {
-        const createHooks = buildHooksSystem<{
-          color?: string;
-        }>((_, value) => (typeof value === "string" ? value : null));
-        const [, css] = createHooks(
-          {
-            "test-hook": ":test-hook",
-          },
-          { fallback, hookNameToId: x => x },
-        );
-        assert.deepEqual(css({ "test-hook": { color: "red" } }), {
-          color: `var(--test-hook-1, red) var(--test-hook-0, ${fallback})`,
-        });
-      });
-
-      it(`falls back to \`${fallback}\` when the default value is not present (multiple levels)`, () => {
-        const createHooks = buildHooksSystem<{ color?: string }>();
-        const [, css] = createHooks(
-          { testHookA: ":test-hook-a", testHookB: ":test-hook-b" },
-          { fallback, hookNameToId: x => x },
-        );
-        assert.deepEqual(css({ testHookA: { testHookB: { color: "hook" } } }), {
-          color: `var(--testHookA-1, var(--testHookB-1, hook) var(--testHookB-0, ${fallback})) var(--testHookA-0, ${fallback})`,
-        });
-      });
-
-      it(`falls back to \`${fallback}\` when the default value can't be stringified`, () => {
-        const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
-          value === "hook" ? value : null,
-        );
-        const [, css] = createHooks(
-          { testHook: ":test-hook" },
-          { fallback, hookNameToId: x => x },
-        );
-        assert.deepEqual(
-          css({ color: "invalid", testHook: { color: "hook" } }),
-          {
-            color: `var(--testHook-1, hook) var(--testHook-0, ${fallback})`,
-          },
-        );
-      });
-    });
-  });
-
-  it("ignores a hook value that can't be stringified", () => {
-    const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
-      value === "default" ? value : null,
-    );
-    const [, css] = createHooks({ testHook: ":test-hook" });
-    assert.deepEqual(
-      css({ color: "default", testHook: { color: "invalid" } }),
-      {
-        color: "default",
-      },
-    );
-  });
-
-  it('uses as-is a value that is already a string starting with "var("', () => {
-    const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
-      typeof value === "string" ? `[${value}]` : null,
-    );
-    const [, css] = createHooks(
-      {
-        "test-hook-a": ":test-hook-a",
-        "test-hook-b": ":test-hook-b",
-      },
-      { hookNameToId: x => x },
-    );
-    assert.deepEqual(
-      css({
-        color: "blue",
-        "test-hook-a": {
-          color: "lightblue",
-        },
-        "test-hook-b": {
-          color: "red",
-        },
-      }),
-      {
-        color:
-          "var(--test-hook-b-1, [red]) var(--test-hook-b-0, var(--test-hook-a-1, [lightblue]) var(--test-hook-a-0, [blue]))",
-      },
-    );
-  });
-
-  it("allows hooks to be combined via nesting", () => {
-    const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
-      typeof value === "string" ? `[${value}]` : null,
-    );
-    const [, css] = createHooks(
-      {
-        testHookA: ":test-hook-a",
-        testHookB: ":test-hook-b",
-      },
-      { hookNameToId: x => x },
-    );
-    assert.deepEqual(
-      css({
-        color: "black",
-        testHookA: {
-          color: "red",
-          testHookB: {
-            color: "pink",
-          },
-        },
-      }),
-      {
-        color:
-          "var(--testHookA-1, var(--testHookB-1, [pink]) var(--testHookB-0, [red])) var(--testHookA-0, [black])",
-      },
-    );
-  });
-
-  it("falls back multiple levels if needed", () => {
-    const createHooks = buildHooksSystem<{ color: string }>((_, value) =>
-      typeof value === "string" && value !== "invalid" ? `[${value}]` : null,
-    );
-    const [, css] = createHooks(
-      {
-        "test-hook-a": ":test-hook-a",
-        "test-hook-b": ":test-hook-b",
-      },
-      { hookNameToId: x => x },
-    );
-    assert.deepEqual(
-      css({
-        color: "black",
-        "test-hook-a": {
-          color: "invalid",
-          "test-hook-b": {
-            color: "pink",
-          },
-        },
-      }),
-      {
-        color:
-          "var(--test-hook-a-1, var(--test-hook-b-1, [pink]) var(--test-hook-b-0, [black])) var(--test-hook-a-0, [black])",
-      },
-    );
-  });
+  assert.match(fontSize.toString(), /fontSize__18px/);
+  assert.match(fontSize.toString(), /fontSize__24px/);
 });
 
-describe("createHooks function", () => {
-  it("uses hash identifiers for variable names by default", () => {
-    const createHooks = buildHooksSystem();
-    const [hooks, css] = createHooks({
-      foo: ":disabled",
-      bar: {
-        or: [
-          ":hover",
-          {
-            and: ["&.hover", "&.debug"],
-          },
-        ],
-      },
-    });
-    assert.equal(
-      normalizeCSS(hooks),
-      normalizeCSS(`
-        * {
-          --5g7aa6-0:initial;
-          --5g7aa6-1: ;
-          --ilyuetA-0:initial;
-          --ilyuetA-1: ;
-          --ilyuetBA-0:initial;
-          --ilyuetBA-1: ;
-          --ilyuetBB-0:initial;
-          --ilyuetBB-1: ;
-          --ilyuetB-0:var(--ilyuetBA-0) var(--ilyuetBB-0);
-          --ilyuetB-1:var(--ilyuetBA-1,var(--ilyuetBB-1));
-          --ilyuet-0:var(--ilyuetA-0,var(--ilyuetB-0));
-          --ilyuet-1:var(--ilyuetA-1) var(--ilyuetB-1);
-        }
-        :disabled {
-          --5g7aa6-0: ;
-          --5g7aa6-1:initial;
-        }
-        :hover {
-          --ilyuetA-0: ;
-          --ilyuetA-1:initial;
-        }
-        *.hover {
-          --ilyuetBA-0: ;
-          --ilyuetBA-1:initial;
-        }
-        *.debug {
-          --ilyuetBB-0: ;
-          --ilyuetBB-1:initial;
-        }
-      `),
-    );
-    assert.deepEqual(
-      css({ color: "black", foo: { color: "gray" }, bar: { color: "red" } }),
-      {
-        color:
-          "var(--ilyuet-1, red) var(--ilyuet-0, var(--5g7aa6-1, gray) var(--5g7aa6-0, black))",
-      },
-    );
-  });
-
-  it("includes user-defined hook names in variable names in debug mode", () => {
-    const createHooks = buildHooksSystem();
-    const [hooks, css] = createHooks(
-      {
-        "@media (min-width: 1000px)": "@media (min-width: 1000px)",
-      },
-      { debug: true },
-    );
-    assert.equal(
-      normalizeCSS(hooks),
-      normalizeCSS(`
-        * {
-          --_media__min-width__1000px_-umzjoj-0:initial;
-          --_media__min-width__1000px_-umzjoj-1: ;
-        }
-        @media (min-width: 1000px) {
-          * {
-            --_media__min-width__1000px_-umzjoj-0: ;
-            --_media__min-width__1000px_-umzjoj-1:initial;
-          }
-        }
-      `),
-    );
-    assert.deepEqual(
-      css({
-        color: "blue",
-        "@media (min-width: 1000px)": {
-          color: "red",
-        },
+describe("in production mode (vs. debug)", () => {
+  const createHooks = buildHooksSystem<CSS.Properties>();
+  const instances = [true, false].map(debug =>
+    createHooks({
+      hooks: ({ all, any, not }) => ({
+        hover: "&:hover",
+        foo: all("&.a", not(any("&.b", "&.c"))),
       }),
-      {
-        color:
-          "var(--_media__min-width__1000px_-umzjoj-1, red) var(--_media__min-width__1000px_-umzjoj-0, blue)",
-      },
+      debug,
+      hookNameToId: x => x.toString(),
+    }),
+  );
+  const debug = instances[0]!;
+  const production = instances[1]!;
+
+  it("produces a style sheet without unnecessary white space", () => {
+    const { code: expected } = lightningcss.transform({
+      filename: "production.min.css",
+      code: Buffer.from(debug.styleSheet()),
+      minify: true,
+    });
+
+    const actual = production.styleSheet();
+
+    // Note that universal selector (`*`) and `;` are excluded to eliminate
+    // trivial differences:
+    assert.strictEqual(
+      actual.replace(/[\*\;]/g, ""),
+      expected.toString().replace(/[\*\;]/g, ""),
     );
   });
-});
 
-describe("default stringify function", () => {
-  it("returns a string value as-is", () => {
-    assert.equal(genericStringify("display", "block"), "block");
-  });
-  it("returns a number value as a string", () => {
-    assert.equal(genericStringify("width", 1), "1");
-  });
-  it("returns null for invalid values", () => {
-    [
-      null,
-      undefined,
-      {},
-      false,
-      () => {
-        /*noop*/
-      },
-    ].forEach(value => {
-      assert.strictEqual(genericStringify("property", value), null);
-    });
+  it("produces inline styles without unnecessary whitespace", () => {
+    const [debugStyle, productionStyle] = [debug, production].map(x =>
+      Object.entries(
+        x.css({
+          color: "red",
+          match: (on, { all, any, not }) => [
+            on(all("foo", not(any("foo", "hover"))), {
+              color: "blue",
+            }),
+          ],
+        }),
+      )
+        .map(
+          ([property, value]) =>
+            `${
+              property.startsWith("--")
+                ? property
+                : property.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`)
+            }:${value}`,
+        )
+        .join(";"),
+    );
+
+    const expected = debugStyle
+      ? lightningcss
+          .transformStyleAttribute({
+            code: Buffer.from(debugStyle),
+            minify: true,
+          })
+          .code.toString()
+      : undefined;
+
+    const actual = productionStyle;
+
+    assert.strictEqual(actual, expected);
   });
 });
