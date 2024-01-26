@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { buildHooksSystem, recommended } from "@css-hooks/core";
+import { buildHooksSystem } from "@css-hooks/core";
 import isUnitlessNumber from "./isUnitlessNumber.js";
 
 /**
@@ -32,5 +32,3 @@ export function stringifyValue(
  * @returns The `hooks` CSS required to enable the configured hooks, along with the corresponding `css` function for use in components.
  */
 export const createHooks = buildHooksSystem<CSSProperties>(stringifyValue);
-
-export { recommended };
