@@ -637,7 +637,10 @@ describe("in browser", () => {
 
 it("uses the specified stringify function when merging values", () => {
   const createHooks = buildHooksSystem<CSS.Properties>(
-    (propertyName, value) => `${propertyName}__${value}`,
+    (propertyName, value) =>
+      `${propertyName}__${
+        typeof value === "string" || typeof value === "number" ? value : ""
+      }`,
   );
   const { css } = createHooks({ hooks: { "&.class": "&.class" } });
   const { fontSize = "" } = css({
@@ -675,8 +678,8 @@ describe("in production mode (vs. debug)", () => {
     // Note that universal selector (`*`) and `;` are excluded to eliminate
     // trivial differences:
     assert.strictEqual(
-      actual.replace(/[\*\;]/g, ""),
-      expected.toString().replace(/[\*\;]/g, ""),
+      actual.replace(/[*;]/g, ""),
+      expected.toString().replace(/[*;]/g, ""),
     );
   });
 
