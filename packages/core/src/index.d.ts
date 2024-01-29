@@ -264,11 +264,7 @@ export interface Config<Hooks> {
    *
    * @internal
    */
-  hookNameToId?: (
-    hookName: HooksConfig extends Record<infer HookName, unknown>
-      ? HookName
-      : string,
-  ) => string;
+  hookNameToId?: (hookName: GetHookNames<Hooks>) => string;
 }
 
 /**
