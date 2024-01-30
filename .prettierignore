@@ -1,6 +1,9 @@
 /CHANGELOG.md
-packages/**/cjs
-packages/**/esm
-packages/**/types
-site/.next
-site/out
+/docs/api
+/packages/**/cjs
+/packages/**/esm
+/packages/**/out
+/packages/**/types
+/site/.next
+/site/out
+/temp

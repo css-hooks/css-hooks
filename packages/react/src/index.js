@@ -3,7 +3,7 @@
 import { buildHooksSystem } from "@css-hooks/core";
 
 // See https://github.com/facebook/react/blob/main/packages/react-dom-bindings/src/client/CSSPropertyOperations.js
-export function stringifyValue(propertyName, value) {
+export function _stringifyValue(propertyName, value) {
   switch (typeof value) {
     case "string":
       return value;
@@ -14,14 +14,14 @@ export function stringifyValue(propertyName, value) {
   }
 }
 
-export const createHooks = buildHooksSystem(stringifyValue);
+export const createHooks = buildHooksSystem(_stringifyValue);
 
 /**
  * Following code (c) Meta Platforms, Inc. and affiliates.
  * Source modified to account for custom properties.
  */
 
-export const unitlessNumbers = new Set([
+export const _unitlessNumbers = new Set([
   "animationIterationCount",
   "aspectRatio",
   "borderImageOutset",
@@ -96,5 +96,5 @@ export const unitlessNumbers = new Set([
 ]);
 
 function isUnitlessNumber(name) {
-  return /^--/.test(name) || unitlessNumbers.has(name);
+  return /^--/.test(name) || _unitlessNumbers.has(name);
 }

@@ -1,5 +1,5 @@
 /**
- *  CSS Hooks for Solid
+ *  CSS Hooks for {@link https://www.solidjs.com/ | Solid}
  *
  * @packageDocumentation
  */
