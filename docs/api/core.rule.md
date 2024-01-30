@@ -2,20 +2,16 @@
 
 [Home](./index.md) &gt; [@css-hooks/core](./core.md) &gt; [Rule](./core.rule.md)
 
-## Rule interface
+## Rule type
 
 Represents a style object, optionally enhanced with inline styles.
 
 **Signature:**
 
 ```typescript
-export interface Rule<HookName, CSSProperties> extends CSSProperties 
+export type Rule<HookName, CSSProperties> = CSSProperties & {
+  match?: MatchFn<HookName, CSSProperties>;
+};
 ```
-**Extends:** CSSProperties
-
-## Properties
-
-|  Property | Modifiers | Type | Description |
-|  --- | --- | --- | --- |
-|  [match?](./core.rule.match.md) |  | [MatchFn](./core.matchfn.md)<!-- -->&lt;HookName, CSSProperties&gt; | _(Optional)_ The function used to apply conditional styles |
+**References:** [MatchFn](./core.matchfn.md)
 

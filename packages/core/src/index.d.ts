@@ -124,12 +124,12 @@ export type MatchFn<HookName, CSSProperties> = (
  *
  * @public
  */
-export interface Rule<HookName, CSSProperties> extends CSSProperties {
+export type Rule<HookName, CSSProperties> = CSSProperties & {
   /**
    * The function used to apply conditional styles
    */
   match?: MatchFn<HookName, CSSProperties>;
-}
+};
 
 /**
  * Represents the type of the `css` function, used to transform a {@link Rule}

@@ -19,7 +19,6 @@ CSS Hooks core library
 |  [Config](./core.config.md) | Represents the configuration used to set up hooks. |
 |  [Hooks](./core.hooks.md) | Represents the [CssFn](./core.cssfn.md) used to define enhanced styles, along with the style sheet required to support it. |
 |  [MatchHelpers](./core.matchhelpers.md) | Helper functions used to construct advanced conditions. |
-|  [Rule](./core.rule.md) | Represents a style object, optionally enhanced with inline styles. |
 
 ## Type Aliases
 
@@ -32,5 +31,6 @@ CSS Hooks core library
 |  [HookImpl](./core.hookimpl.md) | Represents a basic hook implementation, using CSS syntax to define a selector or at-rule. |
 |  [MatchFn](./core.matchfn.md) | Provides a way to declare conditional styles within a [Rule](./core.rule.md)<!-- -->. |
 |  [MatchOnFn](./core.matchonfn.md) | Callback to construct a conditional style group. |
+|  [Rule](./core.rule.md) | Represents a style object, optionally enhanced with inline styles. |
 |  [StringifyFn](./core.stringifyfn.md) | Function to convert a value into a string. |
 
