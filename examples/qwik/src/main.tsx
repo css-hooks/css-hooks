@@ -1,7 +1,7 @@
 import "@fontsource/inter/latin-700.css";
 import "@builder.io/qwik/qwikloader.js";
 
-import { hooks } from "./css";
+import { styleSheet } from "./css";
 
 import { render } from "@builder.io/qwik";
 import App from "./App";
@@ -9,7 +9,7 @@ import App from "./App";
 render(
   document.getElementById("root")!,
   <>
-    <style dangerouslySetInnerHTML={hooks} />
+    <style dangerouslySetInnerHTML={styleSheet()} />
     <App />
   </>,
 );
