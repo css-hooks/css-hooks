@@ -31,6 +31,14 @@ jobs:
 
       - run: npm test --workspaces --if-present
 
+      # Ensure docs are up-to-date.
+      - run: npm run docs
+      - run: |
+          if test -n '$(git status --porcelain)'; then
+            echo 'Error: Git status is not clean.';
+            exit 1;
+          fi
+
       - run: npm run build --workspace=examples
 
       - run: npm run build --workspace=site

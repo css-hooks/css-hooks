@@ -7,6 +7,7 @@
     "@css-hooks/core": "^1.8.1"
   },
   "devDependencies": {
+    "@microsoft/api-extractor": "^7.39.4",
     "@tsconfig/strictest": "^2.0.1",
     "@types/react": "^18.2.20",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
@@ -21,7 +22,8 @@
   "files": [
     "cjs",
     "esm",
-    "types"
+    "types",
+    "tsdoc-metadata.json"
   ],
   "license": "MIT",
   "main": "cjs",
@@ -42,6 +44,7 @@
     "directory": "packages/react"
   },
   "scripts": {
+    "api": "node -e \"var path=require('path').resolve,fs=require('fs'),cp=fs.cpSync;cp(path('src', 'index.d.ts'),path('types','index.d.ts'))\" && api-extractor run",
     "clean": "rimraf cjs esm out types",
     "lint": "eslint src .*.*js *.*js",
     "postversion": "npm install @css-hooks/core@^$npm_package_version --force",

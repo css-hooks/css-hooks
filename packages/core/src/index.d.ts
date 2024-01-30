@@ -1,8 +1,16 @@
 /**
+ * CSS Hooks core library
+ *
+ * @packageDocumentation
+ */
+
+/**
  * Represents the conditions under which a given hook or declaration applies.
  *
  * @typeParam S - The basic type of condition to enhance with boolean
  * operations.
+ *
+ * @public
  */
 export type Condition<S> =
   | S
@@ -13,25 +21,20 @@ export type Condition<S> =
 /**
  * Function to convert a value into a string.
  *
+ * @param propertyName - The property name corresponding to the value being
+ * stringified
+ *
+ * @param value - The value to stringify
+ *
  * @remarks
  * Used for merging an override property value with the default/fallback value.
  *
  * @returns The stringified value or `null` if the value can't be stringified.
+ *
+ * @public
  */
 export type StringifyFn = (
-  /**
-   * The property name corresponding to the value being stringified.
-   *
-   * @remarks
-   * For example, React uses this to determine whether to apply a `px` suffix to
-   * a number value. (e.g., `width` needs to specify the `px` unit, while
-   * `z-index` does not.)
-   */
   propertyName: string,
-
-  /**
-   * The value to stringify.
-   */
   value: unknown,
 ) => string | null;
 
@@ -50,6 +53,8 @@ export type StringifyFn = (
  *
  * @returns A list of style objects and the condition under which each one
  * applies.
+ *
+ * @public
  */
 export type MatchOnFn<HookName, CSSProperties> = (
   condition: Condition<HookName>,
@@ -61,8 +66,10 @@ export type MatchOnFn<HookName, CSSProperties> = (
  *
  * @typeParam HookName - The name of the hooks available for use in style
  * conditions.
+ *
+ * @public
  */
-export type MatchHelpers<HookName> = {
+export interface MatchHelpers<HookName> {
   /**
    * Creates a condition that is true when all of the conditions passed as
    * arguments are true.
@@ -79,7 +86,7 @@ export type MatchHelpers<HookName> = {
    * Creates a condition that is true when the specified condition is false.
    */
   not(condition: Condition<HookName>): Condition<HookName>;
-};
+}
 
 /**
  * Provides a way to declare conditional styles within a {@link Rule}.
@@ -91,6 +98,8 @@ export type MatchHelpers<HookName> = {
  * typically defined by an app framework (e.g., React's `CSSProperties` type).
  *
  * @returns A list of the conditional styles declared.
+ *
+ * @public
  */
 export type MatchFn<HookName, CSSProperties> = (
   /**
@@ -112,30 +121,15 @@ export type MatchFn<HookName, CSSProperties> = (
  *
  * @typeParam CSSProperties - The type of a standard (flat) style object,
  * typically defined by an app framework (e.g., React's `CSSProperties` type).
+ *
+ * @public
  */
-export type Rule<HookName, CSSProperties> = CSSProperties & {
+export interface Rule<HookName, CSSProperties> extends CSSProperties {
   /**
-   * Conditional styles, where the second item in each entry represents the
-   * declarations, and the first item expresses the condition under which those
-   * declarations apply.
-   *
-   * @remarks
-   * Think of this structure like a record. (Consider the return value of
-   * `Object.entries({ ... })`.) However, because a normal record can't
-   * represent advanced conditions, it's necessary to model conditional styles
-   * as an array of tuples.
+   * The function used to apply conditional styles
    */
   match?: MatchFn<HookName, CSSProperties>;
-};
-
-/**
- * This type exists to highlight the experimental nature of the type.
- *
- * @typeParam T - The experimental type.
- *
- * @experimental
- */
-export type Experimental<T> = T;
+}
 
 /**
  * Represents the type of the `css` function, used to transform a {@link Rule}
@@ -149,6 +143,8 @@ export type Experimental<T> = T;
  *
  * @returns A flat style object, with dynamic values derived from the
  * conditional styles specified.
+ *
+ * @public
  */
 export type CssFn<HookName, CSSProperties> = (
   /**
@@ -158,8 +154,10 @@ export type CssFn<HookName, CSSProperties> = (
 
   /**
    * A list of style objects, each optionally enhanced with conditional styles.
+   *
+   * @beta
    */
-  ...styles: Experimental<(Rule<HookName, CSSProperties> | undefined)[]>
+  ...styles: (Rule<HookName, CSSProperties> | undefined)[]
 ) => CSSProperties;
 
 /**
@@ -174,6 +172,8 @@ export type CssFn<HookName, CSSProperties> = (
  *    with one of these keywords, followed by a space.
  *
  * These can be combined using the {@link Condition} structure to form complex logic.
+ *
+ * @public
  */
 export type HookImpl =
   | `${string}&${string}`
@@ -183,8 +183,10 @@ export type HookImpl =
  * Represents the configuration used to set up hooks.
  *
  * @typeParam Hooks - the hooks configured for use in conditional styles.
+ *
+ * @public
  */
-export type Config<Hooks> = {
+export interface Config<Hooks> {
   /**
    * The hooks available for use in conditional styles.
    */
@@ -221,7 +223,7 @@ export type Config<Hooks> = {
    * Options for sorting declarations when multiple rules are passed to the
    * {@link CssFn | `css`} function.
    *
-   * @experimental
+   * @beta
    */
   sort?: {
     /**
@@ -233,7 +235,7 @@ export type Config<Hooks> = {
      * entry, giving the properties declared within the highest priority within
      * that scope.
      *
-     * @experimental
+     * @beta
      *
      * @defaultValue true
      */
@@ -251,7 +253,7 @@ export type Config<Hooks> = {
      *   the `style` prop has the standard type for CSS Properties with no `on`
      *   field).
      *
-     * @experimental
+     * @beta
      *
      * @defaultValue true
      */
@@ -265,19 +267,21 @@ export type Config<Hooks> = {
    * @internal
    */
   hookNameToId?: (hookName: GetHookNames<Hooks>) => string;
-};
+}
 
 /**
- * Represents the {@link CssFn | `css`} function used to define enhanced styles,
- * along with the style sheet required to support it.
+ * Represents the {@link CssFn} used to define enhanced styles, along with the
+ * style sheet required to support it.
  *
  * @typeParam HookName - The name of the hooks available for use in style
  * conditions.
  *
  * @typeParam CSSProperties - The type of a standard (flat) style object,
  * typically defined by an app framework (e.g., React's `CSSProperties` type).
+ *
+ * @public
  */
-export type Hooks<HookName, CSSProperties> = {
+export interface Hooks<HookName, CSSProperties> {
   /**
    * The `css` function used to define enhanced styles.
    */
@@ -287,12 +291,12 @@ export type Hooks<HookName, CSSProperties> = {
    * The style sheet required to support the configured hooks.
    */
   styleSheet: () => string;
-};
+}
 
 /**
  * A utility type used to extract hook names from configuration
  *
- * @internal
+ * @public
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type GetHookNames<HooksConfig> = HooksConfig extends (
@@ -312,6 +316,8 @@ export type GetHookNames<HooksConfig> = HooksConfig extends (
  *
  * @param config - The configuration used to define hooks and adjust the related
  * functionality as needed depending on the use case.
+ *
+ * @public
  */
 export type CreateHooksFn<CSSProperties> = <
   HooksConfig extends
@@ -335,6 +341,8 @@ export type CreateHooksFn<CSSProperties> = <
  * @remarks
  * Primarily for internal use, advanced use cases, or when an appropriate
  * framework integration is not provided.
+ *
+ * @public
  */
 declare function buildHooksSystem<
   CSSProperties = Record<string, string | number>,

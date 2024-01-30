@@ -4,6 +4,7 @@
   "version": "1.8.1",
   "author": "Nick Saunders",
   "devDependencies": {
+    "@microsoft/api-extractor": "^7.39.4",
     "@tsconfig/strictest": "^2.0.1",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
@@ -17,7 +18,8 @@
   "files": [
     "cjs",
     "esm",
-    "types"
+    "types",
+    "tsdoc-metadata.json"
   ],
   "license": "MIT",
   "main": "cjs",
@@ -30,6 +32,7 @@
     "directory": "packages/recommended"
   },
   "scripts": {
+    "api": "node -e \"var path=require('path').resolve,fs=require('fs'),cp=fs.cpSync;cp(path('src', 'index.d.ts'),path('types','index.d.ts'))\" && api-extractor run",
     "clean": "rimraf cjs esm out types",
     "lint": "eslint src .*.*js *.*js",
     "prepublishOnly": "node -e \"var path=require('path').resolve,fs=require('fs'),cp=fs.cpSync,mkdir=fs.mkdirSync;cp(path('src', 'index.d.ts'),path('types','index.d.ts'));cp(path('src','index.js'),path('esm','index.js'));mkdir(path('cjs'),{recursive:true})\" && ascjs src/index.js cjs/index.js",
