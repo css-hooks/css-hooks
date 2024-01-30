@@ -1,6 +1,14 @@
 /**
+ * Easily configure an opinionated set of hooks
+ *
+ * @packageDocumentation
+ */
+
+/**
  * The format of the configuration object passed to the {@link recommended}
  * function
+ *
+ * @public
  */
 export type RecommendedConfig = {
   /**
@@ -63,9 +71,9 @@ export type RecommendedConfig = {
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**
- * This utility type turns a union type into an intersection type. Internal.
+ * This utility type turns a union type into an intersection type.
  *
- * @internal
+ * @public
  */
 export type UnionToIntersection<T> = (
   T extends any ? (t: T) => any : never
@@ -75,20 +83,20 @@ export type UnionToIntersection<T> = (
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
 /**
- * This utility type converts a hook implementation to an entry. Internal.
+ * This utility type converts a hook implementation to an entry.
  *
  * @remarks
  * Useful for hook names that match their implementation
  *
- * @internal
+ * @public
  */
 export type StringToHook<S> = S extends string ? Record<S, S> : never;
 
 /**
  * This utility type helps convert a list of breakpoints into a list of media
- * queries. Internal.
+ * queries.
  *
- * @internal
+ * @public
  */
 export type BreakpointsToMediaQueriesImpl<
   Breakpoints,
@@ -119,9 +127,9 @@ export type BreakpointsToMediaQueriesImpl<
 
 /**
  * This utility type converts a list of breakpoints into a list of media
- * queries. Internal.
+ * queries.
  *
- * @internal
+ * @public
  */
 export type BreakpointsToMediaQueries<Breakpoints extends string[]> =
   UnionToIntersection<
@@ -132,9 +140,9 @@ export type BreakpointsToMediaQueries<Breakpoints extends string[]> =
 
 /**
  * This type adds media queries to a hook configuration when breakpoints are
- * specified. Internal.
+ * specified.
  *
- * @internal
+ * @public
  */
 export type WidthMediaQueries<C> = C extends { breakpoints: string[] }
   ? BreakpointsToMediaQueries<C["breakpoints"]>
@@ -142,9 +150,9 @@ export type WidthMediaQueries<C> = C extends { breakpoints: string[] }
 
 /**
  * This type adds media queries to a hook configuration when color schemes are
- * specified. Internal.
+ * specified.
  *
- * @internal
+ * @public
  */
 export type ColorSchemeMediaQueries<C> = C extends {
   colorSchemes: (infer ColorScheme)[];
@@ -158,9 +166,9 @@ export type ColorSchemeMediaQueries<C> = C extends {
 
 /**
  * This type adds selectors to a hook configuration when pseudo-classes are
- * specified. Internal.
+ * specified.
  *
- * @internal
+ * @public
  */
 export type PseudoClassSelectors<C> = C extends { pseudoClasses: string[] }
   ? C["pseudoClasses"] extends (infer PseudoClass)[]
@@ -174,7 +182,7 @@ export type PseudoClassSelectors<C> = C extends { pseudoClasses: string[] }
  * Based on your settings, produces a hook configuration with an opinionated set
  * of hooks to address the most common use cases.
  *
- * @param config A simplified configuration model for an opinionated set of
+ * @param config - A simplified configuration model for an opinionated set of
  * hooks
  *
  * @returns
@@ -183,6 +191,8 @@ export type PseudoClassSelectors<C> = C extends { pseudoClasses: string[] }
  *
  * @remarks
  * Requires TypeScript version 5.3 or later.
+ *
+ * @public
  */
 export function recommended<const C extends RecommendedConfig>(
   config: C & RecommendedConfig,

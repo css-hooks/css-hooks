@@ -1,5 +1,5 @@
 /**
- *  CSS Hooks for Qwik
+ *  CSS Hooks for {@link https://qwik.dev | Qwik}
  *
  * @packageDocumentation
  */

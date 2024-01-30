@@ -1,5 +1,5 @@
 /**
- *  CSS Hooks for Preact
+ *  CSS Hooks for {@link https://preactjs.com | Preact}
  *
  * @packageDocumentation
  */
@@ -8,8 +8,9 @@ import type { JSX } from "preact";
 import type { CreateHooksFn } from "@css-hooks/core";
 
 /**
- * A version of Preact's {@link JSX.CSSProperties} type that admits a `match`
- * function.
+ * A version of Preact's `JSX.CSSProperties` type that admits a `match` function
+ *
+ * @public
  */
 export type CSSProperties = JSX.DOMCSSProperties & { cssText?: string | null };
 
