@@ -62,7 +62,7 @@ export type MatchOnFn<HookName, CSSProperties> = (
  * @typeParam HookName - The name of the hooks available for use in style
  * conditions.
  */
-export interface MatchHelpers<HookName> {
+export type MatchHelpers<HookName> = {
   /**
    * Creates a condition that is true when all of the conditions passed as
    * arguments are true.
@@ -79,7 +79,7 @@ export interface MatchHelpers<HookName> {
    * Creates a condition that is true when the specified condition is false.
    */
   not(condition: Condition<HookName>): Condition<HookName>;
-}
+};
 
 /**
  * Provides a way to declare conditional styles within a {@link Rule}.
@@ -184,7 +184,7 @@ export type HookImpl =
  *
  * @typeParam Hooks - the hooks configured for use in conditional styles.
  */
-export interface Config<Hooks> {
+export type Config<Hooks> = {
   /**
    * The hooks available for use in conditional styles.
    */
@@ -265,7 +265,7 @@ export interface Config<Hooks> {
    * @internal
    */
   hookNameToId?: (hookName: GetHookNames<Hooks>) => string;
-}
+};
 
 /**
  * Represents the {@link CssFn | `css`} function used to define enhanced styles,
@@ -277,7 +277,7 @@ export interface Config<Hooks> {
  * @typeParam CSSProperties - The type of a standard (flat) style object,
  * typically defined by an app framework (e.g., React's `CSSProperties` type).
  */
-interface Hooks<HookName, CSSProperties> {
+export type Hooks<HookName, CSSProperties> = {
   /**
    * The `css` function used to define enhanced styles.
    */
@@ -287,7 +287,7 @@ interface Hooks<HookName, CSSProperties> {
    * The style sheet required to support the configured hooks.
    */
   styleSheet: () => string;
-}
+};
 
 /**
  * A utility type used to extract hook names from configuration
