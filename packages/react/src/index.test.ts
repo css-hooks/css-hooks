@@ -1,7 +1,6 @@
 import assert from "node:assert";
 import { describe, it } from "node:test";
-import { stringifyValue } from "./index.js";
-import { unitlessNumbers } from "./isUnitlessNumber.js";
+import { stringifyValue, unitlessNumbers } from "./index.js";
 
 describe("`stringifyValue` function", () => {
   it("returns a string as-is", () => {

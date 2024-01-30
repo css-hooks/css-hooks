@@ -1,15 +1,26 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
+// @ts-nocheck
+
+import { buildHooksSystem } from "@css-hooks/core";
+
+// See https://github.com/facebook/react/blob/main/packages/react-dom-bindings/src/client/CSSPropertyOperations.js
+export function stringifyValue(propertyName, value) {
+  switch (typeof value) {
+    case "string":
+      return value;
+    case "number":
+      return `${value}${isUnitlessNumber(propertyName) ? "" : "px"}`;
+    default:
+      return null;
+  }
+}
+
+export const createHooks = buildHooksSystem(stringifyValue);
 
 /**
- * CSS properties which accept numbers but are not in units of "px".
- *
- * @internal
+ * Following code (c) Meta Platforms, Inc. and affiliates.
+ * Source modified to account for custom properties.
  */
+
 export const unitlessNumbers = new Set([
   "animationIterationCount",
   "aspectRatio",
@@ -84,8 +95,6 @@ export const unitlessNumbers = new Set([
   "WebkitLineClamp",
 ]);
 
-/** @internal */
-export default function (name: string) {
-  // modified from Meta's source to account for custom properties
+function isUnitlessNumber(name) {
   return /^--/.test(name) || unitlessNumbers.has(name);
 }
