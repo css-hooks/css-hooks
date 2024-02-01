@@ -1,3 +1,10 @@
+## [1.8.2](https://github.com/css-hooks/css-hooks/compare/v1.8.1...v1.8.2) (2024-02-01)
+
+
+### Reverts
+
+* refactor(core): small perf tweaks ([#63](https://github.com/css-hooks/css-hooks/issues/63)) ([4dc6f09](https://github.com/css-hooks/css-hooks/commit/4dc6f095e35de0fdae7f2eff5577a4b6e294caf0))
+
 ## [1.8.1](https://github.com/css-hooks/css-hooks/compare/v1.8.0...v1.8.1) (2024-01-25)
 
 ## [1.8.0](https://github.com/css-hooks/css-hooks/compare/v1.7.0...v1.8.0) (2024-01-15)
