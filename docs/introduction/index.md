@@ -85,7 +85,7 @@ With this knowledge, you can do the unthinkable—implement a hover effect withi
 an inline style:
 
 ```html
-<a href style="color: var(--hover-on, #18659f) var(--hover-off, #003665)">
+<a href style="color: var(--hover-on, red) var(--hover-off, blue)">
   Hover me
 </a>
 <style>
