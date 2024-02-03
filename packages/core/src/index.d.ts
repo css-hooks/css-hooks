@@ -344,6 +344,6 @@ export type CreateHooksFn<CSSProperties> = <
  *
  * @public
  */
-declare function buildHooksSystem<
-  CSSProperties = Record<string, string | number>,
->(stringify?: StringifyFn): CreateHooksFn<CSSProperties>;
+declare function buildHooksSystem<CSSProperties = Record<string, unknown>>(
+  stringify?: StringifyFn,
+): CreateHooksFn<CSSProperties>;
