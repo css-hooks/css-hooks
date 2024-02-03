@@ -11,7 +11,10 @@ create your own custom set of hooks if you prefer.
 
 ## Recommended hooks
 
-> [!NOTE] Requires TypeScript version 5.3 or later.
+<!-- prettier-ignore-start -->
+> [!NOTE]
+> Requires TypeScript version 5.3 or later.
+<!-- prettier-ignore-end -->
 
 To get up and running with some sensible defaults, you can install
 `@css-hooks/recommended` via NPM or your package manager of choice, e.g.:
