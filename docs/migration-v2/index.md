@@ -13,9 +13,8 @@ configure and set up hooks. Let's dive in!
 
 Previously, the `createHooks` function accepted two arguments: the first one
 declaring the hooks, and the second passing configuration options. In v2, these
-have been merged into a single configuration object. The `sort` option has also
-been enabled by default and enhanced to provide more granular control over how
-declarations are prioritized.
+have been merged into a single configuration object. Some options have changed
+as well.
 
 ### Merging hook declarations and configuration options
 
@@ -53,6 +52,18 @@ export const { styleSheet, css } = createHooks({
 });
 ```
 
+### Updating the `fallback` option
+
+In v2, the default value of the `fallback` option changed from `"unset"` to
+`"revert-layer"`. If you're concerned about compatibility with older browsers,
+you may want to consider setting this option:
+
+```typescript
+fallback: "unset",
+```
+
+For more information, see the [Configuration](../configuration/index.md) guide.
+
 ### Updating the `sort` option
 
 If you previously used `sort: true`, you can simply remove that option, as it is
@@ -68,7 +79,8 @@ sort: {
 }
 ```
 
-For more information about sorting, please review the configuration guide.
+For more information about sorting, please review the
+[Configuration](../configuration/index.md) guide.
 
 ## Setup
 
