@@ -250,15 +250,8 @@ export interface Config<Hooks> {
 
     /**
      * When enabled, conditional styles are sorted to the end of the list of
-     * rules passed to the `css` function, giving them the highest priority.
-     *
-     * @remarks
-     * You may want to consider disabling this option when
-     * - you are publishing a component library;
-     * - you expose a `style` prop allowing client overrides; and
-     * - you wish to hide CSS Hooks as an implementation detail (meaning that
-     *   the `style` prop has the standard type for CSS Properties with no `on`
-     *   field).
+     * rules passed to the `css` function, always giving them the highest
+     * priority.
      *
      * @beta
      *
