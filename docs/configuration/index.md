@@ -183,3 +183,102 @@ Notice that the hook is activated when the user has explicitly configured a
 theme setting (`[data-theme="dark"]` attribute on an ancestor element) _or_ when
 the browser requests dark mode and the user has not configured a theme
 (`[data-theme="auto"]` attribute on an ancestor element).
+
+## Options
+
+Aside from `hooks`, a few configuration options provide more granular control
+over how CSS Hooks works.
+
+### `debug`
+
+Default: `false`
+
+When debug mode is enabled:
+
+1. The style sheet returned by the `styleSheet` function is pretty-printed.
+2. Extra white space is included in inline style declarations for improved
+   readability.
+3. Hook identifiers (underlying CSS variables) are tagged with user-defined hook
+   names.
+
+### `fallback`
+
+Default: `"revert-layer"`
+
+The `fallback` option specifies the CSS keyword to use when a conditional style
+does not apply and a default value is not specified for one of the properties,
+e.g.
+
+```tsx
+<button
+  style={css({
+    match: on => [
+      on("&:hover", {
+        color: "red",
+      }),
+    ],
+  })}
+>
+  ...
+</button>
+```
+
+In this case, the style object produced would look like the following:
+
+```json
+{ "color": "var(--hover-on, red) var(--hover-off, <fallback>)" }
+```
+
+The configured value would be rendered in place of `<fallback>`.
+
+Functionally, the best choice is
+[`"revert-layer"`](https://developer.mozilla.org/en-US/docs/Web/CSS/revert-layer),
+which rolls back to a user-defined style sheet if present. On the other hand,
+[`"unset"`](https://developer.mozilla.org/en-US/docs/Web/CSS/unset) rolls back
+directly to the user agent style sheet, ignoring any user-defined style sheets;
+but it has better compatibility with older browsers. For compatibility data,
+please see
+[Web Platform Tests](https://wpt.fyi/results/css/css-cascade?label=master&label=stable&product=chrome-99.0.4844.84&product=edge-99.0.1150.55&product=firefox-97.0.2&product=safari-16.4%20%2818615.1.26.110.1%29&q=revert-layer)<!-- -->.
+
+### `sort.properties`
+
+Default: `true`
+
+When enabled, properties are sorted according to input order, with the last
+declaration having the highest priority.
+
+When disabled, properties remain in the order in which they are first declared.
+
+You may want to consider setting this to `false` if you have implemented your
+own algorithm for sorting properties.
+
+<!-- prettier-ignore-start -->
+> [!WARNING]
+> Except for the default value, this setting is experimental, and the behavior
+> may change subtly in response to user feedback.
+<!-- prettier-ignore-end -->
+
+### `sort.conditionalStyles`
+
+Default: `true`
+
+This setting affects the way declarations are prioritized when multiple rules
+(style object arguments) are passed to the `css` function.
+
+When enabled, condition styles are applied after all base styles, giving them
+higher priority.
+
+When disabled, conditional styles defined in an earlier rule are overridden when
+the same property is declared in a later rule.
+
+Disabling this option may be a good choice for libraries where each component
+exposes a standard `style` prop, accepting a flat style object and hiding CSS
+Hooks as a private implementation detail. In this scenario, users would likely
+expect client styles to override all previously-defined styles (even conditional
+ones).
+
+<!-- prettier-ignore-start -->
+> [!WARNING]
+> Except for the default value, this setting is experimental, and the behavior
+> may change subtly in response to user feedback.
+<!-- prettier-ignore-end -->
