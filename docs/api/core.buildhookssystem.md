@@ -9,9 +9,9 @@ Creates a flavor of CSS Hooks tailored to a specific app framework.
 **Signature:**
 
 ```typescript
-declare function buildHooksSystem<
-  CSSProperties = Record<string, string | number>,
->(stringify?: StringifyFn): CreateHooksFn<CSSProperties>;
+declare function buildHooksSystem<CSSProperties = Record<string, unknown>>(
+  stringify?: StringifyFn,
+): CreateHooksFn<CSSProperties>;
 ```
 
 ## Parameters

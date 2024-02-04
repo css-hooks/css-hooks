@@ -14,5 +14,11 @@ debug?: boolean;
 
 ## Remarks
 
-When debug mode is enabled: 1. Hook identifiers (underlying CSS variables) are tagged with user-defined hook names. 2. Extra whitespace is included in the style sheet and inline styles for enhanced readability.
+When debug mode is enabled:
+
+1. The style sheet returned by the `styleSheet` function is pretty-printed.
+
+2. Extra white space is included in inline style declarations for improved readability.
+
+3. Hook identifiers (underlying CSS variables) are tagged with user-defined hook names.
 
