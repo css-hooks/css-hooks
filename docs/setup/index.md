@@ -89,7 +89,7 @@ const createHooks = buildHooksSystem<CSS.Properties>();
 ```
 
 If you would like to use custom logic for converting values to strings, you can
-pass a this as a callback function:
+pass this as a callback function:
 
 ```typescript
 // src/css.ts
