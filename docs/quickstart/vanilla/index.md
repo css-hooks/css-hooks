@@ -19,13 +19,13 @@ npm install && npm install -D @css-hooks/core
 npm run dev
 ```
 
+Visit http://localhost:5173 to view changes in real time.
+
 ## 3. Set up CSS Hooks
 
 Create a `src/css.ts` module with the following contents:
 
 ```typescript
-// src/css.ts
-
 import { buildHooksSystem } from "@css-hooks/core";
 
 const createHooks = buildHooksSystem();
@@ -63,8 +63,6 @@ Modify `src/main.ts` to add the style sheet to the document:
 <!-- prettier-ignore-start -->
 
 ```diff
-// src/main.ts
-
 import './style.css'
 import typescriptLogo from './typescript.svg'
 import viteLogo from '/vite.svg'
@@ -95,7 +93,7 @@ setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
 
 <!-- prettier-ignore-end -->
 
-## 5. Use hook
+## 5. Add conditional style
 
 Use the configured `&:active` hook to implement an effect when the counter
 button is pressed:
@@ -129,7 +127,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 +        type="button"
 +        style="${styleObjectToString(
 +          css({
-+            transition: 'transform 150ms',
++            transition: 'transform 75ms',
 +            match: (on) => [
 +              on('&:active', {
 +                transform: 'scale(0.9)',
