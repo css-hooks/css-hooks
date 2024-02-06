@@ -1,16 +1,16 @@
 ---
-title: "Quickstart: Preact"
+title: "Quickstart: Qwik"
 order: 1
 ---
 
-# Quickstart: Preact
+# Quickstart: Qwik
 
 ## 1. Initialize project
 
 ```bash
-npm create vite@latest css-hooks-playground -- --template preact-ts
+npm create vite@latest css-hooks-playground -- --template qwik-ts
 cd css-hooks-playground
-npm install && npm install @css-hooks/preact
+npm install && npm install @css-hooks/qwik
 ```
 
 ## 2. Start dev server
@@ -26,7 +26,7 @@ Visit http://localhost:5173 to view changes in real time.
 Create a `src/css.ts` module with the following contents:
 
 ```typescript
-import { createHooks } from "@css-hooks/preact";
+import { createHooks } from "@css-hooks/qwik";
 
 export const { styleSheet, css } = createHooks({
   hooks: {
@@ -43,18 +43,20 @@ Modify `src/main.tsx` to add the style sheet to the document:
 <!-- prettier-ignore-start -->
 
 ```diff
-import { render } from 'preact'
+import '@builder.io/qwik/qwikloader.js'
+
+import { render } from '@builder.io/qwik'
 import { App } from './app.tsx'
 import './index.css'
 +import { styleSheet } from './css.ts'
 
--render(<App />, document.getElementById('app')!)
+-render(document.getElementById('app') as HTMLElement, <App />)
 +render(
++  document.getElementById('app') as HTMLElement,
 +  <>
-+    <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
++    <style dangerouslySetInnerHTML={styleSheet()} />
 +    <App />
-+  </>,
-+  document.getElementById('app')!
++  </>
 +)
 ```
 
@@ -70,13 +72,14 @@ button is pressed:
 ```diff
 // src/app.tsx
 
-import { useState } from 'preact/hooks'
-import preactLogo from './assets/preact.svg'
+import { component$, useSignal } from '@builder.io/qwik'
+
+import qwikLogo from './assets/qwik.svg'
 import viteLogo from '/vite.svg'
 import './app.css'
 +import { css } from './css.ts'
 
-export function App() {
+export const App = component$(() => {
   const [count, setCount] = useState(0)
 
   return (
@@ -85,15 +88,15 @@ export function App() {
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
         </a>
-        <a href="https://preactjs.com" target="_blank">
-          <img src={preactLogo} className="logo preact" alt="Preact logo" />
+        <a href="https://qwik.builder.io" target="_blank">
+          <img src={qwikLogo} className="logo qwik" alt="Qwik logo" />
         </a>
       </div>
-      <h1>Vite + Preact</h1>
+      <h1>Vite + Qwik</h1>
       <div className="card">
--        <button onClick={() => setCount((count) => count + 1)}>
+-        <button onClick$={() => count.value++}>count is {count.value}</button>
 +        <button
-+          onClick={() => setCount((count) => count + 1)}
++          onClick$={() => count.value++}
 +          style={css({
 +            transition: "transform 75ms",
 +            match: (on) => [
@@ -105,16 +108,13 @@ export function App() {
 +        >
           count is {count}
         </button>
-        <p>
-          Edit <code>src/app.tsx</code> and save to test HMR
-        </p>
       </div>
       <p className="read-the-docs">
-        Click on the Vite and Preact logos to learn more
+        Click on the Vite and Qwik logos to learn more
       </p>
     </>
   )
-}
+})
 ```
 
 <!-- prettier-ignore-end -->
