@@ -1,16 +1,16 @@
 ---
-title: "Quickstart: React"
+title: "Quickstart: Preact"
 order: 1
 ---
 
-# Quickstart: React
+# Quickstart: Preact
 
 ## 1. Initialize project
 
 ```bash
-npm create vite@latest css-hooks-playground -- --template react-ts
+npm create vite@latest css-hooks-playground -- --template preact-ts
 cd css-hooks-playground
-npm install && npm install @css-hooks/react
+npm install && npm install @css-hooks/preact
 ```
 
 ## 2. Start dev server
@@ -26,7 +26,7 @@ Visit http://localhost:5173 to view changes in real time.
 Create a `src/css.ts` module with the following contents:
 
 ```typescript
-import { createHooks } from "@css-hooks/react";
+import { createHooks } from "@css-hooks/preact";
 
 export const { styleSheet, css } = createHooks({
   hooks: {
@@ -43,18 +43,19 @@ Modify `src/main.tsx` to add the style sheet to the document:
 <!-- prettier-ignore-start -->
 
 ```diff
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
+import { render } from 'preact'
+import { App } from './app.tsx'
 import './index.css'
 +import { styleSheet } from './css.ts'
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+-render(<App />, document.getElementById('app')!)
++render(
++  <>
 +    <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-    <App />
-  </React.StrictMode>,
-)
++    <App />
++  </>,
++  document.getElementById('app')!
++)
 ```
 
 <!-- prettier-ignore-end -->
@@ -67,15 +68,15 @@ button is pressed:
 <!-- prettier-ignore-start -->
 
 ```diff
-// src/App.tsx
+// src/app.tsx
 
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
+import { useState } from 'preact/hooks'
+import preactLogo from './assets/preact.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 +import { css } from './css.ts'
 
-function App() {
+export function App() {
   const [count, setCount] = useState(0)
 
   return (
@@ -84,11 +85,11 @@ function App() {
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
         </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
+        <a href="https://preactjs.com" target="_blank">
+          <img src={preactLogo} className="logo preact" alt="Preact logo" />
         </a>
       </div>
-      <h1>Vite + React</h1>
+      <h1>Vite + Preact</h1>
       <div className="card">
 -        <button onClick={() => setCount((count) => count + 1)}>
 +        <button
@@ -109,13 +110,11 @@ function App() {
         </p>
       </div>
       <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+        Click on the Vite and Preact logos to learn more
       </p>
     </>
   )
 }
-
-export default App
 ```
 
 <!-- prettier-ignore-end -->
