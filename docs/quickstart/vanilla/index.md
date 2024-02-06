@@ -34,7 +34,7 @@ export const { styleSheet, css } = createHooks({
   hooks: {
     "&:active": "&:active",
   },
-  debug: import.meta.env.PROD,
+  debug: import.meta.env.DEV,
 });
 
 /**
