@@ -8,7 +8,7 @@ order: 1
 ## 1. Initialize project
 
 ```bash
-npx degit solidjs/templates/ts css-hooks-playground
+npm create vite@latest css-hooks-playground -- --template solid-ts
 cd css-hooks-playground
 npm install && npm install @css-hooks/solid
 ```
@@ -19,7 +19,7 @@ npm install && npm install @css-hooks/solid
 npm run dev
 ```
 
-Visit http://localhost:3000 to view changes in real time.
+Visit http://localhost:5173 to view changes in real time.
 
 ## 3. Set up CSS Hooks
 
@@ -30,7 +30,7 @@ import { createHooks } from "@css-hooks/solid";
 
 export const { styleSheet, css } = createHooks({
   hooks: {
-    "&:hover": "&:hover",
+    "&:active": "&:active",
   },
   debug: import.meta.env.DEV,
 });
@@ -38,27 +38,21 @@ export const { styleSheet, css } = createHooks({
 
 ## 4. Add style sheet
 
-Modify `src/index.ts` to add the style sheet to the document:
+Modify `src/index.tsx` to add the style sheet to the document:
 
-<!--prettier-ignore-start-->
+<!-- prettier-ignore-start -->
 
 ```diff
 /* @refresh reload */
-import { render } from 'solid-js/web';
+import { render } from 'solid-js/web'
 
-import './index.css';
-import App from './App';
-+import { styleSheet } from './css';
+import './index.css'
+import App from './App'
++import { styleSheet } from './css'
 
-const root = document.getElementById('root');
+const root = document.getElementById('root')
 
-if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
-  throw new Error(
-    'Root element not found. Did you forget to add it to your index.html? Or maybe the id attribute got misspelled?',
-  );
-}
-
--render(() => <App />, root!);
+-render(() => <App />, root!)
 +render(
 +  () => (
 +    <>
@@ -67,59 +61,68 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 +    </>
 +  ),
 +  root!
-+);
++)
 ```
 
-<!--prettier-ignore-end-->
+<!-- prettier-ignore-end -->
 
 ## 5. Add conditional style
 
-Use the configured `&:hover` hook to implement a hover effect on the Solid logo:
+Use the configured `&:active` hook to implement an effect when the counter
+button is pressed:
 
 <!-- prettier-ignore-start -->
 
 ```diff
 // src/App.tsx
 
-import type { Component } from 'solid-js';
+import { createSignal } from 'solid-js'
+import solidLogo from './assets/solid.svg'
+import viteLogo from '/vite.svg'
+import './App.css'
++import { css } from './css'
 
-import logo from './logo.svg';
-import styles from './App.module.css';
+function App() {
+  const [count, setCount] = createSignal(0)
 
-const App: Component = () => {
   return (
-    <div class={styles.App}>
-      <header class={styles.header}>
--        <img src={logo} class={styles.logo} alt="logo" />
-+        <img
-+          src={logo}
-+          class={styles.logo}
-+          style={css({
-+            "pointer-events": "unset",
-+            match: on => [
-+              on("&:hover", {
-+                "animation-duration": "1s"
-+              })
-+            ]
-+          })}
-+          alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          class={styles.link}
-          href="https://github.com/solidjs/solid"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn Solid
+    <>
+      <div>
+        <a href="https://vitejs.dev" target="_blank">
+          <img src={viteLogo} className="logo" alt="Vite logo" />
         </a>
-      </header>
-    </div>
-  );
-};
+        <a href="https://solidjs.com" target="_blank">
+          <img src={solidLogo} className="logo solid" alt="Solid logo" />
+        </a>
+      </div>
+      <h1>Vite + Solid</h1>
+      <div className="card">
+-        <button onClick={() => setCount((count) => count + 1)}>
++        <button
++          onClick={() => setCount((count) => count + 1)}
++          style={css({
++            transition: "transform 75ms",
++            match: (on) => [
++              on("&:active", {
++                transform: "scale(0.9)",
++              }),
++            ],
++          })}
++        >
+          count is {count()}
+        </button>
+        <p>
+          Edit <code>src/App.tsx</code> and save to test HMR
+        </p>
+      </div>
+      <p className="read-the-docs">
+        Click on the Vite and Solid logos to learn more
+      </p>
+    </>
+  )
+}
 
-export default App;
+export default App
 ```
 
 <!-- prettier-ignore-end -->

@@ -80,7 +80,7 @@ import './app.css'
 +import { css } from './css.ts'
 
 export const App = component$(() => {
-  const [count, setCount] = useState(0)
+  const count = useSignal(0)
 
   return (
     <>
