@@ -459,7 +459,7 @@ export default async function Home() {
                 <TestimonialAuthor
                   name="Mark Dalgleish"
                   handle="markdalgleish"
-                  avatar="https://pbs.twimg.com/profile_images/754886061872979968/BzaOWhs1_400x400.jpg"
+                  avatar="https://github.com/markdalgleish.png"
                 />
               }
             >
@@ -479,7 +479,7 @@ export default async function Home() {
                 <TestimonialAuthor
                   name="Ryan Florence"
                   handle="ryanflorence"
-                  avatar="https://pbs.twimg.com/profile_images/1731841705668939776/_lNdemnU_400x400.jpg"
+                  avatar="https://github.com/ryanflorence.png"
                 />
               }
             >
@@ -493,7 +493,7 @@ export default async function Home() {
                 <TestimonialAuthor
                   name="Mykhaylo"
                   handle="mryechkin"
-                  avatar="https://pbs.twimg.com/profile_images/1636493509384454145/leeZkIAo_400x400.jpg"
+                  avatar="https://github.com/mryechkin.png"
                 />
               }
             >
@@ -526,7 +526,7 @@ export default async function Home() {
                 <TestimonialAuthor
                   name="Julien Delort"
                   handle="Julien_Delort"
-                  avatar="https://pbs.twimg.com/profile_images/1611356354031112192/rUtkE659_400x400.jpg"
+                  avatar="https://github.com/juliendelort.png"
                 />
               }
             >
@@ -540,7 +540,7 @@ export default async function Home() {
                 <TestimonialAuthor
                   name="Benton Boychuk-Chorney"
                   handle="b_e_n_t_e_n_"
-                  avatar="https://pbs.twimg.com/profile_images/1734482045840297984/2CP_PyvE_400x400.jpg"
+                  avatar="https://github.com/b3nten.png"
                 />
               }
             >
