@@ -113,7 +113,7 @@ async function getRenderer(): Promise<RendererObject> {
       return `<code style="${renderToString(
         css({
           fontFamily: "'Inconsolaa Variable', monospace",
-          fontSize: "0.875em",
+          fontSize: "1em",
           color: V.teal60,
           match: on => [
             on("@media (prefers-color-scheme: dark)", {
