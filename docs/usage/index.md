@@ -1,5 +1,6 @@
 ---
 title: Usage
+description: Create enhanced inline styles throughout your application.
 order: 5
 ---
 

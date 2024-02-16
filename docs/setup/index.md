@@ -1,6 +1,7 @@
 ---
 title: Setup
-order: 4
+description: Add CSS Hooks to your project.
+order: 3
 ---
 
 # Setup

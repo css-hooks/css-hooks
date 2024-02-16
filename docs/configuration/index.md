@@ -1,6 +1,7 @@
 ---
 title: Configuration
-order: 3
+description: Define your own hooks and other configuration options.
+order: 4
 ---
 
 # Configuration

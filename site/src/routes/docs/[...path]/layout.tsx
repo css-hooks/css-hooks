@@ -6,13 +6,13 @@ import { css } from "~/css";
 import { Anchor } from "~/components/anchor";
 import * as Icon from "~/components/icons";
 
-const documents = import.meta.glob("../../../../docs/**/index.md", {
+const documents = import.meta.glob("../../../../../docs/**/index.md", {
   import: "default",
   as: "raw",
   eager: false,
 });
 
-const docsBase = "../../../../docs";
+const docsBase = "../../../../../docs";
 
 type MenuItem = {
   path: string;
@@ -263,7 +263,7 @@ export default component$(() => {
         <div
           style={css({
             width: "calc(100% - 4rem)",
-            maxWidth: "80ch",
+            maxWidth: "88ch",
             margin: "auto",
             padding: "1rem 0",
             match: on => [
