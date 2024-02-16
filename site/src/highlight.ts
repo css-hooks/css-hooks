@@ -33,6 +33,39 @@ export async function highlighter() {
           light: "github-light",
           dark: "github-dark",
         },
+        transformers:
+          language === "diff"
+            ? [
+                {
+                  line(line) {
+                    if (line.children[0]?.type === "element") {
+                      const node = line.children[0].children[0];
+                      if (node.type === "text") {
+                        const diffType =
+                          node.value[0] === "+"
+                            ? "add"
+                            : node.value[0] === "-"
+                              ? "remove"
+                              : undefined;
+                        if (diffType) {
+                          line.properties["class"] += ` diff ${diffType}`;
+                          node.value = node.value.substring(1);
+                        }
+                      }
+                    }
+                  },
+                },
+              ]
+            : [],
+        colorReplacements:
+          language === "diff"
+            ? {
+                "#b31d28": "var(--shiki-diff-remove-fg)",
+                "#fdaeb7": "var(--shiki-diff-remove-fg)",
+                "#22863a": "var(--shiki-diff-add-fg)",
+                "#85e89d": "var(--shiki-diff-add-fg)",
+              }
+            : {},
         defaultColor: false,
       });
     },

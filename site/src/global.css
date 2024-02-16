@@ -52,11 +52,13 @@ body {
 
   --shiki-diff-add-bg: var(--shiki-is-light, #e6ffec)
     var(--shiki-is-dark, #12261e);
-  --shiki-diff-add-fg: #347e4a;
+  --shiki-diff-add-fg: var(--shiki-is-light, #2a663c)
+    var(--shiki-is-dark, #71c48a);
 
   --shiki-diff-remove-bg: var(--shiki-is-light, #ffebe9)
     var(--shiki-is-dark, #25171c);
-  --shiki-diff-remove-fg: #a5474b;
+  --shiki-diff-remove-fg: var(--shiki-is-light, #a5474b)
+    var(--shiki-is-dark, #cd8c8e);
 }
 
 .shiki,
