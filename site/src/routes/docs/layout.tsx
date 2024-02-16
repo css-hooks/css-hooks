@@ -263,7 +263,7 @@ export default component$(() => {
         <div
           style={css({
             width: "calc(100% - 4rem)",
-            maxWidth: "100ch",
+            maxWidth: "80ch",
             margin: "auto",
             padding: "1rem 0",
             match: on => [

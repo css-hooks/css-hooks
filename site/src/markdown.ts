@@ -54,7 +54,7 @@ async function getRenderer(): Promise<RendererObject> {
           paddingLeft: "1em",
           marginLeft: 0,
           marginRight: 0,
-          marginBlock: "1rem",
+          marginBlock: "1.5rem",
           borderColor: V.pink20,
           color: V.gray70,
           background: V.white,
@@ -78,7 +78,7 @@ async function getRenderer(): Promise<RendererObject> {
           fontSize: "1rem",
           overflow: "auto",
           padding: "1rem",
-          marginBlock: "1em",
+          marginBlock: "1.5rem",
           background: V.white,
           match: (on, { not }) => [
             on(not("@media (prefers-color-scheme: dark)"), {
@@ -138,10 +138,11 @@ async function getRenderer(): Promise<RendererObject> {
         const prefix = step
           ? `<span style="${renderToString(
               css({
-                display: "inline-grid",
-                placeItems: "center",
+                transform: "translateY(-20%)",
                 width: "0.75em",
                 height: "0.75em",
+                display: "inline-grid",
+                placeItems: "center",
                 borderRadius: 999,
                 background: V.pink10,
                 color: V.pink50,
@@ -152,41 +153,42 @@ async function getRenderer(): Promise<RendererObject> {
                   }),
                 ],
               }),
-            )}"><span style="font-size: 0.5em">${step}</span></span>`
+            )}"><span style="font-size: 0.5em">${step}</span></span>&nbsp;`
           : "";
         return `<h${level} class="group" style="${renderToString({
           ...[
             {
-              fontSize: "calc(15em / 6)",
+              fontSize: "2.2rem",
               fontWeight: 400,
-              marginBlock: "0.25em",
+              marginBlock: "1.375rem",
             },
             {
-              fontSize: "calc(13em / 6)",
+              fontSize: "2rem",
               fontWeight: 400,
-              marginBlock: "calc(14em * (3 / 104))",
+              marginBlock: "1.5rem",
             },
             {
-              fontSize: "calc(11em / 6)",
+              fontSize: "1.8rem",
               fontWeight: 400,
-              marginBlock: "calc(27em / 44)",
+              marginBlock: "1.625rem",
             },
             {
-              fontSize: "calc(5em / 3)",
-              fontWeight: 400,
-              marginBlock: "0.75em",
+              fontSize: "1.6rem",
+              fontWeight: 700,
+              marginBlock: "1.75rem",
             },
             {
-              fontSize: "calc(3em / 2)",
-              fontWeight: 400,
-              marginBlock: "calc(11em / 12)",
+              fontSize: "1.4rem",
+              fontWeight: 700,
+              marginBlock: "1.875rem",
             },
             {
-              fontSize: "calc(4em / 3)",
-              fontWeight: 400,
-              marginBlock: "calc(9em / 8)",
+              fontSize: "1.2rem",
+              fontWeight: 700,
+              marginBlock: "2rem",
             },
           ][level - 1],
+          lineHeight: 1.25,
         })}"><span id="${slug(
           text,
         )}" style="${renderToString({ position: "relative", top: "-6rem" })}"></span><a href="#${slug(text)}" style="${renderToString(
@@ -200,13 +202,14 @@ async function getRenderer(): Promise<RendererObject> {
           css({
             visibility: "hidden",
             width: "20px",
+            height: "20px",
             match: on => [
               on(".group:hover &", {
                 visibility: "visible",
               }),
             ],
           }),
-        )}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></div></a><span style="display:inline-flex; align-items: center; gap: 0.25em">${prefix}${content}</span></h${level}>`;
+        )}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></div></a><span>${prefix}${content}</span></h${level}>`;
       }
       return false;
     },

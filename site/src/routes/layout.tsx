@@ -41,6 +41,7 @@ export default component$(() => {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          WebkitBackdropFilter: "blur(32px)",
           backdropFilter: "blur(32px)",
           color: V.black,
           padding: "1.5rem",
