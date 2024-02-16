@@ -1,6 +1,6 @@
 ---
-title: "Quickstart: No framework"
-order: 1
+title: No framework
+order: 99
 ---
 
 # Quickstart: No framework

@@ -1,6 +1,6 @@
 ---
-title: "Quickstart: Solid"
-order: 1
+title: Solid
+order: 3
 ---
 
 # Quickstart: Solid

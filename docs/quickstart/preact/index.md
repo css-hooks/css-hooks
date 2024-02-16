@@ -1,6 +1,6 @@
 ---
-title: "Quickstart: Preact"
-order: 1
+title: Preact
+order: 2
 ---
 
 # Quickstart: Preact

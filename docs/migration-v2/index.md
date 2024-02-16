@@ -1,6 +1,6 @@
 ---
 title: Migrating to v2
-order: 2
+order: 100
 ---
 
 # Migrating to v2

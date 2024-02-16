@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "CSS Hooks",
+  "short_name": "CSS Hooks",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0d0f14",
+  "description": "A Qwik project app."
+}

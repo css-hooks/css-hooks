@@ -1,5 +1,5 @@
 ---
-title: "Quickstart: React"
+title: React
 order: 1
 ---
 
