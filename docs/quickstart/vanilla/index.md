@@ -1,6 +1,7 @@
 ---
-title: "Quickstart: No framework"
-order: 1
+title: No framework
+description: Get up and running with vanilla JavaScript in a few simple steps.
+order: 99
 ---
 
 # Quickstart: No framework

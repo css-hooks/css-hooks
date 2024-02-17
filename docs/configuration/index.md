@@ -1,6 +1,7 @@
 ---
 title: Configuration
-order: 1
+description: Define your own hooks and other configuration options.
+order: 4
 ---
 
 # Configuration
@@ -254,8 +255,8 @@ own algorithm for sorting properties.
 
 <!-- prettier-ignore-start -->
 > [!WARNING]
-> Except for the default value, this setting is experimental, and the behavior
-> may change subtly in response to user feedback.
+> This setting is experimental, and its non-default behavior may change subtly in
+> response to user feedback.
 <!-- prettier-ignore-end -->
 
 ### `sort.conditionalStyles`
@@ -279,6 +280,6 @@ ones).
 
 <!-- prettier-ignore-start -->
 > [!WARNING]
-> Except for the default value, this setting is experimental, and the behavior
-> may change subtly in response to user feedback.
+> This setting is experimental, and its non-default behavior may change subtly in
+> response to user feedback.
 <!-- prettier-ignore-end -->

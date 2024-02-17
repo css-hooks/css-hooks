@@ -1,6 +1,7 @@
 ---
 title: Migrating to v2
-order: 2
+description: Update your app to the latest version of CSS Hooks.
+order: 100
 ---
 
 # Migrating to v2

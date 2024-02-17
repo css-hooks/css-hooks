@@ -1,6 +1,7 @@
 ---
-title: "Quickstart: Qwik"
-order: 1
+title: Qwik
+description: Get up and running with Qwik in a few simple steps.
+order: 4
 ---
 
 # Quickstart: Qwik

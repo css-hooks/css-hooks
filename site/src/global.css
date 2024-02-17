@@ -1,0 +1,102 @@
+@import "@fontsource-variable/assistant";
+@import "@fontsource-variable/inconsolata";
+@import "@fontsource-variable/inter";
+
+html {
+  overflow: auto scroll;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: stretch;
+}
+
+.shiki,
+.shiki * {
+  --shiki-is-light: initial;
+  --shiki-is-dark: ;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="auto"] .shiki,
+  [data-theme="auto"] .shiki * {
+    --shiki-is-light: ;
+    --shiki-is-dark: initial;
+  }
+}
+
+[data-theme="dark"] .shiki,
+[data-theme="dark"] .shiki * {
+  --shiki-is-light: ;
+  --shiki-is-dark: initial;
+}
+
+.shiki,
+.shiki span {
+  --shiki: var(--shiki-is-light, var(--shiki-light))
+    var(--shiki-is-dark, var(--shiki-dark));
+  --shiki-font-style: var(--shiki-is-light, var(--shiki-light-font-style))
+    var(--shiki-is-dark, var(--shiki-dark-font-style));
+  --shiki-font-weight: var(--shiki-is-light, var(--shiki-light-font-weight))
+    var(--shiki-is-dark, var(--shiki-dark-font-weight));
+  --shiki-text-decoration: var(
+      --shiki-is-light,
+      var(--shiki-light-text-decoration)
+    )
+    var(--shiki-is-dark, var(--shiki-dark-text-decoration));
+
+  --shiki-diff-add-bg: var(--shiki-is-light, #e6ffec)
+    var(--shiki-is-dark, #12261e);
+  --shiki-diff-add-fg: var(--shiki-is-light, #2a663c)
+    var(--shiki-is-dark, #71c48a);
+
+  --shiki-diff-remove-bg: var(--shiki-is-light, #ffebe9)
+    var(--shiki-is-dark, #25171c);
+  --shiki-diff-remove-fg: var(--shiki-is-light, #a5474b)
+    var(--shiki-is-dark, #cd8c8e);
+}
+
+.shiki,
+.shiki span {
+  margin: 0;
+  font: inherit;
+  background-color: transparent;
+  color: var(--shiki);
+  font-style: var(--shiki-font-style);
+  font-weight: var(--shiki-font-weight);
+  text-decoration: var(--shiki-text-decoration);
+}
+
+.shiki code {
+  display: inline-block;
+  font: inherit;
+}
+
+.shiki :has(.diff) .line::before {
+  content: "  ";
+}
+
+.shiki .line.add {
+  background: var(--shiki-diff-add-bg);
+  box-shadow: 0 0 0 4px var(--shiki-diff-add-bg);
+}
+
+.shiki .line.add::before {
+  content: "+ ";
+  color: var(--shiki-diff-add-fg);
+}
+
+.shiki .line.remove {
+  background: var(--shiki-diff-remove-bg);
+  box-shadow: 0 0 0 4px var(--shiki-diff-remove-bg);
+}
+
+.shiki .line.remove::before {
+  content: "- ";
+  color: var(--shiki-diff-remove-fg);
+}

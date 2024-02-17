@@ -1,6 +1,7 @@
 ---
 title: Usage
-order: 1
+description: Create enhanced inline styles throughout your application.
+order: 5
 ---
 
 # Usage

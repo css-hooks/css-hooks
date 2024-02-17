@@ -1,5 +1,7 @@
 ---
 title: Introduction
+description:
+  An overview of CSS Hooks, what it is, how it works, and why it's useful.
 order: 1
 ---
 

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "CSS Hooks",
+  "short_name": "CSS Hooks",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0d0f14",
+  "description": "Hooks add CSS features to native inline styles, with no build steps and minimal runtime.",
+  "icons": [
+    {
+      "src": "./icons/android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "./icons/android-chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
