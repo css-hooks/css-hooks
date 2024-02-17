@@ -304,8 +304,8 @@ export type GetHookNames<HooksConfig> = HooksConfig extends (
 ) => Record<infer HookName, any>
   ? HookName
   : HooksConfig extends Record<infer HookName, unknown>
-  ? HookName
-  : never;
+    ? HookName
+    : never;
 /* eslint-enable @typescript-eslint/no-explicit-any */
 
 /**

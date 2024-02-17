@@ -275,9 +275,8 @@ export function buildHooksSystem(stringify = genericStringify) {
             if (sortProperties) {
               delete style[property];
             }
-            style[
-              property
-            ] = `var(--${conditionId}-1,${space}${stringifiedValue})${space}var(--${conditionId}-0,${space}${fallbackValue})`;
+            style[property] =
+              `var(--${conditionId}-1,${space}${stringifiedValue})${space}var(--${conditionId}-0,${space}${fallbackValue})`;
           }
           continue;
         }

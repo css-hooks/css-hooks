@@ -117,13 +117,13 @@ export type BreakpointsToMediaQueriesImpl<
         ]
       >
   : Breakpoints extends [infer A]
-  ? Acc extends []
-    ? [
-        `@media (width < ${A extends string ? A : never})`,
-        `@media (${A extends string ? A : never} <= width)`,
-      ]
-    : [...Acc, `@media (${A extends string ? A : never} <= width)`]
-  : Acc;
+    ? Acc extends []
+      ? [
+          `@media (width < ${A extends string ? A : never})`,
+          `@media (${A extends string ? A : never} <= width)`,
+        ]
+      : [...Acc, `@media (${A extends string ? A : never} <= width)`]
+    : Acc;
 
 /**
  * This utility type converts a list of breakpoints into a list of media

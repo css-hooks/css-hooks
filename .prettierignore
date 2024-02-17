@@ -4,6 +4,6 @@
 /packages/**/esm
 /packages/**/out
 /packages/**/types
-/site/.next
-/site/out
+/site/dist
+/site/server
 /temp
