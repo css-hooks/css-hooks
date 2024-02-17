@@ -7,7 +7,7 @@ import {
   ServiceWorkerRegister,
 } from "@builder.io/qwik-city";
 import * as V from "varsace";
-import { RouterHead } from "./components/router-head/router-head";
+import { RouterHead } from "./components/router-head";
 import { css, styleSheet } from "./css";
 import * as Theme from "./theme";
 
