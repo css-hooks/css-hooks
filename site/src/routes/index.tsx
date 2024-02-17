@@ -162,7 +162,7 @@ export default component$(() => {
               <Icon.MenuBook q:slot="icon" />
               Docs
             </CtaButton>
-            <CtaButton href="./docs">
+            <CtaButton href="https://githubbox.com/css-hooks/css-hooks/tree/master/examples/react">
               <Icon.CodeSandbox q:slot="icon" />
               Demo
             </CtaButton>
@@ -1055,7 +1055,10 @@ export const DesignedFor = component$(
           {framework}
         </span>
       </h1>
-      <CtaButton href="#" style={{ order: 99 }}>
+      <CtaButton
+        href={`./docs/quickstart/${framework.toLowerCase()}`}
+        style={{ order: 99 }}
+      >
         Get started
       </CtaButton>
       <div
