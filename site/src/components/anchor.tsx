@@ -1,4 +1,4 @@
-import { CSSProperties, Slot, component$ } from "@builder.io/qwik";
+import { type CSSProperties, Slot, component$ } from "@builder.io/qwik";
 import * as V from "varsace";
 import { css } from "~/css";
 

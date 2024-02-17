@@ -5,22 +5,12 @@ import * as V from "varsace";
 import { anchorStyle } from "~/components/anchor";
 import { highlighter, isSupportedLanguage } from "./highlight";
 
-const languages = [
-  "css",
-  "html",
-  "javascript",
-  "json",
-  "jsx",
-  "typescript",
-  "tsx",
-];
-
 async function getRenderer(): Promise<RendererObject> {
   const hl = await highlighter();
   return {
     blockquote(quote) {
-      const [_a, _b, alertTypeStr, content] = Array.from(
-        quote.match(/^<p>(\[\!([A-Z]+)\])?([\S\s]*)$/m) || [],
+      const [, , alertTypeStr, content] = Array.from(
+        quote.match(/^<p>(\[!([A-Z]+)\])?([\S\s]*)$/m) || [],
       );
       const alertType =
         alertTypeStr === "NOTE" || alertTypeStr === "WARNING"
@@ -131,7 +121,7 @@ async function getRenderer(): Promise<RendererObject> {
         level === 5 ||
         level === 6
       ) {
-        const [_a, _b, step, content] = Array.from(
+        const [, , step, content] = Array.from(
           text.match(/^(([0-9])\.)?\s*(.*)/m) || [],
         );
         const prefix = step

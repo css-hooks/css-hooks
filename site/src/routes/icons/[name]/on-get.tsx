@@ -31,7 +31,7 @@ export const onGet: RequestHandler = async ({ params, send }) => {
 
   const svg = (html.match(/<body[^>]*>(.*)?<\/body>/m)?.[1] || "")
     .replace("<svg", `<svg xmlns="http://www.w3.org/2000/svg"`)
-    .replace(/q\:[a-z-]+="([^"]*)?"/g, "");
+    .replace(/q:[a-z-]+="([^"]*)?"/g, "");
 
   const image = await resvg.renderAsync(svg);
 

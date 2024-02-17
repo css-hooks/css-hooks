@@ -24,7 +24,7 @@ type MenuItem = {
 export const useMenu = routeLoader$(async () => {
   const items = await Promise.all(
     Object.entries(documents).map(async ([path, getContent]) => {
-      const { content, data } = matter(await getContent());
+      const { data } = matter(await getContent());
       const { title, order } = /\/api\//.test(path)
         ? { title: "API", order: 99 }
         : z.object({ title: z.string(), order: z.number() }).parse(data);
@@ -40,7 +40,7 @@ export const useMenu = routeLoader$(async () => {
   for (const item of items) {
     const parent = items.find(
       ({ path }) =>
-        path !== item.path && path === item.path.replace(/\/[^\/]+$/, ""),
+        path !== item.path && path === item.path.replace(/\/[^/]+$/, ""),
     );
     if (parent) {
       parent.childItems.push(item);

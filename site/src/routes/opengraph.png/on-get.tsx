@@ -79,7 +79,7 @@ export const onGet: RequestHandler = async requestEvent => {
 
   const jsx = satoriHTML(
     (html.match(/<body[^>]*>(.*)?<\/body>/m)?.[1] || "").replace(
-      /q\:[a-z-]+="([^"]*)?"/g,
+      /q:[a-z-]+="([^"]*)?"/g,
       "",
     ),
   ) as Parameters<typeof satori>[0];

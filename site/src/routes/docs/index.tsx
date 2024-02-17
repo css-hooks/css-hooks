@@ -1,12 +1,7 @@
-import { Slot, component$ } from "@builder.io/qwik";
+import { component$ } from "@builder.io/qwik";
 import * as V from "varsace";
 import matter from "gray-matter";
-import {
-  DocumentHead,
-  routeLoader$,
-  useLocation,
-  z,
-} from "@builder.io/qwik-city";
+import { type DocumentHead, routeLoader$, z } from "@builder.io/qwik-city";
 import { Anchor } from "~/components/anchor";
 
 export const head: DocumentHead = {

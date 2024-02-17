@@ -3,7 +3,7 @@ import {
   type StaticGenerateHandler,
   routeLoader$,
   useLocation,
-  DocumentHead,
+  type DocumentHead,
   z,
 } from "@builder.io/qwik-city";
 import matter from "gray-matter";
@@ -50,7 +50,7 @@ export const useDocument = routeLoader$(async requestEvent => {
   });
 });
 
-export const head: DocumentHead = ({ resolveValue, params }) => {
+export const head: DocumentHead = ({ resolveValue }) => {
   const document = resolveValue(useDocument);
   if (document.failed) {
     return {
