@@ -10,7 +10,8 @@
     "@microsoft/api-documenter": "^7.23.20",
     "conventional-changelog-cli": "^3.0.0",
     "conventional-github-releaser": "^3.1.5",
-    "conventional-recommended-bump": "^7.0.1"
+    "conventional-recommended-bump": "^7.0.1",
+    "prettier": "^3.2.5"
   },
   "license": "MIT",
   "private": true,
