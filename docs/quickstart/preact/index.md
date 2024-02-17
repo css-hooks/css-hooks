@@ -1,5 +1,6 @@
 ---
 title: Preact
+description: Get up and running with Preact in a few simple steps.
 order: 2
 ---
 

@@ -1,5 +1,6 @@
 ---
 title: React
+description: Get up and running with React in a few simple steps.
 order: 1
 ---
 

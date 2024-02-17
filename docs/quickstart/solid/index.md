@@ -1,5 +1,6 @@
 ---
 title: Solid
+description: Get up and running with Solid in a few simple steps.
 order: 3
 ---
 

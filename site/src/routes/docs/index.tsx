@@ -36,7 +36,7 @@ export const useIndex = routeLoader$(async () => {
         : z
             .object({
               title: z.string(),
-              description: z.optional(z.string()),
+              description: z.string(),
               order: z.number(),
             })
             .parse(data);

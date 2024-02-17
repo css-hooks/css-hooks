@@ -1,5 +1,6 @@
 ---
 title: No framework
+description: Get up and running with vanilla JavaScript in a few simple steps.
 order: 99
 ---
 
