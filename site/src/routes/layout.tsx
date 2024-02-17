@@ -1,5 +1,9 @@
 import { component$, Slot } from "@builder.io/qwik";
-import type { DocumentHead, RequestHandler } from "@builder.io/qwik-city";
+import {
+  useLocation,
+  type DocumentHead,
+  type RequestHandler,
+} from "@builder.io/qwik-city";
 import * as V from "varsace";
 import { Anchor } from "~/components/anchor";
 import { Logo } from "~/components/logo";
@@ -50,6 +54,9 @@ export const onGet: RequestHandler = async ({ cacheControl }) => {
 };
 
 export default component$(() => {
+  const {
+    url: { pathname },
+  } = useLocation();
   return (
     <div
       style={css({
@@ -106,15 +113,19 @@ export default component$(() => {
           }}
         >
           <Anchor
+            href="/docs"
+            selected={pathname === "/docs/"}
+            style={{ display: "inline-flex" }}
+          >
+            <Icon.MenuBook />
+            <ScreenReaderOnly>Documentation</ScreenReaderOnly>
+          </Anchor>
+          <Anchor
             href="https://github.com/css-hooks/css-hooks"
             style={{ display: "inline-flex" }}
           >
             <Icon.GitHub />
             <ScreenReaderOnly>Source on GitHub</ScreenReaderOnly>
-          </Anchor>
-          <Anchor href="/docs" style={{ display: "inline-flex" }}>
-            <Icon.MenuBook />
-            <ScreenReaderOnly>Documentation</ScreenReaderOnly>
           </Anchor>
           <ThemeSwitcher />
         </div>
