@@ -28,6 +28,9 @@ export const head: DocumentHead = ({ head, url }) => ({
     ...(head.meta.some(({ property }) => property === "twitter:creator")
       ? []
       : [{ property: "twitter:creator", content: "agilecoder" }]),
+    ...(head.meta.some(({ property }) => property === "og:image")
+      ? []
+      : [{ property: "og:image", content: `${url.origin}/opengraph.png` }]),
     ...(head.meta.some(({ property }) => property === "twitter:card") ||
     !head.meta.some(({ property }) => property === "og:image")
       ? []

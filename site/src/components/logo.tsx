@@ -18,7 +18,7 @@ export const Logo = component$(
       <div
         style={{
           fontFamily: "'Assistant Variable'",
-          fontSize: `${size}`,
+          fontSize: size,
           letterSpacing: "-0.05em",
           display: "flex",
           alignItems: "center",
@@ -36,7 +36,7 @@ export const Logo = component$(
                     on("@media (prefers-color-scheme: dark)", { color: dark }),
                   ],
                 })
-              : color
+              : { color }
           }
         >
           CSS Hooks
