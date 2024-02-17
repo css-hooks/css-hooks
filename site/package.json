@@ -34,6 +34,8 @@
     "@fontsource-variable/assistant": "^5.0.16",
     "@fontsource-variable/inconsolata": "^5.0.16",
     "@fontsource-variable/inter": "^5.0.16",
+    "@fontsource/inter": "^5.0.16",
+    "@resvg/resvg-js": "^2.6.0",
     "@shikijs/transformers": "^1.1.2",
     "@types/eslint": "^8.56.2",
     "@types/node": "^20.11.6",

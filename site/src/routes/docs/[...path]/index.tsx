@@ -3,6 +3,8 @@ import {
   type StaticGenerateHandler,
   routeLoader$,
   useLocation,
+  DocumentHead,
+  z,
 } from "@builder.io/qwik-city";
 import matter from "gray-matter";
 import * as Markdown from "~/markdown";
@@ -27,26 +29,40 @@ export const useDocument = routeLoader$(async requestEvent => {
   const {
     params: { path },
   } = requestEvent;
-  if (`${docBase}/${path}/index.md` in documents) {
+  const indexPath = `${docBase}/${path}/index.md`;
+  const altPath = `${docBase}/${path}.md`;
+  if (indexPath in documents || altPath in documents) {
+    const isIndex = indexPath in documents;
+    const markdown = matter(await documents[isIndex ? indexPath : altPath]());
     return {
-      isIndex: true,
-      document: await Markdown.render(
-        matter(await documents[`${docBase}/${path}/index.md`]()).content,
-      ),
-    };
-  }
-  if (`${docBase}/${path}.md` in documents) {
-    return {
-      isIndex: false,
-      document: await Markdown.render(
-        matter(await documents[`${docBase}/${path}.md`]()).content,
-      ),
+      failed: false,
+      isIndex,
+      content: (await Markdown.render(markdown.content)) || "",
+      ...(/^api/.test(path)
+        ? { title: "API", description: "Comprehensive API documentation" }
+        : z
+            .object({ title: z.string(), description: z.string() })
+            .parse(markdown.data)),
     };
   }
   return requestEvent.fail(404, {
     errorMessage: await Markdown.render(notFoundDoc),
   });
 });
+
+export const head: DocumentHead = ({ resolveValue, params }) => {
+  const document = resolveValue(useDocument);
+  if (document.failed) {
+    return {
+      title: "Not found",
+    };
+  }
+  const { title, description } = document;
+  return {
+    title,
+    meta: [{ name: "description", content: description }],
+  };
+};
 
 export default component$(() => {
   const location = useLocation();
@@ -58,7 +74,7 @@ export default component$(() => {
       )}
       <div
         dangerouslySetInnerHTML={
-          document.value.document || document.value.errorMessage
+          document.value.content || document.value.errorMessage
         }
       />
     </>

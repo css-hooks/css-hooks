@@ -1,8 +1,24 @@
 import { Slot, component$ } from "@builder.io/qwik";
 import * as V from "varsace";
 import matter from "gray-matter";
-import { routeLoader$, useLocation, z } from "@builder.io/qwik-city";
+import {
+  DocumentHead,
+  routeLoader$,
+  useLocation,
+  z,
+} from "@builder.io/qwik-city";
 import { Anchor } from "~/components/anchor";
+
+export const head: DocumentHead = {
+  title: "Documentation",
+  meta: [
+    {
+      name: "description",
+      content:
+        "Learn everything about CSS Hooks from first steps to advanced topics.",
+    },
+  ],
+};
 
 const documents = import.meta.glob("../../../../docs/*/index.md", {
   import: "default",

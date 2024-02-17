@@ -13,7 +13,6 @@ import { css } from "~/css";
 import * as Icon from "~/components/icons";
 
 export const head: DocumentHead = {
-  title: "CSS Hooks",
   meta: [
     {
       name: "description",
