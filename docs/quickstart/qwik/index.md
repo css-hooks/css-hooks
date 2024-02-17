@@ -1,5 +1,6 @@
 ---
 title: Qwik
+description: Get up and running with Qwik in a few simple steps.
 order: 4
 ---
 
