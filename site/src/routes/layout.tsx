@@ -5,6 +5,8 @@ import { Anchor } from "~/components/anchor";
 import { Logo } from "~/components/logo";
 import { ThemeSwitcher } from "~/components/theme-switcher";
 import { css } from "~/css";
+import * as Icon from "~/components/icons";
+import { ScreenReaderOnly } from "~/components/screen-reader-only";
 
 export const head: DocumentHead = ({ head, url }) => ({
   title: `${head.title ? `${head.title} — ` : ""}CSS Hooks`,
@@ -92,7 +94,27 @@ export default component$(() => {
         >
           <Logo />
         </Anchor>
-        <ThemeSwitcher />
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "1rem",
+            fontSize: "1.125rem",
+          }}
+        >
+          <Anchor
+            href="https://github.com/css-hooks/css-hooks"
+            style={{ display: "inline-flex" }}
+          >
+            <Icon.GitHub />
+            <ScreenReaderOnly>Source on GitHub</ScreenReaderOnly>
+          </Anchor>
+          <Anchor href="/docs" style={{ display: "inline-flex" }}>
+            <Icon.MenuBook />
+            <ScreenReaderOnly>Documentation</ScreenReaderOnly>
+          </Anchor>
+          <ThemeSwitcher />
+        </div>
       </header>
       <div
         style={{

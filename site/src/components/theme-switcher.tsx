@@ -12,13 +12,26 @@ export const ThemeSwitcher = component$(() => (
       outlineWidth: 0,
       outlineStyle: "solid",
       outlineColor: V.blue20,
-      outlineOffset: 4,
-      match: on => [
+      outlineOffset: 2,
+      match: (on, { all }) => [
         on("&:focus-visible-within", {
           outlineWidth: 2,
         }),
+        on("&:hover", {
+          color: V.blue40,
+        }),
+        on("&:active", {
+          color: V.red40,
+        }),
         on("@media (prefers-color-scheme: dark)", {
           outlineColor: V.blue50,
+          color: V.blue30,
+        }),
+        on(all("@media (prefers-color-scheme: dark)", "&:hover"), {
+          color: V.blue20,
+        }),
+        on(all("@media (prefers-color-scheme: dark)", "&:active"), {
+          color: V.red20,
         }),
       ],
     })}
