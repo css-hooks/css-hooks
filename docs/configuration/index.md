@@ -265,7 +265,7 @@ Default: `true`
 This setting affects the way declarations are prioritized when multiple rules
 (style object arguments) are passed to the `css` function.
 
-When enabled, condition styles are applied after all base styles, giving them
+When enabled, conditional styles are applied after all base styles, giving them
 higher priority.
 
 When disabled, conditional styles defined in an earlier rule are overridden when
