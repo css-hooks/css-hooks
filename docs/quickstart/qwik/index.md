@@ -100,11 +100,11 @@ export const App = component$(() => {
 +          onClick$={() => count.value++}
 +          style={css({
 +            transition: "transform 75ms",
-+            match: (on) => [
-+              on("&:active", {
-+                transform: "scale(0.9)",
-+              }),
-+            ],
++            on: $ => [
++              $("&:active", {
++                transform: "scale(0.9)"
++              })
++            ]
 +          })}
 +        >
           count is {count}

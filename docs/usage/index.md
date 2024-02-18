@@ -29,7 +29,7 @@ function Component() {
 
 ## Adding conditional styles
 
-You can optionally add a `match` function to define conditional styles:
+You can optionally add an `on` field to define conditional styles:
 
 ```tsx
 import { css } from "./css";
@@ -39,8 +39,8 @@ function Component() {
     <div
       style={css({
         color: "#333",
-        match: on => [
-          on("&:hover", {
+        on: $ => [
+          $("&:hover", {
             color: "blue",
           }),
         ],
@@ -52,10 +52,10 @@ function Component() {
 }
 ```
 
-Notice that the `match` function accepts an `on` argument and returns an array
-of conditional styles.
+Notice that the `on` function accepts a `$` argument and returns an array of
+conditional styles.
 
-The `on` function constructs a conditional style. The first parameter defines a
+The `$` function constructs a conditional style. The first parameter defines a
 _condition_ (e.g. a hook), and the second is the style object that applies when
 that condition is true.
 
@@ -64,16 +64,15 @@ that condition is true.
 You can create advanced conditions with combinational logic using a few helper
 functions:
 
-- The `all` function accepts a variable number of condition arguments. It
+- The `and` function accepts a variable number of condition arguments. It
   returns a condition that is true when all of the specified conditions are
   true.
-- The `any` function accepts a variable number of condition arguments. It
-  returns a condition that is true when any of the specified conditions are
-  true.
+- The `or` function accepts a variable number of condition arguments. It returns
+  a condition that is true when any of the specified conditions are true.
 - The `not` function accepts a single condition argument and returns the inverse
   condition.
 
-These helpers are passed to the `match` function in a destructurable second
+These helpers are passed to the `on` function in a destructurable second
 argument.
 
 For example, you can combine `&:enabled` and `&:hover` hooks using the `all`
@@ -87,8 +86,8 @@ function MyButton() {
   return (
     <button
       style={css({
-        match: (on, { all }) => [
-          on(all("&:enabled", "&:hover"), {
+        on: ($, { and }) => [
+          $(and("&:enabled", "&:hover"), {
             color: "blue",
           }),
         ],

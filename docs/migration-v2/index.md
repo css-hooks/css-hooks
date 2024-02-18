@@ -157,10 +157,10 @@ export function App() {
 The most prominent change in v2 is a more advanced syntax for conditional
 styles, which allows hooks to be combined and reused more effectively. In v1,
 nesting provided the means for hook composition, but this was strictly an "and"
-operation. In v2, a `match` callback replaces nested style objects to enable
-"or" and "not" operations—a slightly heavier, but much more powerful, syntax.
+operation. In v2, an `on` callback replaces nested style objects to enable "or"
+and "not" operations—a slightly heavier, but much more powerful, syntax.
 
-Wherever you use the `css` function, you'll need to migrate to the `match`
+Wherever you use the `css` function, you'll need to migrate to the `on`
 callback.
 
 #### Basic use case
@@ -192,8 +192,8 @@ export function Button({ children }) {
     <button
       style={css({
         color: "blue",
-        match: on => [
-          on("&:hover", {
+        on: $ => [
+          $("&:hover", {
             color: "red",
           }),
         ],
@@ -236,8 +236,8 @@ export function Button({ children }) {
     <button
       style={css({
         color: "blue",
-        match: (on, { all }) => [
-          on(all("&:enabled", "&:hover"), {
+        on: ($, { and }) => [
+          $(and("&:enabled", "&:hover"), {
             color: "red",
           }),
         ],

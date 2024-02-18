@@ -11,8 +11,8 @@ Represents the conditions under which a given hook or declaration applies.
 ```typescript
 export type Condition<S> =
   | S
-  | { any: Condition<S>[] }
-  | { all: Condition<S>[] }
+  | { and: Condition<S>[] }
+  | { or: Condition<S>[] }
   | { not: Condition<S> };
 ```
 **References:** [Condition](./core.condition.md)

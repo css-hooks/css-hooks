@@ -96,11 +96,11 @@ function App() {
 +          onClick={() => setCount((count) => count + 1)}
 +          style={css({
 +            transition: "transform 75ms",
-+            match: (on) => [
-+              on("&:active", {
-+                transform: "scale(0.9)",
-+              }),
-+            ],
++            on: $ => [
++              $("&:active", {
++                transform: "scale(0.9)"
++              })
++            ]
 +          })}
 +        >
           count is {count}

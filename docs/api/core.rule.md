@@ -10,8 +10,8 @@ Represents a style object, optionally enhanced with inline styles.
 
 ```typescript
 export type Rule<HookName, CSSProperties> = CSSProperties & {
-  match?: MatchFn<HookName, CSSProperties>;
+  on?: OnFn<HookName, CSSProperties>;
 };
 ```
-**References:** [MatchFn](./core.matchfn.md)
+**References:** [OnFn](./core.onfn.md)
 

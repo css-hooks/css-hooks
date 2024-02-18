@@ -129,11 +129,11 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 +        style="${styleObjectToString(
 +          css({
 +            transition: 'transform 75ms',
-+            match: (on) => [
++            on: $ => [
 +              on('&:active', {
-+                transform: 'scale(0.9)',
-+              }),
-+            ],
++                transform: 'scale(0.9)'
++              })
++            ]
 +          })
 +        )}">
 +      </button>

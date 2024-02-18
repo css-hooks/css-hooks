@@ -13,11 +13,11 @@ export type CreateHooksFn<CSSProperties> = <
   HooksConfig extends
     | Record<string, Condition<HookImpl>>
     | ((
-        helpers: MatchHelpers<HookImpl>,
+        helpers: ConditionHelpers<HookImpl>,
       ) => Record<string, Condition<HookImpl>>),
 >(
   config: Config<HooksConfig>,
 ) => Hooks<GetHookNames<HooksConfig>, CSSProperties>;
 ```
-**References:** [Condition](./core.condition.md)<!-- -->, [HookImpl](./core.hookimpl.md)<!-- -->, [MatchHelpers](./core.matchhelpers.md)<!-- -->, [Config](./core.config.md)<!-- -->, [Hooks](./core.hooks.md)<!-- -->, [GetHookNames](./core.gethooknames.md)
+**References:** [Condition](./core.condition.md)<!-- -->, [HookImpl](./core.hookimpl.md)<!-- -->, [ConditionHelpers](./core.conditionhelpers.md)<!-- -->, [Config](./core.config.md)<!-- -->, [Hooks](./core.hooks.md)<!-- -->, [GetHookNames](./core.gethooknames.md)
 

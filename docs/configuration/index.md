@@ -146,18 +146,17 @@ See
 [@supports (MDN)](https://developer.mozilla.org/en-US/docs/Web/CSS/@supports) to
 learn more about feature queries.
 
-#### Logical combination hooks
+#### Combinational logic hooks
 
 CSS Hooks also provides helper functions that allow you to define complex hook
 logic by combining selectors and at-rules. You can think of each selector,
 at-rule, or combination as a _condition_.
 
-- The `all` function accepts a variable number of condition arguments. It
+- The `and` function accepts a variable number of condition arguments. It
   returns a condition that is true when all of the specified conditions are
   true.
-- The `any` function accepts a variable number of condition arguments. It
-  returns a condition that is true when any of the specified conditions are
-  true.
+- The `or` function accepts a variable number of condition arguments. It returns
+  a condition that is true when any of the specified conditions are true.
 - The `not` function accepts a single condition argument and returns the inverse
   condition.
 
@@ -171,10 +170,10 @@ account. Here's how that could be expressed using these helper functions:
 
 ```typescript
 export const { styleSheet, css } = createHooks({
-  hooks: ({ all, any }) => ({
-    "@media (prefers-color-scheme: dark)": any(
+  hooks: ({ and, or }) => ({
+    "@media (prefers-color-scheme: dark)": or(
       "[data-theme='dark'] &",
-      all("@media (prefers-color-scheme: dark)", "[data-theme='auto'] &"),
+      and("@media (prefers-color-scheme: dark)", "[data-theme='auto'] &"),
     ),
   }),
 });
@@ -213,8 +212,8 @@ e.g.
 ```tsx
 <button
   style={css({
-    match: on => [
-      on("&:hover", {
+    on: $ => [
+      $("&:hover", {
         color: "red",
       }),
     ],
