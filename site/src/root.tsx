@@ -62,8 +62,8 @@ export default component$(() => {
           minHeight: "100dvh",
           display: "flex",
           flexDirection: "column",
-          match: on => [
-            on("@media (prefers-color-scheme: dark)", {
+          on: $ => [
+            $("@media (prefers-color-scheme: dark)", {
               background: V.gray90,
               color: V.white,
             }),

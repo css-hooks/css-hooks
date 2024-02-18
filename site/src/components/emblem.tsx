@@ -22,8 +22,8 @@ const HookPaths = component$(
             theme === "auto"
               ? css({
                   fill: light.color1,
-                  match: on => [
-                    on("@media (prefers-color-scheme: dark)", {
+                  on: $ => [
+                    $("@media (prefers-color-scheme: dark)", {
                       fill: dark.color1,
                     }),
                   ],
@@ -37,8 +37,8 @@ const HookPaths = component$(
             theme === "auto"
               ? css({
                   fill: light.color2,
-                  match: on => [
-                    on("@media (prefers-color-scheme: dark)", {
+                  on: $ => [
+                    $("@media (prefers-color-scheme: dark)", {
                       fill: dark.color2,
                     }),
                   ],

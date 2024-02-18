@@ -32,11 +32,11 @@ export default component$(() => {
           fontFamily: "'Inter Variable'",
           textAlign: "center",
           lineHeight: 1.25,
-          match: (on, { not }) => [
-            on("@media (prefers-color-scheme: dark)", {
+          on: ($, { not }) => [
+            $("@media (prefers-color-scheme: dark)", {
               background: V.gray85,
             }),
-            on(not("@media (prefers-color-scheme: dark)"), {
+            $(not("@media (prefers-color-scheme: dark)"), {
               background: `linear-gradient(transparent, transparent calc(100% - 2px), ${V.gray10} calc(100% - 2px))`,
             }),
           ],
@@ -51,9 +51,9 @@ export default component$(() => {
               fontWeight: 700,
               letterSpacing: "-0.03em",
               color: V.gray50,
-              match: (on, { any }) => [
-                on(
-                  any(
+              on: ($, { or }) => [
+                $(
+                  or(
                     "@media (width < 450px)",
                     "@media (450px <= width < 700px)",
                   ),
@@ -75,8 +75,8 @@ export default component$(() => {
             </em>
             <br
               style={css({
-                match: on => [
-                  on("@media (1100px <= width)", {
+                on: $ => [
+                  $("@media (1100px <= width)", {
                     display: "none",
                   }),
                 ],
@@ -91,9 +91,9 @@ export default component$(() => {
               color: V.black,
               fontSize: "1.375rem",
               lineHeight: "calc(14 / 11)",
-              match: (on, { any }) => [
-                on(
-                  any(
+              on: ($, { or }) => [
+                $(
+                  or(
                     "@media (width < 450px)",
                     "@media (450px <= width < 700px)",
                   ),
@@ -102,10 +102,10 @@ export default component$(() => {
                     lineHeight: 1.25,
                   },
                 ),
-                on("@media (1100px <= width)", {
+                $("@media (1100px <= width)", {
                   marginTop: "1rem",
                 }),
-                on("@media (prefers-color-scheme: dark)", {
+                $("@media (prefers-color-scheme: dark)", {
                   color: V.white,
                 }),
               ],
@@ -114,8 +114,8 @@ export default component$(() => {
             Hooks add CSS features to native{" "}
             <br
               style={css({
-                match: (on, { not }) => [
-                  on(not("@media (width < 450px)"), {
+                on: ($, { not }) => [
+                  $(not("@media (width < 450px)"), {
                     display: "none",
                   }),
                 ],
@@ -124,21 +124,18 @@ export default component$(() => {
             inline styles,{" "}
             <br
               style={css({
-                match: (on, { any }) => [
-                  on(
-                    any("@media (1100px <= width)", "@media (width < 450px)"),
-                    {
-                      display: "none",
-                    },
-                  ),
+                on: ($, { or }) => [
+                  $(or("@media (1100px <= width)", "@media (width < 450px)"), {
+                    display: "none",
+                  }),
                 ],
               })}
             />
             with no build steps{" "}
             <br
               style={css({
-                match: (on, { not }) => [
-                  on(not("@media (width < 450px)"), {
+                on: ($, { not }) => [
+                  $(not("@media (width < 450px)"), {
                     display: "none",
                   }),
                 ],
@@ -151,8 +148,8 @@ export default component$(() => {
               marginTop: "2rem",
               display: "inline-flex",
               gap: "1rem",
-              match: on => [
-                on("@media (1100px <= width)", {
+              on: $ => [
+                $("@media (1100px <= width)", {
                   marginTop: "4rem",
                 }),
               ],
@@ -249,11 +246,11 @@ export default component$(() => {
             display: "grid",
             gridTemplateColumns: "1fr",
             gap: "2rem",
-            match: on => [
-              on("@media (700px <= width < 1100px)", {
+            on: $ => [
+              $("@media (700px <= width < 1100px)", {
                 gridTemplateColumns: "repeat(2, 1fr)",
               }),
-              on("@media (1100px <= width)", {
+              $("@media (1100px <= width)", {
                 gridTemplateColumns: "repeat(4, 1fr)",
               }),
             ],
@@ -431,8 +428,8 @@ export default component$(() => {
               "repeat(auto-fit, minmax(min(24rem, 100%), 1fr))",
             padding: "2rem",
             background: V.gray05,
-            match: on => [
-              on("@media (prefers-color-scheme: dark)", {
+            on: $ => [
+              $("@media (prefers-color-scheme: dark)", {
                 background: V.gray95,
               }),
             ],
@@ -530,8 +527,8 @@ export const CodeWindow = component$(() => (
       flexDirection: "column",
       alignItems: "stretch",
       color: V.gray20,
-      match: on => [
-        on("@media (prefers-color-scheme: dark)", {
+      on: $ => [
+        $("@media (prefers-color-scheme: dark)", {
           color: V.gray70,
         }),
       ],
@@ -549,8 +546,8 @@ export const CodeWindow = component$(() => (
         borderTopLeftRadius: 8,
         borderTopRightRadius: 8,
         borderBottomWidth: 0,
-        match: on => [
-          on("@media (prefers-color-scheme: dark)", {
+        on: $ => [
+          $("@media (prefers-color-scheme: dark)", {
             background: V.gray85,
           }),
         ],
@@ -565,8 +562,8 @@ export const CodeWindow = component$(() => (
             height: "1em",
             borderRadius: 999,
             background: color,
-            match: on => [
-              on("@media (prefers-color-scheme: dark)", {
+            on: $ => [
+              $("@media (prefers-color-scheme: dark)", {
                 background: "currentColor",
               }),
             ],
@@ -584,8 +581,10 @@ export const CodeWindow = component$(() => (
         borderBottomRightRadius: 8,
         padding: "1rem",
         overflow: "auto",
-        match: on => [
-          on("@media (prefers-color-scheme: dark)", { background: V.gray85 }),
+        on: $ => [
+          $("@media (prefers-color-scheme: dark)", {
+            background: V.gray85,
+          }),
         ],
       })}
     >
@@ -599,8 +598,8 @@ export const Section = component$(() => (
     class="section"
     style={css({
       marginTop: "4rem",
-      match: on => [
-        on(".section &.section", {
+      on: $ => [
+        $(".section &.section", {
           marginTop: "2rem",
         }),
       ],
@@ -615,8 +614,8 @@ export const Section = component$(() => (
           letterSpacing: "-0.03em",
           margin: 0,
           color: V.gray50,
-          match: on => [
-            on(".section .section &", {
+          on: $ => [
+            $(".section .section &", {
               fontSize: "1.5rem",
             }),
           ],
@@ -647,13 +646,10 @@ export const Demo = component$(({ source }: { source: string }) => {
           marginTop: "-1.5rem",
           display: "flex",
           alignItems: "stretch",
-          match: (on, { any }) => [
-            on(
-              any("@media (width < 450px)", "@media (450px <= width < 700px)"),
-              {
-                flexDirection: "column-reverse",
-              },
-            ),
+          on: ($, { or }) => [
+            $(or("@media (width < 450px)", "@media (450px <= width < 700px)"), {
+              flexDirection: "column-reverse",
+            }),
           ],
         })}
       >
@@ -662,10 +658,10 @@ export const Demo = component$(({ source }: { source: string }) => {
             padding: "1.5rem 0",
             flex: 1,
             zIndex: 1,
-            match: (on, { any, not }) => [
-              on(
+            on: ($, { or, not }) => [
+              $(
                 not(
-                  any(
+                  or(
                     "@media (width < 450px)",
                     "@media (450px <= width < 700px)",
                   ),
@@ -674,11 +670,8 @@ export const Demo = component$(({ source }: { source: string }) => {
                   marginRight: -24,
                 },
               ),
-              on(
-                any(
-                  "@media (width < 450px)",
-                  "@media (450px <= width < 700px)",
-                ),
+              $(
+                or("@media (width < 450px)", "@media (450px <= width < 700px)"),
                 {
                   marginTop: -24,
                   padding: "0 12px",
@@ -708,8 +701,8 @@ export const Demo = component$(({ source }: { source: string }) => {
             backgroundImage: `linear-gradient(45deg, ${V.gray05} 25%, transparent 25%), linear-gradient(-45deg, ${V.gray05} 25%, transparent 25%), linear-gradient(45deg, transparent 75%, ${V.gray05} 75%), linear-gradient(-45deg, transparent 75%, ${V.gray05} 75%)`,
             backgroundSize: "24px 24px",
             backgroundPosition: "0 0, 0 12px, 12px -12px, -12px 0px",
-            match: on => [
-              on("@media (prefers-color-scheme: dark)", {
+            on: $ => [
+              $("@media (prefers-color-scheme: dark)", {
                 backgroundColor: V.gray90,
                 backgroundImage: `linear-gradient(45deg, ${V.gray85} 25%, transparent 25%), linear-gradient(-45deg, ${V.gray85} 25%, transparent 25%), linear-gradient(45deg, transparent 75%, ${V.gray85} 75%), linear-gradient(-45deg, transparent 75%, ${V.gray85} 75%)`,
               }),
@@ -729,17 +722,17 @@ export const PseudoClassesDemo = component$(() => {
   style={css({
     background: "${V.blue50}",
     color: "${V.white}",
-    match: on => [
-      on("&:hover", {
+    on: $ => [
+      $("&:hover", {
         background: "${V.blue40}",
       }),
-      on("&:active", {
+      $("&:active", {
         background: "${V.red40}",
       })
     ]
   })}
 >
-  Accept change
+  Save changes
 </button>
 `.trim();
   return (
@@ -757,17 +750,17 @@ export const PseudoClassesDemo = component$(() => {
           lineHeight: 1,
           background: V.blue50,
           color: V.white,
-          match: on => [
-            on("&:hover", {
+          on: $ => [
+            $("&:hover", {
               background: V.blue40,
             }),
-            on("&:active", {
+            $("&:active", {
               background: V.red40,
             }),
           ],
         })}
       >
-        Accept change
+        Save changes
       </button>
     </Demo>
   );
@@ -779,8 +772,8 @@ export const SelectorDemo = component$(() => {
   <input type="checkbox" checked />
   <span
     style={css({
-      match: on => [
-        on(":checked + &", {
+      on: $ => [
+        $(":checked + &", {
           textDecoration: "line-through"
         })
       ]
@@ -805,8 +798,10 @@ export const SelectorDemo = component$(() => {
         <input type="checkbox" checked />
         <span
           style={css({
-            match: on => [
-              on(":checked + &", { textDecoration: "line-through" }),
+            on: $ => [
+              $(":checked + &", {
+                textDecoration: "line-through",
+              }),
             ],
           })}
         >
@@ -821,8 +816,8 @@ export const ResponsiveDemo = component$(() => {
   const source = `
 <span
   style={css({
-    match: (on, { not }) => [
-      on(not("@container sm"), {
+    on: ($, { not }) => [
+      $(not("@container sm"), {
         display: "none"
       })
     ]
@@ -832,8 +827,8 @@ export const ResponsiveDemo = component$(() => {
 </span>
 <span
   style={css({
-    match: (on, { not }) => [
-      on(not("@container lg"), {
+    on: ($, { not }) => [
+      $(not("@container lg"), {
         display: "none"
       })
     ]
@@ -866,12 +861,12 @@ export const ResponsiveDemo = component$(() => {
             display: "grid",
             placeItems: "center",
             containerType: "inline-size",
-            match: (on, { not }) => [
-              on("@media (prefers-color-scheme: dark)", {
+            on: ($, { not }) => [
+              $("@media (prefers-color-scheme: dark)", {
                 background: V.black,
                 color: V.white,
               }),
-              on(not("@media (prefers-color-scheme: dark)"), {
+              $(not("@media (prefers-color-scheme: dark)"), {
                 boxShadow: `inset 0 0 0 1px ${V.gray20}`,
               }),
             ],
@@ -880,8 +875,8 @@ export const ResponsiveDemo = component$(() => {
           <span
             style={css({
               fontSize: "0.5em",
-              match: (on, { not }) => [
-                on(not("@container sm"), {
+              on: ($, { not }) => [
+                $(not("@container sm"), {
                   display: "none",
                 }),
               ],
@@ -891,8 +886,8 @@ export const ResponsiveDemo = component$(() => {
           </span>
           <span
             style={css({
-              match: (on, { not }) => [
-                on(not("@container lg"), {
+              on: ($, { not }) => [
+                $(not("@container lg"), {
                   display: "none",
                 }),
               ],
@@ -947,30 +942,30 @@ export const CtaButton = component$(
           outlineColor: V.blue20,
           outlineWidth: 0,
           outlineOffset: 2,
-          match: (on, { all }) => [
-            on("@media (prefers-color-scheme: dark)", {
+          on: ($, { and }) => [
+            $("@media (prefers-color-scheme: dark)", {
               backgroundColor: V.gray60,
               outlineColor: V.blue50,
             }),
-            on("&.primary", {
+            $("&.primary", {
               backgroundColor: V.purple50,
             }),
-            on("&:intent", {
+            $("&:intent", {
               backgroundColor: V.blue40,
             }),
-            on("&:active", {
+            $("&:active", {
               backgroundColor: V.red40,
             }),
-            on(all("&.primary", "@media (prefers-color-scheme: dark)"), {
+            $(and("&.primary", "@media (prefers-color-scheme: dark)"), {
               backgroundColor: V.purple60,
             }),
-            on(all("@media (prefers-color-scheme: dark)", "&:hover"), {
+            $(and("@media (prefers-color-scheme: dark)", "&:hover"), {
               backgroundColor: V.blue50,
             }),
-            on(all("@media (prefers-color-scheme: dark)", "&:active"), {
+            $(and("@media (prefers-color-scheme: dark)", "&:active"), {
               backgroundColor: V.red50,
             }),
-            on("&:focus-visible", {
+            $("&:focus-visible", {
               outlineWidth: 2,
             }),
           ],
@@ -984,11 +979,11 @@ export const CtaButton = component$(
           height: "1em",
           display: "grid",
           placeItems: "center",
-          match: (on, { not }) => [
-            on(not("&:empty"), {
+          on: ($, { not }) => [
+            $(not("&:empty"), {
               paddingRight: "0.5em",
             }),
-            on("&:empty", {
+            $("&:empty", {
               width: 0,
             }),
           ],
@@ -1012,8 +1007,8 @@ export const DesignedFor = component$(
         flexDirection: "column",
         gap: 48,
         alignItems: "center",
-        match: on => [
-          on("@media (prefers-color-scheme: dark)", {
+        on: $ => [
+          $("@media (prefers-color-scheme: dark)", {
             background: V.gray85,
             color: V.gray10,
           }),
@@ -1036,8 +1031,8 @@ export const DesignedFor = component$(
             textTransform: "uppercase",
             letterSpacing: "0.01em",
             color: V.gray70,
-            match: on => [
-              on("@media (prefers-color-scheme: dark)", {
+            on: $ => [
+              $("@media (prefers-color-scheme: dark)", {
                 color: V.gray40,
               }),
             ],
@@ -1065,8 +1060,8 @@ export const DesignedFor = component$(
         style={css({
           opacity: 0.75,
           filter: "grayscale(0.75)",
-          match: on => [
-            on(":intent + &", {
+          on: $ => [
+            $(":intent + &", {
               opacity: 1,
               filter: "grayscale(0)",
             }),
@@ -1129,19 +1124,19 @@ export const Testimonial = component$(({ url }: { url: string }) => (
         outlineOffset: 2,
         outlineColor: V.blue20,
         outlineStyle: "solid",
-        match: (on, { all }) => [
-          on("&:focus-visible", {
+        on: ($, { and }) => [
+          $("&:focus-visible", {
             outlineWidth: 2,
           }),
-          on("&:active", {
+          $("&:active", {
             boxShadow: `0 0 0 1px ${V.red35}`,
           }),
-          on("@media (prefers-color-scheme: dark)", {
+          $("@media (prefers-color-scheme: dark)", {
             boxShadow: `inset 0 0 0 1px ${V.gray70}`,
             background: V.gray90,
             outlineColor: V.blue50,
           }),
-          on(all("@media (prefers-color-scheme: dark)", "&:active"), {
+          $(and("@media (prefers-color-scheme: dark)", "&:active"), {
             background: V.gray85,
           }),
         ],
@@ -1181,41 +1176,41 @@ export const Feature = component$(
           display: "flex",
           gap: "1rem",
           alignItems: "center",
-          match: (on, { all }) => [
-            on(".blue &", {
+          on: ($, { and }) => [
+            $(".blue &", {
               color: V.blue50,
             }),
-            on(".pink &", {
+            $(".pink &", {
               color: V.pink50,
             }),
-            on(".yellow &", {
+            $(".yellow &", {
               color: V.yellow50,
             }),
-            on(".green &", {
+            $(".green &", {
               color: V.green50,
             }),
-            on(".teal &", {
+            $(".teal &", {
               color: V.teal50,
             }),
-            on(".purple &", {
+            $(".purple &", {
               color: V.purple50,
             }),
-            on(all("@media (prefers-color-scheme: dark)", ".blue &"), {
+            $(and("@media (prefers-color-scheme: dark)", ".blue &"), {
               color: V.blue20,
             }),
-            on(all("@media (prefers-color-scheme: dark)", ".pink &"), {
+            $(and("@media (prefers-color-scheme: dark)", ".pink &"), {
               color: V.pink20,
             }),
-            on(all("@media (prefers-color-scheme: dark)", ".yellow &"), {
+            $(and("@media (prefers-color-scheme: dark)", ".yellow &"), {
               color: V.yellow20,
             }),
-            on(all("@media (prefers-color-scheme: dark)", ".green &"), {
+            $(and("@media (prefers-color-scheme: dark)", ".green &"), {
               color: V.green20,
             }),
-            on(all("@media (prefers-color-scheme: dark)", ".teal &"), {
+            $(and("@media (prefers-color-scheme: dark)", ".teal &"), {
               color: V.teal20,
             }),
-            on(all("@media (prefers-color-scheme: dark)", ".purple &"), {
+            $(and("@media (prefers-color-scheme: dark)", ".purple &"), {
               color: V.purple20,
             }),
           ],
@@ -1228,52 +1223,52 @@ export const Feature = component$(
             borderRadius: 9999,
             display: "grid",
             placeItems: "center",
-            match: (on, { all }) => [
-              on(".blue &", {
+            on: ($, { and }) => [
+              $(".blue &", {
                 background: V.blue10,
                 boxShadow: `0 0 0 1px ${V.blue30}`,
               }),
-              on(".pink &", {
+              $(".pink &", {
                 background: V.pink10,
                 boxShadow: `0 0 0 1px ${V.pink30}`,
               }),
-              on(".yellow &", {
+              $(".yellow &", {
                 background: V.yellow10,
                 boxShadow: `0 0 0 1px ${V.yellow30}`,
               }),
-              on(".green &", {
+              $(".green &", {
                 background: V.green10,
                 boxShadow: `0 0 0 1px ${V.green30}`,
               }),
-              on(".teal &", {
+              $(".teal &", {
                 background: V.teal10,
                 boxShadow: `0 0 0 1px ${V.teal30}`,
               }),
-              on(".purple &", {
+              $(".purple &", {
                 background: V.purple10,
                 boxShadow: `0 0 0 1px ${V.purple30}`,
               }),
-              on(all("@media (prefers-color-scheme: dark)", ".blue &"), {
+              $(and("@media (prefers-color-scheme: dark)", ".blue &"), {
                 background: V.blue50,
                 boxShadow: `0 0 32px 0 ${V.blue60}`,
               }),
-              on(all("@media (prefers-color-scheme: dark)", ".pink &"), {
+              $(and("@media (prefers-color-scheme: dark)", ".pink &"), {
                 background: V.pink50,
                 boxShadow: `0 0 32px 0 ${V.pink60}`,
               }),
-              on(all("@media (prefers-color-scheme: dark)", ".yellow &"), {
+              $(and("@media (prefers-color-scheme: dark)", ".yellow &"), {
                 background: V.yellow50,
                 boxShadow: `0 0 32px 0 ${V.yellow70}`,
               }),
-              on(all("@media (prefers-color-scheme: dark)", ".green &"), {
+              $(and("@media (prefers-color-scheme: dark)", ".green &"), {
                 background: V.green50,
                 boxShadow: `0 0 32px 0 ${V.green70}`,
               }),
-              on(all("@media (prefers-color-scheme: dark)", ".teal &"), {
+              $(and("@media (prefers-color-scheme: dark)", ".teal &"), {
                 background: V.teal50,
                 boxShadow: `0 0 32px 0 ${V.teal70}`,
               }),
-              on(all("@media (prefers-color-scheme: dark)", ".purple &"), {
+              $(and("@media (prefers-color-scheme: dark)", ".purple &"), {
                 background: V.purple50,
                 boxShadow: `0 0 32px 0 ${V.purple60}`,
               }),

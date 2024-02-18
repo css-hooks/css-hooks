@@ -63,8 +63,8 @@ export default component$(() => {
         display: "flex",
         flexDirection: "column",
         minHeight: "100vh",
-        match: on => [
-          on("@supports (height: 100dvh)", {
+        on: $ => [
+          $("@supports (height: 100dvh)", {
             minHeight: "100dvh",
           }),
         ],
@@ -88,8 +88,8 @@ export default component$(() => {
           borderWidth: 0,
           borderBottomWidth: 2,
           borderColor: V.gray10,
-          match: on => [
-            on("@media (prefers-color-scheme: dark)", {
+          on: $ => [
+            $("@media (prefers-color-scheme: dark)", {
               borderColor: V.gray95,
               color: V.white,
             }),
@@ -149,11 +149,11 @@ export default component$(() => {
             justifyContent: "center",
             textAlign: "center",
             gap: "0.5rem 2rem",
-            match: (on, { not }) => [
-              on("@media (prefers-color-scheme: dark)", {
+            on: ($, { not }) => [
+              $("@media (prefers-color-scheme: dark)", {
                 background: V.gray95,
               }),
-              on(not("@media (prefers-color-scheme: dark)"), {
+              $(not("@media (prefers-color-scheme: dark)"), {
                 boxShadow: `0 -2px 0 0 ${V.gray10}`,
               }),
             ],

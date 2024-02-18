@@ -10,30 +10,30 @@ export const anchorStyle = css({
   outlineStyle: "solid",
   outlineColor: V.blue20,
   color: V.blue50,
-  match: (on, { all, not }) => [
-    on(not("&:hover"), {
+  on: ($, { and, not }) => [
+    $(not("&:hover"), {
       textDecoration: "none",
     }),
-    on("&:hover", {
+    $("&:hover", {
       color: V.blue40,
     }),
-    on("&:active", {
+    $("&:active", {
       color: V.red40,
     }),
-    on("@media (prefers-color-scheme: dark)", {
+    $("@media (prefers-color-scheme: dark)", {
       outlineColor: V.blue50,
       color: V.blue30,
     }),
-    on(all("@media (prefers-color-scheme: dark)", "&:hover"), {
+    $(and("@media (prefers-color-scheme: dark)", "&:hover"), {
       color: V.blue20,
     }),
-    on(all("@media (prefers-color-scheme: dark)", "&:active"), {
+    $(and("@media (prefers-color-scheme: dark)", "&:active"), {
       color: V.red20,
     }),
-    on("&:focus-visible", {
+    $("&:focus-visible", {
       outlineWidth: 2,
     }),
-    on("&.selected", {
+    $("&.selected", {
       color: "inherit",
     }),
   ],

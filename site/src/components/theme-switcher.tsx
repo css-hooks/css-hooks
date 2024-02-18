@@ -13,24 +13,24 @@ export const ThemeSwitcher = component$(() => (
       outlineStyle: "solid",
       outlineColor: V.blue20,
       outlineOffset: 2,
-      match: (on, { all }) => [
-        on("&:focus-visible-within", {
+      on: ($, { and }) => [
+        $("&:focus-visible-within", {
           outlineWidth: 2,
         }),
-        on("&:hover", {
+        $("&:hover", {
           color: V.blue40,
         }),
-        on("&:active", {
+        $("&:active", {
           color: V.red40,
         }),
-        on("@media (prefers-color-scheme: dark)", {
+        $("@media (prefers-color-scheme: dark)", {
           outlineColor: V.blue50,
           color: V.blue30,
         }),
-        on(all("@media (prefers-color-scheme: dark)", "&:hover"), {
+        $(and("@media (prefers-color-scheme: dark)", "&:hover"), {
           color: V.blue20,
         }),
-        on(all("@media (prefers-color-scheme: dark)", "&:active"), {
+        $(and("@media (prefers-color-scheme: dark)", "&:active"), {
           color: V.red20,
         }),
       ],
@@ -40,8 +40,8 @@ export const ThemeSwitcher = component$(() => (
       <div
         style={css({
           display: "none",
-          match: on => [
-            on("@media (prefers-color-scheme: dark)", {
+          on: $ => [
+            $("@media (prefers-color-scheme: dark)", {
               display: "contents",
             }),
           ],
@@ -52,8 +52,8 @@ export const ThemeSwitcher = component$(() => (
       <div
         style={css({
           display: "none",
-          match: (on, { not }) => [
-            on(not("@media (prefers-color-scheme: dark)"), {
+          on: ($, { not }) => [
+            $(not("@media (prefers-color-scheme: dark)"), {
               display: "contents",
             }),
           ],

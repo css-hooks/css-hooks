@@ -5,16 +5,16 @@ import {
 import { recommended } from "@css-hooks/recommended";
 
 export const { styleSheet, css } = createHooks({
-  hooks: ({ any, all }) => ({
+  hooks: ({ and, or }) => ({
     ...recommended({
       pseudoClasses: [":empty", ":focus-visible", ":hover", ":active"],
       breakpoints: ["450px", "700px", "1100px"],
     }),
 
     // color schemes
-    "@media (prefers-color-scheme: dark)": any(
+    "@media (prefers-color-scheme: dark)": or(
       "[data-theme='dark'] &",
-      all("[data-theme='auto'] &", "@media (prefers-color-scheme: dark)"),
+      and("[data-theme='auto'] &", "@media (prefers-color-scheme: dark)"),
     ),
 
     // responsive design
@@ -23,13 +23,13 @@ export const { styleSheet, css } = createHooks({
 
     // custom pseudo-classes
     "&:focus-visible-within": "&:has(:focus-visible)",
-    "&:intent": any("&:focus", "&:hover"),
+    "&:intent": or("&:focus", "&:hover"),
 
     // selectors
     ".group &.group": ".group &.group",
     ".group:hover &": ".group:hover &",
     ":checked + &": ":checked + &",
-    ":intent + &": any(":focus + &", ":hover + &"),
+    ":intent + &": or(":focus + &", ":hover + &"),
     "&.primary": "&.primary",
     ".blue &": ".blue &",
     ".pink &": ".pink &",

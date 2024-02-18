@@ -47,11 +47,11 @@ async function getRenderer(): Promise<RendererObject> {
           borderColor: V.pink20,
           color: V.gray70,
           background: V.white,
-          match: (on, { not }) => [
-            on(not("@media (prefers-color-scheme: dark)"), {
+          on: ($, { not }) => [
+            $(not("@media (prefers-color-scheme: dark)"), {
               boxShadow: `inset 0 0 0 1px ${V.gray20}`,
             }),
-            on("@media (prefers-color-scheme: dark)", {
+            $("@media (prefers-color-scheme: dark)", {
               borderColor: V.pink60,
               background: V.gray85,
               color: V.gray30,
@@ -69,11 +69,11 @@ async function getRenderer(): Promise<RendererObject> {
           padding: "1rem",
           marginBlock: "1.5rem",
           background: V.white,
-          match: (on, { not }) => [
-            on(not("@media (prefers-color-scheme: dark)"), {
+          on: ($, { not }) => [
+            $(not("@media (prefers-color-scheme: dark)"), {
               boxShadow: `inset 0 0 0 1px ${V.gray20}`,
             }),
-            on("@media (prefers-color-scheme: dark)", {
+            $("@media (prefers-color-scheme: dark)", {
               background: V.gray85,
             }),
           ],
@@ -104,8 +104,8 @@ async function getRenderer(): Promise<RendererObject> {
           fontFamily: "'Inconsolaa Variable', monospace",
           fontSize: "1em",
           color: V.teal60,
-          match: on => [
-            on("@media (prefers-color-scheme: dark)", {
+          on: $ => [
+            $("@media (prefers-color-scheme: dark)", {
               color: V.teal30,
             }),
           ],
@@ -135,8 +135,8 @@ async function getRenderer(): Promise<RendererObject> {
                 borderRadius: 999,
                 background: V.pink10,
                 color: V.pink50,
-                match: on => [
-                  on("@media (prefers-color-scheme: dark)", {
+                on: $ => [
+                  $("@media (prefers-color-scheme: dark)", {
                     background: V.pink50,
                     color: V.pink10,
                   }),
@@ -192,8 +192,8 @@ async function getRenderer(): Promise<RendererObject> {
             visibility: "hidden",
             width: "20px",
             height: "20px",
-            match: on => [
-              on(".group:hover &", {
+            on: $ => [
+              $(".group:hover &", {
                 visibility: "visible",
               }),
             ],

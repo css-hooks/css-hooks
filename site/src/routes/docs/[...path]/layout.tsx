@@ -59,8 +59,8 @@ const MenuList = component$(() => (
       margin: 0,
       padding: 0,
       paddingLeft: 0,
-      match: on => [
-        on(".group &.group", {
+      on: $ => [
+        $(".group &.group", {
           paddingLeft: "2em",
         }),
       ],
@@ -107,8 +107,8 @@ export default component$(() => {
       style={css({
         display: "flex",
         flex: 1,
-        match: (on, { any }) => [
-          on(any("@media (width < 450px)", "@media (450px <= width < 700px)"), {
+        on: ($, { or }) => [
+          $(or("@media (width < 450px)", "@media (450px <= width < 700px)"), {
             flexDirection: "column",
           }),
         ],
@@ -118,16 +118,13 @@ export default component$(() => {
         style={css({
           background: V.gray05,
           boxSizing: "border-box",
-          match: (on, { not, any }) => [
-            on("@media (prefers-color-scheme: dark)", {
+          on: ($, { or, not }) => [
+            $("@media (prefers-color-scheme: dark)", {
               background: V.gray85,
             }),
-            on(
+            $(
               not(
-                any(
-                  "@media (width < 450px)",
-                  "@media (450px <= width < 700px)",
-                ),
+                or("@media (width < 450px)", "@media (450px <= width < 700px)"),
               ),
               {
                 flexBasis: "24ch",
@@ -149,40 +146,40 @@ export default component$(() => {
             outlineColor: V.blue20,
             outlineStyle: "solid",
             outlineOffset: -2,
-            match: (on, { all, any }) => [
-              on("@media (prefers-color-scheme: dark)", {
+            on: ($, { and, or }) => [
+              $("@media (prefers-color-scheme: dark)", {
                 outlineColor: V.blue50,
                 color: V.gray40,
               }),
-              on("&:focus-visible-within", {
+              $("&:focus-visible-within", {
                 outlineWidth: 2,
               }),
-              on(any("&:hover", "&:active"), {
+              $(or("&:hover", "&:active"), {
                 background: V.white,
               }),
-              on("&:hover", {
+              $("&:hover", {
                 color: V.blue50,
               }),
-              on("&:active", {
+              $("&:active", {
                 color: V.red50,
               }),
-              on(
-                all(
-                  any("&:hover", "&:active"),
+              $(
+                and(
+                  or("&:hover", "&:active"),
                   "@media (prefers-color-scheme: dark)",
                 ),
                 {
                   background: V.gray80,
                 },
               ),
-              on(all("&:hover", "@media (prefers-color-scheme: dark)"), {
+              $(and("&:hover", "@media (prefers-color-scheme: dark)"), {
                 color: V.blue20,
               }),
-              on(all("&:active", "@media (prefers-color-scheme: dark)"), {
+              $(and("&:active", "@media (prefers-color-scheme: dark)"), {
                 color: V.red20,
               }),
-              on(
-                any(
+              $(
+                or(
                   "@media (700px <= width < 1100px)",
                   "@media (1100px <= width)",
                 ),
@@ -197,8 +194,8 @@ export default component$(() => {
           <div
             style={css({
               display: "inline-flex",
-              match: (on, { not }) => [
-                on(not(":checked + &"), {
+              on: ($, { not }) => [
+                $(not(":checked + &"), {
                   transform: "rotate(-90deg)",
                   transformOrigin: "center",
                 }),
@@ -216,10 +213,10 @@ export default component$(() => {
             paddingRight: "1.75rem",
             paddingBottom: "1.75rem",
             paddingLeft: "1.75rem",
-            match: (on, { not, any }) => [
-              on(
+            on: ($, { not, or }) => [
+              $(
                 not(
-                  any(
+                  or(
                     ":has(:checked) + &",
                     "@media (700px <= width < 1100px)",
                     "@media (1100px <= width)",
@@ -229,8 +226,8 @@ export default component$(() => {
                   display: "none",
                 },
               ),
-              on(
-                any(
+              $(
+                or(
                   "@media (700px <= width < 1100px)",
                   "@media (1100px <= width)",
                 ),
@@ -266,8 +263,8 @@ export default component$(() => {
             maxWidth: "88ch",
             margin: "auto",
             padding: "1rem 0",
-            match: on => [
-              on("@media (1100px <= width)", {
+            on: $ => [
+              $("@media (1100px <= width)", {
                 width: "calc(100% - 8rem)",
               }),
             ],

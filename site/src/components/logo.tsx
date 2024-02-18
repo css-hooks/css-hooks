@@ -32,8 +32,10 @@ export const Logo = component$(
             theme === "auto"
               ? css({
                   color: light,
-                  match: on => [
-                    on("@media (prefers-color-scheme: dark)", { color: dark }),
+                  on: $ => [
+                    $("@media (prefers-color-scheme: dark)", {
+                      color: dark,
+                    }),
                   ],
                 })
               : { color }
