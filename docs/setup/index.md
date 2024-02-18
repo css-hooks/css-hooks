@@ -78,7 +78,7 @@ The default `createHooks` function has the following characteristics:
 
 If you would like to override the default type for CSS properties, you can pass
 a generic argument accordingly. For example, here's how you can integrate
-[`csstype`](https://www.npmjs.com/package/csstype):
+[csstype](https://www.npmjs.com/package/csstype):
 
 ```typescript
 // src/css.ts
