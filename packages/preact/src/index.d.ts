@@ -8,7 +8,7 @@ import type { JSX } from "preact";
 import type { CreateHooksFn } from "@css-hooks/core";
 
 /**
- * A version of Preact's `JSX.CSSProperties` type that admits a `match` function
+ * A version of Preact's `JSX.CSSProperties` type that admits an `on` field
  *
  * @public
  */
