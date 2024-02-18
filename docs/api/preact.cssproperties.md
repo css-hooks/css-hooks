@@ -4,7 +4,7 @@
 
 ## CSSProperties type
 
-A version of Preact's `JSX.CSSProperties` type that admits a `match` function
+A version of Preact's `JSX.CSSProperties` type that admits an `on` field
 
 **Signature:**
 

@@ -16,5 +16,5 @@ CSS Hooks for [Preact](https://preactjs.com)
 
 |  Type Alias | Description |
 |  --- | --- |
-|  [CSSProperties](./preact.cssproperties.md) | A version of Preact's <code>JSX.CSSProperties</code> type that admits a <code>match</code> function |
+|  [CSSProperties](./preact.cssproperties.md) | A version of Preact's <code>JSX.CSSProperties</code> type that admits an <code>on</code> field |
 
