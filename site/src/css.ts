@@ -46,9 +46,6 @@ export const { styleSheet, css } = createHooks({
     "@supports (height: 100dvh)": "@supports (height: 100dvh)",
   }),
   debug: import.meta.env.DEV,
-  sort: {
-    conditionalStyles: false,
-  },
 });
 
 export function renderToString(obj: Parameters<typeof css>[0]) {

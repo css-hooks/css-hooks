@@ -732,3 +732,90 @@ describe("in production mode (vs. debug)", () => {
     assert.strictEqual(actual, expected);
   });
 });
+
+it("allows plain JSON hook configuration", () => {
+  const createHooks = buildHooksSystem<CSS.Properties>();
+  const { styleSheet: getExpected } = createHooks({
+    hooks: ({ and, or }) => ({
+      "@media (prefers-color-scheme: dark)": or(
+        "[data-theme='dark'] &",
+        and("[data-theme='auto'] &", "@media (prefers-color-scheme: dark)"),
+      ),
+    }),
+  });
+  const { styleSheet: getActual } = createHooks({
+    hooks: {
+      "@media (prefers-color-scheme: dark)": {
+        or: [
+          "[data-theme='dark'] &",
+          {
+            and: [
+              "[data-theme='auto'] &",
+              "@media (prefers-color-scheme: dark)",
+            ],
+          },
+        ],
+      },
+    },
+  });
+  assert.strictEqual(getActual(), getExpected());
+});
+
+it("allows plain JSON `on` value", () => {
+  const createHooks = buildHooksSystem<CSS.Properties>();
+  const { css } = createHooks({
+    hooks: {
+      "@media (prefers-color-scheme: dark)":
+        "@media (prefers-color-scheme: dark)",
+      "&:hover": "&:hover",
+      "&:active": "&:active",
+    },
+  });
+  const expected = css({
+    color: "black",
+    on: ($, { and }) => [
+      $("&:hover", {
+        color: "blue",
+      }),
+      $("&:active", {
+        color: "red",
+      }),
+      $(and("@media (prefers-color-scheme: dark)", "&:hover"), {
+        color: "lightblue",
+      }),
+      $(and("@media (prefers-color-scheme: dark)", "&:active"), {
+        color: "pink",
+      }),
+    ],
+  });
+  const actual = css({
+    color: "black",
+    on: [
+      [
+        "&:hover",
+        {
+          color: "blue",
+        },
+      ],
+      [
+        "&:active",
+        {
+          color: "red",
+        },
+      ],
+      [
+        { and: ["@media (prefers-color-scheme: dark)", "&:hover"] },
+        {
+          color: "lightblue",
+        },
+      ],
+      [
+        { and: ["@media (prefers-color-scheme: dark)", "&:active"] },
+        {
+          color: "pink",
+        },
+      ],
+    ],
+  });
+  assert.deepStrictEqual(actual, expected);
+});

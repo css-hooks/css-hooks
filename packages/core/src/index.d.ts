@@ -111,7 +111,7 @@ export type OnFn<HookName, CSSProperties> = (
    * Helper functions used to construct advanced conditions.
    */
   helpers: ConditionHelpers<HookName>,
-) => [Condition<HookName>, CSSProperties][];
+) => [condition: Condition<HookName>, style: CSSProperties][];
 
 /**
  * Represents a style object, optionally enhanced with inline styles.
@@ -126,9 +126,11 @@ export type OnFn<HookName, CSSProperties> = (
  */
 export type Rule<HookName, CSSProperties> = CSSProperties & {
   /**
-   * The function used to apply conditional styles
+   * Conditional styles
    */
-  on?: OnFn<HookName, CSSProperties>;
+  on?:
+    | OnFn<HookName, CSSProperties>
+    | ReturnType<OnFn<HookName, CSSProperties>>;
 };
 
 /**

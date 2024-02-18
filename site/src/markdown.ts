@@ -205,7 +205,7 @@ async function getRenderer(): Promise<RendererObject> {
     link(href, title, label) {
       return `<a href="${href}"${
         title ? ` title="${title}"` : ""
-      } style="${renderToString(anchorStyle)}">${label}</a>`;
+      } style="${renderToString(anchorStyle())}">${label}</a>`;
     },
   };
 }

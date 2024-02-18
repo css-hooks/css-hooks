@@ -203,14 +203,17 @@ export function buildHooksSystem(stringify = genericStringify) {
                 if (rule.on) {
                   baseStyles.push(rule);
                   (sortConditionalStyles ? conditionalStyles : baseStyles).push(
-                    ...rule.on(
-                      (condition, styles) => [condition, styles],
-                      helpers,
-                    ),
+                    ...(typeof rule.on === "function"
+                      ? rule.on(
+                          (condition, styles) => [condition, styles],
+                          helpers,
+                        )
+                      : rule.on),
                   );
                 } else {
                   baseStyles.push(rule);
                 }
+                delete rule.on;
                 return [baseStyles, conditionalStyles];
               },
               [[], []],

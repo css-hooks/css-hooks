@@ -13,7 +13,7 @@ export type OnFn<HookName, CSSProperties> = (
   $: ConditionalStyleFn<HookName, CSSProperties>,
 
   helpers: ConditionHelpers<HookName>,
-) => [Condition<HookName>, CSSProperties][];
+) => [condition: Condition<HookName>, style: CSSProperties][];
 ```
 **References:** [ConditionalStyleFn](./core.conditionalstylefn.md)<!-- -->, [ConditionHelpers](./core.conditionhelpers.md)<!-- -->, [Condition](./core.condition.md)
 
