@@ -106,7 +106,11 @@ describe("in browser", () => {
           "button",
           css({
             color: expectedDefaultColor.string(),
-            match: on => [on("hover", { color: expectedHoverColor.string() })],
+            on: $ => [
+              $("hover", {
+                color: expectedHoverColor.string(),
+              }),
+            ],
           }),
         );
 
@@ -142,8 +146,8 @@ describe("in browser", () => {
           "div",
           css({
             padding: expectedDefaultPadding,
-            match: on => [
-              on("mobile", {
+            on: $ => [
+              $("mobile", {
                 padding: expectedMobilePadding,
               }),
             ],
@@ -167,8 +171,8 @@ describe("in browser", () => {
 
       it("supports hook-level combinational logic", async () => {
         const { styleSheet, css } = createHooks({
-          hooks: ({ all, any, not }) => ({
-            "&.a:not(&.b,&.c)": all("&.a", not(any("&.b", "&.c"))),
+          hooks: ({ and, or, not }) => ({
+            "&.a:not(&.b,&.c)": and("&.a", not(or("&.b", "&.c"))),
           }),
           ...mode,
         });
@@ -182,8 +186,8 @@ describe("in browser", () => {
           "div",
           css({
             display: expectedDefaultDisplay,
-            match: on => [
-              on("&.a:not(&.b,&.c)", {
+            on: $ => [
+              $("&.a:not(&.b,&.c)", {
                 display: expectedConditionMetDisplay,
               }),
             ],
@@ -232,8 +236,8 @@ describe("in browser", () => {
           "div",
           css({
             fontSize: expectedDefaultFontSize,
-            match: (on, { all, any, not }) => [
-              on(all("&.a", not(any("&.b", "&.c"))), {
+            on: ($, { and, or, not }) => [
+              $(and("&.a", not(or("&.b", "&.c"))), {
                 fontSize: expectedConditionMetFontSize,
               }),
             ],
@@ -293,8 +297,8 @@ describe("in browser", () => {
         createStyledElement(
           "button",
           css({
-            match: on => [
-              on("&:hover", {
+            on: $ => [
+              $("&:hover", {
                 color: expectedHoverColor.string(),
               }),
             ],
@@ -337,11 +341,11 @@ describe("in browser", () => {
         "button",
         css({
           color: expectedDefaultColor.string(),
-          match: on => [
-            on("&:hover", {
+          on: $ => [
+            $("&:hover", {
               color: expectedHoverColor.string(),
             }),
-            on("&.class", {
+            $("&.class", {
               color: expectedClassColor.string(),
             }),
           ],
@@ -427,8 +431,8 @@ describe("in browser", () => {
               {
                 backgroundColor: notExpectedColor.string(),
                 background: expectedColor.string(),
-                match: on => [
-                  on("&:hover", {
+                on: $ => [
+                  $("&:hover", {
                     backgroundColor: notExpectedColor.string(),
                   }),
                 ],
@@ -473,8 +477,8 @@ describe("in browser", () => {
             css(
               {
                 width: notExpectedDefaultWidth,
-                match: on => [
-                  on("@media (max-width: 599.99px)", {
+                on: $ => [
+                  $("@media (max-width: 599.99px)", {
                     width: expectedMobileWidth,
                   }),
                 ],
@@ -524,8 +528,8 @@ describe("in browser", () => {
             "button",
             css(
               {
-                match: on => [
-                  on("&:hover", {
+                on: $ => [
+                  $("&:hover", {
                     background: notExpectedColor.string(),
                   }),
                 ],
@@ -566,8 +570,10 @@ describe("in browser", () => {
         await createStyledElement(
           "button",
           css({
-            match: on => [
-              on("&:hover", { color: expectedHoverColor.string() }),
+            on: $ => [
+              $("&:hover", {
+                color: expectedHoverColor.string(),
+              }),
             ],
           }),
         );
@@ -600,8 +606,10 @@ describe("in browser", () => {
         await createStyledElement(
           "button",
           css({
-            match: on => [
-              on("&:hover", { color: expectedHoverColor.string() }),
+            on: $ => [
+              $("&:hover", {
+                color: expectedHoverColor.string(),
+              }),
             ],
           }),
         );
@@ -645,7 +653,11 @@ it("uses the specified stringify function when merging values", () => {
   const { css } = createHooks({ hooks: { "&.class": "&.class" } });
   const { fontSize = "" } = css({
     fontSize: "18px",
-    match: on => [on("&.class", { fontSize: "24px" })],
+    on: $ => [
+      $("&.class", {
+        fontSize: "24px",
+      }),
+    ],
   });
   assert.match(fontSize.toString(), /fontSize__18px/);
   assert.match(fontSize.toString(), /fontSize__24px/);
@@ -655,9 +667,9 @@ describe("in production mode (vs. debug)", () => {
   const createHooks = buildHooksSystem<CSS.Properties>();
   const instances = [true, false].map(debug =>
     createHooks({
-      hooks: ({ all, any, not }) => ({
+      hooks: ({ and, or, not }) => ({
         hover: "&:hover",
-        foo: all("&.a", not(any("&.b", "&.c"))),
+        foo: and("&.a", not(or("&.b", "&.c"))),
       }),
       debug,
       hookNameToId: x => x.toString(),
@@ -688,8 +700,8 @@ describe("in production mode (vs. debug)", () => {
       Object.entries(
         x.css({
           color: "red",
-          match: (on, { all, any, not }) => [
-            on(all("foo", not(any("foo", "hover"))), {
+          on: ($, { and, or, not }) => [
+            $(and("foo", not(or("foo", "hover"))), {
               color: "blue",
             }),
           ],

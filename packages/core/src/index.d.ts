@@ -14,8 +14,8 @@
  */
 export type Condition<S> =
   | S
-  | { any: Condition<S>[] }
-  | { all: Condition<S>[] }
+  | { and: Condition<S>[] }
+  | { or: Condition<S>[] }
   | { not: Condition<S> };
 
 /**
@@ -56,7 +56,7 @@ export type StringifyFn = (
  *
  * @public
  */
-export type MatchOnFn<HookName, CSSProperties> = (
+export type ConditionalStyleFn<HookName, CSSProperties> = (
   condition: Condition<HookName>,
   style: CSSProperties,
 ) => [Condition<HookName>, CSSProperties];
@@ -69,18 +69,18 @@ export type MatchOnFn<HookName, CSSProperties> = (
  *
  * @public
  */
-export interface MatchHelpers<HookName> {
+export interface ConditionHelpers<HookName> {
   /**
    * Creates a condition that is true when all of the conditions passed as
    * arguments are true.
    */
-  all(...conditions: Condition<HookName>[]): Condition<HookName>;
+  and(...conditions: Condition<HookName>[]): Condition<HookName>;
 
   /**
    * Creates a condition that is true when any of the conditions passed as
    * arguments is true.
    */
-  any(...conditions: Condition<HookName>[]): Condition<HookName>;
+  or(...conditions: Condition<HookName>[]): Condition<HookName>;
 
   /**
    * Creates a condition that is true when the specified condition is false.
@@ -101,16 +101,16 @@ export interface MatchHelpers<HookName> {
  *
  * @public
  */
-export type MatchFn<HookName, CSSProperties> = (
+export type OnFn<HookName, CSSProperties> = (
   /**
    * The callback used to construct a conditional style group.
    */
-  on: MatchOnFn<HookName, CSSProperties>,
+  $: ConditionalStyleFn<HookName, CSSProperties>,
 
   /**
    * Helper functions used to construct advanced conditions.
    */
-  helpers: MatchHelpers<HookName>,
+  helpers: ConditionHelpers<HookName>,
 ) => [Condition<HookName>, CSSProperties][];
 
 /**
@@ -128,7 +128,7 @@ export type Rule<HookName, CSSProperties> = CSSProperties & {
   /**
    * The function used to apply conditional styles
    */
-  match?: MatchFn<HookName, CSSProperties>;
+  on?: OnFn<HookName, CSSProperties>;
 };
 
 /**
@@ -323,7 +323,7 @@ export type CreateHooksFn<CSSProperties> = <
   HooksConfig extends
     | Record<string, Condition<HookImpl>>
     | ((
-        helpers: MatchHelpers<HookImpl>,
+        helpers: ConditionHelpers<HookImpl>,
       ) => Record<string, Condition<HookImpl>>),
 >(
   config: Config<HooksConfig>,

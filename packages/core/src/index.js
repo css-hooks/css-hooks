@@ -1,8 +1,8 @@
 // @ts-nocheck
 
 const helpers = {
-  all: (...all) => ({ all }),
-  any: (...any) => ({ any }),
+  and: (...and) => ({ and }),
+  or: (...or) => ({ or }),
   not: not => ({ not }),
 };
 
@@ -125,16 +125,14 @@ export function buildHooksSystem(stringify = genericStringify) {
               return;
             }
 
-            if ("all" in hookCondition || "any" in hookCondition) {
-              const operator = hookCondition.all ? "all" : "any";
+            if ("and" in hookCondition || "or" in hookCondition) {
+              const operator = hookCondition.and ? "and" : "or";
               it(`${id}A`, hookCondition[operator][0]);
               it(`${id}B`, hookCondition[operator][1]);
-              if (operator === "all") {
-                // and
+              if (operator === "and") {
                 sheet += `${indent}--${id}-0:${space}var(--${id}A-0)${space}var(--${id}B-0);${newline}`;
                 sheet += `${indent}--${id}-1:${space}var(--${id}A-1,${space}var(--${id}B-1));${newline}`;
               } else {
-                // or
                 sheet += `${indent}--${id}-0:${space}var(--${id}A-0,${space}var(--${id}B-0));${newline}`;
                 sheet += `${indent}--${id}-1:${space}var(--${id}A-1)${space}var(--${id}B-1);${newline}`;
               }
@@ -154,8 +152,8 @@ export function buildHooksSystem(stringify = genericStringify) {
               return it(`${id}X`, hookCondition.not);
             }
 
-            if ("all" in hookCondition || "any" in hookCondition) {
-              const operator = hookCondition.all ? "all" : "any";
+            if ("and" in hookCondition || "or" in hookCondition) {
+              const operator = hookCondition.and ? "and" : "or";
               it(`${id}A`, hookCondition[operator][0]);
               it(`${id}B`, hookCondition[operator][1]);
               return;
@@ -202,10 +200,10 @@ export function buildHooksSystem(stringify = genericStringify) {
             .filter(rule => rule)
             .reduce(
               ([baseStyles, conditionalStyles], rule) => {
-                if (rule.match) {
+                if (rule.on) {
                   baseStyles.push(rule);
                   (sortConditionalStyles ? conditionalStyles : baseStyles).push(
-                    ...rule.match(
+                    ...rule.on(
                       (condition, styles) => [condition, styles],
                       helpers,
                     ),
@@ -243,16 +241,14 @@ export function buildHooksSystem(stringify = genericStringify) {
                 style[`--${name}-0`] = `var(--${inner}-1)`;
                 style[`--${name}-1`] = `var(--${inner}-0)`;
               }
-              if (cond.all || cond.any) {
-                const operator = cond.all ? "all" : "any";
+              if (cond.and || cond.or) {
+                const operator = cond.and ? "and" : "or";
                 const a = it(`${name}A`, cond[operator][0]);
                 const b = it(`${name}B`, cond[operator][1]);
-                if (operator === "all") {
-                  // and
+                if (operator === "and") {
                   style[`--${name}-0`] = `var(--${a}-0)${space}var(--${b}-0)`;
                   style[`--${name}-1`] = `var(--${a}-1,${space}var(--${b}-1))`;
                 } else {
-                  // or
                   style[`--${name}-0`] = `var(--${a}-0,${space}var(--${b}-0))`;
                   style[`--${name}-1`] = `var(--${a}-1)${space}var(--${b}-1)`;
                 }
