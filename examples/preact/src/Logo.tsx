@@ -8,8 +8,8 @@ export default function Logo() {
         <path
           style={css({
             fill: V.blue40,
-            match: on => [
-              on("@media (prefers-color-scheme: dark)", {
+            on: $ => [
+              $("@media (prefers-color-scheme: dark)", {
                 fill: V.blue30,
               }),
             ],
@@ -19,8 +19,8 @@ export default function Logo() {
         <path
           style={css({
             fill: V.gray50,
-            match: on => [
-              on("@media (prefers-color-scheme: dark)", {
+            on: $ => [
+              $("@media (prefers-color-scheme: dark)", {
                 fill: V.gray30,
               }),
             ],
