@@ -13,6 +13,7 @@ export const ThemeSwitcher = component$(() => (
       outlineStyle: "solid",
       outlineColor: V.blue20,
       outlineOffset: 2,
+      color: V.blue50,
       on: ($, { and }) => [
         $("&:focus-visible-within", {
           outlineWidth: 2,

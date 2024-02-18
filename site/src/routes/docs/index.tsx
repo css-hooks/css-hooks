@@ -3,6 +3,7 @@ import * as V from "varsace";
 import matter from "gray-matter";
 import { type DocumentHead, routeLoader$, z } from "@builder.io/qwik-city";
 import { Anchor } from "~/components/anchor";
+import { css } from "~/css";
 
 export const head: DocumentHead = {
   title: "Documentation",
@@ -75,15 +76,22 @@ export default component$(() => {
         Documentation
       </h1>
       <ol
-        style={{
+        style={css({
           listStyleType: "none",
           margin: 0,
           padding: "2em",
           display: "flex",
           flexDirection: "column",
           gap: "2em",
-          background: V.gray85,
-        }}
+          on: ($, { not }) => [
+            $("@media (prefers-color-scheme: dark)", {
+              background: V.gray85,
+            }),
+            $(not("@media (prefers-color-scheme: dark)"), {
+              boxShadow: `0 0 0 1px ${V.gray20}`,
+            }),
+          ],
+        })}
       >
         {items.value.map(({ path, title, description }) => (
           <li key={path}>
