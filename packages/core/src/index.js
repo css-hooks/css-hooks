@@ -194,35 +194,28 @@ export function buildHooksSystem(stringify = genericStringify) {
     function css(...args) {
       const style = {};
       let conditionCount = 0;
-      const rules = JSON.parse(
-        JSON.stringify(
-          args
-            .filter(rule => rule)
-            .reduce(
-              ([baseStyles, conditionalStyles], rule) => {
-                if (rule.on) {
-                  baseStyles.push(rule);
-                  (sortConditionalStyles ? conditionalStyles : baseStyles).push(
-                    ...(typeof rule.on === "function"
-                      ? rule.on(
-                          (condition, styles) => [condition, styles],
-                          helpers,
-                        )
-                      : rule.on),
-                  );
-                } else {
-                  baseStyles.push(rule);
-                }
-                delete rule.on;
-                return [baseStyles, conditionalStyles];
-              },
-              [[], []],
-            )
-            .reduce((a, b) => {
-              return a.concat(b);
-            }, []),
-        ),
-      );
+      const rules = args
+        .filter(rule => rule)
+        .reduce(
+          ([baseStyles, conditionalStyles], rule) => {
+            if (rule.on) {
+              baseStyles.push(rule);
+              (sortConditionalStyles ? conditionalStyles : baseStyles).push(
+                ...(typeof rule.on === "function"
+                  ? rule.on((condition, styles) => [condition, styles], helpers)
+                  : rule.on),
+              );
+            } else {
+              baseStyles.push(rule);
+            }
+            delete rule.on;
+            return [baseStyles, conditionalStyles];
+          },
+          [[], []],
+        )
+        .reduce((a, b) => {
+          return a.concat(b);
+        }, []);
       for (const rule of rules) {
         if (!rule || typeof rule !== "object") {
           continue;
