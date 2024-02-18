@@ -17,8 +17,8 @@ function App() {
         "flex-direction": "column",
         "align-items": "center",
         "justify-content": "center",
-        match: on => [
-          on("@media (prefers-color-scheme: dark)", {
+        on: $ => [
+          $("@media (prefers-color-scheme: dark)", {
             background: V.black,
             color: V.white,
           }),
@@ -41,20 +41,20 @@ function App() {
           color: V.white,
           padding: "0.5em 0.75em",
           display: "inline-block",
-          match: (on, { all }) => [
-            on("&:hover", {
+          on: ($, { and }) => [
+            $("&:hover", {
               background: V.blue40,
             }),
-            on("&:active", {
+            $("&:active", {
               background: V.red40,
             }),
-            on("@media (prefers-color-scheme: dark)", {
+            $("@media (prefers-color-scheme: dark)", {
               background: V.gray70,
             }),
-            on(all("@media (prefers-color-scheme: dark)", "&:hover"), {
+            $(and("@media (prefers-color-scheme: dark)", "&:hover"), {
               background: V.blue50,
             }),
-            on(all("@media (prefers-color-scheme: dark)", "&:active"), {
+            $(and("@media (prefers-color-scheme: dark)", "&:active"), {
               background: V.red50,
             }),
           ],
