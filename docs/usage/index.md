@@ -75,7 +75,7 @@ functions:
 These helpers are passed to the `on` function in a destructurable second
 argument.
 
-For example, you can combine `&:enabled` and `&:hover` hooks using the `all`
+For example, you can combine `&:enabled` and `&:hover` hooks using the `and`
 helper to ensure that a hover effect applies only when the element is also
 enabled:
 
@@ -98,3 +98,44 @@ function MyButton() {
   );
 }
 ```
+
+## Alternate syntax
+
+It's also possible to define conditional styles without a callback function,
+i.e. using plain JSON. Simply provide conditional styles as an array of tuples,
+with the condition as the first item and the applicable style object as the
+second. For example:
+
+```tsx
+import { css } from "./css";
+
+function MyButton() {
+  return (
+    <button
+      style={css({
+        on: [
+          [
+            { and: ["&:enabled", "&:hover"] },
+            {
+              color: "blue",
+            },
+          ],
+          [
+            "&:disabled",
+            {
+              color: "gray",
+            },
+          ],
+        ],
+      })}
+    >
+      ...
+    </button>
+  );
+}
+```
+
+The alternate syntax may be useful in some cases due to technical constraints or
+even as a matter of personal preference. But it's not our default recommendation
+due to readability concerns, especially when using
+[Prettier](https://prettier.io).
