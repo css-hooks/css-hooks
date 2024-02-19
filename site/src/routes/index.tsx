@@ -53,10 +53,7 @@ export default component$(() => {
               color: V.gray50,
               on: ($, { or }) => [
                 $(
-                  or(
-                    "@media (width < 450px)",
-                    "@media (450px <= width < 700px)",
-                  ),
+                  or("@media (width < 28em)", "@media (28em <= width < 44em)"),
                   {
                     fontSize: "3rem",
                   },
@@ -76,7 +73,7 @@ export default component$(() => {
             <br
               style={css({
                 on: $ => [
-                  $("@media (1100px <= width)", {
+                  $("@media (69em <= width)", {
                     display: "none",
                   }),
                 ],
@@ -93,16 +90,13 @@ export default component$(() => {
               lineHeight: "calc(14 / 11)",
               on: ($, { or }) => [
                 $(
-                  or(
-                    "@media (width < 450px)",
-                    "@media (450px <= width < 700px)",
-                  ),
+                  or("@media (width < 28em)", "@media (28em <= width < 44em)"),
                   {
                     fontSize: "1rem",
                     lineHeight: 1.25,
                   },
                 ),
-                $("@media (1100px <= width)", {
+                $("@media (69em <= width)", {
                   marginTop: "1rem",
                 }),
                 $("@media (prefers-color-scheme: dark)", {
@@ -115,7 +109,7 @@ export default component$(() => {
             <br
               style={css({
                 on: ($, { not }) => [
-                  $(not("@media (width < 450px)"), {
+                  $(not("@media (width < 28em)"), {
                     display: "none",
                   }),
                 ],
@@ -125,7 +119,7 @@ export default component$(() => {
             <br
               style={css({
                 on: ($, { or }) => [
-                  $(or("@media (1100px <= width)", "@media (width < 450px)"), {
+                  $(or("@media (69em <= width)", "@media (width < 28em)"), {
                     display: "none",
                   }),
                 ],
@@ -135,7 +129,7 @@ export default component$(() => {
             <br
               style={css({
                 on: ($, { not }) => [
-                  $(not("@media (width < 450px)"), {
+                  $(not("@media (width < 28em)"), {
                     display: "none",
                   }),
                 ],
@@ -149,7 +143,7 @@ export default component$(() => {
               display: "inline-flex",
               gap: "1rem",
               on: $ => [
-                $("@media (1100px <= width)", {
+                $("@media (69em <= width)", {
                   marginTop: "4rem",
                 }),
               ],
@@ -247,10 +241,10 @@ export default component$(() => {
             gridTemplateColumns: "1fr",
             gap: "2rem",
             on: $ => [
-              $("@media (700px <= width < 1100px)", {
+              $("@media (44em <= width < 69em)", {
                 gridTemplateColumns: "repeat(2, 1fr)",
               }),
-              $("@media (1100px <= width)", {
+              $("@media (69em <= width)", {
                 gridTemplateColumns: "repeat(4, 1fr)",
               }),
             ],
@@ -647,7 +641,7 @@ export const Demo = component$(({ source }: { source: string }) => {
           display: "flex",
           alignItems: "stretch",
           on: ($, { or }) => [
-            $(or("@media (width < 450px)", "@media (450px <= width < 700px)"), {
+            $(or("@media (width < 28em)", "@media (28em <= width < 44em)"), {
               flexDirection: "column-reverse",
             }),
           ],
@@ -661,22 +655,16 @@ export const Demo = component$(({ source }: { source: string }) => {
             on: ($, { or, not }) => [
               $(
                 not(
-                  or(
-                    "@media (width < 450px)",
-                    "@media (450px <= width < 700px)",
-                  ),
+                  or("@media (width < 28em)", "@media (28em <= width < 44em)"),
                 ),
                 {
                   marginRight: -24,
                 },
               ),
-              $(
-                or("@media (width < 450px)", "@media (450px <= width < 700px)"),
-                {
-                  marginTop: -24,
-                  padding: "0 12px",
-                },
-              ),
+              $(or("@media (width < 28em)", "@media (28em <= width < 44em)"), {
+                marginTop: -24,
+                padding: "0 12px",
+              }),
             ],
           })}
         >
@@ -1219,7 +1207,9 @@ export const Feature = component$(
         <div
           style={css({
             width: "3rem",
+            minWidth: "3rem",
             height: "3rem",
+            minHeight: "3rem",
             borderRadius: 9999,
             display: "grid",
             placeItems: "center",

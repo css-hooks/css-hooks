@@ -8,7 +8,7 @@ export const { styleSheet, css } = createHooks({
   hooks: ({ and, or }) => ({
     ...recommended({
       pseudoClasses: [":empty", ":focus-visible", ":hover", ":active"],
-      breakpoints: ["450px", "700px", "1100px"],
+      breakpoints: ["28em", "44em", "69em"],
     }),
 
     // color schemes

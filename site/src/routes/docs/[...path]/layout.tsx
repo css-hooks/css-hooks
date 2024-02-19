@@ -108,7 +108,7 @@ export default component$(() => {
         display: "flex",
         flex: 1,
         on: ($, { or }) => [
-          $(or("@media (width < 450px)", "@media (450px <= width < 700px)"), {
+          $(or("@media (width < 28em)", "@media (28em <= width < 44em)"), {
             flexDirection: "column",
           }),
         ],
@@ -123,9 +123,7 @@ export default component$(() => {
               background: V.gray85,
             }),
             $(
-              not(
-                or("@media (width < 450px)", "@media (450px <= width < 700px)"),
-              ),
+              not(or("@media (width < 28em)", "@media (28em <= width < 44em)")),
               {
                 flexBasis: "24ch",
                 flexShrink: 0,
@@ -178,15 +176,9 @@ export default component$(() => {
               $(and("&:active", "@media (prefers-color-scheme: dark)"), {
                 color: V.red20,
               }),
-              $(
-                or(
-                  "@media (700px <= width < 1100px)",
-                  "@media (1100px <= width)",
-                ),
-                {
-                  display: "none",
-                },
-              ),
+              $(or("@media (44em <= width < 69em)", "@media (69em <= width)"), {
+                display: "none",
+              }),
             ],
           })}
         >
@@ -218,28 +210,22 @@ export default component$(() => {
                 not(
                   or(
                     ":has(:checked) + &",
-                    "@media (700px <= width < 1100px)",
-                    "@media (1100px <= width)",
+                    "@media (44em <= width < 69em)",
+                    "@media (69em <= width)",
                   ),
                 ),
                 {
                   display: "none",
                 },
               ),
-              $(
-                or(
-                  "@media (700px <= width < 1100px)",
-                  "@media (1100px <= width)",
-                ),
-                {
-                  position: "fixed",
-                  marginTop: "-0.5em",
-                  paddingTop: "2rem",
-                  paddingRight: "2rem",
-                  paddingBottom: "2rem",
-                  paddingLeft: "2rem",
-                },
-              ),
+              $(or("@media (44em <= width < 69em)", "@media (69em <= width)"), {
+                position: "fixed",
+                marginTop: "-0.5em",
+                paddingTop: "2rem",
+                paddingRight: "2rem",
+                paddingBottom: "2rem",
+                paddingLeft: "2rem",
+              }),
             ],
           })}
         >
@@ -264,7 +250,7 @@ export default component$(() => {
             margin: "auto",
             padding: "1rem 0",
             on: $ => [
-              $("@media (1100px <= width)", {
+              $("@media (69em <= width)", {
                 width: "calc(100% - 8rem)",
               }),
             ],
