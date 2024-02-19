@@ -4,10 +4,13 @@
   "version": "1.8.2",
   "author": "Nick Saunders",
   "devDependencies": {
+    "@microsoft/api-extractor": "^7.39.4",
     "@tsconfig/strictest": "^2.0.1",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
+    "ascjs": "^6.0.3",
     "eslint": "^8.47.0",
+    "eslint-plugin-compat": "^4.2.0",
     "rimraf": "^5.0.1",
     "ts-watch": "^1.0.8",
     "typescript": "^5.3.3"
@@ -15,7 +18,8 @@
   "files": [
     "cjs",
     "esm",
-    "types"
+    "types",
+    "tsdoc-metadata.json"
   ],
   "license": "MIT",
   "main": "cjs",
@@ -28,9 +32,10 @@
     "directory": "packages/recommended"
   },
   "scripts": {
+    "api": "node -e \"var path=require('path').resolve,fs=require('fs'),cp=fs.cpSync;cp(path('src', 'index.d.ts'),path('types','index.d.ts'))\" && api-extractor run",
     "clean": "rimraf cjs esm out types",
     "lint": "eslint src .*.*js *.*js",
-    "prepublishOnly": "tsc -p tsconfig.dist.json --outDir esm --module es6 && tsc -p tsconfig.dist.json --outDir cjs --module commonjs && tsc -p tsconfig.dist.json --outDir types --declaration --emitDeclarationOnly",
+    "prepublishOnly": "node -e \"var path=require('path').resolve,fs=require('fs'),cp=fs.cpSync,mkdir=fs.mkdirSync;cp(path('src', 'index.d.ts'),path('types','index.d.ts'));cp(path('src','index.js'),path('esm','index.js'));mkdir(path('cjs'),{recursive:true})\" && ascjs src/index.js cjs/index.js",
     "test": "tsc && node --test",
     "test.watch": "tsc-watch --onSuccess 'node --test'"
   },
@@ -41,5 +46,8 @@
       "require": "./cjs/index.js",
       "types": "./types/index.d.ts"
     }
-  }
+  },
+  "browserslist": [
+    "supports css-variables"
+  ]
 }

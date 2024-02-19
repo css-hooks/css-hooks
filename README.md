@@ -19,54 +19,86 @@
 
 ## Overview
 
-Hooks bring CSS features to native inline styles, enabling you to target various
-states such as hover, focus, and active, all without leaving the `style` prop.
-For example, hooks can easily solve the common use case of applying state-driven
-styles to a link:
+Hooks add CSS features to native inline styles, enabling you to apply styles
+conditionally based on pseudo-classes, custom selectors, media queries, and
+more—all without leaving the `style` prop. By exploiting the hidden
+programmability of CSS Variables, CSS Hooks delivers a flexible CSS-in-JS
+experience without runtime style injection or build steps.
+
+## Feature highlights
+
+### Pseudo-classes
 
 ```jsx
-<a
-  href="https://css-hooks.com/"
+<button
   style={css({
-    color: "#03f",
-    fontSize: "1rem",
-    "&:hover": {
-      color: "#09f",
-    },
-    "&:active": {
-      color: "#e33",
-    },
-    "@media (1000px <= width)": {
-      fontSize: "1.25rem",
-    },
+    background: "#004982",
+    color: "#eeeff0",
+    on: $ => [
+      $("&:hover", {
+        background: "#1b659c",
+      }),
+      $("&:active", {
+        background: "#9f3131",
+      }),
+    ],
   })}
 >
-  Hooks
-</a>
+  Save changes
+</button>
 ```
 
-Notably, the `css` function is pure. It simply returns a flat style object that
-is compatible with the `style` prop, creating dynamic property values that
-change under various conditions through CSS variables.
+### Selectors
+
+```jsx
+<label>
+  <input type="checkbox" checked />
+  <span
+    style={css({
+      on: $ => [
+        $(":checked + &", {
+          textDecoration: "line-through",
+        }),
+      ],
+    })}
+  >
+    Simplify CSS architecture
+  </span>
+</label>
+```
+
+### Responsive design
+
+```jsx
+<>
+  <span
+    style={css({
+      on: ($, { not }) => [
+        $(not("@container sm"), {
+          display: "none",
+        }),
+      ],
+    })}
+  >
+    sm
+  </span>
+  <span
+    style={css({
+      on: ($, { not }) => [
+        $(not("@container lg"), {
+          display: "none",
+        }),
+      ],
+    })}
+  >
+    lg
+  </span>
+</>
+```
 
 ## Documentation
 
 Please visit [css-hooks.com](https://css-hooks.com) to get started.
-
-## Packages
-
-- [@css-hooks/recommended](packages/recommended): Recommended hook configuration
-  with sensible defaults
-- [@css-hooks/react](https://github.com/css-hooks/css-hooks/tree/master/packages/react):
-  React framework integration
-- [@css-hooks/preact](https://github.com/css-hooks/css-hooks/tree/master/packages/preact):
-  Preact framework integration
-- [@css-hooks/solid](https://github.com/css-hooks/css-hooks/tree/master/packages/solid):
-  Solid framework integration
-- [@css-hooks/qwik](https://github.com/css-hooks/css-hooks/tree/master/packages/qwik):
-  Qwik framework integration
-- [@css-hooks/core](https://github.com/css-hooks/css-hooks/tree/master/packages/core):
-  Core package (internal / advanced use cases)
 
 ## Contributing
 

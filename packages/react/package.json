@@ -7,11 +7,14 @@
     "@css-hooks/core": "^1.8.2"
   },
   "devDependencies": {
+    "@microsoft/api-extractor": "^7.39.4",
     "@tsconfig/strictest": "^2.0.1",
     "@types/react": "^18.2.20",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
     "@typescript-eslint/parser": "^6.7.2",
+    "ascjs": "^6.0.3",
     "eslint": "^8.50.0",
+    "eslint-plugin-compat": "^4.2.0",
     "rimraf": "^5.0.1",
     "ts-watch": "^1.0.8",
     "typescript": "^5.1.6"
@@ -19,7 +22,8 @@
   "files": [
     "cjs",
     "esm",
-    "types"
+    "types",
+    "tsdoc-metadata.json"
   ],
   "license": "MIT",
   "main": "cjs",
@@ -40,10 +44,11 @@
     "directory": "packages/react"
   },
   "scripts": {
+    "api": "node -e \"var path=require('path').resolve,fs=require('fs'),cp=fs.cpSync;cp(path('src', 'index.d.ts'),path('types','index.d.ts'))\" && api-extractor run",
     "clean": "rimraf cjs esm out types",
     "lint": "eslint src .*.*js *.*js",
     "postversion": "npm install @css-hooks/core@^$npm_package_version --force",
-    "prepublishOnly": "tsc -p tsconfig.dist.json --outDir cjs --module commonjs && tsc -p tsconfig.dist.json --outDir esm --module es6 && tsc -p tsconfig.dist.json --declaration --emitDeclarationOnly --outDir types",
+    "prepublishOnly": "node -e \"var path=require('path').resolve,fs=require('fs'),cp=fs.cpSync,mkdir=fs.mkdirSync;cp(path('src', 'index.d.ts'),path('types','index.d.ts'));cp(path('src','index.js'),path('esm','index.js'));mkdir(path('cjs'),{recursive:true})\" && ascjs src/index.js cjs/index.js",
     "test": "tsc && node --test",
     "test.watch": "tsc-watch --onSuccess 'node --test'"
   },
@@ -54,5 +59,8 @@
       "require": "./cjs/index.js",
       "types": "./types/index.d.ts"
     }
-  }
+  },
+  "browserslist": [
+    "supports css-variables"
+  ]
 }

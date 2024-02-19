@@ -27,10 +27,6 @@ jobs:
 
       - uses: wagoid/commitlint-github-action@v5
 
-      - uses: actionsx/prettier@v3
-        with:
-          args: --check .
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20.5.0
@@ -43,6 +39,8 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
       - run: npm ci
+
+      - run: npx prettier --check .
 
       # Note that the packages must be built before linting. Otherwise, some
       # types will be inferred as `any` leading to errors.
@@ -127,4 +125,4 @@ jobs:
           publish_dir: ./site/out
           cname: css-hooks.com
           force_orphan: true
-          commit_message: ${{ github.event.head_commit.message }}
+          commit_message: ${{ fromJSON(toJSON(github.event)).head_commit.message }}
