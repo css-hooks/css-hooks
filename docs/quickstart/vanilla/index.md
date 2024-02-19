@@ -51,7 +51,7 @@ export function styleObjectToString(obj: Record<string, unknown>) {
     )
     .map(
       ([property, value]) =>
-        `${property.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`)}: ${value}`,
+        `${/^--/.test(property) ? property : property.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`)}: ${value}`,
     )
     .join("; ");
 }
