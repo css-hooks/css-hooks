@@ -29,7 +29,7 @@ function App() {
         <Logo />
       </div>
       <a
-        href="https://css-hooks.com/docs/preact/getting-started"
+        href="https://css-hooks.com/docs"
         style={css({
           fontFamily: "Inter, sans-serif",
           fontSize: "1.333rem",
