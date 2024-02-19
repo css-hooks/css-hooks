@@ -1117,7 +1117,7 @@ export const Testimonial = component$(({ url }: { url: string }) => (
             outlineWidth: 2,
           }),
           $("&:active", {
-            boxShadow: `0 0 0 1px ${V.red35}`,
+            boxShadow: `0 0 0 1px ${V.red20}`,
           }),
           $("@media (prefers-color-scheme: dark)", {
             boxShadow: `inset 0 0 0 1px ${V.gray70}`,
