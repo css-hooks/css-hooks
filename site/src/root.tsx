@@ -54,7 +54,7 @@ export default component$(() => {
       <body
         lang="en"
         style={css({
-          fontFamily: "'Inter Variable'",
+          fontFamily: "'Inter Variable', sans-serif",
           lineHeight: 1.25,
           margin: 0,
           background: V.white,
