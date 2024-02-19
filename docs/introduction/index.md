@@ -143,3 +143,8 @@ familiar, convenient, and type-safe interface. Here's how it works:
 1. The type safety of the style object syntax is extended to include hooks.
 1. Native TypeScript auto-completion makes hooks easy to use, with no need to
    install any additional editor extensions.
+
+## Ready to get started?
+
+Proceed to the [Setup](../setup/index.md) guide to get started. Or, if you're in
+a hurry, check out the [Quickstart](../quickstart/index.md) section.
