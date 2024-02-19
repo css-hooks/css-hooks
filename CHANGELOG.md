@@ -1,3 +1,19 @@
+## [2.0.0](https://github.com/css-hooks/css-hooks/compare/v1.8.2...v2.0.0) (2024-02-19)
+
+
+### ⚠ BREAKING CHANGES
+
+* v2
+
+### Features
+
+* v2 ([97286c7](https://github.com/css-hooks/css-hooks/commit/97286c794331cc658f79678218474f592e9efadc))
+
+
+### Bug Fixes
+
+* **site:** broken avatar links ([44750c1](https://github.com/css-hooks/css-hooks/commit/44750c14b7e4d4d69acc5545052c8d09291e651c))
+
 ## [1.8.2](https://github.com/css-hooks/css-hooks/compare/v1.8.1...v1.8.2) (2024-02-01)
 
 
