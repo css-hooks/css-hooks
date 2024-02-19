@@ -82,10 +82,12 @@ export default component$(() => {
           document.value.content || document.value.errorMessage
         }
       />
-      {document.value.failed ? undefined : (
-        <div style={{ display: "flex", flexDirection: "column" }}>
+      {document.value.failed ||
+      /^api\//.test(document.value.path) ? undefined : (
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           <hr
             style={css({
+              margin: 0,
               border: 0,
               width: "100%",
               height: 1,
@@ -107,10 +109,7 @@ export default component$(() => {
                 gap: "0.25em",
               }}
             >
-              <span
-                style={{ fontSize: "1.125em", display: "inline-flex" }}
-                aria-hidden="true"
-              >
+              <span style={{ display: "inline-flex" }} aria-hidden="true">
                 <Icon.Edit />
               </span>
               <span>Suggest an edit</span>
