@@ -102,7 +102,7 @@ an inline style:
 </style>
 ```
 
-[Live demo](https://htmlpreview.github.io/?https://github.com/css-hooks/css-hooks/blob/v2/docs/introduction/demo.html)
+[Live demo](https://htmlpreview.github.io/?https://github.com/css-hooks/css-hooks/blob/master/docs/introduction/demo.html)
 
 As you can see, a style sheet is technically still required, but it only
 controls the states of the `--hover-off` and `--hover-on` variables, allowing
