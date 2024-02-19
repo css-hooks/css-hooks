@@ -28,6 +28,7 @@ export const { styleSheet, css } = createHooks({
     // selectors
     ".group &.group": ".group &.group",
     ".group:hover &": ".group:hover &",
+    ".group:even-child &": ".group:nth-child(even) &",
     ":checked + &": ":checked + &",
     ":intent + &": or(":focus + &", ":hover + &"),
     "&.primary": "&.primary",
@@ -52,7 +53,7 @@ export function renderToString(obj: Parameters<typeof css>[0]) {
   return Object.entries(css(obj))
     .map(
       ([k, v]) =>
-        `${k.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`)}:${stringifyValue(
+        `${/^--/.test(k) ? k : k.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`)}:${stringifyValue(
           k,
           v,
         )}`,

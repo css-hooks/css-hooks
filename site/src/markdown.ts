@@ -207,6 +207,77 @@ async function getRenderer(): Promise<RendererObject> {
         title ? ` title="${title}"` : ""
       } style="${renderToString(anchorStyle())}">${label}</a>`;
     },
+    table(header, body) {
+      return `<table style="${renderToString(
+        css({
+          borderColor: V.gray20,
+          borderSpacing: 0,
+          borderCollapse: "collapse",
+          on: $ => [
+            $("@media (prefers-color-scheme: dark)", {
+              borderColor: V.gray70,
+            }),
+          ],
+        }),
+      )}"><thead>${header}</thead><tbody>${body}</tbody></table>`;
+    },
+    tablerow(content) {
+      return `<tr class="group">${content}</tr>`;
+    },
+    tablecell(content, flags) {
+      const tag = flags.header ? "th" : "td";
+      return `<${tag} style="${renderToString(
+        css(
+          {
+            borderWidth: 1,
+            borderColor: "inherit",
+            borderStyle: "solid",
+            padding: "calc(0.375em - 0.5px) 0.75em",
+            on: ($, { and, or, not }) => [
+              $(
+                not(
+                  or(
+                    "@media (prefers-color-scheme: dark)",
+                    ".group:even-child &",
+                  ),
+                ),
+                {
+                  background: V.white,
+                },
+              ),
+              $(
+                and(
+                  not("@media (prefers-color-scheme: dark)"),
+                  ".group:even-child &",
+                ),
+                {
+                  background: `color-mix(in srgb, ${V.white}, ${V.gray05})`,
+                },
+              ),
+              $(
+                and(
+                  "@media (prefers-color-scheme: dark)",
+                  not(".group:even-child &"),
+                ),
+                {
+                  background: `color-mix(in srgb, ${V.gray85}, ${V.gray90})`,
+                },
+              ),
+              $(
+                and(
+                  "@media (prefers-color-scheme: dark)",
+                  ".group:even-child &",
+                ),
+                {
+                  background: V.gray85,
+                },
+              ),
+            ],
+          },
+          flags.align ? { textAlign: flags.align } : undefined,
+        ),
+      )}">${content}</${tag}>`;
+    },
   };
 }
 
