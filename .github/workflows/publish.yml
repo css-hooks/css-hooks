@@ -119,10 +119,5 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
-      - uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site/dist
-          cname: css-hooks.com
-          force_orphan: true
-          commit_message: ${{ fromJSON(toJSON(github.event)).head_commit.message }}
+      - name: cloudflare deploy hook
+        run: curl -X POST https://api.cloudflare.com/client/v4/pages/webhooks/deploy_hooks/78c66fdd-aa9e-4f70-adb9-eb95c3b1e018
