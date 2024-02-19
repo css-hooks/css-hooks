@@ -122,7 +122,7 @@ jobs:
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site/out
+          publish_dir: ./site/dist
           cname: css-hooks.com
           force_orphan: true
           commit_message: ${{ fromJSON(toJSON(github.event)).head_commit.message }}
