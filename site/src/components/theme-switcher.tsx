@@ -37,7 +37,7 @@ export const ThemeSwitcher = component$(() => (
       ],
     })}
   >
-    <div style={css({ display: "inline-flex", fontSize: "1.125rem" })}>
+    <div style={css({ display: "inline-flex" })}>
       <div
         style={css({
           display: "none",

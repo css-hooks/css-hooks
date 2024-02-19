@@ -108,8 +108,7 @@ export default component$(() => {
           style={{
             display: "inline-flex",
             alignItems: "center",
-            gap: "1rem",
-            fontSize: "1.125rem",
+            gap: "1em",
           }}
         >
           <Anchor

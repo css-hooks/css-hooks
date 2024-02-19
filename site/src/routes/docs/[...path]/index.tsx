@@ -73,7 +73,7 @@ export default component$(() => {
   const location = useLocation();
   const document = useDocument();
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
       {document.value.isIndex ? undefined : (
         <base href={location.url.toString().replace(/\/$/, "")} />
       )}
@@ -83,7 +83,7 @@ export default component$(() => {
         }
       />
       {document.value.failed ? undefined : (
-        <>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           <hr
             style={css({
               border: 0,
@@ -116,7 +116,7 @@ export default component$(() => {
               <span>Suggest an edit</span>
             </div>
           </Anchor>
-        </>
+        </div>
       )}
     </div>
   );
