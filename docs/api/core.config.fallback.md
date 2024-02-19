@@ -4,7 +4,7 @@
 
 ## Config.fallback property
 
-The fallback keyword to use when no other value is available. The [\`revert-layer\`](https://developer.mozilla.org/en-US/docs/Web/CSS/revert-layer) keyword is functionally the best option, but [\`unset\`](https://developer.mozilla.org/en-US/docs/Web/CSS/unset) has better compatibility.
+The fallback keyword to use when no other value is available. The [revert-layer](https://developer.mozilla.org/en-US/docs/Web/CSS/revert-layer) keyword is functionally the best option, but [unset](https://developer.mozilla.org/en-US/docs/Web/CSS/unset) has better compatibility.
 
 **Signature:**
 

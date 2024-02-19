@@ -18,7 +18,7 @@ CSS Hooks core library
 |  --- | --- |
 |  [ConditionHelpers](./core.conditionhelpers.md) | Helper functions used to construct advanced conditions. |
 |  [Config](./core.config.md) | Represents the configuration used to set up hooks. |
-|  [Hooks](./core.hooks.md) | Represents the [CssFn](./core.cssfn.md) used to define enhanced styles, along with the style sheet required to support it. |
+|  [Hooks](./core.hooks.md) | Contains the [css](./core.cssfn.md) function used to define enhanced styles, along with the style sheet required to support it. |
 
 ## Type Aliases
 

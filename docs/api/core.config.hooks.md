@@ -9,5 +9,5 @@ The hooks available for use in conditional styles.
 **Signature:**
 
 ```typescript
-hooks: Hooks;
+hooks: HooksConfig;
 ```

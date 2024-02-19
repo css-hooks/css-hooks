@@ -7,7 +7,7 @@
 > This API is provided as a beta preview for developers and may change based on feedback that we receive. Do not use this API in a production environment.
 > 
 
-Options for sorting declarations when multiple rules are passed to the [\`css\`](./core.cssfn.md) function.
+Options for sorting declarations when multiple rules are passed to the [css](./core.cssfn.md) function.
 
 **Signature:**
 

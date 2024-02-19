@@ -4,7 +4,7 @@
 
 ## Hooks interface
 
-Represents the [CssFn](./core.cssfn.md) used to define enhanced styles, along with the style sheet required to support it.
+Contains the [css](./core.cssfn.md) function used to define enhanced styles, along with the style sheet required to support it.
 
 **Signature:**
 

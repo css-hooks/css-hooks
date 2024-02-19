@@ -11,7 +11,6 @@ Provides a way to declare conditional styles within a [Rule](./core.rule.md)<!--
 ```typescript
 export type OnFn<HookName, CSSProperties> = (
   $: ConditionalStyleFn<HookName, CSSProperties>,
-
   helpers: ConditionHelpers<HookName>,
 ) => [condition: Condition<HookName>, style: CSSProperties][];
 ```

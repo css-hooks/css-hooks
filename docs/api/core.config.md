@@ -9,7 +9,7 @@ Represents the configuration used to set up hooks.
 **Signature:**
 
 ```typescript
-export interface Config<Hooks> 
+export interface Config<HooksConfig> 
 ```
 
 ## Properties
@@ -17,7 +17,7 @@ export interface Config<Hooks>
 |  Property | Modifiers | Type | Description |
 |  --- | --- | --- | --- |
 |  [debug?](./core.config.debug.md) |  | boolean | _(Optional)_ Whether to enable debug mode. |
-|  [fallback?](./core.config.fallback.md) |  | "revert-layer" \| "unset" | _(Optional)_ The fallback keyword to use when no other value is available. The [\`revert-layer\`](https://developer.mozilla.org/en-US/docs/Web/CSS/revert-layer) keyword is functionally the best option, but [\`unset\`](https://developer.mozilla.org/en-US/docs/Web/CSS/unset) has better compatibility. |
-|  [hooks](./core.config.hooks.md) |  | Hooks | The hooks available for use in conditional styles. |
-|  [sort?](./core.config.sort.md) |  | { properties?: boolean; conditionalStyles?: boolean; } | **_(BETA)_** _(Optional)_ Options for sorting declarations when multiple rules are passed to the [\`css\`](./core.cssfn.md) function. |
+|  [fallback?](./core.config.fallback.md) |  | "revert-layer" \| "unset" | _(Optional)_ The fallback keyword to use when no other value is available. The [revert-layer](https://developer.mozilla.org/en-US/docs/Web/CSS/revert-layer) keyword is functionally the best option, but [unset](https://developer.mozilla.org/en-US/docs/Web/CSS/unset) has better compatibility. |
+|  [hooks](./core.config.hooks.md) |  | HooksConfig | The hooks available for use in conditional styles. |
+|  [sort?](./core.config.sort.md) |  | { properties?: boolean; conditionalStyles?: boolean; } | **_(BETA)_** _(Optional)_ Options for sorting declarations when multiple rules are passed to the [css](./core.cssfn.md) function. |
 

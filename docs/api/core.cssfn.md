@@ -11,7 +11,6 @@ Represents the type of the `css` function, used to transform a [Rule](./core.rul
 ```typescript
 export type CssFn<HookName, CSSProperties> = (
   style: Rule<HookName, CSSProperties>,
-
   ...styles: (Rule<HookName, CSSProperties> | undefined)[]
 ) => CSSProperties;
 ```

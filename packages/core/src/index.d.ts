@@ -106,7 +106,6 @@ export type OnFn<HookName, CSSProperties> = (
    * The callback used to construct a conditional style group.
    */
   $: ConditionalStyleFn<HookName, CSSProperties>,
-
   /**
    * Helper functions used to construct advanced conditions.
    */
@@ -153,7 +152,6 @@ export type CssFn<HookName, CSSProperties> = (
    * A style object, optionally enhanced with conditional styles.
    */
   style: Rule<HookName, CSSProperties>,
-
   /**
    * A list of style objects, each optionally enhanced with conditional styles.
    *
@@ -184,21 +182,22 @@ export type HookImpl =
 /**
  * Represents the configuration used to set up hooks.
  *
- * @typeParam Hooks - the hooks configured for use in conditional styles.
+ * @typeParam HooksConfig - the hooks configured for use in conditional styles.
+ * See {@link CreateHooksFn} for additional type information.
  *
  * @public
  */
-export interface Config<Hooks> {
+export interface Config<HooksConfig> {
   /**
    * The hooks available for use in conditional styles.
    */
-  hooks: Hooks;
+  hooks: HooksConfig;
 
   /**
    * The fallback keyword to use when no other value is available. The
-   * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/revert-layer | `revert-layer`}
+   * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/revert-layer | revert-layer}
    * keyword is functionally the best option, but
-   * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/unset | `unset`}
+   * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/unset | unset}
    * has better compatibility.
    *
    * @defaultValue "revert-layer"
@@ -230,7 +229,7 @@ export interface Config<Hooks> {
 
   /**
    * Options for sorting declarations when multiple rules are passed to the
-   * {@link CssFn | `css`} function.
+   * {@link CssFn | css} function.
    *
    * @beta
    */
@@ -268,11 +267,12 @@ export interface Config<Hooks> {
    *
    * @internal
    */
-  hookNameToId?: (hookName: GetHookNames<Hooks>) => string;
+  hookNameToId?: (hookName: GetHookNames<HooksConfig>) => string;
 }
 
 /**
- * Represents the {@link CssFn} used to define enhanced styles, along with the
+ * Contains the {@link CssFn | css} function used to define enhanced styles,
+ * along with the
  * style sheet required to support it.
  *
  * @typeParam HookName - The name of the hooks available for use in style
