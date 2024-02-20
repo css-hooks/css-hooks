@@ -191,7 +191,6 @@ async function getRenderer(): Promise<RendererObject> {
           css({
             visibility: "hidden",
             width: "20px",
-            height: "20px",
             on: $ => [
               $(".group:hover &", {
                 visibility: "visible",
