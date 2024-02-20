@@ -12,39 +12,94 @@ import { css } from "~/css";
 import * as Icon from "~/components/icons";
 import { ScreenReaderOnly } from "~/components/screen-reader-only";
 
+type Meta = Exclude<Exclude<DocumentHead, Function>["meta"], undefined>;
+
+class MetaBuilder {
+  constructor(readonly meta: Meta) {}
+
+  concat(callback: (meta: Meta) => Meta): MetaBuilder {
+    return new MetaBuilder(this.meta.concat(callback(this.meta)));
+  }
+
+  build() {
+    return this.meta;
+  }
+}
+
 export const head: DocumentHead = ({ head, url }) => ({
   title: `${head.title ? `${head.title} — ` : ""}CSS Hooks`,
-  meta: [
-    ...(!head.title || head.meta.some(({ property }) => property === "og:title")
-      ? []
-      : [{ property: "og:title", content: head.title }]),
-    ...(head.meta.some(({ property }) => property === "og:description")
-      ? []
-      : head.meta
-          .filter(x => x.name === "description")
-          .map(({ content }) => ({ property: "og:description", content }))),
-    ...(head.meta.some(({ property }) => property === "og:url")
-      ? []
-      : [{ property: "og:url", content: url.toString() }]),
-    ...(head.meta.some(({ property }) => property === "og:site_name")
-      ? []
-      : [{ property: "og:site_name", content: "CSS Hooks" }]),
-    ...(head.meta.some(({ property }) => property === "twitter:creator")
-      ? []
-      : [{ property: "twitter:creator", content: "agilecoder" }]),
-    ...(head.meta.some(({ property }) => property === "twitter:site")
-      ? []
-      : [{ property: "twitter:creator", content: "csshooks" }]),
-    ...(head.meta.some(({ property }) => property === "og:image")
-      ? []
-      : [{ property: "og:image", content: `${url.origin}/opengraph.png` }]),
-    ...(head.meta.some(({ property }) => property === "twitter:image")
-      ? []
-      : [
-          { property: "twitter:image", content: `${url.origin}/opengraph.png` },
-        ]),
-    { property: "twitter:card", content: "summary_large_image" },
-  ],
+  meta: new MetaBuilder(head.meta)
+    .concat(meta =>
+      meta.some(m => m.property === "og:image")
+        ? []
+        : [{ property: "og:image", content: `${url.origin}/opengraph.png` }],
+    )
+    .concat(meta =>
+      meta.some(m => m.property === "og:title")
+        ? []
+        : [{ property: "og:title", content: head.title || "CSS Hooks" }],
+    )
+    .concat(meta =>
+      meta.some(m => m.property === "og:description")
+        ? []
+        : head.meta
+            .filter(m => m.name === "description")
+            .map(({ content }) => ({ property: "og:description", content })),
+    )
+    .concat(meta =>
+      meta.some(m => m.property === "og:url")
+        ? []
+        : [{ property: "og:url", content: url.toString() }],
+    )
+    .concat(meta =>
+      meta.some(m => m.property === "og:site_name")
+        ? [{ property: "og:site_name", content: "CSS Hooks" }]
+        : [],
+    )
+    .concat(meta =>
+      meta.some(m => m.property === "twitter:creator")
+        ? []
+        : [{ property: "twitter:creator", content: "agilecoder" }],
+    )
+    .concat(meta =>
+      meta.some(m => m.property === "twitter:site")
+        ? []
+        : [{ property: "twitter:site", content: "csshooks" }],
+    )
+    .concat(meta =>
+      meta.some(m => m.property === "twitter:image")
+        ? []
+        : meta
+            .filter(m => m.property === "og:image")
+            .map(({ content }) => ({ property: "twitter:image", content })),
+    )
+    .concat(meta =>
+      meta.some(m => m.property === "twitter:title")
+        ? []
+        : meta
+            .filter(m => m.property === "og:title")
+            .map(({ content }) => ({ property: "twitter:title", content })),
+    )
+    .concat(meta =>
+      meta.some(m => m.property === "twitter:description")
+        ? []
+        : meta
+            .filter(m => m.property === "og:description")
+            .map(({ content }) => ({
+              property: "twitter:description",
+              content,
+            })),
+    )
+    .concat(meta =>
+      meta.some(m => m.property === "twitter:card")
+        ? []
+        : [{ property: "twitter:card", content: "summary_large_image" }],
+    )
+    .build()
+    .filter(
+      ({ name, property }) =>
+        !head.meta.some(m => m.name === name || m.property === property),
+    ),
 });
 
 export const onGet: RequestHandler = async ({ cacheControl }) => {
