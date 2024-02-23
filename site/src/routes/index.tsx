@@ -153,10 +153,50 @@ export default component$(() => {
               <Icon.MenuBook q:slot="icon" />
               Docs
             </CtaButton>
-            <CtaButton href="https://githubbox.com/css-hooks/css-hooks/tree/master/examples/react">
-              <Icon.CodeSandbox q:slot="icon" />
-              Demo
-            </CtaButton>
+            <div
+              style={css({
+                display: "contents",
+                on: ($, { or, not }) => [
+                  $(
+                    not(
+                      or(
+                        "@media (width < 28em)",
+                        "@media (28em <= width < 44em)",
+                      ),
+                    ),
+                    {
+                      display: "none",
+                    },
+                  ),
+                ],
+              })}
+            >
+              <CtaButton href="https://github.com/css-hooks/css-hooks">
+                <Icon.GitHub q:slot="icon" />
+                Star
+              </CtaButton>
+            </div>
+            <div
+              style={css({
+                display: "contents",
+                on: ($, { or }) => [
+                  $(
+                    or(
+                      "@media (width < 28em)",
+                      "@media (28em <= width < 44em)",
+                    ),
+                    {
+                      display: "none",
+                    },
+                  ),
+                ],
+              })}
+            >
+              <CtaButton href="https://githubbox.com/css-hooks/css-hooks/tree/master/examples/react">
+                <Icon.CodeSandbox q:slot="icon" />
+                Demo
+              </CtaButton>
+            </div>
           </div>
         </Block>
       </section>
