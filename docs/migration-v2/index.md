@@ -163,6 +163,9 @@ and "not" operations—a slightly heavier, but much more powerful, syntax.
 Wherever you use the `css` function, you'll need to migrate to the `on`
 callback.
 
+> [!NOTE] If you want to migrate to v2 but prefer the previous API, please see
+> [css-hooks-basic](https://github.com/nsaunders/css-hooks-basic).
+
 #### Basic use case
 
 ##### Before
