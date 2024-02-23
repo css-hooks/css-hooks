@@ -269,6 +269,49 @@ describe("in browser", () => {
           );
         }
       });
+
+      it("avoids conflicts in combinational logic variables", async () => {
+        const { styleSheet, css } = createHooks({
+          hooks: {
+            "&.a": "&.a",
+            "&.b": "&.b",
+            "&.c": "&.c",
+            "&.d": "&.d",
+            "&.e": "&.e",
+            "&.f": "&.f",
+          },
+          ...mode,
+        });
+
+        await page.addStyleTag({ content: styleSheet() });
+
+        const expectedColor = Color("green");
+
+        await createStyledElement(
+          "div",
+          css(
+            {
+              on: ($, { and }) => [$(and("&.a", "&.b", "&.c"), {})],
+            },
+            css({
+              on: ($, { or }) => [
+                $(or("&.d", "&.e", "&.f"), {
+                  color: expectedColor.string(),
+                }),
+              ],
+            }),
+          ),
+        );
+
+        for (const className of ["d", "e", "f"]) {
+          await querySetClassName("div", className);
+
+          const actualColor = computedToColor(
+            (await queryComputedStyle("div"))?.color,
+          );
+          assert.deepStrictEqual(actualColor, expectedColor);
+        }
+      });
     });
   }
 

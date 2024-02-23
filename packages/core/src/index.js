@@ -94,6 +94,26 @@ export function buildHooksSystem(stringify = genericStringify) {
           : specHash;
       });
 
+    function conditionToId(condition) {
+      if (condition) {
+        if (typeof condition === "string") {
+          return hookNameToId(condition);
+        }
+        if (typeof condition === "object") {
+          if (condition.and) {
+            return `_${condition.and.map(conditionToId).join("-and-")}_`;
+          }
+          if (condition.or) {
+            return `_${condition.or.map(conditionToId).join("-or-")}_`;
+          }
+          if (condition.not) {
+            return `_-not-${conditionToId(condition.not)}_`;
+          }
+        }
+      }
+      return `${condition}`;
+    }
+
     function styleSheet() {
       function variablePair({ id, initial, indents }) {
         return [0, 1]
@@ -193,7 +213,6 @@ export function buildHooksSystem(stringify = genericStringify) {
 
     function css(...args) {
       const style = {};
-      let conditionCount = 0;
       const rules = args
         .filter(rule => rule)
         .reduce(
@@ -250,7 +269,7 @@ export function buildHooksSystem(stringify = genericStringify) {
                 }
               }
               return name;
-            })(`cond${conditionCount++}`, conditionId);
+            })(`cond-${hash(conditionToId(conditionId))}`, conditionId);
           }
           for (const [property, value] of Object.entries(rule[1])) {
             const stringifiedValue = stringify(property, value);
