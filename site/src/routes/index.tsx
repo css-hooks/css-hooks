@@ -631,9 +631,11 @@ export const Section = component$(() => (
   <section
     class="section"
     style={css({
+      "--heading-size": "2rem",
       marginTop: "4rem",
       on: $ => [
-        $(".section &.section", {
+        $(".section &", {
+          "--heading-size": "1.5rem",
           marginTop: "2rem",
         }),
       ],
@@ -642,17 +644,12 @@ export const Section = component$(() => (
     <Block>
       <h1
         style={css({
-          fontSize: "2rem",
+          fontSize: "var(--heading-size)",
           fontWeight: 700,
           lineHeight: 1.25,
           letterSpacing: "-0.03em",
           margin: 0,
           color: V.gray50,
-          on: $ => [
-            $(".section .section &", {
-              fontSize: "1.5rem",
-            }),
-          ],
         })}
       >
         <Slot name="title" />

@@ -38,8 +38,7 @@ export const { styleSheet, css } = createHooks({
     ".green &": ".green &",
     ".teal &": ".teal &",
     ".purple &": ".purple &",
-    ".section &.section": ".section &.section",
-    ".section .section &": ".section .section &",
+    ".section &": ".section &",
     "&.selected": "&.selected",
     ":has(:checked) + &": ":has(:checked) + &",
 
