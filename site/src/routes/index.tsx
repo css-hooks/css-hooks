@@ -29,7 +29,6 @@ export default component$(() => {
         style={css({
           color: V.white,
           padding: "4rem 0",
-          fontFamily: "'Inter Variable'",
           textAlign: "center",
           lineHeight: 1.25,
           on: ($, { not }) => [

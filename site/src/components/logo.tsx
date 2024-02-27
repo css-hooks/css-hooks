@@ -17,7 +17,7 @@ export const Logo = component$(
     return (
       <div
         style={{
-          fontFamily: "'Assistant Variable'",
+          fontFamily: "'Assistant Variable', sans-serif",
           fontSize: size,
           letterSpacing: "-0.05em",
           display: "flex",

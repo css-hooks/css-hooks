@@ -101,7 +101,7 @@ async function getRenderer(): Promise<RendererObject> {
     codespan(text) {
       return `<code style="${renderToString(
         css({
-          fontFamily: "'Inconsolaa Variable', monospace",
+          fontFamily: "'Inconsolata Variable', monospace",
           fontSize: "1em",
           color: V.teal60,
           on: $ => [
