@@ -974,17 +974,17 @@ export const CtaButton = component$(
             $("&.primary", {
               backgroundColor: V.purple50,
             }),
-            $("&:intent", {
-              backgroundColor: V.blue40,
-            }),
-            $("&:active", {
-              backgroundColor: V.red40,
-            }),
             $(and("&.primary", "@media (prefers-color-scheme: dark)"), {
               backgroundColor: V.purple60,
             }),
-            $(and("@media (prefers-color-scheme: dark)", "&:hover"), {
+            $("&:intent", {
+              backgroundColor: V.blue40,
+            }),
+            $(and("@media (prefers-color-scheme: dark)", "&:intent"), {
               backgroundColor: V.blue50,
+            }),
+            $("&:active", {
+              backgroundColor: V.red40,
             }),
             $(and("@media (prefers-color-scheme: dark)", "&:active"), {
               backgroundColor: V.red50,

@@ -7,7 +7,7 @@ import { recommended } from "@css-hooks/recommended";
 export const { styleSheet, css } = createHooks({
   hooks: ({ and, or }) => ({
     ...recommended({
-      pseudoClasses: [":empty", ":focus-visible", ":hover", ":active"],
+      pseudoClasses: [":empty", ":focus-visible", ":active"],
       breakpoints: ["28em", "44em", "69em"],
     }),
 
@@ -23,14 +23,15 @@ export const { styleSheet, css } = createHooks({
 
     // custom pseudo-classes
     "&:focus-visible-within": "&:has(:focus-visible)",
-    "&:intent": or("&:focus", "&:hover"),
+    "&:intent": or("&:focus", and("&:hover", "@media (hover: hover)")),
+    "&:hover": and("&:hover", "@media (hover: hover)"),
 
     // selectors
     ".group &.group": ".group &.group",
-    ".group:hover &": ".group:hover &",
+    ".group:hover &": and(".group:hover &", "@media (hover: hover)"),
     ".group:even-child &": ".group:nth-child(even) &",
     ":checked + &": ":checked + &",
-    ":intent + &": or(":focus + &", ":hover + &"),
+    ":intent + &": or(":focus + &", and(":hover + &", "@media (hover: hover)")),
     "&.primary": "&.primary",
     ".blue &": ".blue &",
     ".pink &": ".pink &",
