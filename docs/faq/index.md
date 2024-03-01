@@ -30,6 +30,8 @@ these cases, we simply recommend maintaining a global style sheet the
 "traditional" way. Using inline styles and hooks when possible can still help to
 keep this style sheet small enough to avoid maintainability issues.
 
+---
+
 ## Why don't hooks support pseudo-elements?
 
 Most of the time, a selector or at-rule defines a condition under which a
@@ -57,6 +59,8 @@ will still help you to keep this small and maintainable. You could also consider
 using a
 [custom property](https://github.com/css-hooks/css-hooks/discussions/70#discussioncomment-8551472)
 to make this approach more flexible and promote reuse.
+
+---
 
 ## What if my question isn't answered here?
 

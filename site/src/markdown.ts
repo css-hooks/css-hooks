@@ -201,6 +201,22 @@ async function getRenderer(): Promise<RendererObject> {
       }
       return false;
     },
+    hr() {
+      return `<hr style="${renderToString(
+        css({
+          margin: "2rem 0",
+          border: 0,
+          width: "100%",
+          height: 1,
+          background: V.gray10,
+          on: $ => [
+            $("@media (prefers-color-scheme: dark)", {
+              background: V.gray80,
+            }),
+          ],
+        }),
+      )}" />`;
+    },
     link(href, title, label) {
       return `<a href="${href}"${
         title ? ` title="${title}"` : ""
