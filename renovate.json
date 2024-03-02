@@ -6,7 +6,7 @@
     ":semanticCommitTypeAll(refactor)",
     ":semanticCommitScope(root)"
   ],
-  "ignorePaths": ["/package.json"],
+  "ignorePaths": [],
   "packageRules": [
     {
       "matchFileNames": ["packages/**/package.json"],
