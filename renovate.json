@@ -1,4 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended", ":semanticCommitType(refactor)"]
+  "extends": [
+    "config:recommended",
+    ":semanticCommitTypeAll(refactor)",
+    ":semanticCommitScope(package)"
+  ],
+  "includePaths": [
+    "examples/**/package.json",
+    "packages/**/package.json",
+    "site/package.json",
+    ".github/workflows/*.yml"
+  ]
 }
