@@ -15,6 +15,18 @@
     {
       "matchFileNames": ["examples/**/package.json"],
       "semanticCommitScope": "example-{{parentDir}}"
+    },
+    {
+      "matchFileNames": [".github/workflows/*.yml"],
+      "semanticCommitType": "ci"
+    },
+    {
+      "matchFileNames": [".github/workflows/build.yml"],
+      "semanticCommitScope": "build"
+    },
+    {
+      "matchFileNames": [".github/workflows/publish.yml"],
+      "semanticCommitScope": "publish"
     }
   ]
 }
