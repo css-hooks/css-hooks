@@ -4,7 +4,17 @@
     "config:recommended",
     ":prConcurrentLimit10",
     ":semanticCommitTypeAll(refactor)",
-    ":semanticCommitScope({{baseDir}})"
+    ":semanticCommitScope(root)"
   ],
-  "ignorePaths": ["/package.json"]
+  "ignorePaths": ["/package.json"],
+  "packageRules": [
+    {
+      "matchFileNames": ["packages/**/package.json"],
+      "semanticCommitScope": "{{parentDir}}"
+    },
+    {
+      "matchFileNames": ["examples/**/package.json"],
+      "semanticCommitScope": "example-{{parentDir}}"
+    }
+  ]
 }
