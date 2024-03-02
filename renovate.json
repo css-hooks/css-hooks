@@ -3,7 +3,7 @@
   "extends": [
     "config:recommended",
     ":semanticCommitTypeAll(refactor)",
-    ":semanticCommitScope({{baseDir}})"
+    ":semanticCommitScope({{packageName}})"
   ],
   "ignorePaths": []
 }
