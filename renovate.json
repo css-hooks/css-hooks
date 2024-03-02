@@ -3,12 +3,7 @@
   "extends": [
     "config:recommended",
     ":semanticCommitTypeAll(refactor)",
-    ":semanticCommitScope(package)"
+    ":semanticCommitScope({{baseDir}})"
   ],
-  "includePaths": [
-    "examples/**/package.json",
-    "packages/**/package.json",
-    "site/package.json",
-    ".github/workflows/*.yml"
-  ]
+  "ignorePaths": []
 }
