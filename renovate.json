@@ -2,8 +2,9 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended",
+    ":prConcurrentLimit10",
     ":semanticCommitTypeAll(refactor)",
     ":semanticCommitScope({{baseDir}})"
   ],
-  "ignorePaths": []
+  "ignorePaths": ["/package.json"]
 }
