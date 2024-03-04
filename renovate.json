@@ -3,10 +3,10 @@
   "extends": [
     "config:recommended",
     ":prConcurrentLimit10",
-    ":semanticCommitTypeAll(refactor)",
-    ":semanticCommitScope(null)"
+    ":semanticCommitTypeAll(refactor)"
   ],
   "prConcurrentLimit": 1,
+  "semanticCommitScope": null,
   "ignorePaths": [],
   "packageRules": [
     {
