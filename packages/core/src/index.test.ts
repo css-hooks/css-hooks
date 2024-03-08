@@ -16,7 +16,7 @@ describe("in browser", () => {
 
   before(async () => {
     browser = await puppeteer.launch({
-      headless: "new",
+      headless: true,
     });
   });
 
