@@ -18,7 +18,7 @@
     "varsace": "^0.0.4"
   },
   "devDependencies": {
-    "@typescript-eslint/parser": "^6.7.0",
+    "@typescript-eslint/parser": "^7.0.0",
     "eslint": "^8.49.0",
     "eslint-plugin-solid": "^0.13.0",
     "typescript": "^4.9.5",
