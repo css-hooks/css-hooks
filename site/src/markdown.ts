@@ -127,7 +127,7 @@ async function getRenderer(): Promise<RendererObject> {
         const prefix = step
           ? `<span style="${renderToString(
               css({
-                transform: "translateY(-20%)",
+                transform: "translateY(-22.5%)",
                 width: "0.75em",
                 height: "0.75em",
                 display: "inline-grid",
@@ -147,34 +147,34 @@ async function getRenderer(): Promise<RendererObject> {
         return `<h${level} class="group" style="${renderToString({
           ...[
             {
-              fontSize: "2.2rem",
+              fontSize: "3rem",
               fontWeight: 400,
-              marginBlock: "1.375rem",
+              marginBlock: "1.25rem",
             },
             {
-              fontSize: "2rem",
+              fontSize: "2.2rem",
               fontWeight: 400,
-              marginBlock: "1.5rem",
+              marginBlock: "1.75rem",
             },
             {
               fontSize: "1.8rem",
               fontWeight: 400,
-              marginBlock: "1.625rem",
-            },
-            {
-              fontSize: "1.6rem",
-              fontWeight: 700,
-              marginBlock: "1.75rem",
+              marginBlock: "2rem",
             },
             {
               fontSize: "1.4rem",
-              fontWeight: 700,
-              marginBlock: "1.875rem",
+              fontWeight: 400,
+              marginBlock: "2.25rem",
             },
             {
-              fontSize: "1.2rem",
+              fontSize: "1rem",
               fontWeight: 700,
-              marginBlock: "2rem",
+              marginBlock: "2.5rem",
+            },
+            {
+              fontSize: "0.75rem",
+              fontWeight: 700,
+              marginBlock: "2.625rem",
             },
           ][level - 1],
           lineHeight: 1.25,
@@ -183,21 +183,21 @@ async function getRenderer(): Promise<RendererObject> {
         )}" style="${renderToString({ position: "relative", top: "-6rem" })}"></span><a href="#${slug(text)}" style="${renderToString(
           {
             float: "left",
-            marginLeft: "-28px",
-            paddingRight: "8px",
+            marginLeft: "calc(-0.5em - 8px)",
+            paddingRight: 8,
             color: "inherit",
           },
         )}"><div style="${renderToString(
           css({
             visibility: "hidden",
-            width: "20px",
+            width: "0.5em",
             on: $ => [
               $(".group:hover &", {
                 visibility: "visible",
               }),
             ],
           }),
-        )}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></div></a><span>${prefix}${content}</span></h${level}>`;
+        )}"><svg width="0.5em" height="0.58333em" viewBox="0 0 24 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></div></a><span>${prefix}${content}</span></h${level}>`;
       }
       return false;
     },
