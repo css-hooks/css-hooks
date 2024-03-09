@@ -1,7 +1,7 @@
 {
   "name": "example-preact",
   "private": true,
-  "version": "2.0.2",
+  "version": "2.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,7 +12,7 @@
     "postversion": "npm install @css-hooks/preact@^$npm_package_version --force"
   },
   "dependencies": {
-    "@css-hooks/preact": "^2.0.2",
+    "@css-hooks/preact": "^2.0.1",
     "@fontsource/inter": "^5.0.8",
     "preact": "^10.17.1",
     "varsace": "^0.0.4"
