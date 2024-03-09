@@ -20,8 +20,16 @@
     "url": "https://github.com/css-hooks/css-hooks.git"
   },
   "workspaces": [
-    "examples/*",
-    "packages/*",
+    "packages/recommended",
+    "packages/core",
+    "packages/preact",
+    "packages/qwik",
+    "packages/react",
+    "packages/solid",
+    "examples/preact",
+    "examples/qwik",
+    "examples/react",
+    "examples/solid",
     "site"
   ]
 }
