@@ -1,10 +1,10 @@
 {
   "name": "@css-hooks/react",
   "description": "CSS Hooks for React",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "^2.0.1"
+    "@css-hooks/core": "^2.0.2"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.39.4",

@@ -1,7 +1,7 @@
 {
   "name": "css-hooks",
   "description": "Monorepo for @css-hooks/* packages",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "scripts": {
     "docs": "npm run api --workspaces --if-present && api-documenter markdown -i temp -o docs/api",
     "prepare": "npm run prepublishOnly --workspace=packages"

@@ -1,3 +1,12 @@
+## [2.0.2](https://github.com/css-hooks/css-hooks/compare/v2.0.1...v2.0.2) (2024-03-09)
+
+
+### Reverts
+
+* ci(build): skip commitlint on pr ([e91f039](https://github.com/css-hooks/css-hooks/commit/e91f039dcd368fc3acc73a8d5d47e21a2b3d4654))
+* refactor: renovate bot use package name for scope ([f51d21b](https://github.com/css-hooks/css-hooks/commit/f51d21b3ddceb0565457834c5f660f616db2322a))
+* release: v2.0.2 ([f5a93d1](https://github.com/css-hooks/css-hooks/commit/f5a93d1fe80a0916c56268daf22a0dfef1fe0e2b))
+
 ## [2.0.1](https://github.com/css-hooks/css-hooks/compare/v2.0.0...v2.0.1) (2024-02-23)
 
 
