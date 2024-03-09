@@ -81,10 +81,10 @@ jobs:
           author_email: 41898282+github-actions[bot]@users.noreply.github.com
           message: "release: v${{steps.root.outputs.version}}"
           tag: v${{steps.root.outputs.version}}
-
+      
       - if: inputs.artifacts == 'release'
         name: github release
-        run: npx conventional-github-releaser -p conventionalcommits
+        run: npx conventional-github-releaser -p angular
         env:
           CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{secrets.GH_ACCESS_TOKEN}}
 
