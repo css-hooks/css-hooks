@@ -82,9 +82,11 @@ reference the hook in conditional styles) and its implementation. For example:
 import { createHooks } from "@css-hooks/react";
 
 export const { styleSheet, css } = createHooks({
-  ".group &:hover": ".group &:hover",
-  "&:intent": "&:hover, &:focus",
-  darkMode: ".dark &",
+  hooks: {
+    ".group &:hover": ".group &:hover",
+    "&:intent": "&:hover, &:focus",
+    darkMode: ".dark &",
+  },
 });
 ```
 
