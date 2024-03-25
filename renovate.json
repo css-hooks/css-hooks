@@ -32,6 +32,10 @@
     {
       "matchFileNames": [".github/workflows/publish.yml"],
       "semanticCommitScope": "publish"
+    },
+    {
+      "matchPackagePatterns": ["shiki"],
+      "groupName": "shiki"
     }
   ]
 }
