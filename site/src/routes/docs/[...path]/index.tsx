@@ -127,7 +127,7 @@ export const onStaticGenerate: StaticGenerateHandler = () => ({
     path: x
       .substring(docBase.length + 1)
       .replace(/\.md$/, "")
-      .replace(/\./, "_")
+      .replace(/\./g, "_")
       .replace(/\/index$/, ""),
   })),
 });
