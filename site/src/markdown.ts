@@ -305,7 +305,11 @@ export async function render(markdown: string): Promise<string> {
       walkTokens(token) {
         if (token.type === "link") {
           const href = token.href as string;
-          token.href = href.replace(/\.md$/, "").replace(/\/index$/, "");
+          token.href = href
+            .replace(/(^|\/)([^/]+)\.md$/, function (_, prefix, basename) {
+              return `${prefix}${basename.replace(/\./g, "_")}`;
+            })
+            .replace(/\/index$/, "");
         }
       },
     })

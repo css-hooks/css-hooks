@@ -15,7 +15,7 @@ import { css } from "~/css";
 
 const documents = import.meta.glob("../../../../../docs/**/*.md", {
   import: "default",
-  as: "raw",
+  query: "?raw",
   eager: false,
 });
 
@@ -30,14 +30,15 @@ Please proceed to the [Documentation](/docs) homepage so we can help you find wh
 `;
 
 export const useDocument = routeLoader$(async requestEvent => {
-  const {
-    params: { path },
-  } = requestEvent;
+  const { params } = requestEvent;
+  const path = params.path.replace(/_/g, ".");
   const indexPath = `${docBase}/${path}/index.md`;
   const altPath = `${docBase}/${path}.md`;
   if (indexPath in documents || altPath in documents) {
     const isIndex = indexPath in documents;
-    const markdown = matter(await documents[isIndex ? indexPath : altPath]());
+    const markdown = matter(
+      z.string().parse(await documents[isIndex ? indexPath : altPath]()),
+    );
     return {
       path: (isIndex ? indexPath : altPath).replace(/^(.*)?\/docs\//, ""),
       failed: false,
@@ -126,6 +127,7 @@ export const onStaticGenerate: StaticGenerateHandler = () => ({
     path: x
       .substring(docBase.length + 1)
       .replace(/\.md$/, "")
+      .replace(/\./, "_")
       .replace(/\/index$/, ""),
   })),
 });

@@ -18,7 +18,7 @@ export const head: DocumentHead = {
 
 const documents = import.meta.glob("../../../../docs/*/index.md", {
   import: "default",
-  as: "raw",
+  query: "?raw",
   eager: false,
 });
 
@@ -27,7 +27,7 @@ const docsBase = "../../../../docs";
 export const useIndex = routeLoader$(async () => {
   const items = await Promise.all(
     Object.entries(documents).map(async ([path, getContent]) => {
-      const { data } = matter(await getContent());
+      const { data } = matter(z.string().parse(await getContent()));
       const { title, description, order } = /\/api\//.test(path)
         ? {
             title: "API",

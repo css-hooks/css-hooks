@@ -8,7 +8,7 @@ import * as Icon from "~/components/icons";
 
 const documents = import.meta.glob("../../../../../docs/**/index.md", {
   import: "default",
-  as: "raw",
+  query: "?raw",
   eager: false,
 });
 
@@ -24,7 +24,7 @@ type MenuItem = {
 export const useMenu = routeLoader$(async () => {
   const items = await Promise.all(
     Object.entries(documents).map(async ([path, getContent]) => {
-      const { data } = matter(await getContent());
+      const { data } = matter(z.string().parse(await getContent()));
       const { title, order } = /\/api\//.test(path)
         ? { title: "API", order: 99 }
         : z.object({ title: z.string(), order: z.number() }).parse(data);
