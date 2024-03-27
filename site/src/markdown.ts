@@ -225,9 +225,11 @@ async function getRenderer(): Promise<RendererObject> {
     table(header, body) {
       return `<table style="${renderToString(
         css({
-          borderColor: V.gray20,
+          borderStyle: "solid",
+          borderWidth: 1,
           borderSpacing: 0,
           borderCollapse: "collapse",
+          borderColor: V.gray20,
           on: $ => [
             $("@media (prefers-color-scheme: dark)", {
               borderColor: V.gray70,
@@ -237,7 +239,16 @@ async function getRenderer(): Promise<RendererObject> {
       )}"><thead>${header}</thead><tbody>${body}</tbody></table>`;
     },
     tablerow(content) {
-      return `<tr class="group">${content}</tr>`;
+      return `<tr class="group" style="${renderToString(
+        css({
+          borderColor: V.gray20,
+          on: $ => [
+            $("@media (prefers-color-scheme: dark)", {
+              borderColor: V.gray70,
+            }),
+          ],
+        }),
+      )}">${content}</tr>`;
     },
     tablecell(content, flags) {
       const tag = flags.header ? "th" : "td";
