@@ -3,7 +3,12 @@
   "extends": [
     "config:recommended",
     ":prConcurrentLimit10",
-    ":semanticCommitTypeAll(refactor)"
+    ":semanticCommitTypeAll(refactor)",
+    ":automergeLinters",
+    ":automergePatch",
+    ":automergeRequireAllStatusChecks",
+    ":automergeTypes",
+    ":reviewer(nsaunders)"
   ],
   "prConcurrentLimit": 1,
   "semanticCommitScope": null,
