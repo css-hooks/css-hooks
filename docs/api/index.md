@@ -6,12 +6,81 @@
 
 ## Packages
 
-|  Package | Description |
-|  --- | --- |
-|  [@css-hooks/core](./core.md) | CSS Hooks core library |
-|  [@css-hooks/preact](./preact.md) | CSS Hooks for [Preact](https://preactjs.com) |
-|  [@css-hooks/qwik](./qwik.md) | CSS Hooks for [Qwik](https://qwik.dev) |
-|  [@css-hooks/react](./react.md) | CSS Hooks for [React](https://react.dev) |
-|  [@css-hooks/recommended](./recommended.md) | Easily configure an opinionated set of hooks |
-|  [@css-hooks/solid](./solid.md) | CSS Hooks for [Solid](https://www.solidjs.com/) |
+<table><thead><tr><th>
 
+Package
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[@css-hooks/core](./core.md)
+
+
+</td><td>
+
+CSS Hooks core library
+
+
+</td></tr>
+<tr><td>
+
+[@css-hooks/preact](./preact.md)
+
+
+</td><td>
+
+CSS Hooks for [Preact](https://preactjs.com)
+
+
+</td></tr>
+<tr><td>
+
+[@css-hooks/qwik](./qwik.md)
+
+
+</td><td>
+
+CSS Hooks for [Qwik](https://qwik.dev)
+
+
+</td></tr>
+<tr><td>
+
+[@css-hooks/react](./react.md)
+
+
+</td><td>
+
+CSS Hooks for [React](https://react.dev)
+
+
+</td></tr>
+<tr><td>
+
+[@css-hooks/recommended](./recommended.md)
+
+
+</td><td>
+
+Easily configure an opinionated set of hooks
+
+
+</td></tr>
+<tr><td>
+
+[@css-hooks/solid](./solid.md)
+
+
+</td><td>
+
+CSS Hooks for [Solid](https://www.solidjs.com/)
+
+
+</td></tr>
+</tbody></table>

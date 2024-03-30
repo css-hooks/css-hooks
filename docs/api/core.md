@@ -8,29 +8,188 @@ CSS Hooks core library
 
 ## Functions
 
-|  Function | Description |
-|  --- | --- |
-|  [buildHooksSystem(stringify)](./core.buildhookssystem.md) | Creates a flavor of CSS Hooks tailored to a specific app framework. |
+<table><thead><tr><th>
+
+Function
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[buildHooksSystem(stringify)](./core.buildhookssystem.md)
+
+
+</td><td>
+
+Creates a flavor of CSS Hooks tailored to a specific app framework.
+
+
+</td></tr>
+</tbody></table>
 
 ## Interfaces
 
-|  Interface | Description |
-|  --- | --- |
-|  [ConditionHelpers](./core.conditionhelpers.md) | Helper functions used to construct advanced conditions. |
-|  [Config](./core.config.md) | Represents the configuration used to set up hooks. |
-|  [Hooks](./core.hooks.md) | Contains the [css](./core.cssfn.md) function used to define enhanced styles, along with the style sheet required to support it. |
+<table><thead><tr><th>
+
+Interface
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[ConditionHelpers](./core.conditionhelpers.md)
+
+
+</td><td>
+
+Helper functions used to construct advanced conditions.
+
+
+</td></tr>
+<tr><td>
+
+[Config](./core.config.md)
+
+
+</td><td>
+
+Represents the configuration used to set up hooks.
+
+
+</td></tr>
+<tr><td>
+
+[Hooks](./core.hooks.md)
+
+
+</td><td>
+
+Contains the [css](./core.cssfn.md) function used to define enhanced styles, along with the style sheet required to support it.
+
+
+</td></tr>
+</tbody></table>
 
 ## Type Aliases
 
-|  Type Alias | Description |
-|  --- | --- |
-|  [Condition](./core.condition.md) | Represents the conditions under which a given hook or declaration applies. |
-|  [ConditionalStyleFn](./core.conditionalstylefn.md) | Callback to construct a conditional style group. |
-|  [CreateHooksFn](./core.createhooksfn.md) | Represents the function used to define hooks and related configuration. |
-|  [CssFn](./core.cssfn.md) | Represents the type of the <code>css</code> function, used to transform a [Rule](./core.rule.md) into a flat style object. |
-|  [GetHookNames](./core.gethooknames.md) | A utility type used to extract hook names from configuration |
-|  [HookImpl](./core.hookimpl.md) | Represents a basic hook implementation, using CSS syntax to define a selector or at-rule. |
-|  [OnFn](./core.onfn.md) | Provides a way to declare conditional styles within a [Rule](./core.rule.md)<!-- -->. |
-|  [Rule](./core.rule.md) | Represents a style object, optionally enhanced with inline styles. |
-|  [StringifyFn](./core.stringifyfn.md) | Function to convert a value into a string. |
+<table><thead><tr><th>
 
+Type Alias
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[Condition](./core.condition.md)
+
+
+</td><td>
+
+Represents the conditions under which a given hook or declaration applies.
+
+
+</td></tr>
+<tr><td>
+
+[ConditionalStyleFn](./core.conditionalstylefn.md)
+
+
+</td><td>
+
+Callback to construct a conditional style group.
+
+
+</td></tr>
+<tr><td>
+
+[CreateHooksFn](./core.createhooksfn.md)
+
+
+</td><td>
+
+Represents the function used to define hooks and related configuration.
+
+
+</td></tr>
+<tr><td>
+
+[CssFn](./core.cssfn.md)
+
+
+</td><td>
+
+Represents the type of the `css` function, used to transform a [Rule](./core.rule.md) into a flat style object.
+
+
+</td></tr>
+<tr><td>
+
+[GetHookNames](./core.gethooknames.md)
+
+
+</td><td>
+
+A utility type used to extract hook names from configuration
+
+
+</td></tr>
+<tr><td>
+
+[HookImpl](./core.hookimpl.md)
+
+
+</td><td>
+
+Represents a basic hook implementation, using CSS syntax to define a selector or at-rule.
+
+
+</td></tr>
+<tr><td>
+
+[OnFn](./core.onfn.md)
+
+
+</td><td>
+
+Provides a way to declare conditional styles within a [Rule](./core.rule.md)<!-- -->.
+
+
+</td></tr>
+<tr><td>
+
+[Rule](./core.rule.md)
+
+
+</td><td>
+
+Represents a style object, optionally enhanced with inline styles.
+
+
+</td></tr>
+<tr><td>
+
+[StringifyFn](./core.stringifyfn.md)
+
+
+</td><td>
+
+Function to convert a value into a string.
+
+
+</td></tr>
+</tbody></table>

@@ -16,10 +16,39 @@ export function recommended<const C extends RecommendedConfig>(
 
 ## Parameters
 
-|  Parameter | Type | Description |
-|  --- | --- | --- |
-|  config | C &amp; [RecommendedConfig](./recommended.recommendedconfig.md) | A simplified configuration model for an opinionated set of hooks |
+<table><thead><tr><th>
 
+Parameter
+
+
+</th><th>
+
+Type
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+config
+
+
+</td><td>
+
+C &amp; [RecommendedConfig](./recommended.recommendedconfig.md)
+
+
+</td><td>
+
+A simplified configuration model for an opinionated set of hooks
+
+
+</td></tr>
+</tbody></table>
 **Returns:**
 
 [WidthMediaQueries](./recommended.widthmediaqueries.md)<!-- -->&lt;C&gt; &amp; [ColorSchemeMediaQueries](./recommended.colorschememediaqueries.md)<!-- -->&lt;C&gt; &amp; [PseudoClassSelectors](./recommended.pseudoclassselectors.md)<!-- -->&lt;C&gt;

@@ -14,10 +14,37 @@ and(...conditions: Condition<HookName>[]): Condition<HookName>;
 
 ## Parameters
 
-|  Parameter | Type | Description |
-|  --- | --- | --- |
-|  conditions | [Condition](./core.condition.md)<!-- -->&lt;HookName&gt;\[\] |  |
+<table><thead><tr><th>
 
+Parameter
+
+
+</th><th>
+
+Type
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+conditions
+
+
+</td><td>
+
+[Condition](./core.condition.md)<!-- -->&lt;HookName&gt;\[\]
+
+
+</td><td>
+
+
+</td></tr>
+</tbody></table>
 **Returns:**
 
 [Condition](./core.condition.md)<!-- -->&lt;HookName&gt;

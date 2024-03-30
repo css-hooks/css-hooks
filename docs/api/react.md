@@ -8,7 +8,26 @@ CSS Hooks for [React](https://react.dev)
 
 ## Variables
 
-|  Variable | Description |
-|  --- | --- |
-|  [createHooks](./react.createhooks.md) | A [CreateHooksFn](./core.createhooksfn.md) configured to use React's <code>CSSProperties</code> type and logic for converting CSS values into strings. |
+<table><thead><tr><th>
 
+Variable
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[createHooks](./react.createhooks.md)
+
+
+</td><td>
+
+A [CreateHooksFn](./core.createhooksfn.md) configured to use React's `CSSProperties` type and logic for converting CSS values into strings.
+
+
+</td></tr>
+</tbody></table>

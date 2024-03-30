@@ -14,8 +14,63 @@ export interface Hooks<HookName, CSSProperties>
 
 ## Properties
 
-|  Property | Modifiers | Type | Description |
-|  --- | --- | --- | --- |
-|  [css](./core.hooks.css.md) |  | [CssFn](./core.cssfn.md)<!-- -->&lt;HookName, CSSProperties&gt; | The <code>css</code> function used to define enhanced styles. |
-|  [styleSheet](./core.hooks.stylesheet.md) |  | () =&gt; string | The style sheet required to support the configured hooks. |
+<table><thead><tr><th>
 
+Property
+
+
+</th><th>
+
+Modifiers
+
+
+</th><th>
+
+Type
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[css](./core.hooks.css.md)
+
+
+</td><td>
+
+
+</td><td>
+
+[CssFn](./core.cssfn.md)<!-- -->&lt;HookName, CSSProperties&gt;
+
+
+</td><td>
+
+The `css` function used to define enhanced styles.
+
+
+</td></tr>
+<tr><td>
+
+[styleSheet](./core.hooks.stylesheet.md)
+
+
+</td><td>
+
+
+</td><td>
+
+() =&gt; string
+
+
+</td><td>
+
+The style sheet required to support the configured hooks.
+
+
+</td></tr>
+</tbody></table>

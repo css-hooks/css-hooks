@@ -16,10 +16,39 @@ declare function buildHooksSystem<CSSProperties = Record<string, unknown>>(
 
 ## Parameters
 
-|  Parameter | Type | Description |
-|  --- | --- | --- |
-|  stringify | [StringifyFn](./core.stringifyfn.md) | _(Optional)_ The function used to stringify values when merging conditional styles. |
+<table><thead><tr><th>
 
+Parameter
+
+
+</th><th>
+
+Type
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+stringify
+
+
+</td><td>
+
+[StringifyFn](./core.stringifyfn.md)
+
+
+</td><td>
+
+_(Optional)_ The function used to stringify values when merging conditional styles.
+
+
+</td></tr>
+</tbody></table>
 **Returns:**
 
 [CreateHooksFn](./core.createhooksfn.md)<!-- -->&lt;CSSProperties&gt;

@@ -14,9 +14,48 @@ export interface ConditionHelpers<HookName>
 
 ## Methods
 
-|  Method | Description |
-|  --- | --- |
-|  [and(conditions)](./core.conditionhelpers.and.md) | Creates a condition that is true when all of the conditions passed as arguments are true. |
-|  [not(condition)](./core.conditionhelpers.not.md) | Creates a condition that is true when the specified condition is false. |
-|  [or(conditions)](./core.conditionhelpers.or.md) | Creates a condition that is true when any of the conditions passed as arguments is true. |
+<table><thead><tr><th>
 
+Method
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[and(conditions)](./core.conditionhelpers.and.md)
+
+
+</td><td>
+
+Creates a condition that is true when all of the conditions passed as arguments are true.
+
+
+</td></tr>
+<tr><td>
+
+[not(condition)](./core.conditionhelpers.not.md)
+
+
+</td><td>
+
+Creates a condition that is true when the specified condition is false.
+
+
+</td></tr>
+<tr><td>
+
+[or(conditions)](./core.conditionhelpers.or.md)
+
+
+</td><td>
+
+Creates a condition that is true when any of the conditions passed as arguments is true.
+
+
+</td></tr>
+</tbody></table>

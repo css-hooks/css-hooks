@@ -8,20 +8,129 @@ Easily configure an opinionated set of hooks
 
 ## Functions
 
-|  Function | Description |
-|  --- | --- |
-|  [recommended(config)](./recommended.recommended.md) | Based on your settings, produces a hook configuration with an opinionated set of hooks to address the most common use cases. |
+<table><thead><tr><th>
+
+Function
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[recommended(config)](./recommended.recommended.md)
+
+
+</td><td>
+
+Based on your settings, produces a hook configuration with an opinionated set of hooks to address the most common use cases.
+
+
+</td></tr>
+</tbody></table>
 
 ## Type Aliases
 
-|  Type Alias | Description |
-|  --- | --- |
-|  [BreakpointsToMediaQueries](./recommended.breakpointstomediaqueries.md) | This utility type converts a list of breakpoints into a list of media queries. |
-|  [BreakpointsToMediaQueriesImpl](./recommended.breakpointstomediaqueriesimpl.md) | This utility type helps convert a list of breakpoints into a list of media queries. |
-|  [ColorSchemeMediaQueries](./recommended.colorschememediaqueries.md) | This type adds media queries to a hook configuration when color schemes are specified. |
-|  [PseudoClassSelectors](./recommended.pseudoclassselectors.md) | This type adds selectors to a hook configuration when pseudo-classes are specified. |
-|  [RecommendedConfig](./recommended.recommendedconfig.md) | The format of the configuration object passed to the [recommended()](./recommended.recommended.md) function |
-|  [StringToHook](./recommended.stringtohook.md) | This utility type converts a hook implementation to an entry. |
-|  [UnionToIntersection](./recommended.uniontointersection.md) | This utility type turns a union type into an intersection type. |
-|  [WidthMediaQueries](./recommended.widthmediaqueries.md) | This type adds media queries to a hook configuration when breakpoints are specified. |
+<table><thead><tr><th>
 
+Type Alias
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[BreakpointsToMediaQueries](./recommended.breakpointstomediaqueries.md)
+
+
+</td><td>
+
+This utility type converts a list of breakpoints into a list of media queries.
+
+
+</td></tr>
+<tr><td>
+
+[BreakpointsToMediaQueriesImpl](./recommended.breakpointstomediaqueriesimpl.md)
+
+
+</td><td>
+
+This utility type helps convert a list of breakpoints into a list of media queries.
+
+
+</td></tr>
+<tr><td>
+
+[ColorSchemeMediaQueries](./recommended.colorschememediaqueries.md)
+
+
+</td><td>
+
+This type adds media queries to a hook configuration when color schemes are specified.
+
+
+</td></tr>
+<tr><td>
+
+[PseudoClassSelectors](./recommended.pseudoclassselectors.md)
+
+
+</td><td>
+
+This type adds selectors to a hook configuration when pseudo-classes are specified.
+
+
+</td></tr>
+<tr><td>
+
+[RecommendedConfig](./recommended.recommendedconfig.md)
+
+
+</td><td>
+
+The format of the configuration object passed to the [recommended()](./recommended.recommended.md) function
+
+
+</td></tr>
+<tr><td>
+
+[StringToHook](./recommended.stringtohook.md)
+
+
+</td><td>
+
+This utility type converts a hook implementation to an entry.
+
+
+</td></tr>
+<tr><td>
+
+[UnionToIntersection](./recommended.uniontointersection.md)
+
+
+</td><td>
+
+This utility type turns a union type into an intersection type.
+
+
+</td></tr>
+<tr><td>
+
+[WidthMediaQueries](./recommended.widthmediaqueries.md)
+
+
+</td><td>
+
+This type adds media queries to a hook configuration when breakpoints are specified.
+
+
+</td></tr>
+</tbody></table>

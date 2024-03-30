@@ -4,6 +4,84 @@ import { css, renderToString } from "~/css";
 import * as V from "varsace";
 import { anchorStyle } from "~/components/anchor";
 import { highlighter, isSupportedLanguage } from "./highlight";
+import { rehype } from "rehype";
+import rehypeRewrite from "rehype-rewrite";
+import rehypeStringify from "rehype-stringify";
+
+const tableStyle = () =>
+  renderToString(
+    css({
+      borderStyle: "solid",
+      borderWidth: 1,
+      borderSpacing: 0,
+      borderCollapse: "collapse",
+      borderColor: V.gray20,
+      on: $ => [
+        $("@media (prefers-color-scheme: dark)", {
+          borderColor: V.gray70,
+        }),
+      ],
+    }),
+  );
+
+const tablerowStyle = () =>
+  renderToString(
+    css({
+      borderColor: V.gray20,
+      on: $ => [
+        $("@media (prefers-color-scheme: dark)", {
+          borderColor: V.gray70,
+        }),
+      ],
+    }),
+  );
+
+const tablecellStyle = (flags: {
+  header?: boolean;
+  align?: "left" | "center" | "right" | null;
+}) =>
+  renderToString(
+    css(
+      {
+        borderWidth: 1,
+        borderColor: "inherit",
+        borderStyle: "solid",
+        padding: "calc(0.375em - 0.5px) 0.75em",
+        on: ($, { and, or, not }) => [
+          $(
+            not(
+              or("@media (prefers-color-scheme: dark)", ".group:even-child &"),
+            ),
+            {
+              background: V.white,
+            },
+          ),
+          $(
+            and(
+              not("@media (prefers-color-scheme: dark)"),
+              ".group:even-child &",
+            ),
+            {
+              background: `color-mix(in srgb, ${V.white}, ${V.gray05})`,
+            },
+          ),
+          $(
+            and(
+              "@media (prefers-color-scheme: dark)",
+              not(".group:even-child &"),
+            ),
+            {
+              background: `color-mix(in srgb, ${V.gray85}, ${V.gray90})`,
+            },
+          ),
+          $(and("@media (prefers-color-scheme: dark)", ".group:even-child &"), {
+            background: V.gray85,
+          }),
+        ],
+      },
+      flags.align ? { textAlign: flags.align } : undefined,
+    ),
+  );
 
 async function getRenderer(): Promise<RendererObject> {
   const hl = await highlighter();
@@ -223,93 +301,21 @@ async function getRenderer(): Promise<RendererObject> {
       } style="${renderToString(anchorStyle())}">${label}</a>`;
     },
     table(header, body) {
-      return `<table style="${renderToString(
-        css({
-          borderStyle: "solid",
-          borderWidth: 1,
-          borderSpacing: 0,
-          borderCollapse: "collapse",
-          borderColor: V.gray20,
-          on: $ => [
-            $("@media (prefers-color-scheme: dark)", {
-              borderColor: V.gray70,
-            }),
-          ],
-        }),
-      )}"><thead>${header}</thead><tbody>${body}</tbody></table>`;
+      return `<table style="${tableStyle()}"><thead>${header}</thead><tbody>${body}</tbody></table>`;
     },
     tablerow(content) {
-      return `<tr class="group" style="${renderToString(
-        css({
-          borderColor: V.gray20,
-          on: $ => [
-            $("@media (prefers-color-scheme: dark)", {
-              borderColor: V.gray70,
-            }),
-          ],
-        }),
-      )}">${content}</tr>`;
+      return `<tr class="group" style="${tablerowStyle()}">${content}</tr>`;
     },
     tablecell(content, flags) {
       const tag = flags.header ? "th" : "td";
-      return `<${tag} style="${renderToString(
-        css(
-          {
-            borderWidth: 1,
-            borderColor: "inherit",
-            borderStyle: "solid",
-            padding: "calc(0.375em - 0.5px) 0.75em",
-            on: ($, { and, or, not }) => [
-              $(
-                not(
-                  or(
-                    "@media (prefers-color-scheme: dark)",
-                    ".group:even-child &",
-                  ),
-                ),
-                {
-                  background: V.white,
-                },
-              ),
-              $(
-                and(
-                  not("@media (prefers-color-scheme: dark)"),
-                  ".group:even-child &",
-                ),
-                {
-                  background: `color-mix(in srgb, ${V.white}, ${V.gray05})`,
-                },
-              ),
-              $(
-                and(
-                  "@media (prefers-color-scheme: dark)",
-                  not(".group:even-child &"),
-                ),
-                {
-                  background: `color-mix(in srgb, ${V.gray85}, ${V.gray90})`,
-                },
-              ),
-              $(
-                and(
-                  "@media (prefers-color-scheme: dark)",
-                  ".group:even-child &",
-                ),
-                {
-                  background: V.gray85,
-                },
-              ),
-            ],
-          },
-          flags.align ? { textAlign: flags.align } : undefined,
-        ),
-      )}">${content}</${tag}>`;
+      return `<${tag} style="${tablecellStyle(flags)}">${content}</${tag}>`;
     },
   };
 }
 
 export async function render(markdown: string): Promise<string> {
   const renderer = await getRenderer();
-  return await marked
+  const html = await marked
     .use({
       gfm: true,
       renderer,
@@ -325,4 +331,40 @@ export async function render(markdown: string): Promise<string> {
       },
     })
     .parse(markdown);
+
+  const htmlFinal = await rehype()
+    .data("settings", { fragment: true })
+    .use(rehypeRewrite, {
+      rewrite(node, index, parent) {
+        if (node.type === "element") {
+          switch (node.tagName) {
+            case "table":
+              node.properties.style = tableStyle();
+              break;
+            case "tr":
+              node.properties.class = "group";
+              node.properties.style = tablerowStyle();
+              break;
+            case "th":
+              node.properties.style = tablecellStyle({ header: true });
+              break;
+            case "td":
+              node.properties.style = tablecellStyle({ header: false });
+              break;
+            case "p":
+              if (
+                parent?.type === "element" &&
+                (parent.tagName === "th" || parent.tagName === "td")
+              ) {
+                node.properties.style = renderToString({ margin: 0 });
+              }
+              break;
+          }
+        }
+      },
+    })
+    .use(rehypeStringify)
+    .process(html);
+
+  return htmlFinal.toString();
 }

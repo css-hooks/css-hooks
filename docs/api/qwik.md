@@ -8,7 +8,26 @@ CSS Hooks for [Qwik](https://qwik.dev)
 
 ## Variables
 
-|  Variable | Description |
-|  --- | --- |
-|  [createHooks](./qwik.createhooks.md) | A [CreateHooksFn](./core.createhooksfn.md) configured to use Qwik's <code>CSSProperties</code> type and logic for converting CSS values into strings. |
+<table><thead><tr><th>
 
+Variable
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[createHooks](./qwik.createhooks.md)
+
+
+</td><td>
+
+A [CreateHooksFn](./core.createhooksfn.md) configured to use Qwik's `CSSProperties` type and logic for converting CSS values into strings.
+
+
+</td></tr>
+</tbody></table>

@@ -8,13 +8,52 @@ CSS Hooks for [Preact](https://preactjs.com)
 
 ## Variables
 
-|  Variable | Description |
-|  --- | --- |
-|  [createHooks](./preact.createhooks.md) | A [CreateHooksFn](./core.createhooksfn.md) configured to use Preact's <code>JSX.CSSProperties</code> type and logic for converting CSS values into strings. |
+<table><thead><tr><th>
+
+Variable
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[createHooks](./preact.createhooks.md)
+
+
+</td><td>
+
+A [CreateHooksFn](./core.createhooksfn.md) configured to use Preact's `JSX.CSSProperties` type and logic for converting CSS values into strings.
+
+
+</td></tr>
+</tbody></table>
 
 ## Type Aliases
 
-|  Type Alias | Description |
-|  --- | --- |
-|  [CSSProperties](./preact.cssproperties.md) | A version of Preact's <code>JSX.CSSProperties</code> type that admits an <code>on</code> field |
+<table><thead><tr><th>
 
+Type Alias
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[CSSProperties](./preact.cssproperties.md)
+
+
+</td><td>
+
+A version of Preact's `JSX.CSSProperties` type that admits an `on` field
+
+
+</td></tr>
+</tbody></table>

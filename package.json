@@ -7,7 +7,7 @@
     "prepare": "npm run prepublishOnly --workspace=packages"
   },
   "devDependencies": {
-    "@microsoft/api-documenter": "^7.23.20",
+    "@microsoft/api-documenter": "^7.24.1",
     "conventional-changelog-cli": "^4.0.0",
     "conventional-github-releaser": "^3.1.5",
     "conventional-recommended-bump": "^9.0.0",

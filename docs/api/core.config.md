@@ -14,10 +14,101 @@ export interface Config<HooksConfig>
 
 ## Properties
 
-|  Property | Modifiers | Type | Description |
-|  --- | --- | --- | --- |
-|  [debug?](./core.config.debug.md) |  | boolean | _(Optional)_ Whether to enable debug mode. |
-|  [fallback?](./core.config.fallback.md) |  | "revert-layer" \| "unset" | _(Optional)_ The fallback keyword to use when no other value is available. The [revert-layer](https://developer.mozilla.org/en-US/docs/Web/CSS/revert-layer) keyword is functionally the best option, but [unset](https://developer.mozilla.org/en-US/docs/Web/CSS/unset) has better compatibility. |
-|  [hooks](./core.config.hooks.md) |  | HooksConfig | The hooks available for use in conditional styles. |
-|  [sort?](./core.config.sort.md) |  | { properties?: boolean; conditionalStyles?: boolean; } | **_(BETA)_** _(Optional)_ Options for sorting declarations when multiple rules are passed to the [css](./core.cssfn.md) function. |
+<table><thead><tr><th>
 
+Property
+
+
+</th><th>
+
+Modifiers
+
+
+</th><th>
+
+Type
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[debug?](./core.config.debug.md)
+
+
+</td><td>
+
+
+</td><td>
+
+boolean
+
+
+</td><td>
+
+_(Optional)_ Whether to enable debug mode.
+
+
+</td></tr>
+<tr><td>
+
+[fallback?](./core.config.fallback.md)
+
+
+</td><td>
+
+
+</td><td>
+
+"revert-layer" \| "unset"
+
+
+</td><td>
+
+_(Optional)_ The fallback keyword to use when no other value is available. The [revert-layer](https://developer.mozilla.org/en-US/docs/Web/CSS/revert-layer) keyword is functionally the best option, but [unset](https://developer.mozilla.org/en-US/docs/Web/CSS/unset) has better compatibility.
+
+
+</td></tr>
+<tr><td>
+
+[hooks](./core.config.hooks.md)
+
+
+</td><td>
+
+
+</td><td>
+
+HooksConfig
+
+
+</td><td>
+
+The hooks available for use in conditional styles.
+
+
+</td></tr>
+<tr><td>
+
+[sort?](./core.config.sort.md)
+
+
+</td><td>
+
+
+</td><td>
+
+{ properties?: boolean; conditionalStyles?: boolean; }
+
+
+</td><td>
+
+**_(BETA)_** _(Optional)_ Options for sorting declarations when multiple rules are passed to the [css](./core.cssfn.md) function.
+
+
+</td></tr>
+</tbody></table>

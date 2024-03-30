@@ -8,7 +8,26 @@ CSS Hooks for [Solid](https://www.solidjs.com/)
 
 ## Variables
 
-|  Variable | Description |
-|  --- | --- |
-|  [createHooks](./solid.createhooks.md) | A [CreateHooksFn](./core.createhooksfn.md) configured to use Solid's <code>JSX.CSSProperties</code> type and logic for converting CSS values into strings. |
+<table><thead><tr><th>
 
+Variable
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[createHooks](./solid.createhooks.md)
+
+
+</td><td>
+
+A [CreateHooksFn](./core.createhooksfn.md) configured to use Solid's `JSX.CSSProperties` type and logic for converting CSS values into strings.
+
+
+</td></tr>
+</tbody></table>
