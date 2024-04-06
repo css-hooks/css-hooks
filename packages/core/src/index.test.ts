@@ -862,3 +862,55 @@ it("allows plain JSON `on` value", () => {
   });
   assert.deepStrictEqual(actual, expected);
 });
+
+it("produces the same result twice given the same style object reference", () => {
+  // This is to avoid issues in React Strict Mode. See #167.
+  const createHooks = buildHooksSystem<CSS.Properties>();
+  const { css } = createHooks({
+    hooks: {
+      "&:hover": "&:hover",
+    },
+  });
+
+  const style = {
+    color: "blue",
+    on: [
+      [
+        "&:hover",
+        {
+          color: "red",
+        },
+      ],
+    ],
+  } satisfies Parameters<typeof css>[0];
+
+  const expected = css(style),
+    actual = css(style);
+
+  assert.deepStrictEqual(actual, expected);
+});
+
+it("does not include a redundant `on` property in the resulting style object", () => {
+  const createHooks = buildHooksSystem<CSS.Properties>();
+  const { css } = createHooks({
+    hooks: {
+      "&:hover": "&:hover",
+    },
+  });
+  if (
+    "on" in
+    css({
+      color: "blue",
+      on: [
+        [
+          "&:hover",
+          {
+            color: "red",
+          },
+        ],
+      ],
+    })
+  ) {
+    assert.fail("The returned style object included an invalid `on` property.");
+  }
+});
