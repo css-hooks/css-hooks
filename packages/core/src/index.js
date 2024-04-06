@@ -227,7 +227,6 @@ export function buildHooksSystem(stringify = genericStringify) {
             } else {
               baseStyles.push(rule);
             }
-            delete rule.on;
             return [baseStyles, conditionalStyles];
           },
           [[], []],
@@ -292,6 +291,9 @@ export function buildHooksSystem(stringify = genericStringify) {
           continue;
         }
         for (const [property, value] of Object.entries(rule)) {
+          if (property === "on") {
+            continue;
+          }
           if (sortProperties) {
             delete style[property];
           }
