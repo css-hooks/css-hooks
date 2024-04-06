@@ -1,7 +1,7 @@
 {
   "name": "@css-hooks/recommended",
   "description": "A recommended set of hooks to jump-start development",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "author": "Nick Saunders",
   "devDependencies": {
     "@microsoft/api-extractor": "^7.39.4",

@@ -1,3 +1,10 @@
+## [2.0.3](https://github.com/css-hooks/css-hooks/compare/v2.0.2...v2.0.3) (2024-04-06)
+
+
+### Bug Fixes
+
+* **core:** avoid mutating input style object ([c76075e](https://github.com/css-hooks/css-hooks/commit/c76075eeceacdc5edeb3f51f445c5d0c27cc238c))
+
 ## [2.0.2](https://github.com/css-hooks/css-hooks/compare/v2.0.1...v2.0.2) (2024-03-09)
 
 
