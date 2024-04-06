@@ -42,6 +42,7 @@ export const { styleSheet, css } = createHooks({
     ".section &": ".section &",
     "&.selected": "&.selected",
     ":has(:checked) + &": ":has(:checked) + &",
+    ".shiki > &": ".shiki > &",
 
     // feature queries
     "@supports (height: 100dvh)": "@supports (height: 100dvh)",
