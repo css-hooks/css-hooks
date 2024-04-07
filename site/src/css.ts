@@ -27,6 +27,7 @@ export const { styleSheet, css } = createHooks({
     "&:hover": and("&:hover", "@media (hover: hover)"),
 
     // selectors
+    "&:only-child": "&:only-child",
     ".group &.group": ".group &.group",
     ".group:hover &": and(".group:hover &", "@media (hover: hover)"),
     ".group:even-child &": ".group:nth-child(even) &",

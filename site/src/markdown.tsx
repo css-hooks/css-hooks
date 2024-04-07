@@ -1,12 +1,12 @@
 /** @jsxImportSource hastscript */
 
+import type { Result } from "hastscript";
 import slug from "slug";
 import { css, renderToString } from "~/css";
 import * as V from "varsace";
 import { anchorStyle } from "~/components/anchor";
-import rehypeRewrite from "rehype-rewrite";
 import rehypeStringify from "rehype-stringify";
-import { unified } from "unified";
+import { type Plugin, unified } from "unified";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
@@ -14,8 +14,205 @@ import remarkGfm from "remark-gfm";
 import rehypeShiki from "@shikijs/rehype";
 import { z } from "@builder.io/qwik-city";
 import { visit } from "unist-util-visit";
-import { visitChildren } from "unist-util-visit-children";
 import { isElement } from "hast-util-is-element";
+import type { CSSProperties } from "@builder.io/qwik";
+import type { Element, Parent, Root, RootContent, Text } from "hast";
+
+const findTextNode = (parent: Parent) =>
+  isElement(parent)
+    ? (function findTextNode(
+        node: RootContent,
+        index: number,
+        parent: Parent,
+      ):
+        | {
+            node: Text;
+            index: number;
+            parent: Parent;
+          }
+        | undefined {
+        if (node.type === "text" && node.value.trim()) {
+          return { node, index, parent };
+        }
+        if (node.type === "element") {
+          for (let i = 0; i < node.children.length; i++) {
+            const child = node.children[i];
+            const text = findTextNode(child, i, node);
+            if (text) {
+              return text;
+            }
+          }
+        }
+      })(parent, -1, parent)
+    : undefined;
+
+function withElement(x: Result, f: (element: Element) => void) {
+  if (x.type === "element") {
+    f(x);
+  }
+}
+
+type TagNamePluginOptions<T> = Partial<Record<keyof HTMLElementTagNameMap, T>> &
+  (
+    | {
+        tablecell: (tagName: "td" | "th") => T;
+        th?: undefined;
+        td?: undefined;
+      }
+    | { tablecell?: undefined }
+  ) &
+  (
+    | {
+        heading: (level: 1 | 2 | 3 | 4 | 5 | 6) => T;
+        h1?: undefined;
+        h2?: undefined;
+        h3?: undefined;
+        h4?: undefined;
+        h5?: undefined;
+        h6?: undefined;
+      }
+    | { heading?: undefined }
+  );
+
+const rehypeAlerts: Plugin<[], Root> = () => {
+  return tree =>
+    visit(tree, "element", node => {
+      if (node.tagName === "blockquote") {
+        const text = findTextNode(node);
+        if (text) {
+          const match = text.node.value.match(/^\s*\[!(NOTE|WARNING)\]\s*(.*)/);
+          if (match) {
+            const type = z.enum(["NOTE", "WARNING"]).parse(match[1]);
+            const restText = match[2];
+            text.node.value = restText;
+            withElement(
+              <p style={renderToString({ margin: 0 })}>
+                <strong
+                  style={renderToString(
+                    css({
+                      color: type === "WARNING" ? V.orange30 : V.blue30,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.375em",
+                    }),
+                  )}
+                >
+                  <svg
+                    viewBox="0 0 16 16"
+                    style={renderToString({
+                      minWidth: "1em",
+                      maxWidth: "1em",
+                      minHeight: "1em",
+                      maxHeight: "1em",
+                      transform: "translateY(-0.0625em)",
+                    })}
+                  >
+                    <path
+                      fill="currentColor"
+                      d={
+                        type === "WARNING"
+                          ? "M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"
+                          : "M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"
+                      }
+                    />
+                  </svg>
+                  {`${type[0]}${type.substring(1).toLowerCase()}`}
+                </strong>
+              </p>,
+              element => text.parent.children.splice(text.index, 0, element),
+            );
+          }
+        }
+      }
+    });
+};
+
+const rehypeClassName: Plugin<
+  [TagNamePluginOptions<string>],
+  Root
+> = options => {
+  return tree =>
+    visit(tree, "element", node => {
+      const { tagName } = node;
+      if ((tagName === "td" || tagName === "th") && options.tablecell) {
+        node.properties.class = options.tablecell(tagName);
+      } else if (/^h[1-6]$/.test(tagName) && options.heading) {
+        node.properties.class = options.heading(
+          parseInt(tagName[1]) as 1 | 2 | 3 | 4 | 5 | 6,
+        );
+      } else if (tagName in options) {
+        const option = options[tagName as keyof typeof options];
+        if (option === "string") {
+          node.properties.class = option;
+        }
+      }
+    });
+};
+
+const rehypeRewriteElement: Plugin<
+  [
+    Partial<Record<keyof HTMLElementTagNameMap, (node: Element) => void>> &
+      (
+        | {
+            heading: (node: Element) => void;
+            h1?: undefined;
+            h2?: undefined;
+            h3?: undefined;
+            h4?: undefined;
+            h5?: undefined;
+            h6?: undefined;
+          }
+        | { heading?: undefined }
+      ),
+  ],
+  Root
+> = options => {
+  return tree =>
+    visit(tree, "element", node => {
+      const { tagName } = node;
+      const rewrite =
+        /^h[1-6]$/.test(tagName) && "heading" in options
+          ? options.heading
+          : options[tagName as keyof typeof options];
+      if (rewrite) {
+        rewrite(node);
+      }
+    });
+};
+
+const rehypeStyle: Plugin<
+  [TagNamePluginOptions<CSSProperties>],
+  Root
+> = options => {
+  return tree => {
+    visit(tree, "element", node => {
+      const { tagName } = node;
+      if ((tagName === "th" || tagName === "td") && options.tablecell) {
+        node.properties.style = renderToString(options.tablecell(tagName));
+      } else if (/^h[1-6]$/.test(tagName) && options.heading) {
+        const level = parseInt(tagName[1]) as 1 | 2 | 3 | 4 | 5 | 6;
+        node.properties.style = renderToString(options.heading(level));
+      } else if (tagName in options) {
+        const style = options[tagName as keyof typeof options];
+        if (style) {
+          node.properties.style = renderToString(style);
+        }
+      }
+    });
+  };
+};
+
+const rehypeTransformHref: Plugin<
+  [(href: string) => string],
+  Root
+> = transform => {
+  return tree =>
+    visit(tree, "element", node => {
+      if (typeof node.properties.href === "string") {
+        node.properties.href = transform(node.properties.href);
+      }
+    });
+};
 
 export async function render(markdown: string): Promise<string> {
   const html = await unified()
@@ -25,6 +222,13 @@ export async function render(markdown: string): Promise<string> {
       allowDangerousHtml: true,
     })
     .use(rehypeRaw)
+    .use(rehypeTransformHref, url =>
+      url
+        .replace(/(^|\/)([^/]+)\.md$/, function (_, prefix, basename) {
+          return `${prefix}${basename.replace(/\./g, "_")}`;
+        })
+        .replace(/\/index$/, ""),
+    )
     .use(rehypeShiki, {
       themes: {
         dark: "github-dark",
@@ -53,401 +257,253 @@ export async function render(markdown: string): Promise<string> {
         },
       ],
     })
-    .use(rehypeRewrite, {
-      rewrite(node, _index, parent) {
-        type Node = typeof node;
-        if (node.type === "element") {
-          switch (node.tagName) {
-            case "a":
-              node.properties.style = renderToString(anchorStyle());
-              if (typeof node.properties.href === "string") {
-                node.properties.href = node.properties.href
-                  .replace(
-                    /(^|\/)([^/]+)\.md$/,
-                    function (_, prefix, basename) {
-                      return `${prefix}${basename.replace(/\./g, "_")}`;
-                    },
-                  )
-                  .replace(/\/index$/, "");
-              }
-              break;
-            case "blockquote":
-              node.properties.style = renderToString(
-                css({
-                  borderWidth: 0,
-                  borderLeftWidth: "8px",
-                  borderStyle: "solid",
-                  padding: "0.1px 1em",
-                  marginLeft: 0,
-                  marginRight: 0,
-                  marginBlock: "1.5rem",
-                  borderColor: V.pink20,
-                  color: V.gray70,
-                  background: V.white,
-                  on: ($, { not }) => [
-                    $(not("@media (prefers-color-scheme: dark)"), {
-                      boxShadow: `inset 0 0 0 1px ${V.gray20}`,
-                    }),
-                    $("@media (prefers-color-scheme: dark)", {
-                      borderColor: V.pink60,
-                      background: V.gray85,
-                      color: V.gray30,
-                    }),
-                  ],
+    .use(rehypeClassName, {
+      heading: () => "group",
+      tr: "group",
+    })
+    .use(rehypeStyle, {
+      a: anchorStyle(),
+      blockquote: css({
+        borderWidth: 0,
+        borderLeftWidth: "8px",
+        borderStyle: "solid",
+        padding: "0.1px 1em",
+        marginLeft: 0,
+        marginRight: 0,
+        marginBlock: "1.5rem",
+        borderColor: V.pink20,
+        color: V.gray70,
+        background: V.white,
+        on: ($, { not }) => [
+          $(not("@media (prefers-color-scheme: dark)"), {
+            boxShadow: `inset 0 0 0 1px ${V.gray20}`,
+          }),
+          $("@media (prefers-color-scheme: dark)", {
+            borderColor: V.pink60,
+            background: V.gray85,
+            color: V.gray30,
+          }),
+        ],
+      }),
+      code: css({
+        fontFamily: "inherit",
+        color: "inherit",
+        on: ($, { and, not }) => [
+          $(not(".shiki > &"), {
+            fontFamily: "'Inconsolata Variable', monospace",
+            color: V.teal60,
+          }),
+          $(and("@media (prefers-color-scheme: dark)", not(".shiki > &")), {
+            color: V.teal30,
+          }),
+        ],
+      }),
+      heading: level => ({
+        ...[
+          {
+            fontSize: "3rem",
+            fontWeight: 400,
+            marginBlock: "1.25rem",
+          },
+          {
+            fontSize: "2.2rem",
+            fontWeight: 400,
+            marginBlock: "1.75rem",
+          },
+          {
+            fontSize: "1.8rem",
+            fontWeight: 400,
+            marginBlock: "2rem",
+          },
+          {
+            fontSize: "1.4rem",
+            fontWeight: 400,
+            marginBlock: "2.25rem",
+          },
+          {
+            fontSize: "1rem",
+            fontWeight: 700,
+            marginBlock: "2.5rem",
+          },
+          {
+            fontSize: "0.75rem",
+            fontWeight: 700,
+            marginBlock: "2.625rem",
+          },
+        ][level - 1],
+        lineHeight: 1.25,
+      }),
+      hr: css({
+        margin: "2rem 0",
+        border: 0,
+        width: "100%",
+        height: 1,
+        background: V.gray10,
+        on: $ => [
+          $("@media (prefers-color-scheme: dark)", {
+            background: V.gray80,
+          }),
+        ],
+      }),
+      p: css({
+        margin: "1em 0",
+        on: $ => [
+          $("&:only-child", {
+            margin: 0,
+          }),
+        ],
+      }),
+      table: css({
+        borderStyle: "solid",
+        borderWidth: 1,
+        borderSpacing: 0,
+        borderCollapse: "collapse",
+        borderColor: V.gray20,
+        on: $ => [
+          $("@media (prefers-color-scheme: dark)", {
+            borderColor: V.gray70,
+          }),
+        ],
+      }),
+      tablecell: () =>
+        css({
+          borderWidth: 1,
+          borderColor: "inherit",
+          borderStyle: "solid",
+          padding: "calc(0.375em - 0.5px) 0.75em",
+          on: ($, { and, or, not }) => [
+            $(
+              not(
+                or(
+                  "@media (prefers-color-scheme: dark)",
+                  ".group:even-child &",
+                ),
+              ),
+              {
+                background: V.white,
+              },
+            ),
+            $(
+              and(
+                not("@media (prefers-color-scheme: dark)"),
+                ".group:even-child &",
+              ),
+              {
+                background: `color-mix(in srgb, ${V.white}, ${V.gray05})`,
+              },
+            ),
+            $(
+              and(
+                "@media (prefers-color-scheme: dark)",
+                not(".group:even-child &"),
+              ),
+              {
+                background: `color-mix(in srgb, ${V.gray85}, ${V.gray90})`,
+              },
+            ),
+            $(
+              and("@media (prefers-color-scheme: dark)", ".group:even-child &"),
+              {
+                background: V.gray85,
+              },
+            ),
+          ],
+        }),
+      tr: css({
+        borderColor: V.gray20,
+        on: $ => [
+          $("@media (prefers-color-scheme: dark)", {
+            borderColor: V.gray70,
+          }),
+        ],
+      }),
+    })
+    .use(rehypeAlerts)
+    .use(rehypeRewriteElement, {
+      pre(node) {
+        if (
+          typeof node.properties.class === "string" &&
+          node.properties.class.includes("shiki")
+        ) {
+          node.properties.style = `${node.properties.style};${renderToString(
+            css({
+              fontFamily: "'Inconsolata Variable', monospace",
+              fontSize: "1rem",
+              overflow: "auto",
+              padding: "1rem",
+              marginBlock: "1.5rem",
+              background: V.white,
+              on: ($, { not }) => [
+                $(not("@media (prefers-color-scheme: dark)"), {
+                  boxShadow: `inset 0 0 0 1px ${V.gray20}`,
                 }),
-              );
-              const text = (function findText(
-                node: Node,
-                parent?: Node,
-              ): { node: Node; parent: Node | undefined } | undefined {
-                if (node.type === "text" && node.value.trim()) {
-                  return { node, parent };
-                }
-                if (node.type === "element") {
-                  for (const child of node.children) {
-                    const text = findText(child, node);
-                    if (text) {
-                      return text;
-                    }
-                  }
-                }
-              })(node);
-              if (
-                text &&
-                text.node.type === "text" &&
-                text.parent &&
-                text.parent.type === "element"
-              ) {
-                const { node: textNode, parent } = text;
-                const match = textNode.value.match(
-                  /^\s*\[!(NOTE|WARNING)\]\s*(.*)/,
-                );
-                if (match) {
-                  const type = z.enum(["NOTE", "WARNING"]).parse(match[1]);
-                  const restText = match[2];
-                  parent.children.splice(parent.children.indexOf(textNode), 0, {
-                    type: "element",
-                    tagName: "p",
-                    properties: {
-                      style: renderToString({
-                        margin: 0,
-                      }),
-                    },
-                    children: [
-                      {
-                        type: "element",
-                        tagName: "strong",
-                        properties: {
-                          style: renderToString(
-                            css({
-                              color: type === "WARNING" ? V.orange30 : V.blue30,
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: "0.25em",
-                            }),
-                          ),
-                        },
-                        children: [
-                          {
-                            type: "element",
-                            tagName: "svg",
-                            properties: {
-                              viewBox:
-                                type === "WARNING"
-                                  ? "0 0 24 24"
-                                  : "0 -960 960 960",
-                              width: "1.125em",
-                              height: "1.125em",
-                              style: renderToString({
-                                transform: "translateY(-0.0625em)",
-                              }),
-                            },
-                            children: [
-                              {
-                                type: "element",
-                                tagName: "path",
-                                properties: {
-                                  d:
-                                    type === "WARNING"
-                                      ? "M12 5.99L19.53 19H4.47L12 5.99M12 2L1 21h22L12 2zm1 14h-2v2h2v-2zm0-6h-2v4h2v-4z"
-                                      : "M440-280h80v-240h-80v240Zm40-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z",
-                                  fill: "currentColor",
-                                },
-                                children: [],
-                              },
-                            ],
-                          },
-                          {
-                            type: "text",
-                            value: `${type[0]}${type.substring(1).toLowerCase()}`,
-                          },
-                        ],
-                      },
-                    ],
-                  });
-                  textNode.value = restText;
-                }
-              }
-              break;
-            case "code":
-              node.properties.style = renderToString(
-                css({
-                  fontFamily: "inherit",
-                  color: "inherit",
-                  on: ($, { and, not }) => [
-                    $(not(".shiki > &"), {
-                      fontFamily: "'Inconsolata Variable', monospace",
-                      color: V.teal60,
-                    }),
-                    $(
-                      and(
-                        "@media (prefers-color-scheme: dark)",
-                        not(".shiki > &"),
-                      ),
-                      {
-                        color: V.teal30,
-                      },
-                    ),
-                  ],
+                $("@media (prefers-color-scheme: dark)", {
+                  background: V.gray85,
                 }),
-              );
-              break;
-            case "div":
-              if (
-                typeof node.properties.class === "string" &&
-                node.properties.class.includes("markdown-alert")
-              ) {
-                node.properties.style = renderToString(
-                  css({
-                    borderWidth: 0,
-                    borderLeftWidth: "8px",
-                    borderStyle: "solid",
-                    padding: "0.1px 1em",
-                    marginLeft: 0,
-                    marginRight: 0,
-                    marginBlock: "1.5rem",
-                    borderColor: V.pink20,
-                    color: V.gray70,
-                    background: V.white,
-                    on: ($, { not }) => [
-                      $(not("@media (prefers-color-scheme: dark)"), {
-                        boxShadow: `inset 0 0 0 1px ${V.gray20}`,
-                      }),
-                      $("@media (prefers-color-scheme: dark)", {
-                        borderColor: V.pink60,
-                        background: V.gray85,
-                        color: V.gray30,
-                      }),
-                    ],
-                  }),
-                );
-              }
-              break;
-            case "hr":
-              node.properties.style = renderToString(
-                css({
-                  margin: "2rem 0",
-                  border: 0,
-                  width: "100%",
-                  height: 1,
-                  background: V.gray10,
-                  on: $ => [
-                    $("@media (prefers-color-scheme: dark)", {
-                      background: V.gray80,
-                    }),
-                  ],
-                }),
-              );
-              break;
-            case "pre":
-              if (
-                typeof node.properties.class === "string" &&
-                node.properties.class.includes("shiki")
-              ) {
-                node.properties.style = `${node.properties.style};${renderToString(
-                  css({
-                    fontFamily: "'Inconsolata Variable', monospace",
-                    fontSize: "1rem",
-                    overflow: "auto",
-                    padding: "1rem",
-                    marginBlock: "1.5rem",
-                    background: V.white,
-                    on: ($, { not }) => [
-                      $(not("@media (prefers-color-scheme: dark)"), {
-                        boxShadow: `inset 0 0 0 1px ${V.gray20}`,
-                      }),
-                      $("@media (prefers-color-scheme: dark)", {
-                        background: V.gray85,
-                      }),
-                    ],
-                  }),
-                )}`;
-              }
-              break;
-            case "table":
-              node.properties.style = renderToString(
-                css({
-                  borderStyle: "solid",
-                  borderWidth: 1,
-                  borderSpacing: 0,
-                  borderCollapse: "collapse",
-                  borderColor: V.gray20,
-                  on: $ => [
-                    $("@media (prefers-color-scheme: dark)", {
-                      borderColor: V.gray70,
-                    }),
-                  ],
-                }),
-              );
-              break;
-            case "tr":
-              node.properties.class = "group";
-              node.properties.style = renderToString(
-                css({
-                  borderColor: V.gray20,
-                  on: $ => [
-                    $("@media (prefers-color-scheme: dark)", {
-                      borderColor: V.gray70,
-                    }),
-                  ],
-                }),
-              );
-              break;
-            case "th":
-            case "td":
-              node.properties.style = renderToString(
-                css({
-                  borderWidth: 1,
-                  borderColor: "inherit",
-                  borderStyle: "solid",
-                  padding: "calc(0.375em - 0.5px) 0.75em",
-                  on: ($, { and, or, not }) => [
-                    $(
-                      not(
-                        or(
-                          "@media (prefers-color-scheme: dark)",
-                          ".group:even-child &",
-                        ),
-                      ),
-                      {
-                        background: V.white,
-                      },
-                    ),
-                    $(
-                      and(
-                        not("@media (prefers-color-scheme: dark)"),
-                        ".group:even-child &",
-                      ),
-                      {
-                        background: `color-mix(in srgb, ${V.white}, ${V.gray05})`,
-                      },
-                    ),
-                    $(
-                      and(
-                        "@media (prefers-color-scheme: dark)",
-                        not(".group:even-child &"),
-                      ),
-                      {
-                        background: `color-mix(in srgb, ${V.gray85}, ${V.gray90})`,
-                      },
-                    ),
-                    $(
-                      and(
-                        "@media (prefers-color-scheme: dark)",
-                        ".group:even-child &",
-                      ),
-                      {
-                        background: V.gray85,
-                      },
-                    ),
-                  ],
-                }),
-              );
-              break;
-            case "p":
-              if (
-                parent?.type === "element" &&
-                (parent.tagName === "th" || parent.tagName === "td")
-              ) {
-                node.properties.style = renderToString({ margin: 0 });
-              }
-              break;
-          }
+              ],
+            }),
+          )}`;
         }
       },
-    })
-    .use(function styleHeading() {
-      return tree =>
-        visit(tree, node => {
-          if (isElement(node)) {
-            const headingLevel = Array.from(
-              node.tagName.match(/^h([1-6])$/) || [],
-            )[1];
-            if (headingLevel) {
-              node.properties.style = renderToString({
-                ...[
-                  {
-                    fontSize: "3rem",
-                    fontWeight: 400,
-                    marginBlock: "1.25rem",
-                  },
-                  {
-                    fontSize: "2.2rem",
-                    fontWeight: 400,
-                    marginBlock: "1.75rem",
-                  },
-                  {
-                    fontSize: "1.8rem",
-                    fontWeight: 400,
-                    marginBlock: "2rem",
-                  },
-                  {
-                    fontSize: "1.4rem",
-                    fontWeight: 400,
-                    marginBlock: "2.25rem",
-                  },
-                  {
-                    fontSize: "1rem",
-                    fontWeight: 700,
-                    marginBlock: "2.5rem",
-                  },
-                  {
-                    fontSize: "0.75rem",
-                    fontWeight: 700,
-                    marginBlock: "2.625rem",
-                  },
-                ][parseInt(headingLevel) - 1],
-                lineHeight: 1.25,
-              });
-            }
+      heading(node) {
+        // Add step number prefix:
+
+        const text = findTextNode(node);
+        if (text) {
+          const [, , step, content] = Array.from(
+            text.node.value.match(/^(([0-9])\.)?\s*(.*)/m) || [],
+          );
+          if (step && content) {
+            withElement(
+              <span
+                style={renderToString(
+                  css({
+                    transform: "translateY(-22.5%)",
+                    width: "0.75em",
+                    height: "0.75em",
+                    display: "inline-grid",
+                    placeItems: "center",
+                    borderRadius: 999,
+                    background: V.pink10,
+                    color: V.pink50,
+                    on: $ => [
+                      $("@media (prefers-color-scheme: dark)", {
+                        background: V.pink50,
+                        color: V.pink10,
+                      }),
+                    ],
+                  }),
+                )}
+              >
+                <span style={renderToString({ fontSize: "0.5em" })}>
+                  {step}
+                </span>
+              </span>,
+              element => {
+                text.parent.children.splice(text.index, 0, element);
+                text.node.value = ` ${content}`;
+              },
+            );
           }
-        });
-    })
-    .use(function addHeadingAnchors() {
-      return visitChildren(parent => {
-        if (!isElement(parent) || !/^h[1-6]$/.test(parent.tagName)) {
-          return;
         }
-        const text = (function text(
-          node: typeof parent | (typeof parent.children)[number],
-        ): string {
-          if (isElement(node)) {
-            return node.children.map(text).join("");
-          }
-          if (node.type === "text") {
-            return node.value;
-          }
-          return "";
-        })(parent);
-        const anchor = (
-          <span
-            id={slug(text)}
-            style={renderToString({ position: "relative", top: "-6rem" })}
-          />
+
+        // Add anchor:
+
+        const anchorId = slug(
+          (function text(node: RootContent): string {
+            if (isElement(node)) {
+              return node.children.map(text).join("");
+            }
+            if (node.type === "text") {
+              return node.value;
+            }
+            return "";
+          })(node),
         );
-        const link = (
+
+        withElement(
           <a
-            href={`#${slug(text)}`}
+            href={`#${anchorId}`}
             style={renderToString({
               float: "left",
               marginLeft: "calc(-0.5em - 8px)",
@@ -483,82 +539,18 @@ export async function render(markdown: string): Promise<string> {
                 <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
               </svg>
             </div>
-          </a>
+          </a>,
+          element => node.children.splice(0, 0, element),
         );
-        if (isElement(anchor) && isElement(link)) {
-          parent.children.splice(0, 0, anchor, link);
-          parent.properties.class = "group";
-        }
-      });
-    })
-    .use(function addHeadingStepPrefix() {
-      return visitChildren(parent => {
-        if (isElement(parent) && /^h[1-6]$/.test(parent.tagName)) {
-          type Node = (typeof parent.children)[number];
-          type Parent = { type: "element"; tagName: string; children: Node[] };
-          const text = (function findTextNode(
-            node: Node,
-            index: number,
-            parent: Parent,
-          ):
-            | {
-                node: { type: "text"; value: string };
-                index: number;
-                parent: Parent;
-              }
-            | undefined {
-            if (node.type === "text" && node.value.trim()) {
-              return { node, index, parent };
-            }
-            if (node.type === "element") {
-              for (let i = 0; i < node.children.length; i++) {
-                const child = node.children[i];
-                const text = findTextNode(child, i, node);
-                if (text) {
-                  return text;
-                }
-              }
-            }
-          })(parent, -1, parent);
-          if (text) {
-            const [, , step, content] = Array.from(
-              text.node.value.match(/^(([0-9])\.)?\s*(.*)/m) || [],
-            );
-            if (step && content) {
-              const prefix = (
-                <span
-                  style={renderToString(
-                    css({
-                      transform: "translateY(-22.5%)",
-                      width: "0.75em",
-                      height: "0.75em",
-                      display: "inline-grid",
-                      placeItems: "center",
-                      borderRadius: 999,
-                      background: V.pink10,
-                      color: V.pink50,
-                      on: $ => [
-                        $("@media (prefers-color-scheme: dark)", {
-                          background: V.pink50,
-                          color: V.pink10,
-                        }),
-                      ],
-                    }),
-                  )}
-                >
-                  <span style={renderToString({ fontSize: "0.5em" })}>
-                    {step}
-                  </span>
-                </span>
-              );
-              if (isElement(prefix)) {
-                text.node.value = ` ${content}`;
-                text.parent.children.splice(text.index, 0, prefix);
-              }
-            }
-          }
-        }
-      });
+
+        withElement(
+          <span
+            id={anchorId}
+            style={renderToString({ position: "relative", top: "-6rem" })}
+          />,
+          element => node.children.splice(0, 0, element),
+        );
+      },
     })
     .use(rehypeStringify)
     .process(markdown);
