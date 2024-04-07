@@ -194,7 +194,7 @@ const rehypeStyle: Plugin<
         node.properties.style = renderToString(options.heading(level));
       } else if (tagName in options) {
         const style = options[tagName as keyof typeof options];
-        if (style) {
+        if (typeof style === "object") {
           node.properties.style = renderToString(style);
         }
       }
