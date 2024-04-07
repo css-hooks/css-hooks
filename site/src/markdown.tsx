@@ -142,7 +142,7 @@ const rehypeClassName: Plugin<
         );
       } else if (tagName in options) {
         const option = options[tagName as keyof typeof options];
-        if (option === "string") {
+        if (typeof option === "string") {
           node.properties.class = option;
         }
       }
