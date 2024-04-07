@@ -25,7 +25,7 @@ jobs:
           ref: ${{github.ref}}
           fetch-depth: 0
 
-      - uses: wagoid/commitlint-github-action@v5
+      - uses: wagoid/commitlint-github-action@v6
 
       - uses: actions/setup-node@v4
         with:
