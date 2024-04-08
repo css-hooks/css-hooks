@@ -44,7 +44,7 @@
     "@types/slug": "^5.0.7",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
-    "eslint": "^8.56.0",
+    "eslint": "^9.0.0",
     "eslint-plugin-qwik": "^1.4.4",
     "gray-matter": "^4.0.3",
     "hast-util-is-element": "^3.0.0",

@@ -13,7 +13,7 @@
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "ascjs": "^6.0.3",
-    "eslint": "^8.47.0",
+    "eslint": "^9.0.0",
     "eslint-plugin-compat": "^4.2.0",
     "rimraf": "^5.0.1",
     "solid-js": "^1.7.11",
