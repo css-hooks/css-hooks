@@ -6,7 +6,20 @@ order: 6
 
 # FAQ
 
-## Why can't hooks affect descendant elements?
+### Is CSS Hooks widely supported in browsers?
+
+The underlying mechanism of CSS Hooks leverages specific behaviors of CSS
+variables codified in the
+[CSS Custom Properties Level 1 spec](https://www.w3.org/TR/css-variables/#guaranteed-invalid).
+As such, it is expected to work in any browser that supports custom properties:
+
+| <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/chrome/chrome_24x24.png" alt="Chrome" /><br/>Chrome | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/edge/edge_24x24.png" alt="Edge" /><br/>Edge | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/safari/safari_24x24.png" alt="Safari" /><br/>Safari | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/firefox/firefox_24x24.png" alt="Firefox" /><br/>Firefox | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/opera/opera_24x24.png" alt="Opera" /><br/>Opera |
+| ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| <div align="center">49+</div>                                                                                             | <div align="center">16+</div>                                                                                     | <div align="center">10+</div>                                                                                             | <div align="center">31+</div>                                                                                                 | <div align="center">36+</div>                                                                                         |
+
+---
+
+### Why can't hooks affect descendant elements?
 
 This is primarily a limitation of inline styles, which are scoped strictly to
 the element to which they are applied (although individual properties can be
@@ -32,7 +45,7 @@ keep this style sheet small enough to avoid maintainability issues.
 
 ---
 
-## Why don't hooks support pseudo-elements?
+### Why don't hooks support pseudo-elements?
 
 Most of the time, a selector or at-rule defines a condition under which a
 [declaration block](https://developer.mozilla.org/en-US/docs/Web/CSS/Syntax#css_declaration_blocks)
