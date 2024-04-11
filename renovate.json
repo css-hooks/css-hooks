@@ -4,6 +4,7 @@
     "config:recommended",
     ":prConcurrentLimit10",
     ":semanticCommitTypeAll(refactor)",
+    ":semanticCommitScopeDisabled",
     ":automergeLinters",
     ":automergePatch",
     ":automergeRequireAllStatusChecks",
