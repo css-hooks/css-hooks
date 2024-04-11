@@ -11,7 +11,6 @@
     ":reviewer(nsaunders)"
   ],
   "prConcurrentLimit": 1,
-  "semanticCommitScope": null,
   "ignorePaths": [],
   "packageRules": [
     {
@@ -37,6 +36,10 @@
     {
       "matchFileNames": [".github/workflows/publish.yml"],
       "semanticCommitScope": "publish"
+    },
+    {
+      "matchPackagePatterns": ["qwik"],
+      "groupName": "qwik"
     },
     {
       "matchPackagePatterns": ["shiki"],
