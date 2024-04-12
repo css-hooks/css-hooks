@@ -96,7 +96,15 @@ experience without runtime style injection or build steps.
 </>
 ```
 
-## Browser support
+## Compatibility
+
+### Framework integrations
+
+| <img src="https://github.com/reactjs.png" alt="React" style="width: 24px; height: 24px" /><br/>React | <img src="https://github.com/preactjs.png" alt="Preact" style="width: 24px; height: 24px" /><br/>Preact | <img src="https://github.com/solidjs.png" alt="Solid" style="width: 24px; height: 24px" /><br/>Solid | <img src="https://github.com/qwikdev.png" alt="Qwik" style="width: 24px; height: 24px" /><br/>Qwik |
+| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| <div align="center"><a href="https://www.npmjs.com/package/@css-hooks/react">✅</a></div>            | <div align="center"><a href="https://www.npmjs.com/package/@css-hooks/preact">✅</a></div>              | <div align="center"><a href="https://www.npmjs.com/package/@css-hooks/solid">✅</a></div>            | <div align="center"><a href="https://www.npmjs.com/package/@css-hooks/qwik">✅</a></div>           |
+
+### Browser support
 
 | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/chrome/chrome_24x24.png" alt="Chrome" /><br/>Chrome | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/edge/edge_24x24.png" alt="Edge" /><br/>Edge | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/safari/safari_24x24.png" alt="Safari" /><br/>Safari | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/firefox/firefox_24x24.png" alt="Firefox" /><br/>Firefox | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/opera/opera_24x24.png" alt="Opera" /><br/>Opera |
 | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
