@@ -75,7 +75,7 @@ to make this approach more flexible and promote reuse.
 
 ---
 
-## What if my question isn't answered here?
+### What if my question isn't answered here?
 
 Please
 [start a discussion](https://github.com/css-hooks/css-hooks/discussions/new?category=q-a).
