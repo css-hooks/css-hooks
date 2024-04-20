@@ -35,20 +35,18 @@ jobs:
           node-version-file: .nvmrc
           registry-url: 'https://registry.npmjs.org'
 
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 9.0.4
-          run_install: true
-
       - if: inputs.artifacts == 'release'
         name: verify npm auth
         run: npm whoami
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
-      - run: pnpm install --frozen-lockfile
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9.0.4
+          run_install: true
 
-      - run: pnpx prettier --check .
+      - run: pnpm exec prettier --check .
 
       # Note that the packages must be built before linting. Otherwise, some
       # types will be inferred as `any` leading to errors.
@@ -61,19 +59,13 @@ jobs:
       - run: pnpm run -r --filter=./site build
 
       - if: inputs.artifacts == 'release'
-        name: version bump (root)
-        id: root
-        run:
-          echo "version=$(npm version $(npx conventional-recommended-bump -p
-          conventionalcommits) --preid=alpha --git-tag-version=false
-          --tag-version-prefix='')" >> $GITHUB_OUTPUT
-
-      - if: inputs.artifacts == 'release'
-        name: version bump (packages)
-        run:
-          npm version ${{steps.root.outputs.version}} --workspaces
-          --git-tag-version=false
-
+        name: version bump
+        id: bump
+        run: |
+          BUMP_VERSION=$(pnpm exec conventional-recommended-bump -p conventionalcommits | node -e "const v = require('./package.json').version.split('.').map(x => parseInt(x)); const ix = { major: 0, minor: 1, patch: 2 }[require('fs').readFileSync('/dev/stdin', 'utf8').trim()]; v[ix]++; process.stdout.write(v.join('.'))")
+          pnpm -r exec node -e "require('fs').writeFileSync('./package.json', JSON.stringify(Object.assign({}, require('./package.json'), { version: process.env.BUMP_VERSION }), null, 2) + '\n')"
+          echo "version=$BUMP_VERSION" >> $GITHUB_OUTPUT
+         
       # Note that generating the changelog depends on the package.json version
       # updated in the previous step.
       - if: inputs.artifacts == 'release'
@@ -87,12 +79,12 @@ jobs:
         with:
           author_name: GitHub Actions
           author_email: 41898282+github-actions[bot]@users.noreply.github.com
-          message: "release: v${{steps.root.outputs.version}}"
-          tag: v${{steps.root.outputs.version}}
+          message: "release: v${{steps.bump.outputs.version}}"
+          tag: v${{steps.bump.outputs.version}}
       
       - if: inputs.artifacts == 'release'
         name: github release
-        run: npx conventional-github-releaser -p angular
+        run: pnpm exec conventional-github-releaser -p angular
         env:
           CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{secrets.GH_ACCESS_TOKEN}}
 
@@ -102,11 +94,11 @@ jobs:
 
       - if: inputs.artifacts == 'release'
         name: propagate common files
-        run: for dir in ./packages/*; do cp LICENSE README.md "$dir"; done
+        run: for dir in ./packages/*; do cp README.md "$dir"; done
 
       - if: inputs.artifacts == 'release'
-        name: npm publish
-        run: npm publish --access public --workspace="packages/**"
+        name: pnpm publish
+        run: pnpm -r --filter=./packages/* --access public publish"
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
