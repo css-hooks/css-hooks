@@ -27,10 +27,18 @@ jobs:
 
       - uses: wagoid/commitlint-github-action@v6
 
+      - name: create nvmrc
+        run: sed -n 's/^use-node-version=//p' .npmrc >> .nvmrc
+
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           registry-url: 'https://registry.npmjs.org'
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9.0.4
+          run_install: true
 
       - if: inputs.artifacts == 'release'
         name: verify npm auth
@@ -38,19 +46,19 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
 
-      - run: npx prettier --check .
+      - run: pnpx prettier --check .
 
       # Note that the packages must be built before linting. Otherwise, some
       # types will be inferred as `any` leading to errors.
-      - run: npm run lint --workspaces --if-present
+      - run: pnpm run -r lint
 
-      - run: npm test --workspaces --if-present
+      - run: pnpm -r test
 
-      - run: npm run build --workspace=examples
+      - run: pnpm run -r --filter=./examples/* build
 
-      - run: npm run build --workspace=site
+      - run: pnpm run -r --filter=./site build
 
       - if: inputs.artifacts == 'release'
         name: version bump (root)

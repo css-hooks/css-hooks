@@ -49,5 +49,8 @@
   },
   "browserslist": [
     "supports css-variables"
-  ]
+  ],
+  "dependencies": {
+    "@types/node": "^20"
+  }
 }
