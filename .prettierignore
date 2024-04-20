@@ -4,6 +4,7 @@
 /packages/**/esm
 /packages/**/out
 /packages/**/types
+/pnpm-lock.yaml
 /site/dist
 /site/server
 /temp
