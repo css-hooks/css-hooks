@@ -15,9 +15,4 @@ module.exports = {
       { allowConstantExport: true },
     ],
   },
-  settings: {
-    jest: {
-      version: 30,
-    },
-  },
 };
