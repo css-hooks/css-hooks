@@ -1,3 +1,5 @@
+## [2.0.4](https://github.com/css-hooks/css-hooks/compare/v2.0.3...v2.0.4) (2024-04-21)
+
 ## [2.0.3](https://github.com/css-hooks/css-hooks/compare/v2.0.2...v2.0.3) (2024-04-06)
 
 

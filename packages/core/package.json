@@ -1,7 +1,7 @@
 {
   "name": "@css-hooks/core",
   "description": "CSS Hooks core library",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "author": "Nick Saunders",
   "devDependencies": {
     "@microsoft/api-extractor": "^7.39.4",
