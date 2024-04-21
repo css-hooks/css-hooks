@@ -4,12 +4,12 @@
   "version": "2.0.3",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "workspace:*",
-    "@types/node": "^20"
+    "@css-hooks/core": "workspace:*"
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.39.4",
     "@tsconfig/strictest": "^2.0.1",
+    "@types/node": "^20.12.7",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
     "ascjs": "^6.0.3",
