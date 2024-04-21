@@ -9,10 +9,10 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "clean": "rimraf dist",
-    "postversion": "npm install @css-hooks/react@^$npm_package_version --force"
+    "postversion": "pnpm install --force @css-hooks/react@$npm_package_version"
   },
   "dependencies": {
-    "@css-hooks/react": "^2.0.3",
+    "@css-hooks/react": "2.0.3",
     "@fontsource/inter": "^5.0.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

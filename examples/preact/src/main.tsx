@@ -6,7 +6,6 @@ import { styleSheet } from "./css";
 
 render(
   <>
-    {/* eslint-disable-next-line react/no-danger */}
     <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
     <App />
   </>,

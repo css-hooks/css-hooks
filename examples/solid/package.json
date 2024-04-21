@@ -9,10 +9,10 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "clean": "rimraf dist",
-    "postversion": "npm install @css-hooks/solid@^$npm_package_version --force"
+    "postversion": "pnpm install --force @css-hooks/solid@$npm_package_version"
   },
   "dependencies": {
-    "@css-hooks/solid": "^2.0.3",
+    "@css-hooks/solid": "2.0.3",
     "@fontsource/inter": "^5.0.8",
     "solid-js": "^1.7.6",
     "varsace": "^0.0.4"
@@ -21,6 +21,7 @@
     "@typescript-eslint/parser": "^7.0.0",
     "eslint": "^8.49.0",
     "eslint-plugin-solid": "^0.13.0",
+    "rimraf": "^5.0.5",
     "typescript": "^4.9.5",
     "vite": "^5.0.0",
     "vite-plugin-solid": "^2.7.0"

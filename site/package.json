@@ -21,7 +21,6 @@
     "fmt": "prettier --write .",
     "fmt.check": "prettier --check .",
     "lint": "eslint \"src/**/*.ts*\"",
-    "postversion": "npm install -D @css-hooks/qwik@^$npm_package_version --force",
     "preview": "qwik build preview && vite preview --open",
     "start": "vite --open --mode ssr",
     "qwik": "qwik"
@@ -29,7 +28,7 @@
   "devDependencies": {
     "@builder.io/qwik": "^1.4.4",
     "@builder.io/qwik-city": "^1.4.4",
-    "@css-hooks/qwik": "^2.0.3",
+    "@css-hooks/qwik": "workspace:*",
     "@css-hooks/recommended": "^1.8.2",
     "@fontsource-variable/assistant": "^5.0.16",
     "@fontsource-variable/inconsolata": "^5.0.16",
@@ -40,6 +39,7 @@
     "@shikijs/rehype": "^1.2.2",
     "@shikijs/transformers": "^1.1.2",
     "@types/eslint": "^8.56.2",
+    "@types/hast": "^3.0.4",
     "@types/node": "^20.11.6",
     "@types/slug": "^5.0.7",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
@@ -47,6 +47,7 @@
     "eslint": "^8.56.0",
     "eslint-plugin-qwik": "^1.4.4",
     "gray-matter": "^4.0.3",
+    "hast": "^1.0.0",
     "hast-util-is-element": "^3.0.0",
     "hastscript": "^9.0.0",
     "prettier": "^3.2.4",

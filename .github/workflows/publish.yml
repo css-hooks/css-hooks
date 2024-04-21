@@ -27,6 +27,9 @@ jobs:
 
       - uses: wagoid/commitlint-github-action@v6
 
+      - name: create nvmrc
+        run: sed -n 's/^use-node-version=//p' .npmrc >> .nvmrc
+
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -38,34 +41,31 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
-      - run: npm ci
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9.0.4
+          run_install: true
 
-      - run: npx prettier --check .
+      - run: pnpm exec prettier --check .
 
       # Note that the packages must be built before linting. Otherwise, some
       # types will be inferred as `any` leading to errors.
-      - run: npm run lint --workspaces --if-present
+      - run: pnpm run -r lint
 
-      - run: npm test --workspaces --if-present
+      - run: pnpm -r test
 
-      - run: npm run build --workspace=examples
+      - run: pnpm run -r --filter=./examples/* build
 
-      - run: npm run build --workspace=site
-
-      - if: inputs.artifacts == 'release'
-        name: version bump (root)
-        id: root
-        run:
-          echo "version=$(npm version $(npx conventional-recommended-bump -p
-          conventionalcommits) --preid=alpha --git-tag-version=false
-          --tag-version-prefix='')" >> $GITHUB_OUTPUT
+      - run: pnpm run -r --filter=./site build
 
       - if: inputs.artifacts == 'release'
-        name: version bump (packages)
-        run:
-          npm version ${{steps.root.outputs.version}} --workspaces
-          --git-tag-version=false
-
+        name: version bump
+        id: bump
+        run: |
+          export BUMP_VERSION=$(pnpm exec conventional-recommended-bump -p conventionalcommits | node -e "const v = require('./package.json').version.split('.').map(x => parseInt(x)); const ix = { major: 0, minor: 1, patch: 2 }[require('fs').readFileSync('/dev/stdin', 'utf8').trim()]; v[ix]++; for (let j = ix + 1; j <= 2; j++) v[j] = 0; process.stdout.write(v.join('.'))")
+          pnpm -r exec node -e "require('fs').writeFileSync('./package.json', JSON.stringify(Object.assign({}, require('./package.json'), { version: process.env.BUMP_VERSION }), null, 2) + '\n')"
+          echo "version=$BUMP_VERSION" >> $GITHUB_OUTPUT
+         
       # Note that generating the changelog depends on the package.json version
       # updated in the previous step.
       - if: inputs.artifacts == 'release'
@@ -79,12 +79,12 @@ jobs:
         with:
           author_name: GitHub Actions
           author_email: 41898282+github-actions[bot]@users.noreply.github.com
-          message: "release: v${{steps.root.outputs.version}}"
-          tag: v${{steps.root.outputs.version}}
+          message: "release: v${{steps.bump.outputs.version}}"
+          tag: v${{steps.bump.outputs.version}}
       
       - if: inputs.artifacts == 'release'
         name: github release
-        run: npx conventional-github-releaser -p angular
+        run: pnpm exec conventional-github-releaser -p angular
         env:
           CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{secrets.GH_ACCESS_TOKEN}}
 
@@ -94,11 +94,11 @@ jobs:
 
       - if: inputs.artifacts == 'release'
         name: propagate common files
-        run: for dir in ./packages/*; do cp LICENSE README.md "$dir"; done
+        run: for dir in ./packages/*; do cp README.md "$dir"; done
 
       - if: inputs.artifacts == 'release'
-        name: npm publish
-        run: npm publish --access public --workspace="packages/**"
+        name: pnpm publish
+        run: pnpm -r --filter=./packages/* --access=public --no-git-checks publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
