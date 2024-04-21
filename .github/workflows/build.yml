@@ -38,6 +38,7 @@ jobs:
       # Ensure docs are up-to-date.
       - run: |
           pnpm run docs
+          git status
           if [[ -n $(git status --porcelain) ]]; then
             echo 'Error: Git status is not clean.';
             exit 1;
