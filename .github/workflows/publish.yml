@@ -62,7 +62,7 @@ jobs:
         name: version bump
         id: bump
         run: |
-          BUMP_VERSION=$(pnpm exec conventional-recommended-bump -p conventionalcommits | node -e "const v = require('./package.json').version.split('.').map(x => parseInt(x)); const ix = { major: 0, minor: 1, patch: 2 }[require('fs').readFileSync('/dev/stdin', 'utf8').trim()]; v[ix]++; for (let j = ix + 1; j <= 2; j++) v[j] = 0; process.stdout.write(v.join('.'))")
+          export BUMP_VERSION=$(pnpm exec conventional-recommended-bump -p conventionalcommits | node -e "const v = require('./package.json').version.split('.').map(x => parseInt(x)); const ix = { major: 0, minor: 1, patch: 2 }[require('fs').readFileSync('/dev/stdin', 'utf8').trim()]; v[ix]++; for (let j = ix + 1; j <= 2; j++) v[j] = 0; process.stdout.write(v.join('.'))")
           pnpm -r exec node -e "require('fs').writeFileSync('./package.json', JSON.stringify(Object.assign({}, require('./package.json'), { version: process.env.BUMP_VERSION }), null, 2) + '\n')"
           echo "version=$BUMP_VERSION" >> $GITHUB_OUTPUT
          
@@ -98,7 +98,7 @@ jobs:
 
       - if: inputs.artifacts == 'release'
         name: pnpm publish
-        run: pnpm -r --filter=./packages/* --access=public --no-git-checks --force publish
+        run: pnpm -r --filter=./packages/* --access=public --no-git-checks publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
