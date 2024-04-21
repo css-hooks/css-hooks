@@ -98,7 +98,7 @@ jobs:
 
       - if: inputs.artifacts == 'release'
         name: pnpm publish
-        run: pnpm -r --filter=./packages/* --access=public --no-git-checks publish
+        run: pnpm -r --filter=./packages/* --access=public --no-git-checks --force publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
