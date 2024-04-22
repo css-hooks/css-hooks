@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.39.4",
+    "@swc-node/register": "^1.9.0",
     "@tsconfig/strictest": "^2.0.1",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
     "@typescript-eslint/parser": "^7.0.0",
@@ -16,7 +17,6 @@
     "eslint-plugin-compat": "^4.2.0",
     "rimraf": "^5.0.1",
     "solid-js": "^1.7.11",
-    "ts-watch": "^1.0.8",
     "typescript": "^5.1.6"
   },
   "files": [
@@ -42,8 +42,8 @@
     "clean": "rimraf cjs esm out types",
     "lint": "eslint src .*.*js *.*js",
     "prepublishOnly": "node -e \"var path=require('path').resolve,fs=require('fs'),cp=fs.cpSync,mkdir=fs.mkdirSync;cp(path('src', 'index.d.ts'),path('types','index.d.ts'));cp(path('src','index.js'),path('esm','index.js'));mkdir(path('cjs'),{recursive:true})\" && ascjs src/index.js cjs/index.js",
-    "test": "tsc && node --test",
-    "test.watch": "tsc-watch --onSuccess 'node --test'"
+    "test": "tsc && node --loader @swc-node/register/esm --test src/index.test.ts",
+    "test.watch": "node --watch --loader @swc-node/register/esm --test src/index.test.ts"
   },
   "type": "module",
   "types": "types",
