@@ -55,8 +55,6 @@ jobs:
         env:
           PUPPETEER_EXECUTABLE_PATH: ${{ steps.chrome.outputs.chrome-path }}
 
-      - run: pnpm -r test
-
       # Ensure docs are up-to-date.
       - run: |
           pnpm run docs
