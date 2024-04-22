@@ -63,7 +63,7 @@ jobs:
         id: bump
         run: |
           export BUMP_VERSION=$(pnpm exec conventional-recommended-bump -p conventionalcommits | node -e "const v = require('./package.json').version.split('.').map(x => parseInt(x)); const ix = { major: 0, minor: 1, patch: 2 }[require('fs').readFileSync('/dev/stdin', 'utf8').trim()]; v[ix]++; for (let j = ix + 1; j <= 2; j++) v[j] = 0; process.stdout.write(v.join('.'))")
-          pnpm -r exec node -e "require('fs').writeFileSync('./package.json', JSON.stringify(Object.assign({}, require('./package.json'), { version: process.env.BUMP_VERSION }), null, 2) + '\n')"
+          pnpm -r exec node -e "const pkg = require('./package.json'); require('fs').writeFileSync('./package.json', JSON.stringify(Object.assign({}, pkg, { version: process.env.BUMP_VERSION }, pkg.dependencies ? { dependencies: Object.fromEntries(Object.entries(pkg.dependencies).map(([name, version]) => [name, name.startsWith('@css-hooks/') && /^[0-9]/.test(version) ? process.env.BUMP_VERSION : version])) } : {}), null, 2) + '\n')"
           echo "version=$BUMP_VERSION" >> $GITHUB_OUTPUT
          
       # Note that generating the changelog depends on the package.json version

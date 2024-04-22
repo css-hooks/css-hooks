@@ -8,8 +8,7 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "clean": "rimraf dist",
-    "postversion": "pnpm install --force @css-hooks/solid@$npm_package_version"
+    "clean": "rimraf dist"
   },
   "dependencies": {
     "@css-hooks/solid": "2.0.3",
