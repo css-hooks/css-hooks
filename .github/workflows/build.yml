@@ -48,6 +48,13 @@ jobs:
       # types will be inferred as `any` leading to errors.
       - run: pnpm run -r lint
 
+      - uses: browser-actions/setup-chrome@v1
+        id: chrome
+
+      - run: pnpm -r test
+        env:
+          PUPPETEER_EXECUTABLE_PATH: ${{ steps.chrome.outputs.chrome-path }}
+
       - run: pnpm -r test
 
       # Ensure docs are up-to-date.
