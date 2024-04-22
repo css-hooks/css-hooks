@@ -333,6 +333,9 @@ importers:
       '@microsoft/api-extractor':
         specifier: ^7.39.4
         version: 7.43.1(@types/node@20.12.7)
+      '@swc-node/register':
+        specifier: ^1.9.0
+        version: 1.9.0(@swc/core@1.4.16)(@swc/types@0.1.6)(typescript@5.3.3)
       '@tsconfig/strictest':
         specifier: ^2.0.1
         version: 2.0.5
@@ -360,9 +363,6 @@ importers:
       rimraf:
         specifier: ^5.0.1
         version: 5.0.5
-      ts-watch:
-        specifier: ^1.0.8
-        version: 1.0.8
       typescript:
         specifier: ^5.1.6
         version: 5.3.3
