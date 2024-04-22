@@ -14,7 +14,7 @@
     "@css-hooks/solid": "2.0.3",
     "@fontsource/inter": "^5.0.8",
     "solid-js": "^1.7.6",
-    "varsace": "^0.0.4"
+    "varsace": "^0.2.0"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^7.0.0",

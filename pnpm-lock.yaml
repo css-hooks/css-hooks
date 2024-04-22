@@ -36,8 +36,8 @@ importers:
         specifier: ^10.17.1
         version: 10.20.2
       varsace:
-        specifier: ^0.0.4
-        version: 0.0.4
+        specifier: ^0.2.0
+        version: 0.2.1
     devDependencies:
       '@preact/preset-vite':
         specifier: ^2.5.0
@@ -76,8 +76,8 @@ importers:
         specifier: ^5.0.8
         version: 5.0.18
       varsace:
-        specifier: ^0.0.4
-        version: 0.0.4
+        specifier: ^0.2.0
+        version: 0.2.1
     devDependencies:
       '@typescript-eslint/eslint-plugin':
         specifier: ^7.0.0
@@ -116,8 +116,8 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
       varsace:
-        specifier: ^0.0.4
-        version: 0.0.4
+        specifier: ^0.2.0
+        version: 0.2.1
     devDependencies:
       '@types/react':
         specifier: ^18.2.15
@@ -165,8 +165,8 @@ importers:
         specifier: ^1.7.6
         version: 1.8.16
       varsace:
-        specifier: ^0.0.4
-        version: 0.0.4
+        specifier: ^0.2.0
+        version: 0.2.1
     devDependencies:
       '@typescript-eslint/parser':
         specifier: ^7.0.0
@@ -4447,9 +4447,6 @@ packages:
   validator@13.11.0:
     resolution: {integrity: sha512-Ii+sehpSfZy+At5nPdnyMhx78fEoPDkR2XW/zimHEL3MyGJQOCQ7WeP20jPYRz7ZCpcKLB21NxuXHF3bxjStBQ==}
     engines: {node: '>= 0.10'}
-
-  varsace@0.0.4:
-    resolution: {integrity: sha512-L0CMKFIRqUOuqMrKDqNUZTcy3EfXodYsdzlB5EWjo3O3rEiyTAnXd9Ouzv6D2FWiYldoDU5GJT2K/IaXuoypLA==}
 
   varsace@0.2.1:
     resolution: {integrity: sha512-YgTXh/6HEcI5+z6Ob7RyLrCDLoFzWF+mOB0e3HXB+S2iMGTqTHF/ZgK8T2t98hAyTsNhDTtqMZna/8wiRofJBA==}
@@ -9352,8 +9349,6 @@ snapshots:
       spdx-expression-parse: 3.0.1
 
   validator@13.11.0: {}
-
-  varsace@0.0.4: {}
 
   varsace@0.2.1: {}
 
