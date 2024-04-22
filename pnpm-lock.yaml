@@ -31,7 +31,7 @@ importers:
         version: 2.0.3(preact@10.20.2)
       '@fontsource/inter':
         specifier: ^5.0.8
-        version: 5.0.17
+        version: 5.0.18
       preact:
         specifier: ^10.17.1
         version: 10.20.2
@@ -74,7 +74,7 @@ importers:
         version: 2.0.3(@builder.io/qwik@1.5.2(@types/node@20.12.7)(lightningcss@1.24.1)(undici@6.13.0))
       '@fontsource/inter':
         specifier: ^5.0.8
-        version: 5.0.17
+        version: 5.0.18
       varsace:
         specifier: ^0.0.4
         version: 0.0.4
@@ -108,7 +108,7 @@ importers:
         version: 2.0.3(@types/react@18.2.79)
       '@fontsource/inter':
         specifier: ^5.0.8
-        version: 5.0.17
+        version: 5.0.18
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -160,7 +160,7 @@ importers:
         version: 2.0.3(solid-js@1.8.16)
       '@fontsource/inter':
         specifier: ^5.0.8
-        version: 5.0.17
+        version: 5.0.18
       solid-js:
         specifier: ^1.7.6
         version: 1.8.16
@@ -459,19 +459,19 @@ importers:
         version: 1.8.2
       '@fontsource-variable/assistant':
         specifier: ^5.0.16
-        version: 5.0.17
+        version: 5.0.18
       '@fontsource-variable/inconsolata':
         specifier: ^5.0.16
-        version: 5.0.17
+        version: 5.0.18
       '@fontsource-variable/inter':
         specifier: ^5.0.16
-        version: 5.0.17
+        version: 5.0.18
       '@fontsource/assistant':
         specifier: ^5.0.16
-        version: 5.0.17
+        version: 5.0.18
       '@fontsource/inter':
         specifier: ^5.0.16
-        version: 5.0.17
+        version: 5.0.18
       '@resvg/resvg-js':
         specifier: ^2.6.0
         version: 2.6.2
@@ -920,20 +920,20 @@ packages:
     resolution: {integrity: sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@fontsource-variable/assistant@5.0.17':
-    resolution: {integrity: sha512-w+TQznSzm/UTL3UOKf3+d8Axc+zBsrDb72vbWXeO6KkKNP52FNGfd/SQioe+axR4iwy8/qA1orbK91hxCCYqmA==}
+  '@fontsource-variable/assistant@5.0.18':
+    resolution: {integrity: sha512-CIyL5SpaaGiFatnIgif/b/U55ZQKquhKV2WYgYfSnOeK8mTeZ3X20CLrCVe9JgFCMpWq08xVEx3P5NHOjlPU4w==}
 
-  '@fontsource-variable/inconsolata@5.0.17':
-    resolution: {integrity: sha512-6SCRmnxyZI+mFCfOh0lIxNmoq5F03PXNTrmQwLMZZkZ8T57kU2e+s7VuEWy6lruJJECgOb5uc5X3Xl/moGs7xg==}
+  '@fontsource-variable/inconsolata@5.0.18':
+    resolution: {integrity: sha512-tnpqD9NOKGJlYvf9/wjy6CNAZUpiNIf5OCdQnUEd5rHMepPx8Jkv4XzWgNuU88npVoDGn7qHnv05lAcyZ7Qpqw==}
 
-  '@fontsource-variable/inter@5.0.17':
-    resolution: {integrity: sha512-sa80nNnqF8kzhBvqusWiL9vlPMVpdmOwMmDBup46Jggsr1VBqo+YuzwB36Ls+X6uHJtb8Yv3ALBHL/zGmT862A==}
+  '@fontsource-variable/inter@5.0.18':
+    resolution: {integrity: sha512-rJzSrtJ3b7djiGFvRuTe6stDfbYJGhdQSfn2SI2WfXviee7Er0yKAHE5u7FU7OWVQQQ1x3+cxdmx9NdiAkcrcA==}
 
-  '@fontsource/assistant@5.0.17':
-    resolution: {integrity: sha512-/Df02k5hS+L171jo712+kFNY3jiBMhm3h2rEFTf0zfR4MQzFe5Bgk2JTcHPsNTiax8zqRD9X1/NOjYYQZbmE8Q==}
+  '@fontsource/assistant@5.0.18':
+    resolution: {integrity: sha512-cVj+CiDqYNUq9bi5pwtA+CKILeFezAjuGOp/c2/kgofhx5OoENoSt7fA6X46y6ZXdcm0fQXymAlfylEoS89EEQ==}
 
-  '@fontsource/inter@5.0.17':
-    resolution: {integrity: sha512-2meBGx1kt7u5LwzGc5Sz5rka6ZDrydg6nT3x6Wkt310vHXUchIywrO8pooWMzZdHYcyFY/cv4lEpJZgMD94bCg==}
+  '@fontsource/inter@5.0.18':
+    resolution: {integrity: sha512-YCsoYPTcs713sI7tLtxaPrIhXAXvEetGg5Ry02ivA8qUOb3fQHojbK/X9HLD5OOKvFUNR2Ynkwb1kR1hVKQHpw==}
 
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
@@ -4972,15 +4972,15 @@ snapshots:
 
   '@eslint/js@8.57.0': {}
 
-  '@fontsource-variable/assistant@5.0.17': {}
+  '@fontsource-variable/assistant@5.0.18': {}
 
-  '@fontsource-variable/inconsolata@5.0.17': {}
+  '@fontsource-variable/inconsolata@5.0.18': {}
 
-  '@fontsource-variable/inter@5.0.17': {}
+  '@fontsource-variable/inter@5.0.18': {}
 
-  '@fontsource/assistant@5.0.17': {}
+  '@fontsource/assistant@5.0.18': {}
 
-  '@fontsource/inter@5.0.17': {}
+  '@fontsource/inter@5.0.18': {}
 
   '@humanwhocodes/config-array@0.11.14':
     dependencies:
