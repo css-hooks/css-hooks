@@ -78,7 +78,7 @@ jobs:
 
       - run: pnpm run -r --filter=./examples/* build
 
-      - run: pnpm run -r --filter=./site build
+      - run: echo $PUPPETEER_EXECUTABLE_PATH && pnpm run -r --filter=./site build
         env:
           PUPPETEER_EXECUTABLE_PATH: ${{ steps.chrome.outputs.chrome-path }}
 
