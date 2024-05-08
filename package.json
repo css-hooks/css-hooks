@@ -18,5 +18,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/css-hooks/css-hooks.git"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "hastx@0.0.10": "patches/hastx@0.0.10.patch"
+    }
   }
 }

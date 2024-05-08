@@ -1,14 +1,16 @@
-import { Slot, component$ } from "@builder.io/qwik";
-import { css } from "~/css";
+import { JSXChildren } from "hastx/jsx-runtime";
+import { css } from "../css.js";
 
-export const Block = component$(() => (
-  <div
-    style={css({
-      width: "calc(100vw - 4rem)",
-      maxWidth: "80rem",
-      margin: "0 auto",
-    })}
-  >
-    <Slot />
-  </div>
-));
+export function Block({ children }: { children?: JSXChildren }) {
+  return (
+    <div
+      style={css({
+        width: "calc(100vw - 4rem)",
+        maxWidth: "80rem",
+        margin: "0 auto",
+      })}
+    >
+      {children}
+    </div>
+  );
+}
