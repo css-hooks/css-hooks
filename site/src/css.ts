@@ -1,13 +1,14 @@
-import {
-  _stringifyValue as stringifyValue,
-  createHooks,
-} from "@css-hooks/qwik";
+import { CSSProperties, cssValueToString } from "hastx/css";
+import { buildHooksSystem } from "@css-hooks/core";
 import { recommended } from "@css-hooks/recommended";
+import globalStyles from "./global.css";
 
-export const { styleSheet, css } = createHooks({
+const createHooks = buildHooksSystem<CSSProperties>(cssValueToString);
+
+const { styleSheet: hookStyles, css } = createHooks({
   hooks: ({ and, or }) => ({
     ...recommended({
-      pseudoClasses: [":empty", ":focus-visible", ":active"],
+      pseudoClasses: [":empty", ":focus-visible", ":active", ":has(*)"],
       breakpoints: ["28em", "44em", "69em"],
     }),
 
@@ -40,6 +41,7 @@ export const { styleSheet, css } = createHooks({
     ".green &": ".green &",
     ".teal &": ".teal &",
     ".purple &": ".purple &",
+    ".prose &": ".prose &",
     ".section &": ".section &",
     "&.selected": "&.selected",
     ":has(:checked) + &": ":has(:checked) + &",
@@ -48,17 +50,12 @@ export const { styleSheet, css } = createHooks({
     // feature queries
     "@supports (height: 100dvh)": "@supports (height: 100dvh)",
   }),
-  debug: import.meta.env.DEV,
+  debug: false, //process.env.NODE_ENV !== "production",
 });
 
-export function renderToString(obj: Parameters<typeof css>[0]) {
-  return Object.entries(css(obj))
-    .map(
-      ([k, v]) =>
-        `${/^--/.test(k) ? k : k.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`)}:${stringifyValue(
-          k,
-          v,
-        )}`,
-    )
-    .join(";");
-}
+export const styleSheet = () =>
+  [globalStyles, hookStyles()].join(
+    process.env.NODE_ENV === "production" ? "" : "\n\n",
+  );
+
+export { css };

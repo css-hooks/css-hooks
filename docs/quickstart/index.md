@@ -1,7 +1,7 @@
 ---
 title: Quickstart
 description: Get up and running in a few simple steps.
-order: 1
+order: 2
 ---
 
 # Quickstart

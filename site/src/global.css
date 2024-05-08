@@ -1,9 +1,5 @@
-@import "@fontsource-variable/assistant";
-@import "@fontsource-variable/inconsolata";
-@import "@fontsource-variable/inter";
-
 html {
-  overflow: auto scroll;
+  overflow-y: scroll;
 }
 
 html,
