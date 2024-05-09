@@ -1,6 +1,7 @@
 import * as V from "varsace";
 import { css } from "../css.js";
 import * as Icon from "./icons.js";
+import { ScreenReaderOnly } from "./screen-reader-only.js";
 
 const themes = ["light", "auto", "dark"] as const;
 const defaultTheme: (typeof themes)[number] = "auto";
@@ -96,28 +97,31 @@ export function ThemeSwitcher() {
         </div>
         <Icon.ArrowDropDown />
       </div>
-      <select
-        id={switcherId}
-        style={css({
-          fontSize: 0,
-          position: "absolute",
-          inset: 0,
-          opacity: 0,
-        })}
-      >
-        {themes.map(theme => (
-          <option
-            selected={theme === defaultTheme}
-            style={css({
-              fontSize: "1rem",
-              background: V.white,
-              color: V.black,
-            })}
-          >
-            {theme}
-          </option>
-        ))}
-      </select>
+      <label>
+        <ScreenReaderOnly>Theme</ScreenReaderOnly>
+        <select
+          id={switcherId}
+          style={css({
+            fontSize: 0,
+            position: "absolute",
+            inset: 0,
+            opacity: 0,
+          })}
+        >
+          {themes.map(theme => (
+            <option
+              selected={theme === defaultTheme}
+              style={css({
+                fontSize: "1rem",
+                background: V.white,
+                color: V.black,
+              })}
+            >
+              {theme}
+            </option>
+          ))}
+        </select>
+      </label>
     </div>
   );
 }

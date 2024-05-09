@@ -9,6 +9,7 @@ import { Block } from "../components/block.js";
 import * as Icon from "../components/icons.js";
 import { PageMeta } from "../components/page-meta.js";
 import { Route } from "../route.js";
+import { ScreenReaderOnly } from "../components/screen-reader-only.js";
 
 const pathname = "/";
 
@@ -1070,13 +1071,23 @@ function ResponsiveDemo() {
               lg
             </span>
           </div>
-          <input
-            type="range"
-            style={{ width: initialWidth }}
-            max={initialWidth}
-            value={initialWidth}
-          />
-          <script>{`const el = document.currentScript.previousElementSibling; el.addEventListener("input", () => el.previousElementSibling.style.width = el.value + "px")`}</script>
+          <label>
+            <ScreenReaderOnly>Container width</ScreenReaderOnly>
+            <input
+              type="range"
+              style={{ width: initialWidth }}
+              max={initialWidth}
+              value={initialWidth}
+            />
+          </label>
+          <script>{`
+            (function() {
+              const label = document.currentScript.previousElementSibling;
+              const input = label.querySelector("input");
+              const container = label.previousElementSibling;
+              input.addEventListener("input", () => container.style.width = input.value + "px");
+            })()
+          `}</script>
         </div>
       }
     />
