@@ -126,6 +126,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
+      - name: configure pnpm for wrangler action
+        run: echo "ignore-workspace-root-check=true" >> .npmrc
+
       - name: cloudflare deployment
         uses: cloudflare/wrangler-action@v3
         with:
