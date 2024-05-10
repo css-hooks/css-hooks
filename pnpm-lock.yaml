@@ -109,8 +109,8 @@ importers:
   examples/react:
     dependencies:
       '@css-hooks/react':
-        specifier: 2.0.3
-        version: 2.0.3(@types/react@18.2.79)
+        specifier: 2.0.4
+        version: link:../../packages/react
       '@fontsource/inter':
         specifier: ^5.0.8
         version: 5.0.18
@@ -709,14 +709,6 @@ packages:
       '@builder.io/qwik': '>=1.2.0 <2'
     peerDependenciesMeta:
       '@builder.io/qwik':
-        optional: true
-
-  '@css-hooks/react@2.0.3':
-    resolution: {integrity: sha512-BQ5L8j4BBmYXfRIJ8ct8YMDNLvuqAG4fATFWp6rydthSotSomY0c544cVNc9DNBJkbTxxeWTus23mruvp6QhFQ==}
-    peerDependencies:
-      '@types/react': '>=16 <19'
-    peerDependenciesMeta:
-      '@types/react':
         optional: true
 
   '@css-hooks/solid@2.0.3':
@@ -4358,12 +4350,6 @@ snapshots:
       '@css-hooks/core': 2.0.4
     optionalDependencies:
       '@builder.io/qwik': 1.5.2(@types/node@20.12.7)(lightningcss@1.24.1)(undici@6.13.0)
-
-  '@css-hooks/react@2.0.3(@types/react@18.2.79)':
-    dependencies:
-      '@css-hooks/core': 2.0.4
-    optionalDependencies:
-      '@types/react': 18.2.79
 
   '@css-hooks/solid@2.0.3(solid-js@1.8.16)':
     dependencies:
