@@ -32,8 +32,8 @@ importers:
   examples/preact:
     dependencies:
       '@css-hooks/preact':
-        specifier: 2.0.3
-        version: 2.0.3(preact@10.20.2)
+        specifier: 2.0.4
+        version: link:../../packages/preact
       '@fontsource/inter':
         specifier: ^5.0.8
         version: 5.0.18
@@ -702,11 +702,6 @@ packages:
 
   '@css-hooks/core@2.0.4':
     resolution: {integrity: sha512-M+GbFdzVk3gKhTH60RkjjBBR2JD/KTKtR2rb3Db2xTb7FFRpxOJhVJVa+CiWpXnrbMxvKQhOAdQHefapZh/H3Q==}
-
-  '@css-hooks/preact@2.0.3':
-    resolution: {integrity: sha512-A0a9NyWJ5/a+Rsfof+9WK7mLjM4zq+QuM6jWJFfyQwSMnkQ0LE331afwPE0EHyxokbp32wbFBud572NmkERFqQ==}
-    peerDependencies:
-      preact: '>=10.0.0 <11.0.0'
 
   '@css-hooks/qwik@2.0.3':
     resolution: {integrity: sha512-Bw2K/mNztH9SYy7hsW7oR8AJLkHDbKI7ualwLevpJAGh8bn5qB5+JcXfUbivA730BSBtD9YsbhDDEGq3QIXqqA==}
@@ -4357,11 +4352,6 @@ snapshots:
       - terser
 
   '@css-hooks/core@2.0.4': {}
-
-  '@css-hooks/preact@2.0.3(preact@10.20.2)':
-    dependencies:
-      '@css-hooks/core': 2.0.4
-      preact: 10.20.2
 
   '@css-hooks/qwik@2.0.3(@builder.io/qwik@1.5.2(@types/node@20.12.7)(lightningcss@1.24.1)(undici@6.13.0))':
     dependencies:

@@ -11,7 +11,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@css-hooks/preact": "2.0.3",
+    "@css-hooks/preact": "2.0.4",
     "@fontsource/inter": "^5.0.8",
     "preact": "^10.17.1",
     "varsace": "^0.0.4"
