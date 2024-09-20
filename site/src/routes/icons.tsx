@@ -1,8 +1,8 @@
-import { Html } from "../components/html.js";
-import { Head } from "../components/head.js";
 import { Body } from "../components/body.js";
 import { EmblemContained } from "../components/emblem.js";
-import { Route } from "../route.js";
+import { Head } from "../components/head.js";
+import { Html } from "../components/html.js";
+import type { Route } from "../route.js";
 
 export default (): Route[] =>
   Object.entries({

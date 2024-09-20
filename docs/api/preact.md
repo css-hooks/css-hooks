@@ -31,29 +31,3 @@ A [CreateHooksFn](./core.createhooksfn.md) configured to use Preact's `JSX.CSSPr
 
 </td></tr>
 </tbody></table>
-
-## Type Aliases
-
-<table><thead><tr><th>
-
-Type Alias
-
-
-</th><th>
-
-Description
-
-
-</th></tr></thead>
-<tbody><tr><td>
-
-[CSSProperties](./preact.cssproperties.md)
-
-
-</td><td>
-
-A version of Preact's `JSX.CSSProperties` type that admits an `on` field
-
-
-</td></tr>
-</tbody></table>

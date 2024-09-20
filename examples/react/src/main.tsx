@@ -1,9 +1,10 @@
 import "@fontsource/inter/latin-700.css";
-import { styleSheet } from "./css";
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+
+import App from "./App.js";
+import { styleSheet } from "./css.js";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

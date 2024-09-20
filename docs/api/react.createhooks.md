@@ -9,5 +9,5 @@ A [CreateHooksFn](./core.createhooksfn.md) configured to use React's `CSSPropert
 **Signature:**
 
 ```typescript
-createHooks: CreateHooksFn<CSSProperties>
+createHooks: import("@css-hooks/core").CreateHooksFn<CSSProperties>
 ```

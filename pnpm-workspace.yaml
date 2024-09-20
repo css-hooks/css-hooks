@@ -1,5 +1,4 @@
 packages:
-  - "packages/recommended"
   - "packages/core"
   - "packages/preact"
   - "packages/qwik"

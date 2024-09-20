@@ -1,11 +1,11 @@
-import { Root, Element, RootContent, Parent, Text } from "hast";
+import type { Element, Parent, Root, RootContent, Text } from "hast";
 import { isElement } from "hast-util-is-element";
-import { CSSProperties, styleObjectToString } from "hastx/css";
-import { Plugin } from "unified";
+import type { CSSProperties } from "hastx/css";
+import { styleObjectToString } from "hastx/css";
+import type { Plugin } from "unified";
 import { visit } from "unist-util-visit";
-import { z } from "zod";
-import { css } from "./css.js";
 import * as V from "varsace";
+import { z } from "zod";
 
 type TagNamePluginOptions<T> = Partial<Record<keyof HTMLElementTagNameMap, T>> &
   (
@@ -37,14 +37,16 @@ export const rehypeStyle: Plugin<
     visit(tree, "element", node => {
       const { tagName } = node;
       if ((tagName === "th" || tagName === "td") && options.tablecell) {
-        node.properties.style = styleObjectToString(options.tablecell(tagName));
+        node.properties["style"] = styleObjectToString(
+          options.tablecell(tagName),
+        );
       } else if (/^h[1-6]$/.test(tagName) && options.heading) {
-        const level = parseInt(tagName[1]) as 1 | 2 | 3 | 4 | 5 | 6;
-        node.properties.style = styleObjectToString(options.heading(level));
+        const level = parseInt(tagName[1] || "1") as 1 | 2 | 3 | 4 | 5 | 6;
+        node.properties["style"] = styleObjectToString(options.heading(level));
       } else if (tagName in options) {
         const style = options[tagName as keyof typeof options];
         if (typeof style === "object") {
-          node.properties.style = styleObjectToString(style);
+          node.properties["style"] = styleObjectToString(style);
         }
       }
     });
@@ -88,8 +90,8 @@ export const rehypeTransformHref: Plugin<
 > = transform => {
   return tree =>
     visit(tree, "element", node => {
-      if (typeof node.properties.href === "string") {
-        node.properties.href = transform(node.properties.href);
+      if (typeof node.properties["href"] === "string") {
+        node.properties["href"] = transform(node.properties["href"]);
       }
     });
 };
@@ -102,15 +104,15 @@ export const rehypeClassName: Plugin<
     visit(tree, "element", node => {
       const { tagName } = node;
       if ((tagName === "td" || tagName === "th") && options.tablecell) {
-        node.properties.class = options.tablecell(tagName);
+        node.properties["class"] = options.tablecell(tagName);
       } else if (/^h[1-6]$/.test(tagName) && options.heading) {
-        node.properties.class = options.heading(
-          parseInt(tagName[1]) as 1 | 2 | 3 | 4 | 5 | 6,
+        node.properties["class"] = options.heading(
+          parseInt(tagName[1] || "1") as 1 | 2 | 3 | 4 | 5 | 6,
         );
       } else if (tagName in options) {
         const option = options[tagName as keyof typeof options];
         if (typeof option === "string") {
-          node.properties.class = option;
+          node.properties["class"] = option;
         }
       }
     });
@@ -135,12 +137,15 @@ export const findTextNode = (parent: Parent) =>
         if (node.type === "element") {
           for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
-            const text = findTextNode(child, i, node);
-            if (text) {
-              return text;
+            if (child) {
+              const text = findTextNode(child, i, node);
+              if (text) {
+                return text;
+              }
             }
           }
         }
+        return undefined;
       })(parent, -1, parent)
     : undefined;
 
@@ -160,16 +165,16 @@ export const rehypeAlerts: Plugin<[], Root> = () => {
           if (match) {
             const type = z.enum(["NOTE", "WARNING"]).parse(match[1]);
             const restText = match[2];
-            text.node.value = restText;
+            text.node["value"] = restText || "";
             withElement(
               <p style={{ margin: 0 }}>
                 <strong
-                  style={css({
+                  style={{
                     color: type === "WARNING" ? V.orange30 : V.blue30,
                     display: "inline-flex",
                     alignItems: "center",
                     gap: "0.375em",
-                  })}
+                  }}
                 >
                   <svg
                     viewBox="0 0 16 16"

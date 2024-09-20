@@ -1,141 +1,114 @@
 ---
 title: Usage
-description: Create enhanced inline styles throughout your application.
+description: How to apply CSS Hooks in component styles
 order: 5
 ---
 
 # Usage
 
-The primary interface you'll interact with is that of the `css` function, which
-allows you to define style objects enhanced with conditional styles. To get
-started, simply pass a style object argument, and then pass the return value to
-the `style` prop:
+This guide demonstrates how to use CSS Hooks to apply conditional styles to your
+components with the `pipe` and `on` functions.
 
-```tsx
-import { css } from "./css";
+## Basic usage
 
-function Component() {
-  return (
-    <div
-      style={css({
-        color: "#333",
-      })}
-    >
-      ...
-    </div>
-  );
-}
-```
+To apply styles to a component, use the `pipe` function to define the base
+(default) styles and the `on` function to define conditional styles that
+override the base styles when certain conditions are met.
 
-## Adding conditional styles
+### Example: Base styles
 
-You can optionally add an `on` field to define conditional styles:
+```jsx
+// src/button.tsx
 
-```tsx
-import { css } from "./css";
+import { pipe } from "remeda";
 
-function Component() {
-  return (
-    <div
-      style={css({
-        color: "#333",
-        on: $ => [
-          $("&:hover", {
-            color: "blue",
-          }),
-        ],
-      })}
-    >
-      ...
-    </div>
-  );
-}
-```
-
-Notice that the `on` function accepts a `$` argument and returns an array of
-conditional styles.
-
-The `$` function constructs a conditional style. The first parameter defines a
-_condition_ (e.g. a hook), and the second is the style object that applies when
-that condition is true.
-
-## Advanced conditions
-
-You can create advanced conditions with combinational logic using a few helper
-functions:
-
-- The `and` function accepts a variable number of condition arguments. It
-  returns a condition that is true when all of the specified conditions are
-  true.
-- The `or` function accepts a variable number of condition arguments. It returns
-  a condition that is true when any of the specified conditions are true.
-- The `not` function accepts a single condition argument and returns the inverse
-  condition.
-
-These helpers are passed to the `on` function in a destructurable second
-argument.
-
-For example, you can combine `&:enabled` and `&:hover` hooks using the `and`
-helper to ensure that a hover effect applies only when the element is also
-enabled:
-
-```tsx
-import { css } from "./css";
-
-function MyButton() {
+function Button() {
   return (
     <button
-      style={css({
-        on: ($, { and }) => [
-          $(and("&:enabled", "&:hover"), {
-            color: "blue",
-          }),
-        ],
+      style={pipe({
+        background: "#666", // base value
+        color: "white",
       })}
     >
-      ...
+      Click Me
     </button>
   );
 }
 ```
 
-## Alternate syntax
+### Example: Adding conditional styles
 
-It's also possible to define conditional styles without a callback function,
-i.e. using plain JSON. Simply provide conditional styles as an array of tuples,
-with the condition as the first item and the applicable style object as the
-second. For example:
+```jsx
+// src/button.tsx
 
-```tsx
-import { css } from "./css";
+import { pipe } from "remeda";
+import { on, and, or } from "./css";
 
-function MyButton() {
+function Button() {
   return (
     <button
-      style={css({
-        on: [
-          [
-            { and: ["&:enabled", "&:hover"] },
-            {
-              color: "blue",
-            },
-          ],
-          [
-            "&:disabled",
-            {
-              color: "gray",
-            },
-          ],
-        ],
-      })}
+      style={pipe(
+        {
+          background: "#666", // base value
+          color: "white",
+        },
+        on(or(and("@media (hover: hover)", "&:hover"), "&:focus"), {
+          background: "#009", // conditionally applied value on hover or focus
+        }),
+        on("&:active", {
+          background: "#900", // conditionally applied value when active
+        }),
+      )}
     >
-      ...
+      Hover, Focus, or Click Me
     </button>
   );
 }
 ```
 
-The alternate syntax may be useful in some cases due to technical constraints or
-even as a matter of personal preference. But it's not our default recommendation
-due to readability concerns, especially when using
-[Prettier](https://prettier.io).
+## Important: Avoiding property conflicts
+
+When defining conditional styles, ensure you do not mix shorthand and longhand
+property names between base and conditional styles. For example, avoid using
+both `margin` and `marginLeft` for the same element to prevent unexpected
+behavior.
+
+## Factoring out reusable conditions
+
+If you frequently use specific combinations of hooks, consider defining them as
+reusable conditions and exporting them from your `css.ts` module. For example:
+
+```typescript
+// src/css.ts
+
+export const hoverOnly = and("@media (hover: hover)", "&:hover");
+export const intent = or(hoverOnly, "&:focus");
+```
+
+```jsx
+// src/button.tsx
+
+import { pipe } from "remeda";
+import { on, intent } from "./css";
+
+function Button() {
+  return (
+    <button
+      style={pipe(
+        {
+          background: "#666", // base value
+          color: "white",
+        },
+        on(intent, {
+          background: "#009", // conditionally applied value on hover or focus
+        }),
+        on("&:active", {
+          background: "#900", // conditionally applied value when active
+        }),
+      )}
+    >
+      Hover, Focus, or Click Me
+    </button>
+  );
+}
+```

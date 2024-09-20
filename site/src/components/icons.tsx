@@ -1,4 +1,4 @@
-import { CSSProperties } from "hastx/css";
+import type { CSSProperties } from "hastx/css";
 
 const style: CSSProperties = {
   minWidth: "1.125em",

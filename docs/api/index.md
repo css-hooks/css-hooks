@@ -63,17 +63,6 @@ CSS Hooks for [React](https://react.dev)
 </td></tr>
 <tr><td>
 
-[@css-hooks/recommended](./recommended.md)
-
-
-</td><td>
-
-Easily configure an opinionated set of hooks
-
-
-</td></tr>
-<tr><td>
-
 [@css-hooks/solid](./solid.md)
 
 

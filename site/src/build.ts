@@ -1,7 +1,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import site from "./site.js";
+
 import * as Pathname from "./pathname.js";
+import site from "./site.js";
 
 const outDir = path.join(process.cwd(), "dist");
 

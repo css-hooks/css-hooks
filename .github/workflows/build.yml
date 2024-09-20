@@ -24,7 +24,6 @@ jobs:
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 9.0.4
           run_install: false
 
       - name: get pnpm store
@@ -44,11 +43,7 @@ jobs:
 
       - run: pnpm install
 
-      - run: pnpm exec prettier --check .
-
-      # Note that the packages must be built before linting. Otherwise, some
-      # types will be inferred as `any` leading to errors.
-      - run: pnpm run -r lint
+      - run: pnpm check
 
       - uses: browser-actions/setup-chrome@v1
         id: chrome
@@ -65,8 +60,8 @@ jobs:
             exit 1;
           fi
 
-      - run: pnpm run -r --filter=./examples/* build
+      - run: pnpm -r -F @examples/* build
 
-      - run: pnpm run -r --filter=./site build
+      - run: pnpm run -r -F ./site build
         env:
           PUPPETEER_EXECUTABLE_PATH: ${{ steps.chrome.outputs.chrome-path }}

@@ -9,11 +9,13 @@ Represents the conditions under which a given hook or declaration applies.
 **Signature:**
 
 ```typescript
-export type Condition<S> =
-  | S
-  | { and: Condition<S>[] }
-  | { or: Condition<S>[] }
-  | { not: Condition<S> };
+export type Condition<S> = S | {
+    and: Condition<S>[];
+} | {
+    or: Condition<S>[];
+} | {
+    not: Condition<S>;
+};
 ```
 **References:** [Condition](./core.condition.md)
 

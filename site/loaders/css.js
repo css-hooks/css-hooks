@@ -1,5 +1,5 @@
-import fs from "fs/promises";
 import { minify as minifyImpl } from "csso";
+import fs from "fs/promises";
 import { fileURLToPath } from "url";
 
 const minify = x =>

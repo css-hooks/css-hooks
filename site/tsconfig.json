@@ -1,10 +1,13 @@
 {
-  "extends": "@tsconfig/node20",
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["DOM"],
     "jsx": "react-jsx",
     "jsxImportSource": "hastx",
-    "noEmit": true
+    "noEmit": true,
+    "exactOptionalPropertyTypes": false,
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "customConditions": ["@css-hooks/source"]
   },
   "include": ["src"]
 }

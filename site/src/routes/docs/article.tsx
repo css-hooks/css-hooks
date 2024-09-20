@@ -1,20 +1,25 @@
-import { Route } from "../../route.js";
-import { Html } from "../../components/html.js";
-import { Head } from "../../components/head.js";
-import { Body } from "../../components/body.js";
-import { PageMeta } from "../../components/page-meta.js";
-import { PageLayout } from "../../components/page-layout.js";
-import { getArticles } from "./data.js";
-import { css } from "../../css.js";
-import { Anchor, anchorStyle } from "../../components/anchor.js";
-import { JSXChildren } from "hastx/jsx-runtime";
-import * as V from "varsace";
-import * as Icon from "../../components/icons.js";
-import { unified } from "unified";
-import remarkParse from "remark-parse";
-import remarkGfm from "remark-gfm";
-import remarkRehype from "remark-rehype";
+import type { RootContent } from "hast";
+import { fromHtml } from "hast-util-from-html";
+import { isElement } from "hast-util-is-element";
+import type { JSXChildren } from "hastx/jsx-runtime";
 import rehypeRaw from "rehype-raw";
+import rehypeStringify from "rehype-stringify";
+import remarkGfm from "remark-gfm";
+import remarkParse from "remark-parse";
+import remarkRehype from "remark-rehype";
+import { pipe } from "remeda";
+import slug from "slug";
+import { unified } from "unified";
+import * as V from "varsace";
+
+import { Anchor, anchorStyle } from "../../components/anchor.js";
+import { Body } from "../../components/body.js";
+import { Head } from "../../components/head.js";
+import { Html } from "../../components/html.js";
+import * as Icon from "../../components/icons.js";
+import { PageLayout } from "../../components/page-layout.js";
+import { PageMeta } from "../../components/page-meta.js";
+import { and, dark, hover, not, on, or } from "../../css.js";
 import {
   findTextNode,
   rehypeAlerts,
@@ -24,11 +29,8 @@ import {
   rehypeTransformHref,
   withElement,
 } from "../../rehype.js";
-import { isElement } from "hast-util-is-element";
-import slug from "slug";
-import { RootContent } from "hast";
-import rehypeStringify from "rehype-stringify";
-import { fromHtml } from "hast-util-from-html";
+import type { Route } from "../../route.js";
+import { getArticles } from "./data.js";
 
 export default async (): Promise<Route[]> => {
   const articles = await getArticles();
@@ -91,17 +93,17 @@ function MenuList({ children }: { children: JSXChildren }) {
   return (
     <ol
       class="group"
-      style={css({
-        listStyleType: "none",
-        margin: 0,
-        padding: 0,
-        paddingLeft: 0,
-        on: $ => [
-          $(".group &.group", {
-            paddingLeft: "2em",
-          }),
-        ],
-      })}
+      style={pipe(
+        {
+          listStyleType: "none",
+          margin: 0,
+          padding: 0,
+          paddingLeft: 0,
+        },
+        on(".group &.group", {
+          paddingLeft: "2em",
+        }),
+      )}
     >
       {children}
     </ol>
@@ -156,97 +158,81 @@ async function Article({
       <Body>
         <PageLayout pathname={pathname}>
           <div
-            style={css({
-              display: "flex",
-              flex: 1,
-              on: ($, { or }) => [
-                $(
-                  or("@media (width < 28em)", "@media (28em <= width < 44em)"),
-                  {
-                    flexDirection: "column",
-                  },
-                ),
-              ],
-            })}
+            style={pipe(
+              {
+                flex: 1,
+                display: "flex",
+                flexDirection: "column",
+              },
+              on("@media (width >= 44em)", {
+                flexDirection: "row",
+              }),
+            )}
           >
             <nav
-              style={css({
-                background: V.gray05,
-                boxSizing: "border-box",
-                on: ($, { or, not }) => [
-                  $("@media (prefers-color-scheme: dark)", {
-                    background: V.gray85,
-                  }),
-                  $(
-                    not(
-                      or(
-                        "@media (width < 28em)",
-                        "@media (28em <= width < 44em)",
-                      ),
-                    ),
-                    {
-                      flexBasis: "24ch",
-                      flexShrink: 0,
-                    },
-                  ),
-                ],
-              })}
+              style={pipe(
+                {
+                  background: V.gray05,
+                  boxSizing: "border-box",
+                },
+                on(dark, {
+                  background: V.gray85,
+                }),
+                on("@media (width >= 44em)", {
+                  flexBasis: "24ch",
+                  flexShrink: 0,
+                }),
+              )}
             >
               <label
-                style={css({
-                  display: "flex",
-                  alignItems: "center",
-                  padding: "1rem 1.25rem",
-                  gap: "0.25rem",
-                  fontSize: "1.25rem",
-                  color: V.gray60,
-                  outlineWidth: 0,
-                  outlineColor: V.blue20,
-                  outlineStyle: "solid",
-                  outlineOffset: -2,
-                  on: ($, { and, or }) => [
-                    $("@media (prefers-color-scheme: dark)", {
-                      outlineColor: V.blue50,
-                      color: V.gray40,
-                    }),
-                    $("&:focus-visible-within", {
-                      outlineWidth: 2,
-                    }),
-                    $(or("&:hover", "&:active"), {
-                      background: V.white,
-                    }),
-                    $("&:hover", {
-                      color: V.blue50,
-                    }),
-                    $("&:active", {
-                      color: V.red50,
-                    }),
-                    $(
-                      and(
-                        or("&:hover", "&:active"),
-                        "@media (prefers-color-scheme: dark)",
-                      ),
-                      {
-                        background: V.gray80,
-                      },
+                style={pipe(
+                  {
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "1rem 1.25rem",
+                    gap: "0.25rem",
+                    fontSize: "1.25rem",
+                    color: V.gray60,
+                    outlineWidth: 0,
+                    outlineColor: V.blue20,
+                    outlineStyle: "solid",
+                    outlineOffset: -2,
+                  },
+                  on(dark, {
+                    outlineColor: V.blue50,
+                    color: V.gray40,
+                  }),
+                  on("&:has(:focus-visible)", {
+                    outlineWidth: 2,
+                  }),
+                  on(or(hover, "&:active"), {
+                    background: V.white,
+                  }),
+                  on(hover, {
+                    color: V.blue50,
+                  }),
+                  on("&:active", {
+                    color: V.red50,
+                  }),
+                  on(
+                    and(
+                      or(hover, "&:active"),
+                      "@media (prefers-color-scheme: dark)",
                     ),
-                    $(and("&:hover", "@media (prefers-color-scheme: dark)"), {
-                      color: V.blue20,
-                    }),
-                    $(and("&:active", "@media (prefers-color-scheme: dark)"), {
-                      color: V.red20,
-                    }),
-                    $(
-                      or(
-                        "@media (44em <= width < 69em)",
-                        "@media (69em <= width)",
-                      ),
-                      {
-                        display: "none",
-                      },
-                    ),
-                  ],
-                })}
+                    {
+                      background: V.gray80,
+                    },
+                  ),
+                  on(and(hover, dark), {
+                    color: V.blue20,
+                  }),
+                  on(and("&:active", dark), {
+                    color: V.red20,
+                  }),
+                  on("@media (width >= 44em)", {
+                    display: "none",
+                  }),
+                )}
               >
                 <input
                   type="checkbox"
@@ -258,56 +244,41 @@ async function Article({
                   }}
                 />
                 <div
-                  style={css({
-                    display: "inline-flex",
-                    on: ($, { not }) => [
-                      $(not(":checked + &"), {
-                        transform: "rotate(-90deg)",
-                        transformOrigin: "center",
-                      }),
-                    ],
-                  })}
+                  style={pipe(
+                    {
+                      display: "inline-flex",
+                    },
+                    on(not(":checked + &"), {
+                      transform: "rotate(-90deg)",
+                      transformOrigin: "center",
+                    }),
+                  )}
                 >
                   <Icon.ExpandMore />
                 </div>
                 <span>Contents</span>
               </label>
               <div
-                style={css({
-                  marginTop: "0.5em",
-                  paddingTop: 0,
-                  paddingRight: "1.75rem",
-                  paddingBottom: "1.75rem",
-                  paddingLeft: "1.75rem",
-                  on: ($, { not, or }) => [
-                    $(
-                      not(
-                        or(
-                          ":has(:checked) + &",
-                          "@media (44em <= width < 69em)",
-                          "@media (69em <= width)",
-                        ),
-                      ),
-                      {
-                        display: "none",
-                      },
-                    ),
-                    $(
-                      or(
-                        "@media (44em <= width < 69em)",
-                        "@media (69em <= width)",
-                      ),
-                      {
-                        position: "fixed",
-                        marginTop: "-0.5em",
-                        paddingTop: "2rem",
-                        paddingRight: "2rem",
-                        paddingBottom: "2rem",
-                        paddingLeft: "2rem",
-                      },
-                    ),
-                  ],
-                })}
+                style={pipe(
+                  {
+                    marginTop: "0.5em",
+                    paddingTop: 0,
+                    paddingRight: "1.75rem",
+                    paddingBottom: "1.75rem",
+                    paddingLeft: "1.75rem",
+                  },
+                  on(not(or(":has(:checked) + &", "@media (width >= 44em)")), {
+                    display: "none",
+                  }),
+                  on("@media (width >= 44em)", {
+                    position: "fixed",
+                    marginTop: "-0.5em",
+                    paddingTop: "2rem",
+                    paddingRight: "2rem",
+                    paddingBottom: "2rem",
+                    paddingLeft: "2rem",
+                  }),
+                )}
               >
                 <MenuList>
                   {menu(
@@ -332,17 +303,17 @@ async function Article({
               }}
             >
               <div
-                style={css({
-                  width: "calc(100% - 4rem)",
-                  maxWidth: "88ch",
-                  margin: "auto",
-                  padding: "1rem 0",
-                  on: $ => [
-                    $("@media (69em <= width)", {
-                      width: "calc(100% - 8rem)",
-                    }),
-                  ],
-                })}
+                style={pipe(
+                  {
+                    width: "calc(100% - 4rem)",
+                    maxWidth: "88ch",
+                    margin: "auto",
+                    padding: "1rem 0",
+                  },
+                  on("@media (width >= 69em)", {
+                    width: "calc(100% - 8rem)",
+                  }),
+                )}
               >
                 <div
                   style={{
@@ -377,28 +348,28 @@ async function Article({
                           })
                           .use(rehypeStyle, {
                             a: anchorStyle,
-                            blockquote: css({
-                              borderWidth: 0,
-                              borderLeftWidth: "8px",
-                              borderStyle: "solid",
-                              padding: "0.1px 1em",
-                              marginLeft: 0,
-                              marginRight: 0,
-                              marginBlock: "1.5rem",
-                              borderColor: V.pink20,
-                              color: V.gray70,
-                              background: V.white,
-                              on: ($, { not }) => [
-                                $(not("@media (prefers-color-scheme: dark)"), {
-                                  boxShadow: `inset 0 0 0 1px ${V.gray20}`,
-                                }),
-                                $("@media (prefers-color-scheme: dark)", {
-                                  borderColor: V.pink60,
-                                  background: V.gray85,
-                                  color: V.gray30,
-                                }),
-                              ],
-                            }),
+                            blockquote: pipe(
+                              {
+                                borderWidth: 0,
+                                borderLeftWidth: "8px",
+                                borderStyle: "solid",
+                                padding: "0.1px 1em",
+                                marginLeft: 0,
+                                marginRight: 0,
+                                marginBlock: "1.5rem",
+                                borderColor: V.pink20,
+                                color: V.gray70,
+                                background: V.white,
+                              },
+                              on(not(dark), {
+                                boxShadow: `inset 0 0 0 1px ${V.gray20}`,
+                              }),
+                              on(dark, {
+                                borderColor: V.pink60,
+                                background: V.gray85,
+                                color: V.gray30,
+                              }),
+                            ),
                             heading: level => ({
                               ...[
                                 {
@@ -434,95 +405,67 @@ async function Article({
                               ][level - 1],
                               lineHeight: 1.25,
                             }),
-                            hr: css({
-                              margin: "2rem 0",
-                              border: 0,
-                              width: "100%",
-                              height: 1,
-                              background: V.gray10,
-                              on: $ => [
-                                $("@media (prefers-color-scheme: dark)", {
-                                  background: V.gray80,
-                                }),
-                              ],
-                            }),
-                            p: css({
-                              margin: "1em 0",
-                              on: $ => [
-                                $("&:only-child", {
-                                  margin: 0,
-                                }),
-                              ],
-                            }),
-                            table: css({
-                              borderStyle: "solid",
-                              borderWidth: 1,
-                              borderSpacing: 0,
-                              borderCollapse: "collapse",
-                              borderColor: V.gray20,
-                              on: $ => [
-                                $("@media (prefers-color-scheme: dark)", {
-                                  borderColor: V.gray70,
-                                }),
-                              ],
-                            }),
-                            tablecell: () =>
-                              css({
-                                borderWidth: 1,
-                                borderColor: "inherit",
-                                borderStyle: "solid",
-                                padding: "calc(0.375em - 0.5px) 0.75em",
-                                on: ($, { and, or, not }) => [
-                                  $(
-                                    not(
-                                      or(
-                                        "@media (prefers-color-scheme: dark)",
-                                        ".group:even-child &",
-                                      ),
-                                    ),
-                                    {
-                                      background: V.white,
-                                    },
-                                  ),
-                                  $(
-                                    and(
-                                      not(
-                                        "@media (prefers-color-scheme: dark)",
-                                      ),
-                                      ".group:even-child &",
-                                    ),
-                                    {
-                                      background: `color-mix(in srgb, ${V.white}, ${V.gray05})`,
-                                    },
-                                  ),
-                                  $(
-                                    and(
-                                      "@media (prefers-color-scheme: dark)",
-                                      not(".group:even-child &"),
-                                    ),
-                                    {
-                                      background: `color-mix(in srgb, ${V.gray85}, ${V.gray90})`,
-                                    },
-                                  ),
-                                  $(
-                                    and(
-                                      "@media (prefers-color-scheme: dark)",
-                                      ".group:even-child &",
-                                    ),
-                                    {
-                                      background: V.gray85,
-                                    },
-                                  ),
-                                ],
+                            hr: pipe(
+                              {
+                                margin: "2rem 0",
+                                border: 0,
+                                width: "100%",
+                                height: 1,
+                                background: V.gray10,
+                              },
+                              on("@media (prefers-color-scheme: dark)", {
+                                background: V.gray80,
                               }),
-                            tr: css({
-                              borderColor: V.gray20,
-                              on: $ => [
-                                $("@media (prefers-color-scheme: dark)", {
-                                  borderColor: V.gray70,
+                            ),
+                            p: pipe(
+                              {
+                                margin: "1em 0",
+                              },
+                              on("&:only-child", {
+                                margin: 0,
+                              }),
+                            ),
+                            table: pipe(
+                              {
+                                borderStyle: "solid",
+                                borderWidth: 1,
+                                borderSpacing: 0,
+                                borderCollapse: "collapse",
+                                borderColor: V.gray20,
+                              },
+                              on("@media (prefers-color-scheme: dark)", {
+                                borderColor: V.gray70,
+                              }),
+                            ),
+                            tablecell: () =>
+                              pipe(
+                                {
+                                  borderWidth: 1,
+                                  borderColor: "inherit",
+                                  borderStyle: "solid",
+                                  padding: "calc(0.375em - 0.5px) 0.75em",
+                                },
+                                on(not(or(dark, ".group:nth-child(even) &")), {
+                                  background: V.white,
                                 }),
-                              ],
-                            }),
+                                on(and(not(dark), ".group:nth-child(even) &"), {
+                                  background: `color-mix(in srgb, ${V.white}, ${V.gray05})`,
+                                }),
+                                on(and(dark, not(".group:nth-child(even) &")), {
+                                  background: `color-mix(in srgb, ${V.gray85}, ${V.gray90})`,
+                                }),
+                                on(and(dark, ".group:nth-child(even) &"), {
+                                  background: V.gray85,
+                                }),
+                              ),
+                            tr: pipe(
+                              {
+                                borderColor: V.gray20,
+                              },
+                              on(dark, {
+                                borderColor: V.gray70,
+                              }),
+                            ),
                           })
                           .use(rehypeAlerts)
                           .use(rehypeRewriteElement, {
@@ -539,25 +482,22 @@ async function Article({
                                 if (step && content) {
                                   withElement(
                                     <span
-                                      style={css({
-                                        transform: "translateY(-22.5%)",
-                                        width: "0.75em",
-                                        height: "0.75em",
-                                        display: "inline-grid",
-                                        placeItems: "center",
-                                        borderRadius: 999,
-                                        background: V.pink10,
-                                        color: V.pink50,
-                                        on: $ => [
-                                          $(
-                                            "@media (prefers-color-scheme: dark)",
-                                            {
-                                              background: V.pink50,
-                                              color: V.pink10,
-                                            },
-                                          ),
-                                        ],
-                                      })}
+                                      style={pipe(
+                                        {
+                                          transform: "translateY(-22.5%)",
+                                          width: "0.75em",
+                                          height: "0.75em",
+                                          display: "inline-grid",
+                                          placeItems: "center",
+                                          borderRadius: 999,
+                                          background: V.pink10,
+                                          color: V.pink50,
+                                        },
+                                        on(dark, {
+                                          background: V.pink50,
+                                          color: V.pink10,
+                                        }),
+                                      )}
                                     >
                                       <span style={{ fontSize: "0.5em" }}>
                                         {step}
@@ -600,15 +540,15 @@ async function Article({
                                   }}
                                 >
                                   <div
-                                    style={css({
-                                      visibility: "hidden",
-                                      width: "0.5em",
-                                      on: $ => [
-                                        $(".group:hover &", {
-                                          visibility: "visible",
-                                        }),
-                                      ],
-                                    })}
+                                    style={pipe(
+                                      {
+                                        visibility: "hidden",
+                                        width: "0.5em",
+                                      },
+                                      on(".group:hover &", {
+                                        visibility: "visible",
+                                      }),
+                                    )}
                                   >
                                     <svg
                                       width="0.5em"
@@ -655,18 +595,18 @@ async function Article({
                       }}
                     >
                       <hr
-                        style={css({
-                          margin: 0,
-                          border: 0,
-                          width: "100%",
-                          height: 1,
-                          background: V.gray10,
-                          on: $ => [
-                            $("@media (prefers-color-scheme: dark)", {
-                              background: V.gray80,
-                            }),
-                          ],
-                        })}
+                        style={pipe(
+                          {
+                            margin: 0,
+                            border: 0,
+                            width: "100%",
+                            height: 1,
+                            background: V.gray10,
+                          },
+                          on(dark, {
+                            background: V.gray80,
+                          }),
+                        )}
                       />
                       <Anchor href={editURL}>
                         <div

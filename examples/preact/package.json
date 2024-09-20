@@ -1,29 +1,24 @@
 {
-  "name": "example-preact",
+  "name": "@examples/preact",
   "private": true,
   "version": "2.0.4",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "clean": "rimraf dist"
   },
   "dependencies": {
+    "@babel/core": "^7.24.4",
     "@css-hooks/preact": "2.0.4",
-    "@fontsource/inter": "^5.0.8",
-    "preact": "^10.17.1",
-    "varsace": "^0.0.4"
-  },
-  "devDependencies": {
-    "@preact/preset-vite": "^2.5.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
-    "eslint": "^8.45.0",
-    "eslint-plugin-react-refresh": "^0.4.3",
-    "rimraf": "^5.0.1",
-    "typescript": "^4.9.5",
-    "vite": "^5.0.0"
+    "@fontsource/inter": "^5.1.0",
+    "@preact/preset-vite": "^2.9.1",
+    "preact": "^10.24.0",
+    "remeda": "^2.14.0",
+    "rimraf": "^6.0.1",
+    "typescript": "=5.4.2",
+    "varsace": "=0.0.4",
+    "vite": "^5.4.6"
   }
 }

@@ -1,61 +1,84 @@
-import { CSSProperties, cssValueToString } from "hastx/css";
 import { buildHooksSystem } from "@css-hooks/core";
-import { recommended } from "@css-hooks/recommended";
+import type { CSSProperties } from "hastx/css";
+import { cssValueToString } from "hastx/css";
+
 import globalStyles from "./global.css";
 
-const createHooks = buildHooksSystem<CSSProperties>(cssValueToString);
+const createHooks = buildHooksSystem<CSSProperties>((a, b) =>
+  cssValueToString(b, a),
+);
 
-const { styleSheet: hookStyles, css } = createHooks({
-  hooks: ({ and, or }) => ({
-    ...recommended({
-      pseudoClasses: [":empty", ":focus-visible", ":active", ":has(*)"],
-      breakpoints: ["28em", "44em", "69em"],
-    }),
+const {
+  styleSheet: hookStyles,
+  on,
+  and,
+  or,
+  not,
+} = createHooks(
+  "@supports (height: 100dvh)",
 
-    // color schemes
-    "@media (prefers-color-scheme: dark)": or(
-      "[data-theme='dark'] &",
-      and("[data-theme='auto'] &", "@media (prefers-color-scheme: dark)"),
-    ),
+  "@media (width < 28em)",
+  "@media (width < 44em)",
+  "@media (width < 69em)",
+  "@media (width >= 28em)",
+  "@media (width >= 44em)",
+  "@media (width >= 69em)",
+  "@media (prefers-color-scheme: dark)",
+  "@media (hover: hover)",
 
-    // responsive design
-    "@container lg": "@container (100px <= width)",
-    "@container sm": "@container (50px <= width < 100px)",
+  "[data-theme='auto'] &",
+  "[data-theme='dark'] &",
 
-    // custom pseudo-classes
-    "&:focus-visible-within": "&:has(:focus-visible)",
-    "&:intent": or("&:focus", and("&:hover", "@media (hover: hover)")),
-    "&:hover": and("&:hover", "@media (hover: hover)"),
+  "@container (width < 50px)",
+  "@container (width < 100px)",
+  "@container (width >= 100px)",
 
-    // selectors
-    "&:only-child": "&:only-child",
-    ".group &.group": ".group &.group",
-    ".group:hover &": and(".group:hover &", "@media (hover: hover)"),
-    ".group:even-child &": ".group:nth-child(even) &",
-    ":checked + &": ":checked + &",
-    ":intent + &": or(":focus + &", and(":hover + &", "@media (hover: hover)")),
-    "&.primary": "&.primary",
-    ".blue &": ".blue &",
-    ".pink &": ".pink &",
-    ".yellow &": ".yellow &",
-    ".green &": ".green &",
-    ".teal &": ".teal &",
-    ".purple &": ".purple &",
-    ".prose &": ".prose &",
-    ".section &": ".section &",
-    "&.selected": "&.selected",
-    ":has(:checked) + &": ":has(:checked) + &",
-    ".shiki > &": ".shiki > &",
+  "&:active",
+  "&:empty",
+  "&:focus-visible",
+  "&:has(*)",
+  "&:has(:focus-visible)",
+  "&:focus",
+  "&:hover",
+  "&:only-child",
 
-    // feature queries
-    "@supports (height: 100dvh)": "@supports (height: 100dvh)",
-  }),
-  debug: false, //process.env.NODE_ENV !== "production",
-});
+  ".group &.group",
+  ".group:hover &",
+  ".group:nth-child(even) &",
+  ":checked + &",
+  ":focus + &",
+  ":hover + &",
+  "&.primary",
+  ".blue &",
+  ".pink &",
+  ".yellow &",
+  ".green &",
+  ".teal &",
+  ".purple &",
+  ".prose &",
+  ".section &",
+  "&.selected",
+  ":has(:checked) + &",
+  ".shiki > &",
+);
 
 export const styleSheet = () =>
   [globalStyles, hookStyles()].join(
-    process.env.NODE_ENV === "production" ? "" : "\n\n",
+    process.env["NODE_ENV"] === "production" ? "" : "\n\n",
   );
 
-export { css };
+export { on, and, or, not };
+
+export const dark = or(
+  "[data-theme='dark'] &",
+  and("[data-theme='auto'] &", "@media (prefers-color-scheme: dark)"),
+);
+
+export const hover = and("&:hover", "@media (hover: hover)");
+
+export const intent = or(hover, "&:focus");
+
+export const intentAdjacentSibling = or(
+  and(":hover + &", "@media (hover: hover)"),
+  ":focus + &",
+);

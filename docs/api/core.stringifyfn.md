@@ -9,13 +9,10 @@ Function to convert a value into a string.
 **Signature:**
 
 ```typescript
-export type StringifyFn = (
-  propertyName: string,
-  value: unknown,
-) => string | null;
+export type StringifyFn = (value: unknown, propertyName: string) => string | null;
 ```
 
 ## Remarks
 
-Used for merging an override property value with the default/fallback value.
+Used for merging a conditional property value with the fallback value.
 

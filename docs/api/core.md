@@ -47,34 +47,12 @@ Description
 </th></tr></thead>
 <tbody><tr><td>
 
-[ConditionHelpers](./core.conditionhelpers.md)
+[CreateHooksResult](./core.createhooksresult.md)
 
 
 </td><td>
 
-Helper functions used to construct advanced conditions.
-
-
-</td></tr>
-<tr><td>
-
-[Config](./core.config.md)
-
-
-</td><td>
-
-Represents the configuration used to set up hooks.
-
-
-</td></tr>
-<tr><td>
-
-[Hooks](./core.hooks.md)
-
-
-</td><td>
-
-Contains the [css](./core.cssfn.md) function used to define enhanced styles, along with the style sheet required to support it.
+An object containing the functions needed to support and use the configured hooks.
 
 
 </td></tr>
@@ -106,17 +84,6 @@ Represents the conditions under which a given hook or declaration applies.
 </td></tr>
 <tr><td>
 
-[ConditionalStyleFn](./core.conditionalstylefn.md)
-
-
-</td><td>
-
-Callback to construct a conditional style group.
-
-
-</td></tr>
-<tr><td>
-
 [CreateHooksFn](./core.createhooksfn.md)
 
 
@@ -128,56 +95,23 @@ Represents the function used to define hooks and related configuration.
 </td></tr>
 <tr><td>
 
-[CssFn](./core.cssfn.md)
+[EnhanceStyleFn](./core.enhancestylefn.md)
 
 
 </td><td>
 
-Represents the type of the `css` function, used to transform a [Rule](./core.rule.md) into a flat style object.
+Enhances a style object by merging in conditional declarations.
 
 
 </td></tr>
 <tr><td>
 
-[GetHookNames](./core.gethooknames.md)
+[Selector](./core.selector.md)
 
 
 </td><td>
 
-A utility type used to extract hook names from configuration
-
-
-</td></tr>
-<tr><td>
-
-[HookImpl](./core.hookimpl.md)
-
-
-</td><td>
-
-Represents a basic hook implementation, using CSS syntax to define a selector or at-rule.
-
-
-</td></tr>
-<tr><td>
-
-[OnFn](./core.onfn.md)
-
-
-</td><td>
-
-Provides a way to declare conditional styles within a [Rule](./core.rule.md)<!-- -->.
-
-
-</td></tr>
-<tr><td>
-
-[Rule](./core.rule.md)
-
-
-</td><td>
-
-Represents a style object, optionally enhanced with inline styles.
+Represents the selector logic used to create a hook.
 
 
 </td></tr>
