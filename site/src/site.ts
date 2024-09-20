@@ -1,23 +1,26 @@
-import { glob } from "glob";
 import fs from "node:fs/promises";
 import path from "node:path";
-import routes from "./routes/index.js";
 import { fileURLToPath } from "node:url";
-import { Route } from "./route.js";
-import { isElement } from "hast-util-is-element";
-import { unified } from "unified";
-import rehypeParse from "rehype-parse";
+
 import rehypeShiki from "@shikijs/rehype";
-import { rehypeRewriteElement, rehypeStyle } from "./rehype.js";
-import rehypeStringify from "rehype-stringify";
+import { glob } from "glob";
+import { isElement } from "hast-util-is-element";
 import { toHtml } from "hast-util-to-html";
-import * as MimeType from "./mime-type.js";
-import { css } from "./css.js";
-import { z } from "zod";
-import puppeteer from "puppeteer";
-import * as V from "varsace";
 import { styleObjectToString } from "hastx/css";
+import puppeteer from "puppeteer";
+import rehypeParse from "rehype-parse";
+import rehypeStringify from "rehype-stringify";
+import { pipe } from "remeda";
+import { unified } from "unified";
+import * as V from "varsace";
+import { z } from "zod";
+
+import { and, dark, not, on } from "./css.js";
+import * as MimeType from "./mime-type.js";
 import * as Pathname from "./pathname.js";
+import { rehypeRewriteElement, rehypeStyle } from "./rehype.js";
+import type { Route } from "./route.js";
+import routes from "./routes/index.js";
 
 const staticDir = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -87,7 +90,7 @@ async function processContent(content: string | Buffer | JSX.Element) {
               line(line) {
                 if (line.children[0]?.type === "element") {
                   const node = line.children[0].children[0];
-                  if (node.type === "text") {
+                  if (node?.type === "text") {
                     const diffType =
                       node.value[0] === "+"
                         ? "add"
@@ -105,47 +108,48 @@ async function processContent(content: string | Buffer | JSX.Element) {
           ],
         })
         .use(rehypeStyle, {
-          code: css({
-            fontFamily: "inherit",
-            color: "inherit",
-            on: ($, { and, not }) => [
-              $(not(".shiki > &"), {
-                fontFamily: "'Inconsolata', monospace",
-                color: V.teal60,
-              }),
-              $(and("@media (prefers-color-scheme: dark)", not(".shiki > &")), {
-                color: V.teal30,
-              }),
-            ],
-          }),
+          code: pipe(
+            {
+              fontFamily: "inherit",
+              color: "inherit",
+            },
+            on(not(".shiki > &"), {
+              fontFamily: "'Inconsolata', monospace",
+              color: V.teal60,
+            }),
+            on(and(dark, not(".shiki > &")), {
+              color: V.teal30,
+            }),
+          ),
         })
         .use(rehypeRewriteElement, {
           pre(node) {
             if (
-              typeof node.properties.class === "string" &&
-              node.properties.class.includes("shiki")
+              typeof node.properties["class"] === "string" &&
+              node.properties["class"].includes("shiki")
             ) {
-              node.properties.style = `${node.properties.style};${styleObjectToString(
-                css({
-                  fontFamily: "'Inconsolata', monospace",
-                  fontSize: "1rem",
-                  overflow: "auto",
-                  padding: "1rem",
-                  margin: 0,
-                  background: V.white,
-                  on: ($, { not }) => [
-                    $(".prose &", {
+              node.properties["style"] =
+                `${node.properties["style"]};${styleObjectToString(
+                  pipe(
+                    {
+                      fontFamily: "'Inconsolata', monospace",
+                      fontSize: "1rem",
+                      overflow: "auto",
+                      padding: "1rem",
+                      margin: 0,
+                      background: V.white,
+                    },
+                    on(".prose &", {
                       marginBlock: "1.5rem",
                     }),
-                    $(not("@media (prefers-color-scheme: dark)"), {
+                    on(not(dark), {
                       boxShadow: `inset 0 0 0 1px ${V.gray20}`,
                     }),
-                    $("@media (prefers-color-scheme: dark)", {
+                    on(dark, {
                       background: V.gray85,
                     }),
-                  ],
-                }),
-              )}`;
+                  ),
+                )}`;
             }
           },
         })

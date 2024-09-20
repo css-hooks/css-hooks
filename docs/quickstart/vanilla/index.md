@@ -11,7 +11,7 @@ order: 99
 ```bash
 npm create vite@latest css-hooks-playground -- --template vanilla-ts
 cd css-hooks-playground
-npm install && npm install -D @css-hooks/core
+npm install @css-hooks/core remeda
 ```
 
 ## 2. Start dev server
@@ -31,12 +31,7 @@ import { buildHooksSystem } from "@css-hooks/core";
 
 const createHooks = buildHooksSystem();
 
-export const { styleSheet, css } = createHooks({
-  hooks: {
-    "&:active": "&:active",
-  },
-  debug: import.meta.env.DEV,
-});
+export const { styleSheet, on } = createHooks("&:active");
 
 /**
  * Converts a style object to a string.
@@ -109,7 +104,8 @@ import typescriptLogo from './typescript.svg'
 import viteLogo from '/vite.svg'
 import { setupCounter } from './counter.ts'
 -import { styleSheet } from './css.ts'
-+import { css, styleObjectToString, styleSheet } from './css.ts'
++import { on, styleObjectToString, styleSheet } from './css.ts'
++import { pipe } from 'remeda'
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <style>${styleSheet()}</style>
@@ -127,14 +123,14 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 +        id="counter"
 +        type="button"
 +        style="${styleObjectToString(
-+          css({
-+            transition: 'transform 75ms',
-+            on: $ => [
-+              on('&:active', {
-+                transform: 'scale(0.9)'
-+              })
-+            ]
-+          })
++          pipe(
++            {
++              transition: 'transform 75ms',
++            },
++            on('&:active', {
++              transform: 'scale(0.9)'
++            })
++          )
 +        )}">
 +      </button>
     </div>

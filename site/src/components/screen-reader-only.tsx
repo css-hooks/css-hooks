@@ -1,10 +1,9 @@
-import { JSXChildren } from "hastx/jsx-runtime";
-import { css } from "../css.js";
+import type { JSXChildren } from "hastx/jsx-runtime";
 
 export function ScreenReaderOnly({ children }: { children?: JSXChildren }) {
   return (
     <div
-      style={css({
+      style={{
         position: "absolute",
         width: "1px",
         height: "1px",
@@ -13,7 +12,7 @@ export function ScreenReaderOnly({ children }: { children?: JSXChildren }) {
         overflow: "hidden",
         clip: "rect(0, 0, 0, 0)",
         border: 0,
-      })}
+      }}
     >
       {children}
     </div>

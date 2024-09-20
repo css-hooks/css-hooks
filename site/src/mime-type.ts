@@ -10,7 +10,7 @@ const mimeTypes: Record<string, string> = {
 
 export function fromPath(x: string) {
   const extension = (x.match(/\.([a-z0-9]+)$/) || [])[1];
-  if (extension in mimeTypes) {
+  if (extension && extension in mimeTypes) {
     return mimeTypes[extension];
   }
   return "application/octet-stream";

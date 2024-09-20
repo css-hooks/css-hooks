@@ -1,5 +1,7 @@
+import { pipe } from "remeda";
 import * as V from "varsace";
-import { css } from "../css.js";
+
+import { and, dark, hover, not, on } from "../css.js";
 import * as Icon from "./icons.js";
 import { ScreenReaderOnly } from "./screen-reader-only.js";
 
@@ -39,59 +41,59 @@ export function ThemeSwitcherScript() {
 export function ThemeSwitcher() {
   return (
     <div
-      style={css({
-        position: "relative",
-        display: "inline-flex",
-        outlineWidth: 0,
-        outlineStyle: "solid",
-        outlineColor: V.blue20,
-        outlineOffset: 2,
-        color: V.blue50,
-        on: ($, { and }) => [
-          $("&:focus-visible-within", {
-            outlineWidth: 2,
-          }),
-          $("&:hover", {
-            color: V.blue40,
-          }),
-          $("&:active", {
-            color: V.red40,
-          }),
-          $("@media (prefers-color-scheme: dark)", {
-            outlineColor: V.blue50,
-            color: V.blue30,
-          }),
-          $(and("@media (prefers-color-scheme: dark)", "&:hover"), {
-            color: V.blue20,
-          }),
-          $(and("@media (prefers-color-scheme: dark)", "&:active"), {
-            color: V.red20,
-          }),
-        ],
-      })}
+      style={pipe(
+        {
+          position: "relative",
+          display: "inline-flex",
+          outlineWidth: 0,
+          outlineStyle: "solid",
+          outlineColor: V.blue20,
+          outlineOffset: 2,
+          color: V.blue50,
+        },
+        on("&:has(:focus-visible)", {
+          outlineWidth: 2,
+        }),
+        on(hover, {
+          color: V.blue40,
+        }),
+        on("&:active", {
+          color: V.red40,
+        }),
+        on(dark, {
+          outlineColor: V.blue50,
+          color: V.blue30,
+        }),
+        on(and(dark, hover), {
+          color: V.blue20,
+        }),
+        on(and(dark, "&:active"), {
+          color: V.red20,
+        }),
+      )}
     >
-      <div style={css({ display: "inline-flex" })}>
+      <div style={{ display: "inline-flex" }}>
         <div
-          style={css({
-            display: "none",
-            on: $ => [
-              $("@media (prefers-color-scheme: dark)", {
-                display: "contents",
-              }),
-            ],
-          })}
+          style={pipe(
+            {
+              display: "none",
+            },
+            on(dark, {
+              display: "contents",
+            }),
+          )}
         >
           <Icon.DarkMode />
         </div>
         <div
-          style={css({
-            display: "none",
-            on: ($, { not }) => [
-              $(not("@media (prefers-color-scheme: dark)"), {
-                display: "contents",
-              }),
-            ],
-          })}
+          style={pipe(
+            {
+              display: "none",
+            },
+            on(not(dark), {
+              display: "contents",
+            }),
+          )}
         >
           <Icon.LightMode />
         </div>
@@ -101,21 +103,21 @@ export function ThemeSwitcher() {
         <ScreenReaderOnly>Theme</ScreenReaderOnly>
         <select
           id={switcherId}
-          style={css({
+          style={{
             fontSize: 0,
             position: "absolute",
             inset: 0,
             opacity: 0,
-          })}
+          }}
         >
           {themes.map(theme => (
             <option
               selected={theme === defaultTheme}
-              style={css({
+              style={{
                 fontSize: "1rem",
                 background: V.white,
                 color: V.black,
-              })}
+              }}
             >
               {theme}
             </option>

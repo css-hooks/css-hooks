@@ -11,7 +11,7 @@ order: 3
 ```bash
 npm create vite@latest css-hooks-playground -- --template solid-ts
 cd css-hooks-playground
-npm install && npm install @css-hooks/solid
+npm install @css-hooks/solid remeda
 ```
 
 ## 2. Start dev server
@@ -29,12 +29,7 @@ Create a `src/css.ts` module with the following contents:
 ```typescript
 import { createHooks } from "@css-hooks/solid";
 
-export const { styleSheet, css } = createHooks({
-  hooks: {
-    "&:active": "&:active",
-  },
-  debug: import.meta.env.DEV,
-});
+export const { styleSheet, on } = createHooks("&:active");
 ```
 
 ## 4. Add style sheet
@@ -81,7 +76,8 @@ import { createSignal } from 'solid-js'
 import solidLogo from './assets/solid.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-+import { css } from './css'
++import { on } from './css'
++import { pipe } from 'remeda'
 
 function App() {
   const [count, setCount] = createSignal(0)
@@ -101,14 +97,14 @@ function App() {
 -        <button onClick={() => setCount((count) => count + 1)}>
 +        <button
 +          onClick={() => setCount((count) => count + 1)}
-+          style={css({
-+            transition: "transform 75ms",
-+            on: $ => [
-+              $("&:active", {
-+                transform: "scale(0.9)"
-+              })
-+            ]
-+          })}
++          style={pipe(
++            {
++              transition: "transform 75ms",
++            },
++            on("&:active", {
++              transform: "scale(0.9)"
++            })
++          )}
 +        >
           count is {count()}
         </button>

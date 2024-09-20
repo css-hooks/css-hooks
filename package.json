@@ -2,16 +2,24 @@
   "name": "css-hooks",
   "description": "Monorepo for @css-hooks/* packages",
   "version": "2.0.4",
+  "type": "module",
   "scripts": {
-    "docs": "pnpm run -r api && api-documenter markdown -i temp -o docs/api",
-    "prepare": "pnpm run -r prepublishOnly"
+    "check": "prettier --check . && eslint .",
+    "docs": "pnpm run -r prepare && api-documenter markdown -i temp -o docs/api",
+    "fix": "prettier --write . && eslint --fix ."
   },
   "devDependencies": {
+    "@eslint/js": "^9.3.0",
     "@microsoft/api-documenter": "^7.24.1",
     "conventional-changelog-cli": "^4.0.0",
     "conventional-github-releaser": "^3.1.5",
     "conventional-recommended-bump": "^9.0.0",
-    "prettier": "^3.2.5"
+    "eslint": "^8.57.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-simple-import-sort": "^12.1.0",
+    "prettier": "^3.2.5",
+    "typescript": "=5.4.2",
+    "typescript-eslint": "^7.9.0"
   },
   "license": "MIT",
   "private": true,
@@ -23,5 +31,6 @@
     "patchedDependencies": {
       "hastx@0.0.10": "patches/hastx@0.0.10.patch"
     }
-  }
+  },
+  "packageManager": "pnpm@9.5.0+sha512.140036830124618d624a2187b50d04289d5a087f326c9edfc0ccd733d76c4f52c3a313d4fc148794a2a9d81553016004e6742e8cf850670268a7387fc220c903"
 }

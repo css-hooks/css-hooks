@@ -1,10 +1,11 @@
+import type { JSXChild } from "hastx/jsx-runtime";
 import * as V from "varsace";
-import { Logo } from "../components/logo.js";
-import { JSXChild } from "hastx/jsx-runtime";
-import { Head } from "../components/head.js";
+
 import { Body } from "../components/body.js";
+import { Head } from "../components/head.js";
 import { Html } from "../components/html.js";
-import { Route } from "../route.js";
+import { Logo } from "../components/logo.js";
+import type { Route } from "../route.js";
 
 export default (): Route[] => [
   {

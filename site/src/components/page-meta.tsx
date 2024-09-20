@@ -8,7 +8,7 @@ export function PageMeta({
   title?: string;
 }) {
   const siteName = "CSS Hooks";
-  const baseUrl = process.env.WEBSITE_BASE_URL || "http://localhost:8080";
+  const baseUrl = process.env["WEBSITE_BASE_URL"] || "http://localhost:8080";
   const url = [baseUrl, pathname].join("");
   return (
     <>

@@ -1,8 +1,9 @@
 import crypto from "crypto";
 import http from "http";
-import site from "./site.js";
+
 import * as MimeType from "./mime-type.js";
 import * as Pathname from "./pathname.js";
+import site from "./site.js";
 
 const sockets: { end: () => void }[] = [];
 

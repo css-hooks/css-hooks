@@ -1,5 +1,6 @@
-import { glob } from "glob";
 import path from "node:path";
+
+import { glob } from "glob";
 import { z } from "zod";
 
 const docsBase = path.resolve(
@@ -19,7 +20,7 @@ export const getArticles = async () =>
           .replace(/^\/docs\//, "")
           .split("")
           .filter(x => x === "/").length - 1;
-      if (/[\\\/]api[\\\/]/.test(filePath)) {
+      if (/[\\/]api[\\/]/.test(filePath)) {
         return {
           filePath,
           editURL: undefined,

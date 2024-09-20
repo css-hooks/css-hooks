@@ -11,7 +11,7 @@ order: 1
 ```bash
 npm create vite@latest css-hooks-playground -- --template react-ts
 cd css-hooks-playground
-npm install && npm install @css-hooks/react
+npm install @css-hooks/react remeda
 ```
 
 ## 2. Start dev server
@@ -29,12 +29,7 @@ Create a `src/css.ts` module with the following contents:
 ```typescript
 import { createHooks } from "@css-hooks/react";
 
-export const { styleSheet, css } = createHooks({
-  hooks: {
-    "&:active": "&:active",
-  },
-  debug: import.meta.env.DEV,
-});
+export const { styleSheet, on } = createHooks("&:active");
 ```
 
 ## 4. Add style sheet
@@ -75,6 +70,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 +import { css } from './css.ts'
++import { pipe } from 'remeda'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -94,14 +90,14 @@ function App() {
 -        <button onClick={() => setCount((count) => count + 1)}>
 +        <button
 +          onClick={() => setCount((count) => count + 1)}
-+          style={css({
-+            transition: "transform 75ms",
-+            on: $ => [
-+              $("&:active", {
-+                transform: "scale(0.9)"
-+              })
-+            ]
-+          })}
++          style={pipe(
++            {
++              transition: "transform 75ms",
++            },
++            on("&:active", {
++              transform: "scale(0.9)"
++            })
++          )}
 +        >
           count is {count}
         </button>

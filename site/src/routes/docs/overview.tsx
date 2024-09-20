@@ -1,12 +1,14 @@
+import { pipe } from "remeda";
 import * as V from "varsace";
+
 import { Anchor } from "../../components/anchor.js";
-import { css } from "../../css.js";
-import { Route } from "../../route.js";
-import { Html } from "../../components/html.js";
 import { Body } from "../../components/body.js";
 import { Head } from "../../components/head.js";
+import { Html } from "../../components/html.js";
 import { PageLayout } from "../../components/page-layout.js";
 import { PageMeta } from "../../components/page-meta.js";
+import { dark, not, on } from "../../css.js";
+import type { Route } from "../../route.js";
 import { getArticles } from "./data.js";
 
 const pathname = "/docs/";
@@ -51,22 +53,22 @@ async function Overview() {
               Documentation
             </h1>
             <ol
-              style={css({
-                listStyleType: "none",
-                margin: 0,
-                padding: "2em",
-                display: "flex",
-                flexDirection: "column",
-                gap: "2em",
-                on: ($, { not }) => [
-                  $("@media (prefers-color-scheme: dark)", {
-                    background: V.gray85,
-                  }),
-                  $(not("@media (prefers-color-scheme: dark)"), {
-                    boxShadow: `0 0 0 1px ${V.gray20}`,
-                  }),
-                ],
-              })}
+              style={pipe(
+                {
+                  listStyleType: "none",
+                  margin: 0,
+                  padding: "2em",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "2em",
+                },
+                on(dark, {
+                  background: V.gray85,
+                }),
+                on(not(dark), {
+                  boxShadow: `0 0 0 1px ${V.gray20}`,
+                }),
+              )}
             >
               {(await getArticles())
                 .filter(article => article.level === 0 && article.order >= 0)

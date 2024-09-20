@@ -9,5 +9,5 @@ A [CreateHooksFn](./core.createhooksfn.md) configured to use Solid's `JSX.CSSPro
 **Signature:**
 
 ```typescript
-createHooks: CreateHooksFn<JSX.CSSProperties>
+createHooks: import("@css-hooks/core").CreateHooksFn<JSX.CSSProperties>
 ```

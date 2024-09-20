@@ -1,7 +1,9 @@
-import { CSSProperties } from "hastx/css";
-import { css } from "../css.js";
-import { Emblem } from "./emblem.js";
+import type { CSSProperties } from "hastx/css";
+import { pipe } from "remeda";
 import * as V from "varsace";
+
+import { dark, on } from "../css.js";
+import { Emblem } from "./emblem.js";
 
 export function Logo({
   size = "2rem",
@@ -10,9 +12,9 @@ export function Logo({
   size?: CSSProperties["fontSize"];
   theme?: "dark" | "light" | "auto";
 }) {
-  const light = V.gray90;
-  const dark = V.white;
-  const color = theme === "dark" ? dark : light;
+  const lightColor = V.gray90;
+  const darkColor = V.white;
+  const color = theme === "dark" ? darkColor : lightColor;
   return (
     <div
       style={{
@@ -29,14 +31,14 @@ export function Logo({
       <div
         style={
           theme === "auto"
-            ? css({
-                color: light,
-                on: $ => [
-                  $("@media (prefers-color-scheme: dark)", {
-                    color: dark,
-                  }),
-                ],
-              })
+            ? pipe(
+                {
+                  color: lightColor,
+                },
+                on(dark, {
+                  color: darkColor,
+                }),
+              )
             : { color }
         }
       >

@@ -1,13 +1,35 @@
 import assert from "node:assert";
 import events from "node:events";
 import { after, afterEach, before, beforeEach, describe, it } from "node:test";
-import * as CSS from "csstype";
-import puppeteer, { Browser, Page } from "puppeteer";
+
 import Color from "color";
+import type * as CSS from "csstype";
 import * as lightningcss from "lightningcss";
+import type { Browser, Page } from "puppeteer";
+import puppeteer from "puppeteer";
+import { pipe } from "remeda";
+
 import { buildHooksSystem } from "./index.js";
 
 events.setMaxListeners(50);
+
+function useMode(mode: "development" | "production") {
+  const backup = process.env["NODE_ENV"];
+  process.env["NODE_ENV"] = mode;
+  return function revert() {
+    process.env["NODE_ENV"] = backup;
+  };
+}
+
+function withMode<T>(mode: Parameters<typeof useMode>[0], f: () => T): T {
+  let teardown = () => {};
+  try {
+    teardown = useMode(mode);
+    return f();
+  } finally {
+    teardown();
+  }
+}
 
 describe("in browser", () => {
   const createHooks = buildHooksSystem<CSS.Properties>();
@@ -61,17 +83,22 @@ describe("in browser", () => {
     );
   }
 
-  async function queryComputedStyle(
+  async function queryAndGetComputedStyle(
     selector: string,
-  ): Promise<ReturnType<typeof getComputedStyle> | undefined> {
+  ): Promise<ReturnType<typeof getComputedStyle>> {
     const computedStyle = await page.evaluate(selector => {
       const el = document.querySelector(selector);
-      return JSON.stringify(el ? getComputedStyle(el) : undefined);
+      if (!el) {
+        throw new Error(
+          `No element matches the provided selector: ${selector}`,
+        );
+      }
+      return JSON.stringify(getComputedStyle(el));
     }, selector);
-    return JSON.parse(computedStyle) as ReturnType<typeof queryComputedStyle>;
+    return JSON.parse(computedStyle) as ReturnType<typeof getComputedStyle>;
   }
 
-  function querySetClassName(selector: string, className: string) {
+  function queryAndSetClassName(selector: string, className: string) {
     return page.evaluate(
       ({ selector, className }) => {
         const el = document.querySelector(selector);
@@ -83,19 +110,18 @@ describe("in browser", () => {
     );
   }
 
-  function computedToColor(computed: string | undefined) {
-    return computed ? Color(computed) : undefined;
-  }
+  for (const mode of ["development", "production"] as const) {
+    describe(`in ${mode} mode`, () => {
+      let teardown = () => {};
 
-  for (const mode of [true, false].map(debug => ({ debug }))) {
-    describe(`with configuration ${JSON.stringify(mode)}`, () => {
-      it("supports selector hooks", async () => {
-        const { styleSheet, css } = createHooks({
-          hooks: {
-            hover: "&:hover",
-          },
-          ...mode,
-        });
+      before(() => {
+        teardown = useMode(mode);
+      });
+
+      after(teardown);
+
+      it("supports basic selector hooks", async () => {
+        const { styleSheet, on } = createHooks("&:hover");
 
         await page.addStyleTag({ content: styleSheet() });
 
@@ -104,631 +130,190 @@ describe("in browser", () => {
 
         await createStyledElement(
           "button",
-          css({
-            color: expectedDefaultColor.string(),
-            on: $ => [
-              $("hover", {
-                color: expectedHoverColor.string(),
-              }),
-            ],
-          }),
-        );
-
-        const actualDefaultColor = computedToColor(
-          (await queryComputedStyle("button"))?.color,
-        );
-
-        assert.deepStrictEqual(actualDefaultColor, expectedDefaultColor);
-
-        await page.hover("button");
-
-        const actualHoverColor = computedToColor(
-          (await queryComputedStyle("button"))?.color,
-        );
-
-        assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
-      });
-
-      it("supports at-rule hooks", async () => {
-        const { styleSheet, css } = createHooks({
-          hooks: {
-            mobile: "@media (width < 600px)",
-          },
-          ...mode,
-        });
-
-        await page.addStyleTag({ content: styleSheet() });
-
-        const expectedDefaultPadding = "64px",
-          expectedMobilePadding = "16px";
-
-        await createStyledElement(
-          "div",
-          css({
-            padding: expectedDefaultPadding,
-            on: $ => [
-              $("mobile", {
-                padding: expectedMobilePadding,
-              }),
-            ],
-          }),
-        );
-
-        const actualDefaultPadding = (await queryComputedStyle("div"))?.padding;
-
-        assert.strictEqual(actualDefaultPadding, expectedDefaultPadding);
-
-        await page.setViewport({
-          width: 480,
-          height: 800,
-          deviceScaleFactor: 1,
-        });
-
-        const actualMobilePadding = (await queryComputedStyle("div"))?.padding;
-
-        assert.strictEqual(actualMobilePadding, expectedMobilePadding);
-      });
-
-      it("supports hook-level combinational logic", async () => {
-        const { styleSheet, css } = createHooks({
-          hooks: ({ and, or, not }) => ({
-            "&.a:not(&.b,&.c)": and("&.a", not(or("&.b", "&.c"))),
-          }),
-          ...mode,
-        });
-
-        await page.addStyleTag({ content: styleSheet() });
-
-        const expectedDefaultDisplay = "none",
-          expectedConditionMetDisplay = "block";
-
-        await createStyledElement(
-          "div",
-          css({
-            display: expectedDefaultDisplay,
-            on: $ => [
-              $("&.a:not(&.b,&.c)", {
-                display: expectedConditionMetDisplay,
-              }),
-            ],
-          }),
-        );
-
-        let actualDefaultDisplay = (await queryComputedStyle("div"))?.display;
-
-        assert.strictEqual(actualDefaultDisplay, expectedDefaultDisplay);
-
-        for (const className of ["a b", "a c"]) {
-          await querySetClassName("div", className);
-          actualDefaultDisplay = (await queryComputedStyle("div"))?.display;
-          assert.strictEqual(actualDefaultDisplay, expectedDefaultDisplay);
-        }
-
-        assert.strictEqual(actualDefaultDisplay, expectedDefaultDisplay);
-
-        for (const className of ["a", "a d"]) {
-          await querySetClassName("div", className);
-          const actualConditionMetDisplay = (await queryComputedStyle("div"))
-            ?.display;
-          assert.strictEqual(
-            actualConditionMetDisplay,
-            expectedConditionMetDisplay,
-          );
-        }
-      });
-
-      it("supports local combinational logic", async () => {
-        const { styleSheet, css } = createHooks({
-          hooks: {
-            "&.a": "&.a",
-            "&.b": "&.b",
-            "&.c": "&.c",
-          },
-          ...mode,
-        });
-
-        await page.addStyleTag({ content: styleSheet() });
-
-        const expectedDefaultFontSize = "18px",
-          expectedConditionMetFontSize = "24px";
-
-        await createStyledElement(
-          "div",
-          css({
-            fontSize: expectedDefaultFontSize,
-            on: ($, { and, or, not }) => [
-              $(and("&.a", not(or("&.b", "&.c"))), {
-                fontSize: expectedConditionMetFontSize,
-              }),
-            ],
-          }),
-        );
-
-        let actualDefaultFontSize = (await queryComputedStyle("div"))?.fontSize;
-
-        assert.strictEqual(actualDefaultFontSize, expectedDefaultFontSize);
-
-        for (const className of ["a b", "a c"]) {
-          await querySetClassName("div", className);
-          actualDefaultFontSize = (await queryComputedStyle("div"))?.fontSize;
-          assert.deepStrictEqual(
-            actualDefaultFontSize,
-            expectedDefaultFontSize,
-          );
-        }
-
-        assert.strictEqual(actualDefaultFontSize, expectedDefaultFontSize);
-
-        for (const className of ["a", "a d"]) {
-          await querySetClassName("div", className);
-          const actualConditionMetFontSize = (await queryComputedStyle("div"))
-            ?.fontSize;
-          assert.strictEqual(
-            actualConditionMetFontSize,
-            expectedConditionMetFontSize,
-          );
-        }
-      });
-
-      it("avoids conflicts in combinational logic variables", async () => {
-        const { styleSheet, css } = createHooks({
-          hooks: {
-            "&.a": "&.a",
-            "&.b": "&.b",
-            "&.c": "&.c",
-            "&.d": "&.d",
-            "&.e": "&.e",
-            "&.f": "&.f",
-          },
-          ...mode,
-        });
-
-        await page.addStyleTag({ content: styleSheet() });
-
-        const expectedColor = Color("green");
-
-        await createStyledElement(
-          "div",
-          css(
+          pipe(
             {
-              on: ($, { and }) => [$(and("&.a", "&.b", "&.c"), {})],
+              color: expectedDefaultColor.string(),
             },
-            css({
-              on: ($, { or }) => [
-                $(or("&.d", "&.e", "&.f"), {
-                  color: expectedColor.string(),
-                }),
-              ],
+            on("&:hover", {
+              color: expectedHoverColor.string(),
             }),
           ),
         );
 
-        for (const className of ["d", "e", "f"]) {
-          await querySetClassName("div", className);
-
-          const actualColor = computedToColor(
-            (await queryComputedStyle("div"))?.color,
-          );
-          assert.deepStrictEqual(actualColor, expectedColor);
-        }
-      });
-    });
-  }
-
-  for (const mode of [true, false].flatMap(properties =>
-    [true, false].map(conditionalStyles => ({
-      sort: {
-        properties,
-        conditionalStyles,
-      },
-    })),
-  )) {
-    describe(`with configuration ${JSON.stringify(mode)}`, () => {
-      it("prioritizes conditional styles over base styles", async () => {
-        const expectedDefaultColor = Color("blue"),
-          expectedHoverColor = Color("red");
-
-        const { styleSheet, css } = createHooks({
-          hooks: {
-            "&:hover": "&:hover",
-          },
-          ...mode,
-        });
-
-        await page.addStyleTag({ content: styleSheet() });
-
-        createStyledElement(
-          "button",
-          css({
-            on: $ => [
-              $("&:hover", {
-                color: expectedHoverColor.string(),
-              }),
-            ],
-            color: expectedDefaultColor.string(),
-          }),
-        );
-
-        const actualDefaultColor = computedToColor(
-          (await queryComputedStyle("button"))?.color,
+        const actualDefaultColor = Color(
+          (await queryAndGetComputedStyle("button")).color,
         );
 
         assert.deepStrictEqual(actualDefaultColor, expectedDefaultColor);
 
         await page.hover("button");
 
-        const actualHoverColor = computedToColor(
-          (await queryComputedStyle("button"))?.color,
+        const actualHoverColor = Color(
+          (await queryAndGetComputedStyle("button")).color,
         );
 
         assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
       });
     });
 
-    it("prioritizes conditional styles that appear later", async () => {
-      const expectedDefaultColor = Color("red"),
-        expectedClassColor = Color("green"),
-        expectedHoverColor = Color("blue");
-
-      const { styleSheet, css } = createHooks({
-        hooks: {
-          "&.class": "&.class",
-          "&:hover": "&:hover",
-        },
-        ...mode,
-      });
+    it("supports at-rule hooks", async () => {
+      const { styleSheet, on } = createHooks("@media (width < 600px)");
 
       await page.addStyleTag({ content: styleSheet() });
 
+      const expectedDefaultPadding = "64px",
+        expectedMobilePadding = "16px";
+
       await createStyledElement(
-        "button",
-        css({
-          color: expectedDefaultColor.string(),
-          on: $ => [
-            $("&:hover", {
-              color: expectedHoverColor.string(),
-            }),
-            $("&.class", {
-              color: expectedClassColor.string(),
-            }),
-          ],
-        }),
+        "div",
+        pipe(
+          {
+            padding: expectedDefaultPadding,
+          },
+          on("@media (width < 600px)", {
+            padding: expectedMobilePadding,
+          }),
+        ),
       );
 
-      const actualDefaultColor = computedToColor(
-        (await queryComputedStyle("button"))?.color,
+      const { padding: actualDefaultPadding } =
+        await queryAndGetComputedStyle("div");
+
+      assert.strictEqual(actualDefaultPadding, expectedDefaultPadding);
+
+      await page.setViewport({
+        width: 480,
+        height: 800,
+        deviceScaleFactor: 1,
+      });
+
+      const { padding: actualMobilePadding } =
+        await queryAndGetComputedStyle("div");
+
+      assert.strictEqual(actualMobilePadding, expectedMobilePadding);
+    });
+
+    it("supports combinational logic", async () => {
+      const { styleSheet, on, and, or, not } = createHooks("&.a", "&.b", "&.c");
+
+      await page.addStyleTag({ content: styleSheet() });
+
+      const expectedDefaultFontSize = "18px",
+        expectedConditionMetFontSize = "24px";
+
+      await createStyledElement(
+        "div",
+        pipe(
+          {
+            fontSize: expectedDefaultFontSize,
+          },
+          on(and("&.a", not(or("&.b", "&.c"))), {
+            fontSize: expectedConditionMetFontSize,
+          }),
+        ),
+      );
+
+      let { fontSize: actualDefaultFontSize } =
+        await queryAndGetComputedStyle("div");
+
+      assert.strictEqual(actualDefaultFontSize, expectedDefaultFontSize);
+
+      for (const className of ["a b", "a c"]) {
+        await queryAndSetClassName("div", className);
+        ({ fontSize: actualDefaultFontSize } =
+          await queryAndGetComputedStyle("div"));
+        assert.deepStrictEqual(actualDefaultFontSize, expectedDefaultFontSize);
+      }
+
+      assert.strictEqual(actualDefaultFontSize, expectedDefaultFontSize);
+
+      for (const className of ["a", "a d"]) {
+        await queryAndSetClassName("div", className);
+        const { fontSize: actualConditionMetFontSize } =
+          await queryAndGetComputedStyle("div");
+        assert.strictEqual(
+          actualConditionMetFontSize,
+          expectedConditionMetFontSize,
+        );
+      }
+    });
+
+    it("falls back to the previous cascade layer when the condition is not met", async () => {
+      const { styleSheet, on } = createHooks("&:hover");
+
+      const expectedDefaultColor = Color("gray"),
+        expectedHoverColor = Color("blue");
+
+      await page.addStyleTag({
+        content: `button { color: ${expectedDefaultColor.string()} } ${styleSheet()}`,
+      });
+
+      await createStyledElement(
+        "button",
+        pipe(
+          {},
+          on("&:hover", {
+            color: expectedHoverColor.string(),
+          }),
+        ),
+      );
+
+      const actualDefaultColor = Color(
+        (await queryAndGetComputedStyle("button")).color,
       );
 
       assert.deepStrictEqual(actualDefaultColor, expectedDefaultColor);
 
-      await querySetClassName("button", "class");
-
       await page.hover("button");
 
-      const actualClassColor = computedToColor(
-        (await queryComputedStyle("button"))?.color,
-      );
-
-      assert.deepStrictEqual(actualClassColor, expectedClassColor);
-
-      await querySetClassName("button", "");
-
-      const actualHoverColor = computedToColor(
-        (await queryComputedStyle("button"))?.color,
+      const actualHoverColor = Color(
+        (await queryAndGetComputedStyle("button")).color,
       );
 
       assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
     });
   }
-
-  describe("when multiple style rules are passed (experimental)", () => {
-    for (const mode of [true, false].map(conditionalStyles => ({
-      sort: { properties: true, conditionalStyles },
-    }))) {
-      describe(`with ${JSON.stringify(mode)}`, () => {
-        it("gives the last declaration the highest priority", async () => {
-          const expectedColor = Color("black");
-
-          const { css } = createHooks({ hooks: {}, ...mode });
-
-          await createStyledElement(
-            "div",
-            css(
-              {
-                backgroundColor: Color("blue").string(),
-              },
-              {
-                background: Color("orange").string(),
-                backgroundColor: expectedColor.string(),
-              },
-            ),
-          );
-
-          const actualColor = computedToColor(
-            (await queryComputedStyle("div"))?.backgroundColor,
-          );
-
-          assert.deepStrictEqual(actualColor, expectedColor);
-        });
-      });
-    }
-
-    for (const mode of [true, false].map(conditionalStyles => ({
-      sort: { properties: false, conditionalStyles },
-    }))) {
-      describe(`with ${JSON.stringify(mode)}`, () => {
-        it("does not reorder properties", async () => {
-          const notExpectedColor = Color("blue"),
-            expectedColor = Color("black");
-
-          const { styleSheet, css } = createHooks({
-            hooks: { "&:hover": "&:hover" },
-            ...mode,
-          });
-
-          await page.addStyleTag({ content: styleSheet() });
-
-          await createStyledElement(
-            "button",
-            css(
-              {
-                backgroundColor: notExpectedColor.string(),
-                background: expectedColor.string(),
-                on: $ => [
-                  $("&:hover", {
-                    backgroundColor: notExpectedColor.string(),
-                  }),
-                ],
-              },
-              {
-                backgroundColor: notExpectedColor.string(),
-              },
-            ),
-          );
-
-          await page.hover("button");
-
-          const actualColor = computedToColor(
-            (await queryComputedStyle("button"))?.backgroundColor,
-          );
-
-          assert.deepStrictEqual(actualColor, expectedColor);
-        });
-      });
-    }
-
-    for (const mode of [true, false].map(properties => ({
-      sort: { properties, conditionalStyles: true },
-    }))) {
-      describe(`with ${JSON.stringify(mode)}`, () => {
-        it("gives conditional styles higher priority over all base styles", async () => {
-          const notExpectedDefaultWidth = "1000px",
-            expectedDefaultWidth = "500px",
-            expectedMobileWidth = "400px";
-
-          const { styleSheet, css } = createHooks({
-            hooks: {
-              "@media (max-width: 599.99px)": "@media (max-width: 599.99px)",
-            },
-            ...mode,
-          });
-
-          await page.addStyleTag({ content: styleSheet() });
-
-          await createStyledElement(
-            "div",
-            css(
-              {
-                width: notExpectedDefaultWidth,
-                on: $ => [
-                  $("@media (max-width: 599.99px)", {
-                    width: expectedMobileWidth,
-                  }),
-                ],
-              },
-              {
-                width: expectedDefaultWidth,
-              },
-            ),
-          );
-
-          const actualDefaultWidth = (await queryComputedStyle("div"))?.width;
-
-          assert.strictEqual(actualDefaultWidth, expectedDefaultWidth);
-
-          await page.setViewport({
-            width: 480,
-            height: 800,
-            deviceScaleFactor: 1,
-          });
-
-          const actualMobileWidth = (await queryComputedStyle("div"))?.width;
-
-          assert.strictEqual(actualMobileWidth, expectedMobileWidth);
-        });
-      });
-    }
-
-    for (const mode of [true, false].map(properties => ({
-      sort: {
-        properties,
-        conditionalStyles: false,
-      },
-    }))) {
-      describe(`with ${JSON.stringify(mode)}`, () => {
-        it("replaces previous declarations with base styles", async () => {
-          const notExpectedColor = Color("blue"),
-            expectedColor = Color("orange");
-
-          const { styleSheet, css } = createHooks({
-            hooks: { "&:hover": "&:hover" },
-            ...mode,
-          });
-
-          await page.addStyleTag({ content: styleSheet() });
-
-          await createStyledElement(
-            "button",
-            css(
-              {
-                on: $ => [
-                  $("&:hover", {
-                    background: notExpectedColor.string(),
-                  }),
-                ],
-              },
-              {
-                background: expectedColor.string(),
-              },
-            ),
-          );
-
-          await page.hover("button");
-
-          const actualColor = computedToColor(
-            (await queryComputedStyle("button"))?.backgroundColor,
-          );
-
-          assert.deepStrictEqual(actualColor, expectedColor);
-        });
-      });
-    }
-  });
-
-  describe("when a style condition is not met", () => {
-    describe(`with ${JSON.stringify({ fallback: "revert-layer" })}`, () => {
-      it("rolls back to the previous cascade layer", async () => {
-        const { styleSheet, css } = createHooks({
-          hooks: { "&:hover": "&:hover" },
-          fallback: "revert-layer",
-        });
-
-        const expectedDefaultColor = Color("gray"),
-          expectedHoverColor = Color("blue");
-
-        await page.addStyleTag({
-          content: `button { color: ${expectedDefaultColor.string()} } ${styleSheet()}`,
-        });
-
-        await createStyledElement(
-          "button",
-          css({
-            on: $ => [
-              $("&:hover", {
-                color: expectedHoverColor.string(),
-              }),
-            ],
-          }),
-        );
-
-        const actualDefaultColor = computedToColor(
-          (await queryComputedStyle("button"))?.color,
-        );
-
-        assert.deepStrictEqual(actualDefaultColor, expectedDefaultColor);
-
-        await page.hover("button");
-
-        const actualHoverColor = computedToColor(
-          (await queryComputedStyle("button"))?.color,
-        );
-
-        assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
-      });
-    });
-
-    describe(`with ${JSON.stringify({ fallback: "unset" })}`, () => {
-      it("rolls back to the browser default value", async () => {
-        const { styleSheet, css } = createHooks({
-          hooks: { "&:hover": "&:hover" },
-          fallback: "unset",
-        });
-
-        const expectedHoverColor = Color("blue");
-
-        await createStyledElement(
-          "button",
-          css({
-            on: $ => [
-              $("&:hover", {
-                color: expectedHoverColor.string(),
-              }),
-            ],
-          }),
-        );
-
-        const expectedDefaultColor = computedToColor(
-            (await queryComputedStyle("button"))?.color,
-          ),
-          notExpectedDefaultColor = [Color("pink"), Color("purple")].find(
-            x => x.string() !== expectedDefaultColor?.string(),
-          )!;
-
-        await page.addStyleTag({
-          content: `button { color: ${notExpectedDefaultColor.string()} } ${styleSheet()}`,
-        });
-
-        const actualDefaultColor = computedToColor(
-          (await queryComputedStyle("button"))?.color,
-        );
-
-        assert.deepStrictEqual(actualDefaultColor, expectedDefaultColor);
-
-        await page.hover("button");
-
-        const actualHoverColor = computedToColor(
-          (await queryComputedStyle("button"))?.color,
-        );
-
-        assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
-      });
-    });
-  });
 });
 
 it("uses the specified stringify function when merging values", () => {
   const createHooks = buildHooksSystem<CSS.Properties>(
-    (propertyName, value) =>
+    (value, propertyName) =>
       `${propertyName}__${
         typeof value === "string" || typeof value === "number" ? value : ""
       }`,
   );
-  const { css } = createHooks({ hooks: { "&.class": "&.class" } });
-  const { fontSize = "" } = css({
-    fontSize: "18px",
-    on: $ => [
-      $("&.class", {
-        fontSize: "24px",
-      }),
-    ],
-  });
+  const { on } = createHooks("&.class");
+  const { fontSize = "" } = pipe(
+    {
+      fontSize: "18px",
+    },
+    on("&.class", {
+      fontSize: "24px",
+    }),
+  );
   assert.match(fontSize.toString(), /fontSize__18px/);
   assert.match(fontSize.toString(), /fontSize__24px/);
 });
 
 describe("in production mode (vs. debug)", () => {
   const createHooks = buildHooksSystem<CSS.Properties>();
-  const instances = [true, false].map(debug =>
-    createHooks({
-      hooks: ({ and, or, not }) => ({
-        hover: "&:hover",
-        foo: and("&.a", not(or("&.b", "&.c"))),
-      }),
-      debug,
-      hookNameToId: x => x.toString(),
-    }),
+
+  const { styleSheet, on, and, or, not } = createHooks(
+    "&:hover",
+    "&.a",
+    "&.b",
+    "&.c",
   );
-  const debug = instances[0]!;
-  const production = instances[1]!;
+  const foo = and("&.a", not(or("&.b", "&.c")));
 
   it("produces a style sheet without unnecessary white space", () => {
     const { code: expected } = lightningcss.transform({
       filename: "production.min.css",
-      code: Buffer.from(debug.styleSheet()),
+      code: Buffer.from(styleSheet()),
       minify: true,
     });
 
-    const actual = production.styleSheet();
+    const actual = withMode("production", styleSheet);
 
     // Note that universal selector (`*`) and `;` are excluded to eliminate
     // trivial differences:
@@ -739,16 +324,20 @@ describe("in production mode (vs. debug)", () => {
   });
 
   it("produces inline styles without unnecessary whitespace", () => {
-    const [debugStyle, productionStyle] = [debug, production].map(x =>
+    const [development, production] = (
+      ["development", "production"] as const
+    ).map(x =>
       Object.entries(
-        x.css({
-          color: "red",
-          on: ($, { and, or, not }) => [
-            $(and("foo", not(or("foo", "hover"))), {
+        withMode(x, () =>
+          pipe(
+            {
+              color: "red",
+            },
+            on(and(foo, not(or(foo, "&:hover"))), {
               color: "blue",
             }),
-          ],
-        }),
+          ),
+        ),
       )
         .map(
           ([property, value]) =>
@@ -761,156 +350,69 @@ describe("in production mode (vs. debug)", () => {
         .join(";"),
     );
 
-    const expected = debugStyle
+    const expected = development
       ? lightningcss
           .transformStyleAttribute({
-            code: Buffer.from(debugStyle),
+            code: Buffer.from(development),
             minify: true,
           })
           .code.toString()
       : undefined;
 
-    const actual = productionStyle;
+    const actual = production;
 
     assert.strictEqual(actual, expected);
   });
 });
 
-it("allows plain JSON hook configuration", () => {
-  const createHooks = buildHooksSystem<CSS.Properties>();
-  const { styleSheet: getExpected } = createHooks({
-    hooks: ({ and, or }) => ({
-      "@media (prefers-color-scheme: dark)": or(
-        "[data-theme='dark'] &",
-        and("[data-theme='auto'] &", "@media (prefers-color-scheme: dark)"),
-      ),
-    }),
-  });
-  const { styleSheet: getActual } = createHooks({
-    hooks: {
-      "@media (prefers-color-scheme: dark)": {
-        or: [
-          "[data-theme='dark'] &",
-          {
-            and: [
-              "[data-theme='auto'] &",
-              "@media (prefers-color-scheme: dark)",
-            ],
-          },
-        ],
-      },
-    },
-  });
-  assert.strictEqual(getActual(), getExpected());
-});
-
-it("allows plain JSON `on` value", () => {
-  const createHooks = buildHooksSystem<CSS.Properties>();
-  const { css } = createHooks({
-    hooks: {
-      "@media (prefers-color-scheme: dark)":
-        "@media (prefers-color-scheme: dark)",
-      "&:hover": "&:hover",
-      "&:active": "&:active",
-    },
-  });
-  const expected = css({
-    color: "black",
-    on: ($, { and }) => [
-      $("&:hover", {
-        color: "blue",
-      }),
-      $("&:active", {
-        color: "red",
-      }),
-      $(and("@media (prefers-color-scheme: dark)", "&:hover"), {
-        color: "lightblue",
-      }),
-      $(and("@media (prefers-color-scheme: dark)", "&:active"), {
-        color: "pink",
-      }),
-    ],
-  });
-  const actual = css({
-    color: "black",
-    on: [
-      [
-        "&:hover",
-        {
-          color: "blue",
-        },
-      ],
-      [
-        "&:active",
-        {
-          color: "red",
-        },
-      ],
-      [
-        { and: ["@media (prefers-color-scheme: dark)", "&:hover"] },
-        {
-          color: "lightblue",
-        },
-      ],
-      [
-        { and: ["@media (prefers-color-scheme: dark)", "&:active"] },
-        {
-          color: "pink",
-        },
-      ],
-    ],
-  });
-  assert.deepStrictEqual(actual, expected);
-});
-
 it("produces the same result twice given the same style object reference", () => {
   // This is to avoid issues in React Strict Mode. See #167.
   const createHooks = buildHooksSystem<CSS.Properties>();
-  const { css } = createHooks({
-    hooks: {
-      "&:hover": "&:hover",
-    },
-  });
 
-  const style = {
+  const { on } = createHooks("&:hover");
+
+  const style: CSS.Properties = {
     color: "blue",
-    on: [
-      [
-        "&:hover",
-        {
-          color: "red",
-        },
-      ],
-    ],
-  } satisfies Parameters<typeof css>[0];
+  };
 
-  const expected = css(style),
-    actual = css(style);
+  const expected = pipe(
+    style,
+    on("&:hover", {
+      color: "red",
+    }),
+  );
+
+  const actual = pipe(
+    style,
+    on("&:hover", {
+      color: "red",
+    }),
+  );
 
   assert.deepStrictEqual(actual, expected);
 });
 
-it("does not include a redundant `on` property in the resulting style object", () => {
-  const createHooks = buildHooksSystem<CSS.Properties>();
-  const { css } = createHooks({
-    hooks: {
-      "&:hover": "&:hover",
-    },
-  });
-  if (
-    "on" in
-    css({
-      color: "blue",
-      on: [
-        [
-          "&:hover",
-          {
-            color: "red",
-          },
-        ],
-      ],
-    })
-  ) {
-    assert.fail("The returned style object included an invalid `on` property.");
-  }
+it("skips a conditional value that can't be stringified", () => {
+  const createHooks = buildHooksSystem<CSS.Properties<string | number>>(
+    value => (typeof value === "string" ? value : null),
+  );
+  const { on } = createHooks("&:hover");
+  const expected = "100px";
+  const { width: actual } = pipe(
+    { width: expected },
+    on("&:hover", { width: 200 }),
+  );
+  assert.strictEqual(actual, expected);
+});
+
+it('uses "revert-layer" in place of a fallback value that can\'t be stringified', () => {
+  const createHooks = buildHooksSystem<CSS.Properties<string | number>>(
+    value => (typeof value === "string" ? value : null),
+  );
+  const { on } = createHooks("&:hover");
+  const { width } = pipe({ width: 100 }, on("&:hover", { width: "200px" }));
+  assert.strictEqual(
+    width,
+    "var(--mbscpo-1,200px)var(--mbscpo-0,revert-layer)",
+  );
 });

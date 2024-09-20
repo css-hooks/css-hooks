@@ -8,30 +8,26 @@
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.39.4",
-    "@swc-node/register": "^1.9.0",
-    "@tsconfig/strictest": "^2.0.1",
     "@types/node": "^20.12.7",
     "@types/react": "^18.2.20",
     "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
-    "ascjs": "^6.0.3",
-    "eslint": "^8.50.0",
-    "eslint-plugin-compat": "^4.2.0",
     "rimraf": "^5.0.1",
-    "typescript": "^5.1.6"
+    "tsx": "^4.19.1",
+    "typescript": "=5.4.2"
   },
   "files": [
     "cjs",
     "esm",
     "types",
-    "tsdoc-metadata.json"
+    "tsdoc-metadata.json",
+    "!**/*.test.*"
   ],
   "license": "MIT",
   "main": "cjs",
   "module": "esm",
   "type": "module",
   "peerDependencies": {
-    "@types/react": ">=16 <19"
+    "@types/react": ">=16 <20"
   },
   "peerDependenciesMeta": {
     "@types/react": {
@@ -45,22 +41,17 @@
     "directory": "packages/react"
   },
   "scripts": {
-    "api": "node -e \"var path=require('path').resolve,fs=require('fs'),cp=fs.cpSync;cp(path('src', 'index.d.ts'),path('types','index.d.ts'))\" && api-extractor run",
     "clean": "rimraf cjs esm types",
-    "lint": "eslint src .*.*js *.*js",
-    "prepublishOnly": "node -e \"var path=require('path').resolve,fs=require('fs'),cp=fs.cpSync,mkdir=fs.mkdirSync;cp(path('src', 'index.d.ts'),path('types','index.d.ts'));cp(path('src','index.js'),path('esm','index.js'));mkdir(path('cjs'),{recursive:true})\" && ascjs src/index.js cjs/index.js",
-    "test": "tsc && node --loader @swc-node/register/esm --test src/index.test.ts",
-    "test.watch": "node --watch --loader @swc-node/register/esm --test src/index.test.ts"
+    "prepare": "tsc && tsc --project tsconfig.cjs.json && api-extractor run",
+    "test": "node --import tsx --conditions @css-hooks/source --test src/index.test.ts"
   },
   "types": "types",
   "exports": {
     ".": {
+      "@css-hooks/source": "./src/index.ts",
       "import": "./esm/index.js",
       "require": "./cjs/index.js",
       "types": "./types/index.d.ts"
     }
-  },
-  "browserslist": [
-    "supports css-variables"
-  ]
+  }
 }

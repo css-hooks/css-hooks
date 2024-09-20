@@ -1,6 +1,6 @@
 import fs from "fs/promises";
-import { fileURLToPath } from "url";
 import matter from "gray-matter";
+import { fileURLToPath } from "url";
 
 export async function resolve(specifier, _, nextResolve) {
   if (!specifier.endsWith(".md")) {

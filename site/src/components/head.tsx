@@ -1,6 +1,7 @@
-import { JSXChildren } from "hastx/jsx-runtime";
-import { ThemeSwitcherScript } from "./theme-switcher.js";
+import type { JSXChildren } from "hastx/jsx-runtime";
+
 import { styleSheet } from "../css.js";
+import { ThemeSwitcherScript } from "./theme-switcher.js";
 
 export function Head({ children }: { children?: JSXChildren }) {
   return (

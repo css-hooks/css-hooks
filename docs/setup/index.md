@@ -6,42 +6,59 @@ order: 3
 
 # Setup
 
-CSS Hooks requires a small amount of setup, which may vary slightly depending on
-your project's architecture. This guide offers a general overview. For specific
-examples, please see the [Quickstart](../quickstart/index.md) section.
+Setting up CSS Hooks is quick and easy, but may vary slightly depending on your
+project. This guide gives a general overview. For more specific examples, check
+the [Quickstart](../quickstart/index.md) section.
 
 ## Installation
 
-If you haven't already, you should install one of the framework-specific
-packages, e.g.
+First, install the appropriate framework integration package for your project,
+e.g.
 
 ```bash
 npm install @css-hooks/react
 ```
 
-The options currently available are:
+Available options are:
 
 - `@css-hooks/react`
 - `@css-hooks/preact`
 - `@css-hooks/solid`
 - `@css-hooks/qwik`
 
-Alternatively, if you are using a different framework, you can simply install
-`@css-hooks/core`.
+If you're using a different framework, you can simply install the core package:
+
+```bash
+npm install @css-hooks/core
+```
+
+### Pipeline function
+
+You'll also need a generic pipeline utility function, like one of these:
+
+- `pipe` from [Remeda](https://remedajs.com/docs/#pipe)
+- `pipe` from
+  [fp-ts](https://gcanti.github.io/fp-ts/modules/function.ts.html#pipe)
+- `pipeInto` from
+  [ts-functional-pipe](https://biggyspender.github.io/ts-functional-pipe/modules.html#pipeInto)
+
+Alternatively, if you prefer not to install a third-party library, you can
+simply copy
+[this implementation](https://www.typescriptlang.org/play/?#code/GYVwdgxgLglg9mABABxsgpgHgIIBpEBCAfABQCGAXInosGQEZXkBOA5ldgJSIC8RhnKgQDcAKFCRYCFGiw0C+AMKlK1fHUaIW7atz6F19CEzJshe-osGJFYidHhJUGHPgU38AERUd1DE2a6vPzuwEYBOgQWHrQQACYRVFbBiJ7WnnbgDtLOcm5KXvgAoj5qtP5apjpcKaHhlYFRKYrq8Yk20Z7qcejtaSlF1kWZko4yLvIFqcX4AGKlNBrtNfp1xg2R0S2xCRtJnd29e6nRRerowO2DKbPWsyPZTrKuBjFdiGeIs-gA4gt+mm0HGia3aTX022AbWOyX072APT6p3Ol2O13031owB0QK+0R+1h+DykTwm+TeMy+v3wAAl-uVAVVgbVDOtceDLK1drjYfx4Yjjv19J9gBcrtFMcBse1bikfupWAALdoElI06w04ljXIvdzbd6fTHyxA0-AASXpS2OKxCrLBWy57V501oAtxQv4IrFaIl6mlx1l+mN2OVx1V+lNtEVMHa6pSZusZq1OWekwpHzm1JN5vwAClLRVcTbXmE2UyBM1HTCDq6ju7kbRvbj0fxJf7cYH+MGlSropHgNHY9EzeoYAArdoJlK56y55OkvKvfWUo20nOIXP4ADSBcZgWLoOOHJiUO55ed-Lr5Y9GcbqObvqxOPLncQ3dDuPD-H7g+Ocf0I60OOk7RJutBjgA1u0M4pFu1hbvO4yLnqhS3qu2aIIBYFbvgAAyu7LCCdpHg6OxOjWCJXoEN5eve5YtlST4yviCofuWX4YQOMZ-sOo4TscU76GBwCQdB0Q4bQEEADbtHBKS4dYuGITqabLmhWaRlh254fgACyBHWkRtD1OypGnuRKSXkiAwouKNx+s+gSvu+vZquov64v+-CAcAwECaB6iiccMH6BJwDSbJ0S4eoUkALbtApKS6dYunKam5JqYaGnrthOmILp+AAHIGUWRmlvalZkdWlmHNZwq2T69lMQGLG0D2YZ9u53GebxQH8bign8MJQW4iF-BhRFxxyfo0W0HFCXRAVtCxWA7TJSkhXWIVaVkkuqFZW+a6YXm2mILNS2FfgADyJXlgexGmZV5nVXCtWCg2op0YEDFto5OjOaxrkRl1Q7xnxIHToFUHBeJ6iTbi038LNwDzcciX6EtwArWt0SXbQYBwO0m0pFd1hXTtyFTAamaHRhWmIBJ51Fdd+AAAq3fuZUmeWx6QtCPIUW614fU29GPlKf1UADbVsYEHE-t15ZecdfUQ0JUNibBcMyVNUUxfFaOLeo2PHOt+h48ABNE9EV3qHAyDtKTKSs9YrMU7qVMrtlKu5WdenM4gtuIKz+AAIoc9UXNlo0Zn8+egtUToNENQ+TUS8xcqAx1blRorgTKz5fkDQF4HQ6NsOSTrCN63NBu4uj-CYybuJm-wFtW8cxP6EHwD2470Qh7QyAAI7tC7KSh9Yofu6p+008amknQzeUXSzwdh-gABKEfMqsD087HZ6BBeb31jZd52RiDkZ0GWefp1uegwB4P+ZDpea6F2uRfJ+sLUlxurVNrjdQHdcRd34D3Puxwnb6EHsAEeY9oih3UMPZg7RJ4pE3tYTeM8Mpz0YgvHKp0maIDxkHQeyDECb3wAAZR3kEPexlo6bCenHY+Cc6qehTmLNO7YXytRDEDb8IMeJg1Vq-dW78YZa0rt-Gav9Db-2WoAluwD8aE07jbO2DtoED3UAg44499CUOAKg9B0RqG0GYAAZ3aFglINDrA0NwXtF0B1CE+2If7Uha8KFb1ofgAAKvQ+6TCKoQirALGqtZOG3k+pfVs18WqZxlkIziHkla9V8v1csg0Nwa2kZ-WRusf61z-hjABOMNogI0WArRtAoG4hgfwOBBjcRGP4CYsxxwMH6EscAGxdjog0PUNYqA7RHEpECdYQJYhxBZBJEhcgVBwAQQJgAdzAPgAAdLsy2tivgLMcAAbQALrWFWRspAABvUQiBEDMHQFAEAzAkD7O2Y8uIIAIDoBICQAAbmQKSIB0AgOiJbAFQKQWcHwGQTgYgAC+QA)
+of a `pipe` function.
 
 ## The `css.ts` module
 
-First, you'll need a module dedicated to configuration/setup for CSS Hooks. You
-can choose any file path you'd like, but our typical recommendation is
+Next, create a module to configure CSS Hooks. A common file path is
 `src/css.ts`.
 
 ### Obtaining `createHooks`
 
-<details>
-<summary>From a framework package</summary>
+<details open>
+<summary>From a framework integration package</summary>
 
-If you are using one of the framework packages listed above, then you can simply
-import the `createHooks` function.
+If you're using a framework integration package like `@css-hooks/react`, you can
+simply import `createHooks`:
 
 ```typescript
 // src/css.ts
@@ -52,13 +69,9 @@ import { createHooks } from "@css-hooks/react";
 </details>
 
 <details>
-<summary>Using `@css-hooks/core` directly</summary>
+<summary>From the core package</summary>
 
-If you are using `@css-hooks/core` rather than a framework-specific flavor of
-CSS Hooks, then you will first need to create a `createHooks` function tailored
-to your use case.
-
-In this case, call the `buildHooksSystem` function to produce `createHooks`:
+If you're using the core package, create a `createHooks` function:
 
 ```typescript
 // src/css.ts
@@ -68,17 +81,8 @@ import { buildHooksSystem } from "@css-hooks/core";
 const createHooks = buildHooksSystem();
 ```
 
-The default `createHooks` function has the following characteristics:
-
-1. It types style objects as `Record<string, unknown>`, meaning that it doesn't
-   offer much type safety for CSS properties.
-2. It doesn't transform CSS values when converting them to strings; e.g. it
-   won't automatically append `px` to a length defined as a `number` like some
-   app frameworks do.
-
-If you would like to override the default type for CSS properties, you can pass
-a generic argument accordingly. For example, here's how you can integrate
-[csstype](https://www.npmjs.com/package/csstype):
+For extra type safety, you can integrate
+[csstype](https://www.npmjs.com/package/csstype) by passing a generic argument:
 
 ```typescript
 // src/css.ts
@@ -89,8 +93,7 @@ import type * as CSS from "csstype";
 const createHooks = buildHooksSystem<CSS.Properties>();
 ```
 
-If you would like to use custom logic for converting values to strings, you can
-pass this as a callback function:
+For custom value conversion (e.g. adding `px` to numbers), pass a callback:
 
 ```typescript
 // src/css.ts
@@ -100,7 +103,7 @@ import type * as CSS from "csstype";
 import { isUnitlessNumber } from "unitless";
 
 const createHooks = buildHooksSystem<CSS.Properties<string | number>>(
-  (propertyName, value) => {
+  (value, propertyName) => {
     switch (typeof value) {
       case "string":
         return value;
@@ -113,39 +116,31 @@ const createHooks = buildHooksSystem<CSS.Properties<string | number>>(
 );
 ```
 
-Once you have created your `createHooks` function, proceed to the next section.
-
 </details>
 
 ### Creating hooks
 
-Call `createHooks` to create and export `css` and `styleSheet` functions:
-
-- The `css` function allows you to define inline styles enhanced with hooks; and
-- The `styleSheet` function returns a style sheet (CSS string) required to
-  support the configured hooks.
+Once you have `createHooks`, use it to generate and export the `on`, `and`,
+`or`, `not`, and `styleSheet` functions:
 
 ```typescript
 // src/css.ts
 
 import { createHooks } from "@css-hooks/react";
 
-export const { styleSheet, css } = createHooks({
-  // TODO: Configure hooks and other options.
-});
+export const { on, and, or, not, styleSheet } = createHooks(
+  "@media (min-width: 1000px)",
+  "&:hover",
+  /* additional hooks */
+);
 ```
 
-Please see the [Configuration](../configuration/index.md) guide for more
-information.
+Please see the [Configuration](../configuration/index.md) guide for more details
+about the syntax used to create hooks.
 
 ## Adding the style sheet
 
-Now you need to determine where to render the style sheet. Most likely, you'll
-want to do this in your root component or the entry point for your application,
-but there are many ways to approach it.
-
-Let's say you want to add the style sheet to an existing `App` component. Here's
-how to do that:
+Add the generated style sheet to your app. For example, in your `App` component:
 
 ```diff
 // src/app.tsx
@@ -163,19 +158,12 @@ export function App() {
 }
 ```
 
-The key here is to call the `styleSheet` function and insert the CSS string it
-returns into the document (in a `<style>` element).
-
 <!-- prettier-ignore-start -->
 > [!NOTE]
-> Don't worry about the use of React's `dangerouslySetInnerHTML` prop above: Its
-> scary name is intended to discourage adding _untrusted_ content to the document.
+> Despite the name, React's `dangerouslySetInnerHTML` prop is safe to use for _trusted_ content.
 <!-- prettier-ignore-end -->
-
-For more examples specific to various frameworks, see the
-[Quickstart](../quickstart/index.md) section.
 
 ## Ready to use
 
-Now you're all set to use the `css` function in your components. Proceed to the
-[Usage](../usage/index.md) guide to learn how it works.
+Now you're all set to use conditional styles in your components. Proceed to the
+[Usage](../usage/index.md) guide to learn how.

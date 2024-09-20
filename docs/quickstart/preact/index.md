@@ -11,7 +11,7 @@ order: 2
 ```bash
 npm create vite@latest css-hooks-playground -- --template preact-ts
 cd css-hooks-playground
-npm install && npm install @css-hooks/preact
+npm install @css-hooks/preact remeda
 ```
 
 ## 2. Start dev server
@@ -29,12 +29,7 @@ Create a `src/css.ts` module with the following contents:
 ```typescript
 import { createHooks } from "@css-hooks/preact";
 
-export const { styleSheet, css } = createHooks({
-  hooks: {
-    "&:active": "&:active",
-  },
-  debug: import.meta.env.DEV,
-});
+export const { styleSheet, on } = createHooks("&:active");
 ```
 
 ## 4. Add style sheet
@@ -75,7 +70,8 @@ import { useState } from 'preact/hooks'
 import preactLogo from './assets/preact.svg'
 import viteLogo from '/vite.svg'
 import './app.css'
-+import { css } from './css.ts'
++import { on } from './css.ts'
++import { pipe } from 'remeda'
 
 export function App() {
   const [count, setCount] = useState(0)
@@ -95,14 +91,14 @@ export function App() {
 -        <button onClick={() => setCount((count) => count + 1)}>
 +        <button
 +          onClick={() => setCount((count) => count + 1)}
-+          style={css({
-+            transition: "transform 75ms",
-+            on: $ => [
-+              $("&:active", {
-+                transform: "scale(0.9)"
-+              })
-+            ]
-+          })}
++          style={pipe(
++            {
++              transition: "transform 75ms",
++            },
++            on("&:active", {
++              transform: "scale(0.9)"
++            })
++          )}
 +        >
           count is {count}
         </button>

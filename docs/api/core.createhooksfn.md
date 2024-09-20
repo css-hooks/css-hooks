@@ -9,15 +9,7 @@ Represents the function used to define hooks and related configuration.
 **Signature:**
 
 ```typescript
-export type CreateHooksFn<CSSProperties> = <
-  HooksConfig extends
-    | Record<string, Condition<HookImpl>>
-    | ((
-        helpers: ConditionHelpers<HookImpl>,
-      ) => Record<string, Condition<HookImpl>>),
->(
-  config: Config<HooksConfig>,
-) => Hooks<GetHookNames<HooksConfig>, CSSProperties>;
+export type CreateHooksFn<CSSProperties> = <S extends Selector>(...selectors: S[]) => CreateHooksResult<S, CSSProperties>;
 ```
-**References:** [Condition](./core.condition.md)<!-- -->, [HookImpl](./core.hookimpl.md)<!-- -->, [ConditionHelpers](./core.conditionhelpers.md)<!-- -->, [Config](./core.config.md)<!-- -->, [Hooks](./core.hooks.md)<!-- -->, [GetHookNames](./core.gethooknames.md)
+**References:** [Selector](./core.selector.md)<!-- -->, [CreateHooksResult](./core.createhooksresult.md)
 

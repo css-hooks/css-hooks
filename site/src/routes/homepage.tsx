@@ -1,15 +1,25 @@
-import { Html } from "../components/html.js";
-import { Head } from "../components/head.js";
-import { Body } from "../components/body.js";
-import { PageLayout } from "../components/page-layout.js";
-import { JSXChild, JSXChildren } from "hastx/jsx-runtime";
-import { css } from "../css.js";
+import type { JSXChild, JSXChildren } from "hastx/jsx-runtime";
+import { pipe } from "remeda";
 import * as V from "varsace";
+
 import { Block } from "../components/block.js";
+import { Body } from "../components/body.js";
+import { Head } from "../components/head.js";
+import { Html } from "../components/html.js";
 import * as Icon from "../components/icons.js";
+import { PageLayout } from "../components/page-layout.js";
 import { PageMeta } from "../components/page-meta.js";
-import { Route } from "../route.js";
 import { ScreenReaderOnly } from "../components/screen-reader-only.js";
+import {
+  and,
+  dark,
+  intent,
+  intentAdjacentSibling,
+  not,
+  on,
+  or,
+} from "../css.js";
+import type { Route } from "../route.js";
 
 const pathname = "/";
 
@@ -34,133 +44,117 @@ function HomePage() {
       <Body>
         <PageLayout pathname={pathname}>
           <section
-            style={css({
-              color: V.white,
-              padding: "4rem 0",
-              textAlign: "center",
-              lineHeight: 1.25,
-              on: ($, { not }) => [
-                $("@media (prefers-color-scheme: dark)", {
-                  background: V.gray85,
-                }),
-                $(not("@media (prefers-color-scheme: dark)"), {
-                  background: `linear-gradient(transparent, transparent calc(100% - 2px), ${V.gray10} calc(100% - 2px))`,
-                }),
-              ],
-            })}
+            style={pipe(
+              {
+                color: V.white,
+                padding: "4rem 0",
+                textAlign: "center",
+                lineHeight: 1.25,
+              },
+              on(dark, {
+                background: V.gray85,
+              }),
+              on(not(dark), {
+                background: `linear-gradient(transparent, transparent calc(100% - 2px), ${V.gray10} calc(100% - 2px))`,
+              }),
+            )}
           >
             <Block>
               <h1
-                style={css({
-                  margin: 0,
-                  fontSize: "3.75rem",
-                  lineHeight: 1,
-                  fontWeight: 700,
-                  letterSpacing: "-0.03em",
-                  color: V.gray50,
-                  on: ($, { or }) => [
-                    $(
-                      or(
-                        "@media (width < 28em)",
-                        "@media (28em <= width < 44em)",
-                      ),
-                      {
-                        fontSize: "3rem",
-                      },
-                    ),
-                  ],
-                })}
+                style={pipe(
+                  {
+                    margin: 0,
+                    fontSize: "3rem",
+                    lineHeight: 1,
+                    fontWeight: 700,
+                    letterSpacing: "-0.03em",
+                    color: V.gray50,
+                  },
+                  on("@media (width >= 44em)", {
+                    fontSize: "3.75rem",
+                  }),
+                )}
               >
                 Do the{" "}
                 <em
-                  style={css({
+                  style={{
                     color: V.pink30,
                     fontStyle: "normal",
-                  })}
+                  }}
                 >
                   impossible
                 </em>
                 <br
-                  style={css({
-                    on: $ => [
-                      $("@media (69em <= width)", {
-                        display: "none",
-                      }),
-                    ],
-                  })}
+                  style={pipe(
+                    {},
+                    on("@media (width >= 69em)", {
+                      display: "none",
+                    }),
+                  )}
                 />{" "}
                 with inline styles.
               </h1>
               <p
-                style={css({
-                  margin: 0,
-                  marginTop: "2rem",
-                  color: V.black,
-                  fontSize: "1.375rem",
-                  lineHeight: "calc(14 / 11)",
-                  on: ($, { or }) => [
-                    $(
-                      or(
-                        "@media (width < 28em)",
-                        "@media (28em <= width < 44em)",
-                      ),
-                      {
-                        fontSize: "1rem",
-                        lineHeight: 1.25,
-                      },
-                    ),
-                    $("@media (69em <= width)", {
-                      marginTop: "1rem",
-                    }),
-                    $("@media (prefers-color-scheme: dark)", {
-                      color: V.white,
-                    }),
-                  ],
-                })}
+                style={pipe(
+                  {
+                    margin: 0,
+                    marginTop: "2rem",
+                    color: V.black,
+                    fontSize: "1rem",
+                    lineHeight: 1.25,
+                  },
+                  on("@media (width >= 44em)", {
+                    fontSize: "1.375rem",
+                    lineHeight: "calc(14 / 11)",
+                  }),
+                  on("@media (width >= 69em)", {
+                    marginTop: "1rem",
+                  }),
+                  on(dark, {
+                    color: V.white,
+                  }),
+                )}
               >
                 Hooks add CSS features to native{" "}
                 <br
-                  style={css({
-                    on: ($, { not }) => [
-                      $(not("@media (width < 28em)"), {
-                        display: "none",
-                      }),
-                    ],
-                  })}
+                  style={pipe(
+                    {},
+                    on("@media (width >= 28em)", {
+                      display: "none",
+                    }),
+                  )}
                 />{" "}
                 inline styles,{" "}
                 <br
-                  style={css({
-                    on: ($, { or }) => [
-                      $(or("@media (69em <= width)", "@media (width < 28em)"), {
-                        display: "none",
-                      }),
-                    ],
-                  })}
+                  style={pipe(
+                    {},
+                    on(or("@media (width < 28em)", "@media (width >= 69em)"), {
+                      display: "none",
+                    }),
+                  )}
                 />
                 with no build steps{" "}
                 <br
-                  style={css({
-                    on: ($, { not }) => [
-                      $(not("@media (width < 28em)"), {
-                        display: "none",
-                      }),
-                    ],
-                  })}
+                  style={pipe(
+                    {},
+                    on("@media (width >= 28em)", {
+                      display: "none",
+                    }),
+                  )}
                 />
                 and minimal runtime.
               </p>
               <div
-                style={css({
-                  marginTop: "2rem",
-                  display: "inline-flex",
-                  gap: "1rem",
-                  on: $ => [
-                    $("@media (69em <= width)", {
-                      marginTop: "4rem",
-                    }),
-                  ],
-                })}
+                style={pipe(
+                  {
+                    marginTop: "2rem",
+                    display: "inline-flex",
+                    gap: "1rem",
+                  },
+                  on("@media (width >= 69em)", {
+                    marginTop: "4rem",
+                  }),
+                )}
               >
                 <CtaButton
                   href="./docs"
@@ -170,22 +164,14 @@ function HomePage() {
                   Docs
                 </CtaButton>
                 <div
-                  style={css({
-                    display: "contents",
-                    on: ($, { not, or }) => [
-                      $(
-                        not(
-                          or(
-                            "@media (width < 28em)",
-                            "@media (28em <= width < 44em)",
-                          ),
-                        ),
-                        {
-                          display: "none",
-                        },
-                      ),
-                    ],
-                  })}
+                  style={pipe(
+                    {
+                      display: "contents",
+                    },
+                    on("@media (width >= 44em)", {
+                      display: "none",
+                    }),
+                  )}
                 >
                   <CtaButton
                     href="https://github.com/css-hooks/css-hooks"
@@ -195,20 +181,14 @@ function HomePage() {
                   </CtaButton>
                 </div>
                 <div
-                  style={css({
-                    display: "contents",
-                    on: ($, { or }) => [
-                      $(
-                        or(
-                          "@media (width < 28em)",
-                          "@media (28em <= width < 44em)",
-                        ),
-                        {
-                          display: "none",
-                        },
-                      ),
-                    ],
-                  })}
+                  style={pipe(
+                    {
+                      display: "none",
+                    },
+                    on("@media (width >= 44em)", {
+                      display: "contents",
+                    }),
+                  )}
                 >
                   <CtaButton
                     href="https://githubbox.com/css-hooks/css-hooks/tree/master/examples/react"
@@ -293,20 +273,20 @@ function HomePage() {
           </Section>
           <Section title="Frameworks">
             <div
-              style={css({
-                marginTop: "1.5rem",
-                display: "grid",
-                gridTemplateColumns: "1fr",
-                gap: "2rem",
-                on: $ => [
-                  $("@media (44em <= width < 69em)", {
-                    gridTemplateColumns: "repeat(2, 1fr)",
-                  }),
-                  $("@media (69em <= width)", {
-                    gridTemplateColumns: "repeat(4, 1fr)",
-                  }),
-                ],
-              })}
+              style={pipe(
+                {
+                  marginTop: "1.5rem",
+                  display: "grid",
+                  gridTemplateColumns: "1fr",
+                  gap: "2rem",
+                },
+                on("@media (width >= 44em)", {
+                  gridTemplateColumns: "repeat(2, 1fr)",
+                }),
+                on("@media (width >= 69em)", {
+                  gridTemplateColumns: "repeat(4, 1fr)",
+                }),
+              )}
             >
               <DesignedFor
                 framework="React"
@@ -484,19 +464,19 @@ function HomePage() {
           </Section>
           <Section title="Opinions">
             <div
-              style={css({
-                display: "grid",
-                gap: "2rem",
-                gridTemplateColumns:
-                  "repeat(auto-fit, minmax(min(24rem, 100%), 1fr))",
-                padding: "2rem",
-                background: V.gray05,
-                on: $ => [
-                  $("@media (prefers-color-scheme: dark)", {
-                    background: V.gray95,
-                  }),
-                ],
-              })}
+              style={pipe(
+                {
+                  display: "grid",
+                  gap: "2rem",
+                  gridTemplateColumns:
+                    "repeat(auto-fit, minmax(min(24rem, 100%), 1fr))",
+                  padding: "2rem",
+                  background: V.gray05,
+                },
+                on(dark, {
+                  background: V.gray95,
+                }),
+              )}
             >
               <Testimonial
                 href="https://twitter.com/markdalgleish/status/1729399475494608923"
@@ -620,67 +600,67 @@ function CtaButton({
     <a
       href={href}
       class={theme === "primary" ? "primary" : ""}
-      style={css({
-        display: "inline-flex",
-        alignItems: "center",
-        gap: "0.5rem",
-        backgroundColor: V.gray50,
-        color: V.white,
-        textDecoration: "none",
-        padding: "0.5em 0.75em",
-        fontSize: "1.5rem",
-        letterSpacing: "-0.03em",
-        fontWeight: 700,
-        lineHeight: 1,
-        outlineStyle: "solid",
-        outlineColor: V.blue20,
-        outlineWidth: 0,
-        outlineOffset: 2,
-        on: ($, { and }) => [
-          $("@media (prefers-color-scheme: dark)", {
-            backgroundColor: V.gray60,
-            outlineColor: V.blue50,
-          }),
-          $("&.primary", {
-            backgroundColor: V.purple50,
-          }),
-          $(and("&.primary", "@media (prefers-color-scheme: dark)"), {
-            backgroundColor: V.purple60,
-          }),
-          $("&:intent", {
-            backgroundColor: V.blue40,
-          }),
-          $(and("@media (prefers-color-scheme: dark)", "&:intent"), {
-            backgroundColor: V.blue50,
-          }),
-          $("&:active", {
-            backgroundColor: V.red40,
-          }),
-          $(and("@media (prefers-color-scheme: dark)", "&:active"), {
-            backgroundColor: V.red50,
-          }),
-          $("&:focus-visible", {
-            outlineWidth: 2,
-          }),
-        ],
-      })}
+      style={pipe(
+        {
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          backgroundColor: V.gray50,
+          color: V.white,
+          textDecoration: "none",
+          padding: "0.5em 0.75em",
+          fontSize: "1.5rem",
+          letterSpacing: "-0.03em",
+          fontWeight: 700,
+          lineHeight: 1,
+          outlineStyle: "solid",
+          outlineColor: V.blue20,
+          outlineWidth: 0,
+          outlineOffset: 2,
+        },
+        on(dark, {
+          backgroundColor: V.gray60,
+          outlineColor: V.blue50,
+        }),
+        on("&.primary", {
+          backgroundColor: V.purple50,
+        }),
+        on(and("&.primary", dark), {
+          backgroundColor: V.purple60,
+        }),
+        on(intent, {
+          backgroundColor: V.blue40,
+        }),
+        on(and(dark, intent), {
+          backgroundColor: V.blue50,
+        }),
+        on("&:active", {
+          backgroundColor: V.red40,
+        }),
+        on(and(dark, "&:active"), {
+          backgroundColor: V.red50,
+        }),
+        on("&:focus-visible", {
+          outlineWidth: 2,
+        }),
+      )}
     >
       {icon ? (
         <div
-          style={css({
-            width: "1em",
-            height: "1em",
-            display: "grid",
-            placeItems: "center",
-            on: ($, { not }) => [
-              $(not("&:empty"), {
-                paddingRight: "0.5em",
-              }),
-              $("&:empty", {
-                width: 0,
-              }),
-            ],
-          })}
+          style={pipe(
+            {
+              width: "1em",
+              height: "1em",
+              display: "grid",
+              placeItems: "center",
+            },
+            on(not("&:empty"), {
+              paddingRight: "0.5em",
+            }),
+            on("&:empty", {
+              width: 0,
+            }),
+          )}
         >
           {icon}
         </div>
@@ -702,27 +682,27 @@ function Section({
   return (
     <section
       class="section"
-      style={css({
-        fontSize: "2rem",
-        marginTop: "4rem",
-        on: $ => [
-          $(".section &", {
-            fontSize: "1.5rem",
-            marginTop: "2rem",
-          }),
-        ],
-      })}
+      style={pipe(
+        {
+          fontSize: "2rem",
+          marginTop: "4rem",
+        },
+        on(".section &", {
+          fontSize: "1.5rem",
+          marginTop: "2rem",
+        }),
+      )}
     >
       <Block>
         <h1
-          style={css({
+          style={{
             fontSize: "inherit",
             fontWeight: 700,
             lineHeight: 1.25,
             letterSpacing: "-0.03em",
             margin: 0,
             color: V.gray50,
-          })}
+          }}
         >
           {title}
         </h1>
@@ -735,70 +715,70 @@ function Section({
 function CodeWindow({ children }: { children: JSXChild }) {
   return (
     <div
-      style={css({
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "stretch",
-        color: V.gray20,
-        on: $ => [
-          $("@media (prefers-color-scheme: dark)", {
-            color: V.gray70,
-          }),
-        ],
-      })}
+      style={pipe(
+        {
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "stretch",
+          color: V.gray20,
+        },
+        on(dark, {
+          color: V.gray70,
+        }),
+      )}
     >
       <div
-        style={css({
-          background: V.gray05,
-          display: "flex",
-          padding: 8,
-          gap: 4,
-          borderWidth: 1,
-          borderStyle: "solid",
-          borderColor: "currentColor",
-          borderTopLeftRadius: 8,
-          borderTopRightRadius: 8,
-          borderBottomWidth: 0,
-          on: $ => [
-            $("@media (prefers-color-scheme: dark)", {
-              background: V.gray85,
-            }),
-          ],
-        })}
+        style={pipe(
+          {
+            background: V.gray05,
+            display: "flex",
+            padding: 8,
+            gap: 4,
+            borderWidth: 1,
+            borderStyle: "solid",
+            borderColor: "currentColor",
+            borderTopLeftRadius: 8,
+            borderTopRightRadius: 8,
+            borderBottomWidth: 0,
+          },
+          on(dark, {
+            background: V.gray85,
+          }),
+        )}
       >
         {[V.red30, V.yellow30, V.green30].map(color => (
           <div
-            style={css({
-              fontSize: 12,
-              width: "1em",
-              height: "1em",
-              borderRadius: 999,
-              background: color,
-              on: $ => [
-                $("@media (prefers-color-scheme: dark)", {
-                  background: "currentColor",
-                }),
-              ],
-            })}
+            style={pipe(
+              {
+                fontSize: 12,
+                width: "1em",
+                height: "1em",
+                borderRadius: 999,
+                background: color,
+              },
+              on(dark, {
+                background: "currentColor",
+              }),
+            )}
           />
         ))}
       </div>
       <div
-        style={css({
-          background: V.white,
-          borderWidth: 1,
-          borderStyle: "solid",
-          borderColor: "currentColor",
-          borderBottomLeftRadius: 8,
-          borderBottomRightRadius: 8,
-          padding: "1rem",
-          overflow: "auto",
-          on: $ => [
-            $("@media (prefers-color-scheme: dark)", {
-              background: V.gray85,
-            }),
-          ],
-        })}
+        style={pipe(
+          {
+            background: V.white,
+            borderWidth: 1,
+            borderStyle: "solid",
+            borderColor: "currentColor",
+            borderBottomLeftRadius: 8,
+            borderBottomRightRadius: 8,
+            padding: "1rem",
+            overflow: "auto",
+          },
+          on(dark, {
+            background: V.gray85,
+          }),
+        )}
       >
         {children}
       </div>
@@ -818,37 +798,33 @@ function Demo({
   return (
     <Section title={<span style={{ color: V.pink30 }}>{title}</span>}>
       <div
-        style={css({
-          marginTop: "-1.5rem",
-          display: "flex",
-          alignItems: "stretch",
-          on: ($, { or }) => [
-            $(or("@media (width < 28em)", "@media (28em <= width < 44em)"), {
-              flexDirection: "column-reverse",
-            }),
-          ],
-        })}
+        style={pipe(
+          {
+            marginTop: "-1.5rem",
+            display: "flex",
+            alignItems: "stretch",
+            flexDirection: "column-reverse",
+          },
+          on("@media (width >= 44em)", {
+            flexDirection: "row",
+          }),
+        )}
       >
         <div
-          style={css({
-            padding: "1.5rem 0",
-            flex: 1,
-            zIndex: 1,
-            on: ($, { or, not }) => [
-              $(
-                not(
-                  or("@media (width < 28em)", "@media (28em <= width < 44em)"),
-                ),
-                {
-                  marginRight: -24,
-                },
-              ),
-              $(or("@media (width < 28em)", "@media (28em <= width < 44em)"), {
-                marginTop: -24,
-                padding: "0 12px",
-              }),
-            ],
-          })}
+          style={pipe(
+            {
+              padding: "1.5rem 0",
+              flex: 1,
+              zIndex: 1,
+            },
+            on("@media (width >= 44em)", {
+              marginRight: -24,
+            }),
+            on("@media (width < 44em)", {
+              marginTop: -24,
+              padding: "0 12px",
+            }),
+          )}
         >
           <CodeWindow>
             <pre>
@@ -857,22 +833,22 @@ function Demo({
           </CodeWindow>
         </div>
         <div
-          style={css({
-            minHeight: 256,
-            flex: 1,
-            display: "grid",
-            placeItems: "center",
-            backgroundColor: V.white,
-            backgroundImage: `linear-gradient(45deg, ${V.gray05} 25%, transparent 25%), linear-gradient(-45deg, ${V.gray05} 25%, transparent 25%), linear-gradient(45deg, transparent 75%, ${V.gray05} 75%), linear-gradient(-45deg, transparent 75%, ${V.gray05} 75%)`,
-            backgroundSize: "24px 24px",
-            backgroundPosition: "0 0, 0 12px, 12px -12px, -12px 0px",
-            on: $ => [
-              $("@media (prefers-color-scheme: dark)", {
-                backgroundColor: V.gray90,
-                backgroundImage: `linear-gradient(45deg, ${V.gray85} 25%, transparent 25%), linear-gradient(-45deg, ${V.gray85} 25%, transparent 25%), linear-gradient(45deg, transparent 75%, ${V.gray85} 75%), linear-gradient(-45deg, transparent 75%, ${V.gray85} 75%)`,
-              }),
-            ],
-          })}
+          style={pipe(
+            {
+              minHeight: 256,
+              flex: 1,
+              display: "grid",
+              placeItems: "center",
+              backgroundColor: V.white,
+              backgroundImage: `linear-gradient(45deg, ${V.gray05} 25%, transparent 25%), linear-gradient(-45deg, ${V.gray05} 25%, transparent 25%), linear-gradient(45deg, transparent 75%, ${V.gray05} 75%), linear-gradient(-45deg, transparent 75%, ${V.gray05} 75%)`,
+              backgroundSize: "24px 24px",
+              backgroundPosition: "0 0, 0 12px, 12px -12px, -12px 0px",
+            },
+            on(dark, {
+              backgroundColor: V.gray90,
+              backgroundImage: `linear-gradient(45deg, ${V.gray85} 25%, transparent 25%), linear-gradient(-45deg, ${V.gray85} 25%, transparent 25%), linear-gradient(45deg, transparent 75%, ${V.gray85} 75%), linear-gradient(-45deg, transparent 75%, ${V.gray85} 75%)`,
+            }),
+          )}
         >
           {preview}
         </div>
@@ -884,17 +860,17 @@ function Demo({
 function PseudoClassesDemo() {
   const source = `
 <button
-  style={css({
-    background: "${V.blue50}",
-    color: "${V.white}",
-    on: $ => [
-      $("&:hover", {
-        background: "${V.blue40}",
-      }),
-      $("&:active", {
-        background: "${V.red40}",
-      })
-    ]
+  style={pipe(
+    {
+      background: "${V.blue50}",
+      color: "${V.white}",
+    },
+    on("&:hover", {
+      background: "${V.blue40}",
+    }),
+    on("&:active", {
+      background: "${V.red40}",
+    })
   })}
 >
   Save changes
@@ -907,26 +883,26 @@ function PseudoClassesDemo() {
       preview={
         <>
           <button
-            style={css({
-              margin: 0,
-              padding: "0.75em 1em",
-              borderRadius: "0.5em",
-              border: 0,
-              fontFamily: "sans-serif",
-              fontWeight: 700,
-              fontSize: "1rem",
-              lineHeight: 1,
-              background: V.blue50,
-              color: V.white,
-              on: $ => [
-                $("&:hover", {
-                  background: V.blue40,
-                }),
-                $("&:active", {
-                  background: V.red40,
-                }),
-              ],
-            })}
+            style={pipe(
+              {
+                margin: 0,
+                padding: "0.75em 1em",
+                borderRadius: "0.5em",
+                border: 0,
+                fontFamily: "sans-serif",
+                fontWeight: 700,
+                fontSize: "1rem",
+                lineHeight: 1,
+                background: V.blue50,
+                color: V.white,
+              },
+              on("&:hover", {
+                background: V.blue40,
+              }),
+              on("&:active", {
+                background: V.red40,
+              }),
+            )}
           >
             Save changes
           </button>
@@ -941,13 +917,12 @@ function SelectorDemo() {
 <label>
   <input type="checkbox" checked />
   <span
-    style={css({
-      on: $ => [
-        $(":checked + &", {
-          textDecoration: "line-through"
-        })
-      ]
-    })}
+    style={pipe(
+      {},
+      on(":checked + &", {
+        textDecoration: "line-through"
+      })
+    )}
   >
     Simplify CSS architecture
   </span>
@@ -959,23 +934,22 @@ function SelectorDemo() {
       title="Selectors"
       preview={
         <label
-          style={css({
+          style={{
             display: "flex",
             alignItems: "center",
             gap: "0.25em",
             fontFamily: "sans-serif",
             fontWeight: 700,
-          })}
+          }}
         >
           <input type="checkbox" checked />
           <span
-            style={css({
-              on: $ => [
-                $(":checked + &", {
-                  textDecoration: "line-through",
-                }),
-              ],
-            })}
+            style={pipe(
+              {},
+              on(":checked + &", {
+                textDecoration: "line-through",
+              }),
+            )}
           >
             Simplify CSS architecture
           </span>
@@ -988,24 +962,22 @@ function SelectorDemo() {
 function ResponsiveDemo() {
   const source = `
 <span
-  style={css({
-    on: ($, { not }) => [
-      $(not("@container sm"), {
-        display: "none"
-      })
-    ]
-  })}
+  style={pipe(
+    {},
+    on(or("@container (width < 50px)", "@container (width >= 100px)"), {
+      display: "none"
+    })
+  )}
 >
   sm
 </span>
 <span
-  style={css({
-    on: ($, { not }) => [
-      $(not("@container lg"), {
-        display: "none"
-      })
-    ]
-  })}
+  style={pipe(
+    {},
+    on("@container (width < 100px)", {
+      display: "none"
+    })
+  )}
 >
   lg
 </span>
@@ -1025,48 +997,53 @@ function ResponsiveDemo() {
           }}
         >
           <div
-            style={css({
-              background: V.white,
-              color: V.black,
-              fontFamily: "sans-serif",
-              fontWeight: 700,
-              fontSize: "3rem",
-              height: initialWidth,
-              width: initialWidth,
-              display: "grid",
-              placeItems: "center",
-              containerType: "inline-size",
-              on: ($, { not }) => [
-                $("@media (prefers-color-scheme: dark)", {
-                  background: V.black,
-                  color: V.white,
-                }),
-                $(not("@media (prefers-color-scheme: dark)"), {
-                  boxShadow: `inset 0 0 0 1px ${V.gray20}`,
-                }),
-              ],
-            })}
+            style={pipe(
+              {
+                background: V.white,
+                color: V.black,
+                fontFamily: "sans-serif",
+                fontWeight: 700,
+                fontSize: "3rem",
+                height: initialWidth,
+                width: initialWidth,
+                display: "grid",
+                placeItems: "center",
+                containerType: "inline-size",
+              },
+              on(dark, {
+                background: V.black,
+                color: V.white,
+              }),
+              on(not(dark), {
+                boxShadow: `inset 0 0 0 1px ${V.gray20}`,
+              }),
+            )}
           >
             <span
-              style={css({
-                fontSize: "0.5em",
-                on: ($, { not }) => [
-                  $(not("@container sm"), {
+              style={pipe(
+                {
+                  fontSize: "0.5em",
+                },
+                on(
+                  or(
+                    "@container (width < 50px)",
+                    "@container (width >= 100px)",
+                  ),
+                  {
                     display: "none",
-                  }),
-                ],
-              })}
+                  },
+                ),
+              )}
             >
               sm
             </span>
             <span
-              style={css({
-                on: ($, { not }) => [
-                  $(not("@container lg"), {
-                    display: "none",
-                  }),
-                ],
-              })}
+              style={pipe(
+                {},
+                on("@container (width < 100px)", {
+                  display: "none",
+                }),
+              )}
             >
               lg
             </span>
@@ -1103,21 +1080,21 @@ function DesignedFor({
 }) {
   return (
     <div
-      style={css({
-        background: V.gray05,
-        color: V.gray80,
-        padding: 32,
-        display: "flex",
-        flexDirection: "column",
-        gap: 48,
-        alignItems: "center",
-        on: $ => [
-          $("@media (prefers-color-scheme: dark)", {
-            background: V.gray85,
-            color: V.gray10,
-          }),
-        ],
-      })}
+      style={pipe(
+        {
+          background: V.gray05,
+          color: V.gray80,
+          padding: 32,
+          display: "flex",
+          flexDirection: "column",
+          gap: 48,
+          alignItems: "center",
+        },
+        on(dark, {
+          background: V.gray85,
+          color: V.gray10,
+        }),
+      )}
     >
       <h1
         style={{
@@ -1129,18 +1106,18 @@ function DesignedFor({
         }}
       >
         <span
-          style={css({
-            fontSize: "0.625rem",
-            lineHeight: 1,
-            textTransform: "uppercase",
-            letterSpacing: "0.01em",
-            color: V.gray70,
-            on: $ => [
-              $("@media (prefers-color-scheme: dark)", {
-                color: V.gray40,
-              }),
-            ],
-          })}
+          style={pipe(
+            {
+              fontSize: "0.625rem",
+              lineHeight: 1,
+              textTransform: "uppercase",
+              letterSpacing: "0.01em",
+              color: V.gray70,
+            },
+            on(dark, {
+              color: V.gray40,
+            }),
+          )}
         >
           Designed for
         </span>
@@ -1160,16 +1137,16 @@ function DesignedFor({
         </CtaButton>
       </div>
       <div
-        style={css({
-          opacity: 0.75,
-          filter: "grayscale(0.75)",
-          on: $ => [
-            $(":intent + &", {
-              opacity: 1,
-              filter: "grayscale(0)",
-            }),
-          ],
-        })}
+        style={pipe(
+          {
+            opacity: 0.75,
+            filter: "grayscale(0.75)",
+          },
+          on(intentAdjacentSibling, {
+            opacity: 1,
+            filter: "grayscale(0)",
+          }),
+        )}
       >
         {logo}
       </div>
@@ -1225,34 +1202,34 @@ function Testimonial({
     <blockquote style={{ display: "contents" }} cite={href}>
       <a
         href={href}
-        style={css({
-          textDecoration: "none",
-          color: "inherit",
-          background: V.white,
-          flexDirection: "column",
-          gap: "1rem",
-          padding: "2rem",
-          outlineWidth: 0,
-          outlineOffset: 2,
-          outlineColor: V.blue20,
-          outlineStyle: "solid",
-          on: ($, { and }) => [
-            $("&:focus-visible", {
-              outlineWidth: 2,
-            }),
-            $("&:active", {
-              boxShadow: `0 0 0 1px ${V.red20}`,
-            }),
-            $("@media (prefers-color-scheme: dark)", {
-              boxShadow: `inset 0 0 0 1px ${V.gray70}`,
-              background: V.gray90,
-              outlineColor: V.blue50,
-            }),
-            $(and("@media (prefers-color-scheme: dark)", "&:active"), {
-              background: V.gray85,
-            }),
-          ],
-        })}
+        style={pipe(
+          {
+            textDecoration: "none",
+            color: "inherit",
+            background: V.white,
+            flexDirection: "column",
+            gap: "1rem",
+            padding: "2rem",
+            outlineWidth: 0,
+            outlineOffset: 2,
+            outlineColor: V.blue20,
+            outlineStyle: "solid",
+          },
+          on("&:focus-visible", {
+            outlineWidth: 2,
+          }),
+          on("&:active", {
+            boxShadow: `0 0 0 1px ${V.red20}`,
+          }),
+          on(dark, {
+            boxShadow: `inset 0 0 0 1px ${V.gray70}`,
+            background: V.gray90,
+            outlineColor: V.blue50,
+          }),
+          on(and(dark, "&:active"), {
+            background: V.gray85,
+          }),
+        )}
       >
         <div>{author}</div>
         <div
@@ -1287,117 +1264,115 @@ function Feature({
       style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
     >
       <div
-        style={css({
-          display: "flex",
-          gap: "1rem",
-          alignItems: "center",
-          on: ($, { and }) => [
-            $(".blue &", {
-              color: V.blue50,
-            }),
-            $(".pink &", {
-              color: V.pink50,
-            }),
-            $(".yellow &", {
-              color: V.yellow50,
-            }),
-            $(".green &", {
-              color: V.green50,
-            }),
-            $(".teal &", {
-              color: V.teal50,
-            }),
-            $(".purple &", {
-              color: V.purple50,
-            }),
-            $(and("@media (prefers-color-scheme: dark)", ".blue &"), {
-              color: V.blue20,
-            }),
-            $(and("@media (prefers-color-scheme: dark)", ".pink &"), {
-              color: V.pink20,
-            }),
-            $(and("@media (prefers-color-scheme: dark)", ".yellow &"), {
-              color: V.yellow20,
-            }),
-            $(and("@media (prefers-color-scheme: dark)", ".green &"), {
-              color: V.green20,
-            }),
-            $(and("@media (prefers-color-scheme: dark)", ".teal &"), {
-              color: V.teal20,
-            }),
-            $(and("@media (prefers-color-scheme: dark)", ".purple &"), {
-              color: V.purple20,
-            }),
-          ],
-        })}
+        style={pipe(
+          {
+            display: "flex",
+            gap: "1rem",
+            alignItems: "center",
+          },
+          on(".blue &", {
+            color: V.blue50,
+          }),
+          on(".pink &", {
+            color: V.pink50,
+          }),
+          on(".yellow &", {
+            color: V.yellow50,
+          }),
+          on(".green &", {
+            color: V.green50,
+          }),
+          on(".teal &", {
+            color: V.teal50,
+          }),
+          on(".purple &", {
+            color: V.purple50,
+          }),
+          on(and(dark, ".blue &"), {
+            color: V.blue20,
+          }),
+          on(and(dark, ".pink &"), {
+            color: V.pink20,
+          }),
+          on(and(dark, ".yellow &"), {
+            color: V.yellow20,
+          }),
+          on(and(dark, ".green &"), {
+            color: V.green20,
+          }),
+          on(and(dark, ".teal &"), {
+            color: V.teal20,
+          }),
+          on(and(dark, ".purple &"), {
+            color: V.purple20,
+          }),
+        )}
       >
         <div
-          style={css({
-            width: "3rem",
-            minWidth: "3rem",
-            height: "3rem",
-            minHeight: "3rem",
-            borderRadius: 9999,
-            display: "grid",
-            placeItems: "center",
-            on: ($, { and }) => [
-              $(".blue &", {
-                background: V.blue10,
-                boxShadow: `0 0 0 1px ${V.blue30}`,
-              }),
-              $(".pink &", {
-                background: V.pink10,
-                boxShadow: `0 0 0 1px ${V.pink30}`,
-              }),
-              $(".yellow &", {
-                background: V.yellow10,
-                boxShadow: `0 0 0 1px ${V.yellow30}`,
-              }),
-              $(".green &", {
-                background: V.green10,
-                boxShadow: `0 0 0 1px ${V.green30}`,
-              }),
-              $(".teal &", {
-                background: V.teal10,
-                boxShadow: `0 0 0 1px ${V.teal30}`,
-              }),
-              $(".purple &", {
-                background: V.purple10,
-                boxShadow: `0 0 0 1px ${V.purple30}`,
-              }),
-              $(and("@media (prefers-color-scheme: dark)", ".blue &"), {
-                background: V.blue50,
-                boxShadow: `0 0 32px 0 ${V.blue60}`,
-              }),
-              $(and("@media (prefers-color-scheme: dark)", ".pink &"), {
-                background: V.pink50,
-                boxShadow: `0 0 32px 0 ${V.pink60}`,
-              }),
-              $(and("@media (prefers-color-scheme: dark)", ".yellow &"), {
-                background: V.yellow50,
-                boxShadow: `0 0 32px 0 ${V.yellow70}`,
-              }),
-              $(and("@media (prefers-color-scheme: dark)", ".green &"), {
-                background: V.green50,
-                boxShadow: `0 0 32px 0 ${V.green70}`,
-              }),
-              $(and("@media (prefers-color-scheme: dark)", ".teal &"), {
-                background: V.teal50,
-                boxShadow: `0 0 32px 0 ${V.teal70}`,
-              }),
-              $(and("@media (prefers-color-scheme: dark)", ".purple &"), {
-                background: V.purple50,
-                boxShadow: `0 0 32px 0 ${V.purple60}`,
-              }),
-            ],
-          })}
+          style={pipe(
+            {
+              width: "3rem",
+              minWidth: "3rem",
+              height: "3rem",
+              minHeight: "3rem",
+              borderRadius: 9999,
+              display: "grid",
+              placeItems: "center",
+            },
+            on(".blue &", {
+              background: V.blue10,
+              boxShadow: `0 0 0 1px ${V.blue30}`,
+            }),
+            on(".pink &", {
+              background: V.pink10,
+              boxShadow: `0 0 0 1px ${V.pink30}`,
+            }),
+            on(".yellow &", {
+              background: V.yellow10,
+              boxShadow: `0 0 0 1px ${V.yellow30}`,
+            }),
+            on(".green &", {
+              background: V.green10,
+              boxShadow: `0 0 0 1px ${V.green30}`,
+            }),
+            on(".teal &", {
+              background: V.teal10,
+              boxShadow: `0 0 0 1px ${V.teal30}`,
+            }),
+            on(".purple &", {
+              background: V.purple10,
+              boxShadow: `0 0 0 1px ${V.purple30}`,
+            }),
+            on(and(dark, ".blue &"), {
+              background: V.blue50,
+              boxShadow: `0 0 32px 0 ${V.blue60}`,
+            }),
+            on(and(dark, ".pink &"), {
+              background: V.pink50,
+              boxShadow: `0 0 32px 0 ${V.pink60}`,
+            }),
+            on(and(dark, ".yellow &"), {
+              background: V.yellow50,
+              boxShadow: `0 0 32px 0 ${V.yellow70}`,
+            }),
+            on(and(dark, ".green &"), {
+              background: V.green50,
+              boxShadow: `0 0 32px 0 ${V.green70}`,
+            }),
+            on(and(dark, ".teal &"), {
+              background: V.teal50,
+              boxShadow: `0 0 32px 0 ${V.teal70}`,
+            }),
+            on(and(dark, ".purple &"), {
+              background: V.purple50,
+              boxShadow: `0 0 32px 0 ${V.purple60}`,
+            }),
+          )}
         >
           <svg width="1.5rem" height="1.5rem" viewBox="0 0 512 512">
-            {(typeof iconPath === "string" ? [iconPath] : iconPath).map(
-              (p, i) => (
-                <path fill="currentColor" d={p} />
-              ),
-            )}
+            {(typeof iconPath === "string" ? [iconPath] : iconPath).map(p => (
+              <path fill="currentColor" d={p} />
+            ))}
           </svg>
         </div>
         <span style={{ fontWeight: 700 }}>{headline}</span>

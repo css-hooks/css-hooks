@@ -11,7 +11,7 @@ order: 4
 ```bash
 npm create vite@latest css-hooks-playground -- --template qwik-ts
 cd css-hooks-playground
-npm install && npm install @css-hooks/qwik
+npm install @css-hooks/qwik remeda
 ```
 
 ## 2. Start dev server
@@ -29,12 +29,7 @@ Create a `src/css.ts` module with the following contents:
 ```typescript
 import { createHooks } from "@css-hooks/qwik";
 
-export const { styleSheet, css } = createHooks({
-  hooks: {
-    "&:active": "&:active",
-  },
-  debug: import.meta.env.DEV,
-});
+export const { styleSheet, on } = createHooks("&:active");
 ```
 
 ## 4. Add style sheet
@@ -78,7 +73,8 @@ import { component$, useSignal } from '@builder.io/qwik'
 import qwikLogo from './assets/qwik.svg'
 import viteLogo from '/vite.svg'
 import './app.css'
-+import { css } from './css.ts'
++import { on } from './css.ts'
++import { pipe } from 'remeda'
 
 export const App = component$(() => {
   const count = useSignal(0)
@@ -98,14 +94,14 @@ export const App = component$(() => {
 -        <button onClick$={() => count.value++}>count is {count.value}</button>
 +        <button
 +          onClick$={() => count.value++}
-+          style={css({
-+            transition: "transform 75ms",
-+            on: $ => [
-+              $("&:active", {
-+                transform: "scale(0.9)"
-+              })
-+            ]
-+          })}
++          style={pipe(
++            {
++              transition: "transform 75ms",
++            },
++            on("&:active", {
++              transform: "scale(0.9)"
++            })
++          )}
 +        >
           count is {count}
         </button>
