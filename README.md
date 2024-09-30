@@ -83,7 +83,7 @@ experience without runtime style injection or build steps.
   <span
     style={pipe(
       {},
-      on(not("@container lg"), {
+      on("@container (width < 400px)", {
         display: "none",
       }),
     )}
