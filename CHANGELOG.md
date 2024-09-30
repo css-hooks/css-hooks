@@ -1,3 +1,14 @@
+## [3.0.0](https://github.com/css-hooks/css-hooks/compare/v2.0.4...v3.0.0) (2024-09-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* new v3 api
+
+### Features
+
+* new v3 api ([d756bba](https://github.com/css-hooks/css-hooks/commit/d756bba7b6cea4ba916e8ba14f07f52e51e729e4))
+
 ## [2.0.4](https://github.com/css-hooks/css-hooks/compare/v2.0.3...v2.0.4) (2024-04-21)
 
 ## [2.0.3](https://github.com/css-hooks/css-hooks/compare/v2.0.2...v2.0.3) (2024-04-06)
