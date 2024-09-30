@@ -10,7 +10,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@builder.io/qwik": "=1.5.2",
+    "@builder.io/qwik": "=1.5.7",
     "@css-hooks/qwik": "2.0.4",
     "@fontsource/inter": "^5.1.0",
     "remeda": "^2.14.0",
