@@ -40,7 +40,8 @@
     },
     {
       "matchPackagePatterns": ["qwik"],
-      "groupName": "qwik"
+      "groupName": "qwik",
+      "enabled": false
     },
     {
       "matchPackagePatterns": ["shiki"],

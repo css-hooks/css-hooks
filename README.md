@@ -31,18 +31,18 @@ experience without runtime style injection or build steps.
 
 ```jsx
 <button
-  style={css({
-    background: "#004982",
-    color: "#eeeff0",
-    on: $ => [
-      $("&:hover", {
-        background: "#1b659c",
-      }),
-      $("&:active", {
-        background: "#9f3131",
-      }),
-    ],
-  })}
+  style={pipe(
+    {
+      background: "#004982",
+      color: "#eeeff0",
+    },
+    on("&:hover", {
+      background: "#1b659c",
+    }),
+    on("&:active", {
+      background: "#9f3131",
+    }),
+  )}
 >
   Save changes
 </button>
@@ -54,13 +54,12 @@ experience without runtime style injection or build steps.
 <label>
   <input type="checkbox" checked />
   <span
-    style={css({
-      on: $ => [
-        $(":checked + &", {
-          textDecoration: "line-through",
-        }),
-      ],
-    })}
+    style={pipe(
+      {},
+      on(":checked + &", {
+        textDecoration: "line-through",
+      }),
+    )}
   >
     Simplify CSS architecture
   </span>
@@ -72,24 +71,22 @@ experience without runtime style injection or build steps.
 ```jsx
 <>
   <span
-    style={css({
-      on: ($, { not }) => [
-        $(not("@container sm"), {
-          display: "none",
-        }),
-      ],
-    })}
+    style={pipe(
+      {},
+      on(not("@container (width < 400px)"), {
+        display: "none",
+      }),
+    )}
   >
     sm
   </span>
   <span
-    style={css({
-      on: ($, { not }) => [
-        $(not("@container lg"), {
-          display: "none",
-        }),
-      ],
-    })}
+    style={pipe(
+      {},
+      on(not("@container lg"), {
+        display: "none",
+      }),
+    )}
   >
     lg
   </span>
