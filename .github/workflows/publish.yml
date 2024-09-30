@@ -43,7 +43,6 @@ jobs:
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 9.0.4
           run_install: false
 
       - name: get pnpm store
@@ -63,10 +62,8 @@ jobs:
 
       - run: pnpm install
 
-      - run: pnpm exec prettier --check .
+      - run: pnpm check
 
-      # Note that the packages must be built before linting. Otherwise, some
-      # types will be inferred as `any` leading to errors.
       - run: pnpm run -r lint
 
       - uses: browser-actions/setup-chrome@v1
@@ -78,7 +75,7 @@ jobs:
 
       - run: pnpm run -r --filter=./examples/* build
 
-      - run: pnpm run -r --filter=./site build
+      - run: pnpm run -r -F ./site build
         env:
           PUPPETEER_EXECUTABLE_PATH: ${{ steps.chrome.outputs.chrome-path }}
 
@@ -89,7 +86,7 @@ jobs:
           export BUMP_VERSION=$(pnpm exec conventional-recommended-bump -p conventionalcommits | node -e "const v = require('./package.json').version.split('.').map(x => parseInt(x)); const ix = { major: 0, minor: 1, patch: 2 }[require('fs').readFileSync('/dev/stdin', 'utf8').trim()]; v[ix]++; for (let j = ix + 1; j <= 2; j++) v[j] = 0; process.stdout.write(v.join('.'))")
           pnpm -r exec node -e "const pkg = require('./package.json'); require('fs').writeFileSync('./package.json', JSON.stringify(Object.assign({}, pkg, { version: process.env.BUMP_VERSION }, pkg.dependencies ? { dependencies: Object.fromEntries(Object.entries(pkg.dependencies).map(([name, version]) => [name, name.startsWith('@css-hooks/') && /^[0-9]/.test(version) ? process.env.BUMP_VERSION : version])) } : {}), null, 2) + '\n')"
           echo "version=$BUMP_VERSION" >> $GITHUB_OUTPUT
-         
+
       # Note that generating the changelog depends on the package.json version
       # updated in the previous step.
       - if: inputs.artifacts == 'release'
