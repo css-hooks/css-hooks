@@ -322,7 +322,7 @@ importers:
         version: 1.3.0
       '@swc-node/register':
         specifier: ^1.9.0
-        version: 1.9.0(@swc/core@1.4.16)(@swc/types@0.1.6)(typescript@5.3.3)
+        version: 1.9.2(@swc/core@1.4.16)(@swc/types@0.1.6)(typescript@5.3.3)
       '@types/hast':
         specifier: ^3.0.4
         version: 3.0.4
@@ -1122,21 +1122,21 @@ packages:
     resolution: {integrity: sha512-ONhaKPIufzzrlNbqtWFFd+jlnemX6lJAgq9ZeiZtS7I1PIf/la7CW4m83rTXRnVnsMbW2k56pGYu7AUFJD9Pow==}
     engines: {node: '>=4'}
 
-  '@swc-node/core@1.13.0':
-    resolution: {integrity: sha512-lFPD4nmy4ifAOVMChFjwlpXN5KQXvegqeyuzz1KQz42q1lf+cL3Qux1/GteGuZjh8HC+Rj1RdNrHpE/MCfJSTw==}
+  '@swc-node/core@1.13.3':
+    resolution: {integrity: sha512-OGsvXIid2Go21kiNqeTIn79jcaX4l0G93X2rAnas4LFoDyA9wAwVK7xZdm+QsKoMn5Mus2yFLCc4OtX2dD/PWA==}
     engines: {node: '>= 10'}
     peerDependencies:
-      '@swc/core': '>= 1.3'
+      '@swc/core': '>= 1.4.13'
       '@swc/types': '>= 0.1'
 
-  '@swc-node/register@1.9.0':
-    resolution: {integrity: sha512-i0iYInD4q5v3xQC6bKvs0QtfUxu197CU5qKALmpxEqTYs7sIhQ7KFLe3kP+eAR4gRkJTvAgjQgrokXLN2jZrOw==}
+  '@swc-node/register@1.9.2':
+    resolution: {integrity: sha512-BBjg0QNuEEmJSoU/++JOXhrjWdu3PTyYeJWsvchsI0Aqtj8ICkz/DqlwtXbmZVZ5vuDPpTfFlwDBZe81zgShMA==}
     peerDependencies:
-      '@swc/core': '>= 1.3'
+      '@swc/core': '>= 1.4.13'
       typescript: '>= 4.3'
 
-  '@swc-node/sourcemap-support@0.5.0':
-    resolution: {integrity: sha512-fbhjL5G0YvFoWwNhWleuBUfotiX+USiA9oJqu9STFw+Hb0Cgnddn+HVS/K5fI45mn92e8V+cHD2jgFjk4w2T9Q==}
+  '@swc-node/sourcemap-support@0.5.1':
+    resolution: {integrity: sha512-JxIvIo/Hrpv0JCHSyRpetAdQ6lB27oFYhv0PKCNf1g2gUXOjpeR1exrXccRxLMuAV5WAmGFBwRnNOJqN38+qtg==}
 
   '@swc/core-darwin-arm64@1.4.16':
     resolution: {integrity: sha512-UOCcH1GvjRnnM/LWT6VCGpIk0OhHRq6v1U6QXuPt5wVsgXnXQwnf5k3sG5Cm56hQHDvhRPY6HCsHi/p0oek8oQ==}
@@ -4046,8 +4046,8 @@ packages:
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
 
-  tslib@2.6.2:
-    resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+  tslib@2.7.0:
+    resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
 
   tsx@4.19.1:
     resolution: {integrity: sha512-0flMz1lh74BR4wOvBjuh9olbnwqCPc35OOlfyzHba0Dc+QNUeWX/Gq2YTbnwcWPO3BMd8fkzRVrHcsR+a7z7rA==}
@@ -5082,29 +5082,29 @@ snapshots:
 
   '@sindresorhus/is@0.7.0': {}
 
-  '@swc-node/core@1.13.0(@swc/core@1.4.16)(@swc/types@0.1.6)':
+  '@swc-node/core@1.13.3(@swc/core@1.4.16)(@swc/types@0.1.6)':
     dependencies:
       '@swc/core': 1.4.16
       '@swc/types': 0.1.6
 
-  '@swc-node/register@1.9.0(@swc/core@1.4.16)(@swc/types@0.1.6)(typescript@5.3.3)':
+  '@swc-node/register@1.9.2(@swc/core@1.4.16)(@swc/types@0.1.6)(typescript@5.3.3)':
     dependencies:
-      '@swc-node/core': 1.13.0(@swc/core@1.4.16)(@swc/types@0.1.6)
-      '@swc-node/sourcemap-support': 0.5.0
+      '@swc-node/core': 1.13.3(@swc/core@1.4.16)(@swc/types@0.1.6)
+      '@swc-node/sourcemap-support': 0.5.1
       '@swc/core': 1.4.16
       colorette: 2.0.20
-      debug: 4.3.4
+      debug: 4.3.7
       pirates: 4.0.6
-      tslib: 2.6.2
+      tslib: 2.7.0
       typescript: 5.3.3
     transitivePeerDependencies:
       - '@swc/types'
       - supports-color
 
-  '@swc-node/sourcemap-support@0.5.0':
+  '@swc-node/sourcemap-support@0.5.1':
     dependencies:
       source-map-support: 0.5.21
-      tslib: 2.6.2
+      tslib: 2.7.0
 
   '@swc/core-darwin-arm64@1.4.16':
     optional: true
@@ -5537,7 +5537,7 @@ snapshots:
 
   ast-types@0.13.4:
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.7.0
 
   available-typed-arrays@1.0.7:
     dependencies:
@@ -8604,7 +8604,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tslib@2.6.2: {}
+  tslib@2.7.0: {}
 
   tsx@4.19.1:
     dependencies:
