@@ -331,7 +331,7 @@ importers:
         version: 20.12.14
       '@types/slug':
         specifier: ^5.0.7
-        version: 5.0.8
+        version: 5.0.9
       csso:
         specifier: ^5.0.5
         version: 5.0.5
@@ -1291,8 +1291,8 @@ packages:
   '@types/semver@7.5.8':
     resolution: {integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==}
 
-  '@types/slug@5.0.8':
-    resolution: {integrity: sha512-mblTWR1OST257k1gZ3QvqG+ERSr8Ea6dyM1FH6Jtm4jeXi0/r0/95VNctofuiywPxCVQuE8AuFoqmvJ4iVUlXQ==}
+  '@types/slug@5.0.9':
+    resolution: {integrity: sha512-6Yp8BSplP35Esa/wOG1wLNKiqXevpQTEF/RcL/NV6BBQaMmZh4YlDwCgrrFSoUE4xAGvnKd5c+lkQJmPrBAzfQ==}
 
   '@types/unist@3.0.2':
     resolution: {integrity: sha512-dqId9J8K/vGi5Zr7oo212BGii5m3q5Hxlkwy3WpYuKPklmBEvsbMYYyLxAQpSffdLl/gdW0XUpKWFvYmyoWCoQ==}
@@ -5307,7 +5307,7 @@ snapshots:
 
   '@types/semver@7.5.8': {}
 
-  '@types/slug@5.0.8': {}
+  '@types/slug@5.0.9': {}
 
   '@types/unist@3.0.2': {}
 
