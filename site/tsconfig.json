@@ -1,13 +1,10 @@
 {
-  "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
-    "jsxImportSource": "hastx",
-    "noEmit": true,
-    "exactOptionalPropertyTypes": false,
-    "module": "Node16",
-    "moduleResolution": "Node16",
-    "customConditions": ["@css-hooks/source"]
+    "noEmit": true
   },
-  "include": ["src"]
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.build.json" },
+    { "path": "./tsconfig.node.json" }
+  ]
 }

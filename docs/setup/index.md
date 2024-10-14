@@ -160,7 +160,8 @@ export function App() {
 
 <!-- prettier-ignore-start -->
 > [!NOTE]
-> Despite the name, React's `dangerouslySetInnerHTML` prop is safe to use for _trusted_ content.
+> Despite the name, React's `dangerouslySetInnerHTML` prop is safe to use for
+> _trusted_ content.
 <!-- prettier-ignore-end -->
 
 ## Ready to use

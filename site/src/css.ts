@@ -1,12 +1,6 @@
-import { buildHooksSystem } from "@css-hooks/core";
-import type { CSSProperties } from "hastx/css";
-import { cssValueToString } from "hastx/css";
+import { createHooks } from "@css-hooks/react";
 
-import globalStyles from "./global.css";
-
-const createHooks = buildHooksSystem<CSSProperties>((a, b) =>
-  cssValueToString(b, a),
-);
+import globalStyles from "./global.css?inline";
 
 const {
   styleSheet: hookStyles,
@@ -60,12 +54,12 @@ const {
   "&.selected",
   ":has(:checked) + &",
   ".shiki > &",
+  "td > &:only-child",
+  "th > &:only-child",
 );
 
 export const styleSheet = () =>
-  [globalStyles, hookStyles()].join(
-    process.env["NODE_ENV"] === "production" ? "" : "\n\n",
-  );
+  [globalStyles, hookStyles()].join(import.meta.env.DEV ? "\n\n" : "");
 
 export { on, and, or, not };
 
