@@ -8,12 +8,12 @@
   "description": "Hooks add CSS features to native inline styles, with no build steps and minimal runtime.",
   "icons": [
     {
-      "src": "./icons/android-chrome-192x192.png",
+      "src": "./img/192/192/icon.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "./icons/android-chrome-512x512.png",
+      "src": "./img/512/512/icon.png",
       "type": "image/png",
       "sizes": "512x512"
     }

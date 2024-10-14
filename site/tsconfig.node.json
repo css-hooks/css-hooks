@@ -1,0 +1,15 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "lib": ["es2023"],
+    "types": ["@types/node"],
+    "module": "node16",
+    "target": "es2022",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node16"
+  },
+  "include": ["src/common.ts", "src/server.ts", "vite.config.ts"]
+}

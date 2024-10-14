@@ -37,9 +37,7 @@ describe("in browser", () => {
   let browser: Browser, page: Page;
 
   before(async () => {
-    browser = await puppeteer.launch({
-      headless: true,
-    });
+    browser = await puppeteer.launch();
   });
 
   beforeEach(async () => {
