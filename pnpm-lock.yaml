@@ -55,10 +55,10 @@ importers:
         version: 5.1.0
       '@preact/preset-vite':
         specifier: ^2.9.1
-        version: 2.9.1(@babel/core@7.24.9)(preact@10.24.1)(vite@5.4.8(@types/node@22.7.5)(lightningcss@1.24.1))
+        version: 2.9.1(@babel/core@7.24.9)(preact@10.24.3)(vite@5.4.8(@types/node@22.7.5)(lightningcss@1.24.1))
       preact:
         specifier: ^10.24.0
-        version: 10.24.1
+        version: 10.24.3
       remeda:
         specifier: ^2.14.0
         version: 2.14.0
@@ -221,7 +221,7 @@ importers:
         version: 20.12.14
       preact:
         specifier: '>=10.0.0 <11.0.0'
-        version: 10.24.1
+        version: 10.24.3
       rimraf:
         specifier: ^5.0.1
         version: 5.0.10
@@ -2182,6 +2182,7 @@ packages:
   eslint@8.57.1:
     resolution: {integrity: sha512-ypowyDxpVSYpkXr9WPv2PAZCtNip1Mv5KTW0SCurXv/9iOpcrH9PaqUElksqEB6pChqHGDRCFTyrZlGhnLNGiA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   espree@9.6.1:
@@ -3555,8 +3556,8 @@ packages:
     resolution: {integrity: sha512-56rxCq7G/XfB4EkXq9Egn5GCqugWvDFjafDOThIdMBsI15iqPqR5r15TfSr1YPYeEI19YeaXMCbY6u88Y76GLQ==}
     engines: {node: ^10 || ^12 || >=14}
 
-  preact@10.24.1:
-    resolution: {integrity: sha512-PnBAwFI3Yjxxcxw75n6VId/5TFxNW/81zexzWD9jn1+eSrOP84NdsS38H5IkF/UH3frqRPT+MvuCoVHjTDTnDw==}
+  preact@10.24.3:
+    resolution: {integrity: sha512-Z2dPnBnMUfyQfSQ+GBdsGa16hz35YmLmtTLhM169uW944hYL6xzTYkJjC07j+Wosz733pMWx0fgON3JNw1jJQA==}
 
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -5102,13 +5103,13 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
-  '@preact/preset-vite@2.9.1(@babel/core@7.24.9)(preact@10.24.1)(vite@5.4.8(@types/node@22.7.5)(lightningcss@1.24.1))':
+  '@preact/preset-vite@2.9.1(@babel/core@7.24.9)(preact@10.24.3)(vite@5.4.8(@types/node@22.7.5)(lightningcss@1.24.1))':
     dependencies:
       '@babel/code-frame': 7.24.2
       '@babel/core': 7.24.9
       '@babel/plugin-transform-react-jsx': 7.23.4(@babel/core@7.24.9)
       '@babel/plugin-transform-react-jsx-development': 7.22.5(@babel/core@7.24.9)
-      '@prefresh/vite': 2.4.5(preact@10.24.1)(vite@5.4.8(@types/node@22.7.5)(lightningcss@1.24.1))
+      '@prefresh/vite': 2.4.5(preact@10.24.3)(vite@5.4.8(@types/node@22.7.5)(lightningcss@1.24.1))
       '@rollup/pluginutils': 4.2.1
       babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.24.9)
       debug: 4.3.4
@@ -5124,20 +5125,20 @@ snapshots:
 
   '@prefresh/babel-plugin@0.5.1': {}
 
-  '@prefresh/core@1.5.2(preact@10.24.1)':
+  '@prefresh/core@1.5.2(preact@10.24.3)':
     dependencies:
-      preact: 10.24.1
+      preact: 10.24.3
 
   '@prefresh/utils@1.2.0': {}
 
-  '@prefresh/vite@2.4.5(preact@10.24.1)(vite@5.4.8(@types/node@22.7.5)(lightningcss@1.24.1))':
+  '@prefresh/vite@2.4.5(preact@10.24.3)(vite@5.4.8(@types/node@22.7.5)(lightningcss@1.24.1))':
     dependencies:
       '@babel/core': 7.24.9
       '@prefresh/babel-plugin': 0.5.1
-      '@prefresh/core': 1.5.2(preact@10.24.1)
+      '@prefresh/core': 1.5.2(preact@10.24.3)
       '@prefresh/utils': 1.2.0
       '@rollup/pluginutils': 4.2.1
-      preact: 10.24.1
+      preact: 10.24.3
       vite: 5.4.8(@types/node@22.7.5)(lightningcss@1.24.1)
     transitivePeerDependencies:
       - supports-color
@@ -8354,7 +8355,7 @@ snapshots:
       picocolors: 1.1.0
       source-map-js: 1.2.1
 
-  preact@10.24.1: {}
+  preact@10.24.3: {}
 
   prelude-ls@1.2.1: {}
 
