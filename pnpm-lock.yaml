@@ -69,8 +69,8 @@ importers:
         specifier: '=5.4.5'
         version: 5.4.5
       varsace:
-        specifier: '=0.0.4'
-        version: 0.0.4
+        specifier: '=0.2.1'
+        version: 0.2.1
       vite:
         specifier: ^5.4.6
         version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)
@@ -96,8 +96,8 @@ importers:
         specifier: '=5.4.5'
         version: 5.4.5
       varsace:
-        specifier: '=0.0.4'
-        version: 0.0.4
+        specifier: '=0.2.1'
+        version: 0.2.1
       vite:
         specifier: ^5.4.6
         version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)
@@ -135,8 +135,8 @@ importers:
         specifier: '=5.4.5'
         version: 5.4.5
       varsace:
-        specifier: '=0.0.4'
-        version: 0.0.4
+        specifier: '=0.2.1'
+        version: 0.2.1
       vite:
         specifier: ^5.4.6
         version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)
@@ -162,8 +162,8 @@ importers:
         specifier: ^5.6.2
         version: 5.6.2
       varsace:
-        specifier: '=0.0.4'
-        version: 0.0.4
+        specifier: '=0.2.1'
+        version: 0.2.1
       vite:
         specifier: ^5.4.6
         version: 5.4.9(@types/node@22.7.6)(lightningcss@1.27.0)
@@ -4381,9 +4381,6 @@ packages:
 
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
-
-  varsace@0.0.4:
-    resolution: {integrity: sha512-L0CMKFIRqUOuqMrKDqNUZTcy3EfXodYsdzlB5EWjo3O3rEiyTAnXd9Ouzv6D2FWiYldoDU5GJT2K/IaXuoypLA==}
 
   varsace@0.2.1:
     resolution: {integrity: sha512-YgTXh/6HEcI5+z6Ob7RyLrCDLoFzWF+mOB0e3HXB+S2iMGTqTHF/ZgK8T2t98hAyTsNhDTtqMZna/8wiRofJBA==}
@@ -9268,8 +9265,6 @@ snapshots:
     dependencies:
       spdx-correct: 3.2.0
       spdx-expression-parse: 3.0.1
-
-  varsace@0.0.4: {}
 
   varsace@0.2.1: {}
 

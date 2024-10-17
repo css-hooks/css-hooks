@@ -16,7 +16,7 @@
     "rimraf": "^6.0.1",
     "solid-js": "^1.7.11",
     "typescript": "^5.6.2",
-    "varsace": "=0.0.4",
+    "varsace": "=0.2.1",
     "vite": "^5.4.6",
     "vite-plugin-solid": "^2.10.2"
   }
