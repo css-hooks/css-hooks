@@ -27,38 +27,21 @@ jobs:
 
       - uses: wagoid/commitlint-github-action@v6
 
-      - name: create nvmrc
-        run: sed -n 's/^use-node-version=//p' .npmrc >> .nvmrc
+      - uses: pnpm/action-setup@v4
+        with:
+          run_install: false
 
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
 
       - if: inputs.artifacts == 'release'
         name: verify npm auth
         run: npm whoami
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-
-      - uses: pnpm/action-setup@v3
-        with:
-          run_install: false
-
-      - name: get pnpm store
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - uses: actions/cache@v4
-        name: pnpm cache
-        env:
-          STORE_PATH: ${{ env.STORE_PATH }}
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
 
       - run: pnpm install
 
@@ -73,7 +56,7 @@ jobs:
 
       - run: pnpm run -r -F @examples/* build
 
-      - run: pnpm run -r -F ./site build
+      - run: pnpm run -r -F site build
         env:
           PUPPETEER_EXECUTABLE_PATH: ${{ steps.chrome.outputs.chrome-path }}
 
