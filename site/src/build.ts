@@ -46,6 +46,11 @@ for (const pathname of paths) {
       )) {
         script.parentNode?.removeChild(script);
       }
+      for (const element of Array.from(
+        document.querySelectorAll("[data-react-helmet]"),
+      )) {
+        element.removeAttribute("data-react-helmet");
+      }
     });
     const html = await page.content();
     const dest = path.join(outDir, ...pathname.split("/"), "index.html");
