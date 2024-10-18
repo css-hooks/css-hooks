@@ -272,9 +272,6 @@ importers:
       '@types/react':
         specifier: ^18.2.20
         version: 18.2.79
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^7.0.0
-        version: 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.4.5))(eslint@8.57.1)(typescript@5.4.5)
       rimraf:
         specifier: ^5.0.1
         version: 5.0.10
