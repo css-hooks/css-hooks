@@ -2,9 +2,9 @@ import { pipe } from "remeda";
 import * as V from "varsace";
 
 import { and, on } from "./css.js";
-import Logo from "./Logo.js";
+import { Logo } from "./logo.jsx";
 
-function App() {
+export function App() {
   return (
     <div
       style={pipe(
@@ -67,5 +67,3 @@ function App() {
     </div>
   );
 }
-
-export default App;

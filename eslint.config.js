@@ -78,4 +78,10 @@ export default tseslint.config(
       ],
     },
   })),
+  {
+    files: ["commitlint.config.js", "eslint.config.js", "**/vite.config.ts"],
+    rules: {
+      "import/no-default-export": "off",
+    },
+  },
 );

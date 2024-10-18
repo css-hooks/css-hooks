@@ -3,7 +3,7 @@ import * as V from "varsace";
 
 import { on } from "./css.js";
 
-export default function Logo() {
+export function Logo() {
   return (
     <svg viewBox="0 0 334 400" style={{ width: "0.835em", height: "1em" }}>
       <g>
