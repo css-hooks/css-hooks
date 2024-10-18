@@ -48,7 +48,8 @@
       "groupName": "shiki"
     },
     {
-      "packageNames": ["@microsoft/api-extractor"],
+      "matchFileNames": ["package.json", "packages/**/package.json"],
+      "matchPackagePatterns": ["@microsoft/api"],
       "groupName": "api-extractor"
     }
   ]
