@@ -17,7 +17,7 @@
     "preact": "^10.24.0",
     "remeda": "^2.14.0",
     "rimraf": "^6.0.1",
-    "typescript": "=5.4.5",
+    "typescript": "=5.6.3",
     "varsace": "=0.0.4",
     "vite": "^5.4.6"
   }
