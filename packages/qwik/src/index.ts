@@ -7,6 +7,8 @@
 import type { CSSProperties } from "@builder.io/qwik";
 import { buildHooksSystem } from "@css-hooks/core";
 
+export type * from "@css-hooks/core";
+
 /** @internal */
 export function _stringifyValue(value: unknown, propertyName: string) {
   switch (typeof value) {
