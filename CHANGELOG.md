@@ -1,3 +1,13 @@
+## [3.0.1](https://github.com/css-hooks/css-hooks/compare/v3.0.0...v3.0.1) (2024-10-20)
+
+
+### Bug Fixes
+
+* **preact:** re-export core types ([071a210](https://github.com/css-hooks/css-hooks/commit/071a21071a3449767ab030a9732b674248c39bbc))
+* **qwik:** re-export core types ([02220d4](https://github.com/css-hooks/css-hooks/commit/02220d4ba3706bb5510199e57c5140fa0e09226b))
+* **react:** re-export core types ([4cfdfb6](https://github.com/css-hooks/css-hooks/commit/4cfdfb6e1e3c6e76b9d15c63821a9605d06a3628))
+* **solid:** re-export core types ([927d38c](https://github.com/css-hooks/css-hooks/commit/927d38c57ac74abe2b61857e52813ee4568f6fcb))
+
 ## [3.0.0](https://github.com/css-hooks/css-hooks/compare/v2.0.4...v3.0.0) (2024-09-30)
 
 
