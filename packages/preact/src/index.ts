@@ -7,6 +7,8 @@
 import { buildHooksSystem } from "@css-hooks/core";
 import type { JSX } from "preact";
 
+export type * from "@css-hooks/core";
+
 const IS_NON_DIMENSIONAL =
   /acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i;
 
