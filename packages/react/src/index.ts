@@ -7,6 +7,8 @@
 import { buildHooksSystem } from "@css-hooks/core";
 import type { CSSProperties } from "react";
 
+export type * from "@css-hooks/core";
+
 // See https://github.com/facebook/react/blob/main/packages/react-dom-bindings/src/client/CSSPropertyOperations.js
 /** @internal */
 export function _stringifyValue(value: unknown, propertyName: string) {
