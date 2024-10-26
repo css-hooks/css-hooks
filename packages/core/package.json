@@ -5,7 +5,7 @@
   "author": "Nick Saunders",
   "devDependencies": {
     "@microsoft/api-extractor": "^7.39.4",
-    "@types/color": "^3.0.6",
+    "@types/color": "^4.0.0",
     "@types/node": "^22.7.5",
     "color": "^4.2.3",
     "csstype": "^3.1.3",
