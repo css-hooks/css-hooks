@@ -39,18 +39,29 @@
       "semanticCommitScope": "publish"
     },
     {
-      "matchPackagePatterns": ["qwik"],
-      "groupName": "qwik",
-      "enabled": false
-    },
-    {
-      "matchPackagePatterns": ["shiki"],
-      "groupName": "shiki"
-    },
-    {
       "matchFileNames": ["package.json", "packages/**/package.json"],
       "matchPackagePatterns": ["@microsoft/api"],
       "groupName": "api-extractor"
+    },
+    {
+      "matchPackageNames": ["/eslint/"],
+      "groupName": "eslint",
+      "schedule": ["30 8 1 * *"]
+    },
+    {
+      "matchPackageNames": ["/babel/"],
+      "groupName": "babel",
+      "schedule": ["30 8 2 * *"]
+    },
+    {
+      "matchPackagePatterns": ["shiki"],
+      "groupName": "shiki",
+      "schedule": ["30 8 3 * *"]
+    },
+    {
+      "matchPackagePatterns": ["qwik"],
+      "groupName": "qwik",
+      "enabled": false
     }
   ]
 }
