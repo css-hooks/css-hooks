@@ -227,7 +227,7 @@ export function Home() {
             color="blue"
             iconPath={[
               "M503.58 126.2a16.85 16.85 0 0 0-27.07-4.55l-51.15 51.15a11.15 11.15 0 0 1-15.66 0l-22.48-22.48a11.17 11.17 0 0 1 0-15.67l50.88-50.89a16.85 16.85 0 0 0-5.27-27.4c-39.71-17-89.08-7.45-120 23.29c-26.81 26.61-34.83 68-22 113.7a11 11 0 0 1-3.16 11.1L114.77 365.1a56.76 56.76 0 1 0 80.14 80.18L357 272.08a11 11 0 0 1 10.9-3.17c45 12 86 4 112.43-22c15.2-15 25.81-36.17 29.89-59.71c3.83-22.2 1.41-44.44-6.64-61Z",
-              ".94-11.59-43.72-38.4-74.07-66.22l-66.07 70.61c28.24 30 53.8 57.85 65 70.88l.07.08A30 30 0 0 0 383.72 464h1.1a30.11 30.11 0 0 0 21-8.62l.07-.07l33.43-33.37a29.46 29.46 0 0 0-2-43.53ZM118.54 214.55a20.48 20.48 0 0 0-3-10.76a2.76 2.76 0 0 1 2.62-4.22h.06c.84.09 5.33.74 11.7 4.61c4.73 2.87 18.23 12.08 41.73 35.54a34.23 34.23 0 0 0 7.22 22.12l66.23-61.55a33.73 33.73 0 0 0-21.6-9.2a2.65 2.65 0 0 1-.21-.26l-.65-.69l-24.54-33.84a28.45 28.45 0 0 1-4-26.11a35.23 35.23 0 0 1 11.78-16.35c5.69-4.41 18.53-9.72 29.44-10.62a52.92 52.92 0 0 1 15.19.94a65.57 65.57 0 0 1 7.06 2.13a15.46 15.46 0 0 0 2.15.63a16 16 0 0 0 16.38-25.06c-.26-.35-1.32-1.79-2.89-3.73a91.85 91.85 0 0 0-9.6-10.36c-8.15-7.36-29.27-19.77-57-19.77a123.13 123.13 0 0 0-46.3 9c-38.37 15.45-63.47 36.58-75.01 47.79l-.09.09A222.14 222.14 0 0 0 63.7 129.5a27 27 0 0 0-4.7 11.77a7.33 7.33 0 0 1-7.71 6.17H50.2a20.65 20.65 0 0 0-14.59 5.9L6.16 182.05l-.32.32a20.89 20.89 0 0 0-.24 28.72c.19.2.37.39.57.58L53.67 258a21 21 0 0 0 14.65 6a20.65 20.65 0 0 0 14.59-5.9l29.46-28.79a20.51 20.51 0 0 0 6.17-14.76Z",
+              "M.94-11.59-43.72-38.4-74.07-66.22l-66.07 70.61c28.24 30 53.8 57.85 65 70.88l.07.08A30 30 0 0 0 383.72 464h1.1a30.11 30.11 0 0 0 21-8.62l.07-.07l33.43-33.37a29.46 29.46 0 0 0-2-43.53ZM118.54 214.55a20.48 20.48 0 0 0-3-10.76a2.76 2.76 0 0 1 2.62-4.22h.06c.84.09 5.33.74 11.7 4.61c4.73 2.87 18.23 12.08 41.73 35.54a34.23 34.23 0 0 0 7.22 22.12l66.23-61.55a33.73 33.73 0 0 0-21.6-9.2a2.65 2.65 0 0 1-.21-.26l-.65-.69l-24.54-33.84a28.45 28.45 0 0 1-4-26.11a35.23 35.23 0 0 1 11.78-16.35c5.69-4.41 18.53-9.72 29.44-10.62a52.92 52.92 0 0 1 15.19.94a65.57 65.57 0 0 1 7.06 2.13a15.46 15.46 0 0 0 2.15.63a16 16 0 0 0 16.38-25.06c-.26-.35-1.32-1.79-2.89-3.73a91.85 91.85 0 0 0-9.6-10.36c-8.15-7.36-29.27-19.77-57-19.77a123.13 123.13 0 0 0-46.3 9c-38.37 15.45-63.47 36.58-75.01 47.79l-.09.09A222.14 222.14 0 0 0 63.7 129.5a27 27 0 0 0-4.7 11.77a7.33 7.33 0 0 1-7.71 6.17H50.2a20.65 20.65 0 0 0-14.59 5.9L6.16 182.05l-.32.32a20.89 20.89 0 0 0-.24 28.72c.19.2.37.39.57.58L53.67 258a21 21 0 0 0 14.65 6a20.65 20.65 0 0 0 14.59-5.9l29.46-28.79a20.51 20.51 0 0 0 6.17-14.76Z",
             ]}
             headline="Extreme maintainability"
           >
@@ -277,7 +277,7 @@ export function Home() {
                 viewBox="-11.5 -10.23174 23 20.46348"
               >
                 <circle cx="0" cy="0" r="2.05" fill="currentColor" />
-                <g stroke="currentColor" stroke-width="1" fill="none">
+                <g stroke="currentColor" strokeWidth="1" fill="none">
                   <ellipse rx="11" ry="4.2" />
                   <ellipse rx="11" ry="4.2" transform="rotate(60)" />
                   <ellipse rx="11" ry="4.2" transform="rotate(120)" />
@@ -300,7 +300,7 @@ export function Home() {
                   <ellipse
                     cx="0"
                     cy="0"
-                    stroke-width="16"
+                    strokeWidth="16"
                     rx="75"
                     ry="196"
                     fill="none"
@@ -311,7 +311,7 @@ export function Home() {
                   <ellipse
                     cx="0"
                     cy="0"
-                    stroke-width="16"
+                    strokeWidth="16"
                     rx="75"
                     ry="196"
                     fill="none"
@@ -340,9 +340,9 @@ export function Home() {
                     y2="63.5"
                     gradientUnits="userSpaceOnUse"
                   >
-                    <stop offset="0.1" stop-color="#76b3e1" />
-                    <stop offset="0.3" stop-color="#dcf2fd" />
-                    <stop offset="1" stop-color="#76b3e1" />
+                    <stop offset="0.1" stopColor="#76b3e1" />
+                    <stop offset="0.3" stopColor="#dcf2fd" />
+                    <stop offset="1" stopColor="#76b3e1" />
                   </linearGradient>
                   <linearGradient
                     id="b"
@@ -352,9 +352,9 @@ export function Home() {
                     y2="105.2"
                     gradientUnits="userSpaceOnUse"
                   >
-                    <stop offset="0" stop-color="#76b3e1" />
-                    <stop offset="0.5" stop-color="#4377bb" />
-                    <stop offset="1" stop-color="#1f3b77" />
+                    <stop offset="0" stopColor="#76b3e1" />
+                    <stop offset="0.5" stopColor="#4377bb" />
+                    <stop offset="1" stopColor="#1f3b77" />
                   </linearGradient>
                   <linearGradient
                     id="c"
@@ -364,9 +364,9 @@ export function Home() {
                     y2="149.8"
                     gradientUnits="userSpaceOnUse"
                   >
-                    <stop offset="0" stop-color="#315aa9" />
-                    <stop offset="0.5" stop-color="#518ac8" />
-                    <stop offset="1" stop-color="#315aa9" />
+                    <stop offset="0" stopColor="#315aa9" />
+                    <stop offset="0.5" stopColor="#518ac8" />
+                    <stop offset="1" stopColor="#315aa9" />
                   </linearGradient>
                   <linearGradient
                     id="d"
@@ -376,9 +376,9 @@ export function Home() {
                     y2="260.8"
                     gradientUnits="userSpaceOnUse"
                   >
-                    <stop offset="0" stop-color="#4377bb" />
-                    <stop offset="0.5" stop-color="#1a336b" />
-                    <stop offset="1" stop-color="#1a336b" />
+                    <stop offset="0" stopColor="#4377bb" />
+                    <stop offset="0.5" stopColor="#1a336b" />
+                    <stop offset="1" stopColor="#1a336b" />
                   </linearGradient>
                 </defs>
                 <path
@@ -421,8 +421,8 @@ export function Home() {
                 style={{ height: 160, maxWidth: "100%" }}
               >
                 <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
+                  fillRule="evenodd"
+                  clipRule="evenodd"
                   d="M250 449.707L431.102 505.511L343.037 423.652L129.174 224.859L179.178 174.86L156.157 16.117L8.34822 193.702C-2.78296 212.982 -2.78273 236.736 8.34883 256.016L102.191 418.551C113.323 437.831 133.894 449.707 156.156 449.707L250 449.707Z"
                   fill="#18B6F6"
                 />
@@ -721,6 +721,7 @@ function CodeWindow({ children }: { children: ReactNode }) {
       >
         {[V.red30, V.yellow30, V.green30].map(color => (
           <div
+            key={color}
             style={pipe(
               {
                 fontSize: 12,
@@ -915,7 +916,7 @@ function SelectorDemo() {
             fontWeight: 700,
           }}
         >
-          <input type="checkbox" checked />
+          <input type="checkbox" defaultChecked />
           <span
             style={pipe(
               {},
@@ -1027,7 +1028,7 @@ function ResponsiveDemo() {
               type="range"
               style={{ width: initialWidth }}
               max={initialWidth}
-              value={initialWidth}
+              defaultValue={initialWidth}
             />
           </label>
           <script>{`
@@ -1344,7 +1345,7 @@ function Feature({
         >
           <svg width="1.5rem" height="1.5rem" viewBox="0 0 512 512">
             {(typeof iconPath === "string" ? [iconPath] : iconPath).map(p => (
-              <path fill="currentColor" d={p} />
+              <path key={p} fill="currentColor" d={p} />
             ))}
           </svg>
         </div>

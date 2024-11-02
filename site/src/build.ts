@@ -37,9 +37,22 @@ const paths = [
 const browser = await puppeteer.launch();
 const page = await browser.newPage();
 
+function handleError(pathname: string) {
+  return function (message: puppeteer.ConsoleMessage) {
+    if (message.type() === "error") {
+      throw new Error(
+        `An error occurred while rendering ${pathname}: ${message.text()}`,
+      );
+    }
+  };
+}
+
 for (const pathname of paths) {
   if (pathname.endsWith("/")) {
+    const errorHandler = handleError(pathname);
+    page.on("console", errorHandler);
     await page.goto(`${serverURL}${pathname}`, { waitUntil: "networkidle0" });
+    page.off("console", errorHandler);
     await page.evaluate(() => {
       for (const script of Array.from(
         document.querySelectorAll("script[src]"),
