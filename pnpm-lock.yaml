@@ -48,7 +48,7 @@ importers:
         specifier: ^7.24.4
         version: 7.25.8
       '@css-hooks/preact':
-        specifier: 3.0.0
+        specifier: 3.0.1
         version: link:../../packages/preact
       '@fontsource/inter':
         specifier: ^5.1.0
@@ -81,7 +81,7 @@ importers:
         specifier: '=1.5.2'
         version: 1.5.2(@types/node@22.7.7)(lightningcss@1.27.0)(undici@6.19.8)
       '@css-hooks/qwik':
-        specifier: 3.0.0
+        specifier: 3.0.1
         version: link:../../packages/qwik
       '@fontsource/inter':
         specifier: ^5.1.0
@@ -105,7 +105,7 @@ importers:
   examples/react:
     dependencies:
       '@css-hooks/react':
-        specifier: 3.0.0
+        specifier: 3.0.1
         version: link:../../packages/react
       '@fontsource/inter':
         specifier: ^5.1.0
@@ -144,7 +144,7 @@ importers:
   examples/solid:
     dependencies:
       '@css-hooks/solid':
-        specifier: 3.0.0
+        specifier: 3.0.1
         version: link:../../packages/solid
       '@fontsource/inter':
         specifier: ^5.1.0
@@ -307,7 +307,7 @@ importers:
   site:
     devDependencies:
       '@css-hooks/react':
-        specifier: workspace:3.0.0
+        specifier: workspace:*
         version: link:../packages/react
       '@types/express':
         specifier: ^5.0.0

@@ -8,7 +8,7 @@
     "dev": "tsx ./src/server.ts"
   },
   "devDependencies": {
-    "@css-hooks/react": "workspace:3.0.0",
+    "@css-hooks/react": "workspace:*",
     "@types/express": "^5.0.0",
     "@types/hast": "^3.0.4",
     "@types/node": "^20.12.14",
