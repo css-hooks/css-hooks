@@ -60,6 +60,11 @@
       "schedule": ["* 8 3 * *"]
     },
     {
+      "matchPackagePatterns": ["slug"],
+      "groupName": "slug",
+      "schedule": ["* 8 5 * *"]
+    },
+    {
       "matchPackagePatterns": ["qwik"],
       "groupName": "qwik",
       "enabled": false
