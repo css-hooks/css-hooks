@@ -10,7 +10,7 @@
     "@microsoft/api-extractor": "^7.39.4",
     "rimraf": "^6.0.1",
     "solid-js": "^1.7.11",
-    "typescript": "5.7.0-beta"
+    "typescript": "5.7.0-dev.20241102"
   },
   "files": [
     "cjs",

@@ -33,7 +33,7 @@
     "remeda": "^2.14.0",
     "shiki": "^1.3.0",
     "slug": "^10.0.0",
-    "typescript": "5.7.0-beta",
+    "typescript": "5.7.0-dev.20241102",
     "unified": "^11.0.4",
     "unist-util-visit": "^5.0.0",
     "varsace": "^0.2.1",

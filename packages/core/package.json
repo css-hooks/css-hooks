@@ -13,7 +13,7 @@
     "puppeteer": "^22.0.0",
     "remeda": "^2.14.0",
     "rimraf": "^6.0.1",
-    "typescript": "5.7.0-beta"
+    "typescript": "5.7.0-dev.20241102"
   },
   "files": [
     "cjs",

@@ -28,7 +28,7 @@ importers:
         version: 8.57.1
       eslint-plugin-import:
         specifier: ^2.31.0
-        version: 2.31.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.7.0-beta))(eslint@8.57.1)
+        version: 2.31.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102))(eslint@8.57.1)
       eslint-plugin-simple-import-sort:
         specifier: ^12.1.0
         version: 12.1.1(eslint@8.57.1)
@@ -36,11 +36,11 @@ importers:
         specifier: ^3.2.5
         version: 3.3.3
       typescript:
-        specifier: 5.7.0-beta
-        version: 5.7.0-beta
+        specifier: 5.7.0-dev.20241102
+        version: 5.7.0-dev.20241102
       typescript-eslint:
         specifier: ^7.9.0
-        version: 7.18.0(eslint@8.57.1)(typescript@5.7.0-beta)
+        version: 7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102)
 
   examples/preact:
     dependencies:
@@ -66,8 +66,8 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       typescript:
-        specifier: 5.7.0-beta
-        version: 5.7.0-beta
+        specifier: 5.7.0-dev.20241102
+        version: 5.7.0-dev.20241102
       varsace:
         specifier: '=0.0.4'
         version: 0.0.4
@@ -93,8 +93,8 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       typescript:
-        specifier: 5.7.0-beta
-        version: 5.7.0-beta
+        specifier: 5.7.0-dev.20241102
+        version: 5.7.0-dev.20241102
       varsace:
         specifier: '=0.0.4'
         version: 0.0.4
@@ -132,8 +132,8 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       typescript:
-        specifier: 5.7.0-beta
-        version: 5.7.0-beta
+        specifier: 5.7.0-dev.20241102
+        version: 5.7.0-dev.20241102
       varsace:
         specifier: '=0.0.4'
         version: 0.0.4
@@ -159,8 +159,8 @@ importers:
         specifier: ^1.7.11
         version: 1.9.3
       typescript:
-        specifier: 5.7.0-beta
-        version: 5.7.0-beta
+        specifier: 5.7.0-dev.20241102
+        version: 5.7.0-dev.20241102
       varsace:
         specifier: '=0.0.4'
         version: 0.0.4
@@ -193,7 +193,7 @@ importers:
         version: 1.27.0
       puppeteer:
         specifier: ^22.0.0
-        version: 22.15.0(typescript@5.7.0-beta)
+        version: 22.15.0(typescript@5.7.0-dev.20241102)
       remeda:
         specifier: ^2.14.0
         version: 2.15.2
@@ -201,8 +201,8 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       typescript:
-        specifier: 5.7.0-beta
-        version: 5.7.0-beta
+        specifier: 5.7.0-dev.20241102
+        version: 5.7.0-dev.20241102
 
   packages/preact:
     dependencies:
@@ -223,8 +223,8 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       typescript:
-        specifier: 5.7.0-beta
-        version: 5.7.0-beta
+        specifier: 5.7.0-dev.20241102
+        version: 5.7.0-dev.20241102
 
   packages/qwik:
     dependencies:
@@ -245,8 +245,8 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       typescript:
-        specifier: 5.7.0-beta
-        version: 5.7.0-beta
+        specifier: 5.7.0-dev.20241102
+        version: 5.7.0-dev.20241102
 
   packages/react:
     dependencies:
@@ -267,8 +267,8 @@ importers:
         specifier: ^6.0.1
         version: 6.0.1
       typescript:
-        specifier: 5.7.0-beta
-        version: 5.7.0-beta
+        specifier: 5.7.0-dev.20241102
+        version: 5.7.0-dev.20241102
 
   packages/solid:
     dependencies:
@@ -286,8 +286,8 @@ importers:
         specifier: ^1.7.11
         version: 1.9.3
       typescript:
-        specifier: 5.7.0-beta
-        version: 5.7.0-beta
+        specifier: 5.7.0-dev.20241102
+        version: 5.7.0-dev.20241102
 
   site:
     devDependencies:
@@ -335,7 +335,7 @@ importers:
         version: 1.0.0
       puppeteer:
         specifier: ^23.5.0
-        version: 23.6.1(typescript@5.7.0-beta)
+        version: 23.6.1(typescript@5.7.0-dev.20241102)
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -367,8 +367,8 @@ importers:
         specifier: ^10.0.0
         version: 10.0.0
       typescript:
-        specifier: 5.7.0-beta
-        version: 5.7.0-beta
+        specifier: 5.7.0-dev.20241102
+        version: 5.7.0-dev.20241102
       unified:
         specifier: ^11.0.4
         version: 11.0.5
@@ -4022,8 +4022,8 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
-  typescript@5.7.0-beta:
-    resolution: {integrity: sha512-opDlmEnzKdl082N5piLS43lsyugg0aORdv+XnNzMv5yP5VtBWuZhFDxU8lizmhW+PEFa/fZiShYRBxKsrkTDMQ==}
+  typescript@5.7.0-dev.20241102:
+    resolution: {integrity: sha512-LnGndSZH+ssQTXmJh5R+4lu7a5WXqnOEsSG/VStm45xb10Mgf8R4h/uycBl/PdIfXkSOoAXsmPvZxd66IvD5CQ==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -5102,34 +5102,34 @@ snapshots:
       '@types/node': 22.7.9
     optional: true
 
-  '@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.7.0-beta))(eslint@8.57.1)(typescript@5.7.0-beta)':
+  '@typescript-eslint/eslint-plugin@7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102))(eslint@8.57.1)(typescript@5.7.0-dev.20241102)':
     dependencies:
       '@eslint-community/regexpp': 4.11.1
-      '@typescript-eslint/parser': 7.18.0(eslint@8.57.1)(typescript@5.7.0-beta)
+      '@typescript-eslint/parser': 7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102)
       '@typescript-eslint/scope-manager': 7.18.0
-      '@typescript-eslint/type-utils': 7.18.0(eslint@8.57.1)(typescript@5.7.0-beta)
-      '@typescript-eslint/utils': 7.18.0(eslint@8.57.1)(typescript@5.7.0-beta)
+      '@typescript-eslint/type-utils': 7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102)
+      '@typescript-eslint/utils': 7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102)
       '@typescript-eslint/visitor-keys': 7.18.0
       eslint: 8.57.1
       graphemer: 1.4.0
       ignore: 5.3.2
       natural-compare: 1.4.0
-      ts-api-utils: 1.3.0(typescript@5.7.0-beta)
+      ts-api-utils: 1.3.0(typescript@5.7.0-dev.20241102)
     optionalDependencies:
-      typescript: 5.7.0-beta
+      typescript: 5.7.0-dev.20241102
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.7.0-beta)':
+  '@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102)':
     dependencies:
       '@typescript-eslint/scope-manager': 7.18.0
       '@typescript-eslint/types': 7.18.0
-      '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.7.0-beta)
+      '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.7.0-dev.20241102)
       '@typescript-eslint/visitor-keys': 7.18.0
       debug: 4.3.7
       eslint: 8.57.1
     optionalDependencies:
-      typescript: 5.7.0-beta
+      typescript: 5.7.0-dev.20241102
     transitivePeerDependencies:
       - supports-color
 
@@ -5138,21 +5138,21 @@ snapshots:
       '@typescript-eslint/types': 7.18.0
       '@typescript-eslint/visitor-keys': 7.18.0
 
-  '@typescript-eslint/type-utils@7.18.0(eslint@8.57.1)(typescript@5.7.0-beta)':
+  '@typescript-eslint/type-utils@7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102)':
     dependencies:
-      '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.7.0-beta)
-      '@typescript-eslint/utils': 7.18.0(eslint@8.57.1)(typescript@5.7.0-beta)
+      '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.7.0-dev.20241102)
+      '@typescript-eslint/utils': 7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102)
       debug: 4.3.7
       eslint: 8.57.1
-      ts-api-utils: 1.3.0(typescript@5.7.0-beta)
+      ts-api-utils: 1.3.0(typescript@5.7.0-dev.20241102)
     optionalDependencies:
-      typescript: 5.7.0-beta
+      typescript: 5.7.0-dev.20241102
     transitivePeerDependencies:
       - supports-color
 
   '@typescript-eslint/types@7.18.0': {}
 
-  '@typescript-eslint/typescript-estree@7.18.0(typescript@5.7.0-beta)':
+  '@typescript-eslint/typescript-estree@7.18.0(typescript@5.7.0-dev.20241102)':
     dependencies:
       '@typescript-eslint/types': 7.18.0
       '@typescript-eslint/visitor-keys': 7.18.0
@@ -5161,18 +5161,18 @@ snapshots:
       is-glob: 4.0.3
       minimatch: 9.0.5
       semver: 7.6.3
-      ts-api-utils: 1.3.0(typescript@5.7.0-beta)
+      ts-api-utils: 1.3.0(typescript@5.7.0-dev.20241102)
     optionalDependencies:
-      typescript: 5.7.0-beta
+      typescript: 5.7.0-dev.20241102
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/utils@7.18.0(eslint@8.57.1)(typescript@5.7.0-beta)':
+  '@typescript-eslint/utils@7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102)':
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.1)
       '@typescript-eslint/scope-manager': 7.18.0
       '@typescript-eslint/types': 7.18.0
-      '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.7.0-beta)
+      '@typescript-eslint/typescript-estree': 7.18.0(typescript@5.7.0-dev.20241102)
       eslint: 8.57.1
     transitivePeerDependencies:
       - supports-color
@@ -5797,14 +5797,14 @@ snapshots:
 
   core-util-is@1.0.3: {}
 
-  cosmiconfig@9.0.0(typescript@5.7.0-beta):
+  cosmiconfig@9.0.0(typescript@5.7.0-dev.20241102):
     dependencies:
       env-paths: 2.2.1
       import-fresh: 3.3.0
       js-yaml: 4.1.0
       parse-json: 5.2.0
     optionalDependencies:
-      typescript: 5.7.0-beta
+      typescript: 5.7.0-dev.20241102
 
   cross-spawn@7.0.3:
     dependencies:
@@ -6118,17 +6118,17 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.7.0-beta))(eslint-import-resolver-node@0.3.9)(eslint@8.57.1):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102))(eslint-import-resolver-node@0.3.9)(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
-      '@typescript-eslint/parser': 7.18.0(eslint@8.57.1)(typescript@5.7.0-beta)
+      '@typescript-eslint/parser': 7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102)
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.7.0-beta))(eslint@8.57.1):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102))(eslint@8.57.1):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
@@ -6139,7 +6139,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.7.0-beta))(eslint-import-resolver-node@0.3.9)(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102))(eslint-import-resolver-node@0.3.9)(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.15.1
       is-glob: 4.0.3
@@ -6151,7 +6151,7 @@ snapshots:
       string.prototype.trimend: 1.0.8
       tsconfig-paths: 3.15.0
     optionalDependencies:
-      '@typescript-eslint/parser': 7.18.0(eslint@8.57.1)(typescript@5.7.0-beta)
+      '@typescript-eslint/parser': 7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102)
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
@@ -7943,10 +7943,10 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  puppeteer@22.15.0(typescript@5.7.0-beta):
+  puppeteer@22.15.0(typescript@5.7.0-dev.20241102):
     dependencies:
       '@puppeteer/browsers': 2.3.0
-      cosmiconfig: 9.0.0(typescript@5.7.0-beta)
+      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20241102)
       devtools-protocol: 0.0.1312386
       puppeteer-core: 22.15.0
     transitivePeerDependencies:
@@ -7955,11 +7955,11 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  puppeteer@23.6.1(typescript@5.7.0-beta):
+  puppeteer@23.6.1(typescript@5.7.0-dev.20241102):
     dependencies:
       '@puppeteer/browsers': 2.4.0
       chromium-bidi: 0.8.0(devtools-protocol@0.0.1354347)
-      cosmiconfig: 9.0.0(typescript@5.7.0-beta)
+      cosmiconfig: 9.0.0(typescript@5.7.0-dev.20241102)
       devtools-protocol: 0.0.1354347
       puppeteer-core: 23.6.1
       typed-query-selector: 2.12.0
@@ -8611,9 +8611,9 @@ snapshots:
 
   trough@2.2.0: {}
 
-  ts-api-utils@1.3.0(typescript@5.7.0-beta):
+  ts-api-utils@1.3.0(typescript@5.7.0-dev.20241102):
     dependencies:
-      typescript: 5.7.0-beta
+      typescript: 5.7.0-dev.20241102
 
   tsconfig-paths@3.15.0:
     dependencies:
@@ -8681,20 +8681,20 @@ snapshots:
 
   typed-query-selector@2.12.0: {}
 
-  typescript-eslint@7.18.0(eslint@8.57.1)(typescript@5.7.0-beta):
+  typescript-eslint@7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102):
     dependencies:
-      '@typescript-eslint/eslint-plugin': 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.7.0-beta))(eslint@8.57.1)(typescript@5.7.0-beta)
-      '@typescript-eslint/parser': 7.18.0(eslint@8.57.1)(typescript@5.7.0-beta)
-      '@typescript-eslint/utils': 7.18.0(eslint@8.57.1)(typescript@5.7.0-beta)
+      '@typescript-eslint/eslint-plugin': 7.18.0(@typescript-eslint/parser@7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102))(eslint@8.57.1)(typescript@5.7.0-dev.20241102)
+      '@typescript-eslint/parser': 7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102)
+      '@typescript-eslint/utils': 7.18.0(eslint@8.57.1)(typescript@5.7.0-dev.20241102)
       eslint: 8.57.1
     optionalDependencies:
-      typescript: 5.7.0-beta
+      typescript: 5.7.0-dev.20241102
     transitivePeerDependencies:
       - supports-color
 
   typescript@5.4.2: {}
 
-  typescript@5.7.0-beta: {}
+  typescript@5.7.0-dev.20241102: {}
 
   uglify-js@3.17.4:
     optional: true

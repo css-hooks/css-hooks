@@ -15,7 +15,7 @@
     "remeda": "^2.14.0",
     "rimraf": "^6.0.1",
     "solid-js": "^1.7.11",
-    "typescript": "5.7.0-beta",
+    "typescript": "5.7.0-dev.20241102",
     "varsace": "=0.0.4",
     "vite": "^5.4.6",
     "vite-plugin-solid": "^2.10.2"
