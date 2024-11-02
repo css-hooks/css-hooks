@@ -41,7 +41,8 @@
     {
       "matchFileNames": ["package.json", "packages/**/package.json"],
       "matchPackagePatterns": ["@microsoft/api"],
-      "groupName": "api-extractor"
+      "groupName": "api-extractor",
+      "schedule": ["* 8 4 * *"]
     },
     {
       "matchPackageNames": ["/eslint/"],
