@@ -46,17 +46,17 @@
     {
       "matchPackageNames": ["/eslint/"],
       "groupName": "eslint",
-      "schedule": ["30 8 1 * *"]
+      "schedule": ["* 8 1 * *"]
     },
     {
       "matchPackageNames": ["/babel/"],
       "groupName": "babel",
-      "schedule": ["30 8 2 * *"]
+      "schedule": ["* 8 2 * *"]
     },
     {
       "matchPackagePatterns": ["shiki"],
       "groupName": "shiki",
-      "schedule": ["30 8 3 * *"]
+      "schedule": ["* 8 3 * *"]
     },
     {
       "matchPackagePatterns": ["qwik"],
