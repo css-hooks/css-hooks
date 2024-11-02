@@ -17,7 +17,7 @@
     "@vitejs/plugin-react": "^4.3.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "remeda": "^2.14.0",
+    "remeda": "^2.16.0",
     "rimraf": "^6.0.1",
     "typescript": "5.7.0-beta",
     "varsace": "=0.0.4",

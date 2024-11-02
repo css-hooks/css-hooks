@@ -15,7 +15,7 @@
     "@fontsource/inter": "^5.1.0",
     "@preact/preset-vite": "^2.9.1",
     "preact": "^10.24.0",
-    "remeda": "^2.14.0",
+    "remeda": "^2.16.0",
     "rimraf": "^6.0.1",
     "typescript": "5.7.0-beta",
     "varsace": "=0.0.4",

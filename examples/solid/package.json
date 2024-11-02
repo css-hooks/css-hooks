@@ -12,7 +12,7 @@
   "dependencies": {
     "@css-hooks/solid": "3.0.1",
     "@fontsource/inter": "^5.1.0",
-    "remeda": "^2.14.0",
+    "remeda": "^2.16.0",
     "rimraf": "^6.0.1",
     "solid-js": "^1.7.11",
     "typescript": "5.7.0-beta",
