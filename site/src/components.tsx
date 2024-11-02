@@ -10,8 +10,8 @@ import { pipe } from "remeda";
 import * as V from "varsace";
 import type { z } from "zod";
 
-import type { syntaxHighlighterLanguageParser } from "./common.js";
-import { and, dark, hover, not, on, styleSheet } from "./css.js";
+import type { syntaxHighlighterLanguageParser } from "./common.ts";
+import { and, dark, hover, not, on, styleSheet } from "./css.ts";
 
 function ArrowDropDownIcon() {
   return (

@@ -1,6 +1,6 @@
 import * as V from "varsace";
 
-import { Emblem } from "./components.js";
+import { Emblem } from "./components.tsx";
 
 export function Icon() {
   return (

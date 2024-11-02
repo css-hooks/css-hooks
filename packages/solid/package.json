@@ -11,7 +11,7 @@
     "rimraf": "^5.0.1",
     "solid-js": "^1.7.11",
     "tsx": "^4.19.1",
-    "typescript": "=5.4.5"
+    "typescript": "5.7.0-beta"
   },
   "files": [
     "cjs",
@@ -35,7 +35,7 @@
   "scripts": {
     "clean": "rimraf cjs esm types",
     "prepare": "tsc && tsc --project tsconfig.cjs.json && api-extractor run",
-    "test": "node --import tsx --conditions @css-hooks/source --test src/index.test.ts"
+    "test": "node --experimental-strip-types --conditions @css-hooks/source --test src/index.test.ts"
   },
   "type": "module",
   "types": "types",

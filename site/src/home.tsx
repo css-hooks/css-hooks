@@ -12,7 +12,7 @@ import {
   Preformatted,
   ScreenReaderOnly,
   SyntaxHighlighter,
-} from "./components.js";
+} from "./components.tsx";
 import {
   and,
   dark,
@@ -21,7 +21,7 @@ import {
   not,
   on,
   or,
-} from "./css.js";
+} from "./css.ts";
 
 export function Home() {
   return (

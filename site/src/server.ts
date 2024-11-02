@@ -7,7 +7,7 @@ import { z } from "zod";
 import {
   syntaxHighlighterLanguageParser,
   syntaxHighlighterLanguages,
-} from "./common.js";
+} from "./common.ts";
 
 const highlighter = await getHighlighter({
   themes: ["github-dark", "github-light"],
