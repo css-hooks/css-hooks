@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import * as V from "varsace";
 
-import { Logo } from "./components.js";
+import { Logo } from "./components.tsx";
 
 export function Opengraph() {
   return (

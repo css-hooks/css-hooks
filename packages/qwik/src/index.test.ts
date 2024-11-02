@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 import {
   _stringifyValue as stringifyValue,
   _unitlessNumbers as unitlessNumbers,
-} from "./index.js";
+} from "./index.ts";
 
 describe("`stringifyValue` function", () => {
   it("returns a string as-is", () => {

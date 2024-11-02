@@ -13,8 +13,7 @@
     "puppeteer": "^22.0.0",
     "remeda": "^2.14.0",
     "rimraf": "^5.0.1",
-    "tsx": "^4.19.1",
-    "typescript": "^5.4.2"
+    "typescript": "5.7.0-beta"
   },
   "files": [
     "cjs",
@@ -36,7 +35,7 @@
   "scripts": {
     "clean": "rimraf cjs esm types",
     "prepare": "tsc && tsc --project tsconfig.cjs.json && api-extractor run",
-    "test": "node --import tsx --conditions @css-hooks/source --test src/index.test.ts"
+    "test": "node --experimental-strip-types --conditions @css-hooks/source --test src/index.test.ts"
   },
   "types": "types",
   "exports": {

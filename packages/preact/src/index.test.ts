@@ -1,7 +1,7 @@
 import assert from "node:assert";
 import { describe, it } from "node:test";
 
-import { _stringifyValue as stringifyValue } from "./index.js";
+import { _stringifyValue as stringifyValue } from "./index.ts";
 
 describe("`stringifyValue` function", () => {
   it("returns a string as-is", () => {

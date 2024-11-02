@@ -9,7 +9,7 @@ import type { Browser, Page } from "puppeteer";
 import puppeteer from "puppeteer";
 import { pipe } from "remeda";
 
-import { buildHooksSystem } from "./index.js";
+import { buildHooksSystem } from "./index.ts";
 
 events.setMaxListeners(50);
 

@@ -1,11 +1,11 @@
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 
-import { Page, PageLayout } from "./components.js";
-import * as Docs from "./docs.js";
-import { Home } from "./home.js";
-import { Icon } from "./icon.js";
-import { Opengraph } from "./opengraph.js";
+import { Page, PageLayout } from "./components.tsx";
+import * as Docs from "./docs.tsx";
+import { Home } from "./home.tsx";
+import { Icon } from "./icon.tsx";
+import { Opengraph } from "./opengraph.tsx";
 
 const router = createBrowserRouter([
   {

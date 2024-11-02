@@ -10,7 +10,7 @@ import slug from "slug";
 import * as V from "varsace";
 import { z } from "zod";
 
-import { syntaxHighlighterLanguageParser } from "./common.js";
+import { syntaxHighlighterLanguageParser } from "./common.ts";
 import {
   EditIcon,
   ExpandMoreIcon,
@@ -18,9 +18,9 @@ import {
   PageMeta,
   Preformatted,
   SyntaxHighlighter,
-} from "./components.js";
-import { and, dark, hover, not, on, or } from "./css.js";
-import { rehypeClassName, rehypeStyle } from "./rehype.js";
+} from "./components.tsx";
+import { and, dark, hover, not, on, or } from "./css.ts";
+import { rehypeClassName, rehypeStyle } from "./rehype.ts";
 
 const docs = z
   .record(z.string(), z.object({ default: z.string() }))
