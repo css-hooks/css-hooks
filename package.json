@@ -11,9 +11,9 @@
   "devDependencies": {
     "@eslint/js": "^9.3.0",
     "@microsoft/api-documenter": "^7.24.1",
-    "conventional-changelog-cli": "^4.0.0",
+    "conventional-changelog-cli": "^5.0.0",
     "conventional-github-releaser": "^3.1.5",
-    "conventional-recommended-bump": "^9.0.0",
+    "conventional-recommended-bump": "^10.0.0",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-simple-import-sort": "^12.1.0",
