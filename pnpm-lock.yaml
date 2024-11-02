@@ -198,8 +198,8 @@ importers:
         specifier: ^2.14.0
         version: 2.15.2
       rimraf:
-        specifier: ^5.0.1
-        version: 5.0.10
+        specifier: ^6.0.1
+        version: 6.0.1
       typescript:
         specifier: 5.7.0-beta
         version: 5.7.0-beta
@@ -220,8 +220,8 @@ importers:
         specifier: '>=10.0.0 <11.0.0'
         version: 10.24.3
       rimraf:
-        specifier: ^5.0.1
-        version: 5.0.10
+        specifier: ^6.0.1
+        version: 6.0.1
       typescript:
         specifier: 5.7.0-beta
         version: 5.7.0-beta
@@ -242,8 +242,8 @@ importers:
         specifier: ^22.0.0
         version: 22.7.9
       rimraf:
-        specifier: ^5.0.1
-        version: 5.0.10
+        specifier: ^6.0.1
+        version: 6.0.1
       typescript:
         specifier: 5.7.0-beta
         version: 5.7.0-beta
@@ -264,8 +264,8 @@ importers:
         specifier: ^18.2.20
         version: 18.3.12
       rimraf:
-        specifier: ^5.0.1
-        version: 5.0.10
+        specifier: ^6.0.1
+        version: 6.0.1
       typescript:
         specifier: 5.7.0-beta
         version: 5.7.0-beta
@@ -280,8 +280,8 @@ importers:
         specifier: ^7.39.4
         version: 7.47.11(@types/node@22.8.6)
       rimraf:
-        specifier: ^5.0.1
-        version: 5.0.10
+        specifier: ^6.0.1
+        version: 6.0.1
       solid-js:
         specifier: ^1.7.11
         version: 1.9.3
@@ -328,8 +328,8 @@ importers:
         specifier: ^4.0.2
         version: 4.0.2
       glob:
-        specifier: ^10.3.12
-        version: 10.4.5
+        specifier: ^11.0.0
+        version: 11.0.0
       hast:
         specifier: ^1.0.0
         version: 1.0.0
@@ -791,10 +791,6 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
-
-  '@pkgjs/parseargs@0.11.0':
-    resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
-    engines: {node: '>=14'}
 
   '@preact/preset-vite@2.9.1':
     resolution: {integrity: sha512-JecWzrOx7ogFhklSMhY+aH/24pajL0Vx+beEgau3WDMUUAo32cpUo/UqerPhLOyhCKXlxK9a3cRoa8g68ZAp5g==}
@@ -2197,10 +2193,6 @@ packages:
     resolution: {integrity: sha512-XxwI8EOhVQgWp6iDL+3b0r86f4d6AX6zSU55HfB4ydCEuXLXc5FcYeOu+nnGftS4TEju/11rt4KJPTMgbfmv4A==}
     engines: {node: '>=10.13.0'}
 
-  glob@10.4.5:
-    resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
-    hasBin: true
-
   glob@11.0.0:
     resolution: {integrity: sha512-9UiX/Bl6J2yaBbxKoEBRm4Cipxgok8kQYcOPEhScPwebu2I0HoQOuYdIO6S3hLuWoZgpDpwQZMzTFxgpkyT76g==}
     engines: {node: 20 || >=22}
@@ -2565,9 +2557,6 @@ packages:
   isurl@1.0.0:
     resolution: {integrity: sha512-1P/yWsxPlDtn7QeRD+ULKQPaIaN6yF368GZ2vDfv0AL0NwpStafjWCDDdn0k8wgFMWpVAqG7oJhxHnlud42i9w==}
     engines: {node: '>= 4'}
-
-  jackspeak@3.4.3:
-    resolution: {integrity: sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw==}
 
   jackspeak@4.0.2:
     resolution: {integrity: sha512-bZsjR/iRjl1Nk1UkjGpAzLNfQtzuijhn2g+pbZb98HQ1Gk8vM9hfbxeMBP+M2/UUdwj0RqGG3mlvk2MsAqwvEw==}
@@ -3285,10 +3274,6 @@ packages:
   path-parse@1.0.7:
     resolution: {integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==}
 
-  path-scurry@1.11.1:
-    resolution: {integrity: sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==}
-    engines: {node: '>=16 || 14 >=14.18'}
-
   path-scurry@2.0.0:
     resolution: {integrity: sha512-ypGJsmGtdXUOeM5u93TyeIEfEhM6s+ljAhrk5vAvSx8uyY/02OvrZnA0YNGUrPXfpJMgI1ODd3nwz8Npx4O4cg==}
     engines: {node: 20 || >=22}
@@ -3602,10 +3587,6 @@ packages:
   rimraf@3.0.2:
     resolution: {integrity: sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==}
     deprecated: Rimraf versions prior to v4 are no longer supported
-    hasBin: true
-
-  rimraf@5.0.10:
-    resolution: {integrity: sha512-l0OE8wL34P4nJH/H2ffoaniAokM2qSmrtXHmlpvYr5AVVX8msAyW0l8NVJFDxlSK4u3Uh/f41cQheDVdnYijwQ==}
     hasBin: true
 
   rimraf@6.0.1:
@@ -4764,9 +4745,6 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
-
-  '@pkgjs/parseargs@0.11.0':
-    optional: true
 
   '@preact/preset-vite@2.9.1(@babel/core@7.25.8)(preact@10.24.3)(vite@5.4.9(@types/node@22.8.6)(lightningcss@1.27.0))':
     dependencies:
@@ -6539,15 +6517,6 @@ snapshots:
     dependencies:
       is-glob: 4.0.3
 
-  glob@10.4.5:
-    dependencies:
-      foreground-child: 3.3.0
-      jackspeak: 3.4.3
-      minimatch: 9.0.5
-      minipass: 7.1.2
-      package-json-from-dist: 1.0.1
-      path-scurry: 1.11.1
-
   glob@11.0.0:
     dependencies:
       foreground-child: 3.3.0
@@ -6962,12 +6931,6 @@ snapshots:
     dependencies:
       has-to-string-tag-x: 1.4.1
       is-object: 1.0.2
-
-  jackspeak@3.4.3:
-    dependencies:
-      '@isaacs/cliui': 8.0.2
-    optionalDependencies:
-      '@pkgjs/parseargs': 0.11.0
 
   jackspeak@4.0.2:
     dependencies:
@@ -7894,11 +7857,6 @@ snapshots:
 
   path-parse@1.0.7: {}
 
-  path-scurry@1.11.1:
-    dependencies:
-      lru-cache: 10.4.3
-      minipass: 7.1.2
-
   path-scurry@2.0.0:
     dependencies:
       lru-cache: 11.0.1
@@ -8285,10 +8243,6 @@ snapshots:
   rimraf@3.0.2:
     dependencies:
       glob: 7.2.3
-
-  rimraf@5.0.10:
-    dependencies:
-      glob: 10.4.5
 
   rimraf@6.0.1:
     dependencies:

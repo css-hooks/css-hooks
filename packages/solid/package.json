@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.39.4",
-    "rimraf": "^5.0.1",
+    "rimraf": "^6.0.1",
     "solid-js": "^1.7.11",
     "typescript": "5.7.0-beta"
   },
