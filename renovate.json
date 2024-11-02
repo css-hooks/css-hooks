@@ -65,6 +65,10 @@
       "schedule": ["* 8 5 * *"]
     },
     {
+      "matchPackageNames": ["typescript"],
+      "enabled": false
+    },
+    {
       "matchPackagePatterns": ["qwik"],
       "groupName": "qwik",
       "enabled": false
