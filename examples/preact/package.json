@@ -10,7 +10,6 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@babel/core": "^7.24.4",
     "@css-hooks/preact": "3.0.1",
     "@fontsource/inter": "^5.1.0",
     "@preact/preset-vite": "^2.9.1",
