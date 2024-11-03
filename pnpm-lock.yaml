@@ -52,7 +52,7 @@ importers:
         version: 5.1.0
       '@preact/preset-vite':
         specifier: ^2.9.1
-        version: 2.9.1(@babel/core@7.25.8)(preact@10.24.3)(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.27.0))
+        version: 2.9.1(@babel/core@7.25.8)(preact@10.24.3)(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.28.0))
       preact:
         specifier: ^10.24.0
         version: 10.24.3
@@ -70,13 +70,13 @@ importers:
         version: 0.0.4
       vite:
         specifier: ^5.4.6
-        version: 5.4.10(@types/node@22.8.7)(lightningcss@1.27.0)
+        version: 5.4.10(@types/node@22.8.7)(lightningcss@1.28.0)
 
   examples/qwik:
     dependencies:
       '@builder.io/qwik':
         specifier: '=1.5.2'
-        version: 1.5.2(@types/node@22.8.7)(lightningcss@1.27.0)(undici@6.19.8)
+        version: 1.5.2(@types/node@22.8.7)(lightningcss@1.28.0)(undici@6.19.8)
       '@css-hooks/qwik':
         specifier: 3.0.1
         version: link:../../packages/qwik
@@ -97,7 +97,7 @@ importers:
         version: 0.0.4
       vite:
         specifier: ^5.4.6
-        version: 5.4.10(@types/node@22.8.7)(lightningcss@1.27.0)
+        version: 5.4.10(@types/node@22.8.7)(lightningcss@1.28.0)
 
   examples/react:
     dependencies:
@@ -115,7 +115,7 @@ importers:
         version: 18.3.1
       '@vitejs/plugin-react':
         specifier: ^4.3.1
-        version: 4.3.3(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.27.0))
+        version: 4.3.3(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.28.0))
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -136,7 +136,7 @@ importers:
         version: 0.0.4
       vite:
         specifier: ^5.4.6
-        version: 5.4.10(@types/node@22.8.7)(lightningcss@1.27.0)
+        version: 5.4.10(@types/node@22.8.7)(lightningcss@1.28.0)
 
   examples/solid:
     dependencies:
@@ -163,10 +163,10 @@ importers:
         version: 0.0.4
       vite:
         specifier: ^5.4.6
-        version: 5.4.10(@types/node@22.8.7)(lightningcss@1.27.0)
+        version: 5.4.10(@types/node@22.8.7)(lightningcss@1.28.0)
       vite-plugin-solid:
         specifier: ^2.10.2
-        version: 2.10.2(solid-js@1.9.3)(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.27.0))
+        version: 2.10.2(solid-js@1.9.3)(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.28.0))
 
   packages/core:
     devDependencies:
@@ -187,7 +187,7 @@ importers:
         version: 3.1.3
       lightningcss:
         specifier: ^1.23.0
-        version: 1.27.0
+        version: 1.28.0
       puppeteer:
         specifier: ^22.0.0
         version: 22.15.0(typescript@5.7.0-beta)
@@ -231,7 +231,7 @@ importers:
     devDependencies:
       '@builder.io/qwik':
         specifier: ^1.9.0
-        version: 1.9.0(@types/node@22.8.7)(lightningcss@1.27.0)
+        version: 1.9.0(@types/node@22.8.7)(lightningcss@1.28.0)
       '@microsoft/api-extractor':
         specifier: ^7.39.4
         version: 7.47.11(@types/node@22.8.7)
@@ -314,7 +314,7 @@ importers:
         version: 5.0.9
       '@vitejs/plugin-react':
         specifier: ^4.3.1
-        version: 4.3.3(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.27.0))
+        version: 4.3.3(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.28.0))
       concurrently:
         specifier: ^9.0.1
         version: 9.0.1
@@ -377,7 +377,7 @@ importers:
         version: 0.2.1
       vite:
         specifier: ^5.4.8
-        version: 5.4.10(@types/node@22.8.7)(lightningcss@1.27.0)
+        version: 5.4.10(@types/node@22.8.7)(lightningcss@1.28.0)
       vite-express:
         specifier: ^0.19.0
         version: 0.19.0
@@ -2664,68 +2664,68 @@ packages:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
     engines: {node: '>= 0.8.0'}
 
-  lightningcss-darwin-arm64@1.27.0:
-    resolution: {integrity: sha512-Gl/lqIXY+d+ySmMbgDf0pgaWSqrWYxVHoc88q+Vhf2YNzZ8DwoRzGt5NZDVqqIW5ScpSnmmjcgXP87Dn2ylSSQ==}
+  lightningcss-darwin-arm64@1.28.0:
+    resolution: {integrity: sha512-ED44EhfHU1VVWzkHEX3j5xR5LHEumiKPTqT3qtKldT97BHZGZBTY5NYQ6FXgY/nkFAu2AFrJ9/82ncwY23DLMQ==}
     engines: {node: '>= 12.0.0'}
     cpu: [arm64]
     os: [darwin]
 
-  lightningcss-darwin-x64@1.27.0:
-    resolution: {integrity: sha512-0+mZa54IlcNAoQS9E0+niovhyjjQWEMrwW0p2sSdLRhLDc8LMQ/b67z7+B5q4VmjYCMSfnFi3djAAQFIDuj/Tg==}
+  lightningcss-darwin-x64@1.28.0:
+    resolution: {integrity: sha512-2LvkPzzBj92Js8fOpo0xFhfoKIyjjog4dIKlO2Mu5VZg2WakrjjQnGeEULXp9APfeWt0A9S+vzszT1gMCrJfbw==}
     engines: {node: '>= 12.0.0'}
     cpu: [x64]
     os: [darwin]
 
-  lightningcss-freebsd-x64@1.27.0:
-    resolution: {integrity: sha512-n1sEf85fePoU2aDN2PzYjoI8gbBqnmLGEhKq7q0DKLj0UTVmOTwDC7PtLcy/zFxzASTSBlVQYJUhwIStQMIpRA==}
+  lightningcss-freebsd-x64@1.28.0:
+    resolution: {integrity: sha512-hgIfuFNsBJkAsK0RX6euB0MmVxsP70aAnJV/NsJSv1eYVUO/dAlutenLPFuZhBmfE60lassqDg32dZ/h3D8lAA==}
     engines: {node: '>= 12.0.0'}
     cpu: [x64]
     os: [freebsd]
 
-  lightningcss-linux-arm-gnueabihf@1.27.0:
-    resolution: {integrity: sha512-MUMRmtdRkOkd5z3h986HOuNBD1c2lq2BSQA1Jg88d9I7bmPGx08bwGcnB75dvr17CwxjxD6XPi3Qh8ArmKFqCA==}
+  lightningcss-linux-arm-gnueabihf@1.28.0:
+    resolution: {integrity: sha512-c/dTKmu0ytEpbvDX+XUPpgeIxlZ6dhDKF8iutquCCiao+qsWBgbTfwEuyG/bIdXkYQLrA+NfFYS1WnxbpKHkyA==}
     engines: {node: '>= 12.0.0'}
     cpu: [arm]
     os: [linux]
 
-  lightningcss-linux-arm64-gnu@1.27.0:
-    resolution: {integrity: sha512-cPsxo1QEWq2sfKkSq2Bq5feQDHdUEwgtA9KaB27J5AX22+l4l0ptgjMZZtYtUnteBofjee+0oW1wQ1guv04a7A==}
+  lightningcss-linux-arm64-gnu@1.28.0:
+    resolution: {integrity: sha512-c7z/P4mTFnhVS4RaWq6TDhzwQAIZUuQD8kdk6TZX7spmFt4AbcMwANMGcLj4PP8DE9CS5E9vqkau5aAkXouHXw==}
     engines: {node: '>= 12.0.0'}
     cpu: [arm64]
     os: [linux]
 
-  lightningcss-linux-arm64-musl@1.27.0:
-    resolution: {integrity: sha512-rCGBm2ax7kQ9pBSeITfCW9XSVF69VX+fm5DIpvDZQl4NnQoMQyRwhZQm9pd59m8leZ1IesRqWk2v/DntMo26lg==}
+  lightningcss-linux-arm64-musl@1.28.0:
+    resolution: {integrity: sha512-Ma7dyJV+TvZdQLUgC3wm2AvVkmC0ElCXMS2Fgc+abqgf6cBJOad12emFKiSGJdAxtHlVLv5+Bn5wT0nbwTAWRw==}
     engines: {node: '>= 12.0.0'}
     cpu: [arm64]
     os: [linux]
 
-  lightningcss-linux-x64-gnu@1.27.0:
-    resolution: {integrity: sha512-Dk/jovSI7qqhJDiUibvaikNKI2x6kWPN79AQiD/E/KeQWMjdGe9kw51RAgoWFDi0coP4jinaH14Nrt/J8z3U4A==}
+  lightningcss-linux-x64-gnu@1.28.0:
+    resolution: {integrity: sha512-M0CUoj7eIvXODrBpVLj1YWHpf5lxuYWkoIDU9y5CcyQCCx+7jEA28N8NpX9c2omjDxab0DMAfLqhbEamUJPf3w==}
     engines: {node: '>= 12.0.0'}
     cpu: [x64]
     os: [linux]
 
-  lightningcss-linux-x64-musl@1.27.0:
-    resolution: {integrity: sha512-QKjTxXm8A9s6v9Tg3Fk0gscCQA1t/HMoF7Woy1u68wCk5kS4fR+q3vXa1p3++REW784cRAtkYKrPy6JKibrEZA==}
+  lightningcss-linux-x64-musl@1.28.0:
+    resolution: {integrity: sha512-dpRsBXlrGVoWbJXnIt4Z7M75EnffNpFNO9gEwMTDrZvob2/a04TBrhEe4wnPxajIbrY1InVlg7Qb7ohevDpBGg==}
     engines: {node: '>= 12.0.0'}
     cpu: [x64]
     os: [linux]
 
-  lightningcss-win32-arm64-msvc@1.27.0:
-    resolution: {integrity: sha512-/wXegPS1hnhkeG4OXQKEMQeJd48RDC3qdh+OA8pCuOPCyvnm/yEayrJdJVqzBsqpy1aJklRCVxscpFur80o6iQ==}
+  lightningcss-win32-arm64-msvc@1.28.0:
+    resolution: {integrity: sha512-ZJQhMV/yQSHnn7wb42kS3ACuXUDobNWejLKjcpNi8q3kCvj++f2AlhfjU5cNg0oD547ED/UxJZFyJVsNF5vtZw==}
     engines: {node: '>= 12.0.0'}
     cpu: [arm64]
     os: [win32]
 
-  lightningcss-win32-x64-msvc@1.27.0:
-    resolution: {integrity: sha512-/OJLj94Zm/waZShL8nB5jsNj3CfNATLCTyFxZyouilfTmSoLDX7VlVAmhPHoZWVFp4vdmoiEbPEYC8HID3m6yw==}
+  lightningcss-win32-x64-msvc@1.28.0:
+    resolution: {integrity: sha512-2vIcplP8exmd0XqK0CemDJTH9afw3SZqppRIhZeIsqlZgF0LmIE4jMSfTLH/3vPDJI3sVQ8d1/KnTSVoxgBChA==}
     engines: {node: '>= 12.0.0'}
     cpu: [x64]
     os: [win32]
 
-  lightningcss@1.27.0:
-    resolution: {integrity: sha512-8f7aNmS1+etYSLHht0fQApPc2kNO8qGRutifN5rVIc6Xo6ABsEbqOr758UwI7ALVbTt4x1fllKt0PYgzD9S3yQ==}
+  lightningcss@1.28.0:
+    resolution: {integrity: sha512-wKfbUqWC+/vM29bxFlfuVHlhSRg8dNKhA5RjuoodLpZx32uozV3+z0SAXLHCynbBOiann/VVWOIyxP1QZs/GLA==}
     engines: {node: '>= 12.0.0'}
 
   lines-and-columns@1.2.4:
@@ -4456,11 +4456,11 @@ snapshots:
       '@babel/helper-validator-identifier': 7.25.7
       to-fast-properties: 2.0.0
 
-  '@builder.io/qwik@1.5.2(@types/node@22.8.7)(lightningcss@1.27.0)(undici@6.19.8)':
+  '@builder.io/qwik@1.5.2(@types/node@22.8.7)(lightningcss@1.28.0)(undici@6.19.8)':
     dependencies:
       csstype: 3.1.3
       undici: 6.19.8
-      vite: 5.4.10(@types/node@22.8.7)(lightningcss@1.27.0)
+      vite: 5.4.10(@types/node@22.8.7)(lightningcss@1.28.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -4471,10 +4471,10 @@ snapshots:
       - sugarss
       - terser
 
-  '@builder.io/qwik@1.9.0(@types/node@22.8.7)(lightningcss@1.27.0)':
+  '@builder.io/qwik@1.9.0(@types/node@22.8.7)(lightningcss@1.28.0)':
     dependencies:
       csstype: 3.1.3
-      vite: 5.4.10(@types/node@22.8.7)(lightningcss@1.27.0)
+      vite: 5.4.10(@types/node@22.8.7)(lightningcss@1.28.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -4707,13 +4707,13 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
 
-  '@preact/preset-vite@2.9.1(@babel/core@7.25.8)(preact@10.24.3)(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.27.0))':
+  '@preact/preset-vite@2.9.1(@babel/core@7.25.8)(preact@10.24.3)(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.28.0))':
     dependencies:
       '@babel/code-frame': 7.24.2
       '@babel/core': 7.25.8
       '@babel/plugin-transform-react-jsx': 7.23.4(@babel/core@7.25.8)
       '@babel/plugin-transform-react-jsx-development': 7.22.5(@babel/core@7.25.8)
-      '@prefresh/vite': 2.4.5(preact@10.24.3)(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.27.0))
+      '@prefresh/vite': 2.4.5(preact@10.24.3)(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.28.0))
       '@rollup/pluginutils': 4.2.1
       babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.25.8)
       debug: 4.3.4
@@ -4722,7 +4722,7 @@ snapshots:
       node-html-parser: 6.1.13
       source-map: 0.7.4
       stack-trace: 1.0.0-pre2
-      vite: 5.4.10(@types/node@22.8.7)(lightningcss@1.27.0)
+      vite: 5.4.10(@types/node@22.8.7)(lightningcss@1.28.0)
     transitivePeerDependencies:
       - preact
       - supports-color
@@ -4735,7 +4735,7 @@ snapshots:
 
   '@prefresh/utils@1.2.0': {}
 
-  '@prefresh/vite@2.4.5(preact@10.24.3)(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.27.0))':
+  '@prefresh/vite@2.4.5(preact@10.24.3)(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.28.0))':
     dependencies:
       '@babel/core': 7.25.8
       '@prefresh/babel-plugin': 0.5.1
@@ -4743,7 +4743,7 @@ snapshots:
       '@prefresh/utils': 1.2.0
       '@rollup/pluginutils': 4.2.1
       preact: 10.24.3
-      vite: 5.4.10(@types/node@22.8.7)(lightningcss@1.27.0)
+      vite: 5.4.10(@types/node@22.8.7)(lightningcss@1.28.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -5135,14 +5135,14 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@vitejs/plugin-react@4.3.3(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.27.0))':
+  '@vitejs/plugin-react@4.3.3(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.28.0))':
     dependencies:
       '@babel/core': 7.25.8
       '@babel/plugin-transform-react-jsx-self': 7.25.7(@babel/core@7.25.8)
       '@babel/plugin-transform-react-jsx-source': 7.25.7(@babel/core@7.25.8)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.4.10(@types/node@22.8.7)(lightningcss@1.27.0)
+      vite: 5.4.10(@types/node@22.8.7)(lightningcss@1.28.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -6891,50 +6891,50 @@ snapshots:
       prelude-ls: 1.2.1
       type-check: 0.4.0
 
-  lightningcss-darwin-arm64@1.27.0:
+  lightningcss-darwin-arm64@1.28.0:
     optional: true
 
-  lightningcss-darwin-x64@1.27.0:
+  lightningcss-darwin-x64@1.28.0:
     optional: true
 
-  lightningcss-freebsd-x64@1.27.0:
+  lightningcss-freebsd-x64@1.28.0:
     optional: true
 
-  lightningcss-linux-arm-gnueabihf@1.27.0:
+  lightningcss-linux-arm-gnueabihf@1.28.0:
     optional: true
 
-  lightningcss-linux-arm64-gnu@1.27.0:
+  lightningcss-linux-arm64-gnu@1.28.0:
     optional: true
 
-  lightningcss-linux-arm64-musl@1.27.0:
+  lightningcss-linux-arm64-musl@1.28.0:
     optional: true
 
-  lightningcss-linux-x64-gnu@1.27.0:
+  lightningcss-linux-x64-gnu@1.28.0:
     optional: true
 
-  lightningcss-linux-x64-musl@1.27.0:
+  lightningcss-linux-x64-musl@1.28.0:
     optional: true
 
-  lightningcss-win32-arm64-msvc@1.27.0:
+  lightningcss-win32-arm64-msvc@1.28.0:
     optional: true
 
-  lightningcss-win32-x64-msvc@1.27.0:
+  lightningcss-win32-x64-msvc@1.28.0:
     optional: true
 
-  lightningcss@1.27.0:
+  lightningcss@1.28.0:
     dependencies:
       detect-libc: 1.0.3
     optionalDependencies:
-      lightningcss-darwin-arm64: 1.27.0
-      lightningcss-darwin-x64: 1.27.0
-      lightningcss-freebsd-x64: 1.27.0
-      lightningcss-linux-arm-gnueabihf: 1.27.0
-      lightningcss-linux-arm64-gnu: 1.27.0
-      lightningcss-linux-arm64-musl: 1.27.0
-      lightningcss-linux-x64-gnu: 1.27.0
-      lightningcss-linux-x64-musl: 1.27.0
-      lightningcss-win32-arm64-msvc: 1.27.0
-      lightningcss-win32-x64-msvc: 1.27.0
+      lightningcss-darwin-arm64: 1.28.0
+      lightningcss-darwin-x64: 1.28.0
+      lightningcss-freebsd-x64: 1.28.0
+      lightningcss-linux-arm-gnueabihf: 1.28.0
+      lightningcss-linux-arm64-gnu: 1.28.0
+      lightningcss-linux-arm64-musl: 1.28.0
+      lightningcss-linux-x64-gnu: 1.28.0
+      lightningcss-linux-x64-musl: 1.28.0
+      lightningcss-win32-arm64-msvc: 1.28.0
+      lightningcss-win32-x64-msvc: 1.28.0
 
   lines-and-columns@1.2.4: {}
 
@@ -8707,7 +8707,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite-plugin-solid@2.10.2(solid-js@1.9.3)(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.27.0)):
+  vite-plugin-solid@2.10.2(solid-js@1.9.3)(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.28.0)):
     dependencies:
       '@babel/core': 7.25.8
       '@types/babel__core': 7.20.5
@@ -8715,14 +8715,14 @@ snapshots:
       merge-anything: 5.1.7
       solid-js: 1.9.3
       solid-refresh: 0.6.3(solid-js@1.9.3)
-      vite: 5.4.10(@types/node@22.8.7)(lightningcss@1.27.0)
-      vitefu: 0.2.5(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.27.0))
+      vite: 5.4.10(@types/node@22.8.7)(lightningcss@1.28.0)
+      vitefu: 0.2.5(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.28.0))
     transitivePeerDependencies:
       - supports-color
 
   vite-string-plugin@1.3.4: {}
 
-  vite@5.4.10(@types/node@22.8.7)(lightningcss@1.27.0):
+  vite@5.4.10(@types/node@22.8.7)(lightningcss@1.28.0):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.47
@@ -8730,11 +8730,11 @@ snapshots:
     optionalDependencies:
       '@types/node': 22.8.7
       fsevents: 2.3.3
-      lightningcss: 1.27.0
+      lightningcss: 1.28.0
 
-  vitefu@0.2.5(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.27.0)):
+  vitefu@0.2.5(vite@5.4.10(@types/node@22.8.7)(lightningcss@1.28.0)):
     optionalDependencies:
-      vite: 5.4.10(@types/node@22.8.7)(lightningcss@1.27.0)
+      vite: 5.4.10(@types/node@22.8.7)(lightningcss@1.28.0)
 
   web-namespaces@2.0.1: {}
 
