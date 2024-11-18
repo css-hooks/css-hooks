@@ -58,7 +58,7 @@ importers:
         version: 10.24.3
       remeda:
         specifier: ^2.16.0
-        version: 2.17.0
+        version: 2.17.3
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -85,7 +85,7 @@ importers:
         version: 5.1.0
       remeda:
         specifier: ^2.16.0
-        version: 2.17.0
+        version: 2.17.3
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -124,7 +124,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       remeda:
         specifier: ^2.16.0
-        version: 2.17.0
+        version: 2.17.3
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -148,7 +148,7 @@ importers:
         version: 5.1.0
       remeda:
         specifier: ^2.16.0
-        version: 2.17.0
+        version: 2.17.3
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -190,10 +190,10 @@ importers:
         version: 1.28.1
       puppeteer:
         specifier: ^22.0.0
-        version: 23.8.0(typescript@5.7.0-beta)
+        version: 22.15.0(typescript@5.7.0-beta)
       remeda:
         specifier: ^2.16.0
-        version: 2.17.0
+        version: 2.17.3
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -356,7 +356,7 @@ importers:
         version: 4.0.0
       remeda:
         specifier: ^2.16.0
-        version: 2.17.0
+        version: 2.17.3
       shiki:
         specifier: ^1.22.2
         version: 1.22.2
@@ -846,6 +846,11 @@ packages:
     peerDependencies:
       preact: ^10.4.0
       vite: '>=2.0.0'
+
+  '@puppeteer/browsers@2.3.0':
+    resolution: {integrity: sha512-ioXoq9gPxkss4MYhD+SFaU9p1IHFUX0ILAWFPyjGaBdjLsYAlZw6j1iLA0N/m12uVHLFDfSYNF7EQccjinIMDA==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   '@puppeteer/browsers@2.4.1':
     resolution: {integrity: sha512-0kdAbmic3J09I6dT8e9vE2JOCSt13wHCW5x/ly8TSt2bDtuIWe2TgLZZDHdcziw9AVCzflMAXCrVyRIhIs44Ng==}
@@ -1453,6 +1458,11 @@ packages:
   character-reference-invalid@2.0.1:
     resolution: {integrity: sha512-iBZ4F4wRbyORVsu0jPV7gXkOsGYjGHPmAyv+HiHG8gi5PtC9KI2j1+v8/tlibRvjoWX027ypmG/n0HtO5t7unw==}
 
+  chromium-bidi@0.6.3:
+    resolution: {integrity: sha512-qXlsCmpCZJAnoTYI83Iu6EdYQpMYdVkCfq08KDh2pmlVqK5t5IA9mGs4/LwCwp4fqisSOMXZxP3HIh8w8aRn0A==}
+    peerDependencies:
+      devtools-protocol: '*'
+
   chromium-bidi@0.8.0:
     resolution: {integrity: sha512-uJydbGdTw0DEUjhoogGveneJVWX/9YuqkWePzMmkBYwtdAqo5d3J/ovNKFr+/2hWXYmYCr6it8mSSTIj6SS6Ug==}
     peerDependencies:
@@ -1796,6 +1806,9 @@ packages:
 
   devlop@1.1.0:
     resolution: {integrity: sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA==}
+
+  devtools-protocol@0.0.1312386:
+    resolution: {integrity: sha512-DPnhUXvmvKT2dFA/j7B+riVLUt9Q6RKJlcppojL5CoRywJJKLDYnRlw0gTFKfgDPHP5E04UoB71SxoJlVZy8FA==}
 
   devtools-protocol@0.0.1367902:
     resolution: {integrity: sha512-XxtPuC3PGakY6PD7dG66/o8KwJ/LkH2/EKe19Dcw58w53dv4/vSQEkn/SzuyhHE2q4zPgCkxQBxus3VV4ql+Pg==}
@@ -3348,9 +3361,18 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
+  puppeteer-core@22.15.0:
+    resolution: {integrity: sha512-cHArnywCiAAVXa3t4GGL2vttNxh7GqXtIYGym99egkNJ3oG//wL9LkvO4WE8W1TJe95t1F1ocu9X4xWaGsOKOA==}
+    engines: {node: '>=18'}
+
   puppeteer-core@23.8.0:
     resolution: {integrity: sha512-c2ymGN2M//We7pC+JhP2dE/g4+qnT89BO+EMSZyJmecN3DN6RNqErA7eH7DrWoNIcU75r2nP4VHa4pswAL6NVg==}
     engines: {node: '>=18'}
+
+  puppeteer@22.15.0:
+    resolution: {integrity: sha512-XjCY1SiSEi1T7iSYuxS82ft85kwDJUS7wj1Z0eGVXKdtr5g4xnVcbjwxhq5xBnpK/E7x1VZZoJDxpjAOasHT4Q==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   puppeteer@23.8.0:
     resolution: {integrity: sha512-MFWDMWoCcOpwNwQIjA9gPKWrEUbj8bLCzkK56w5lZPMUT6wK4FfpgOEPxKffVmXEMYMZzgcjxzqy15b/Q1ibaw==}
@@ -3516,8 +3538,8 @@ packages:
   remark-stringify@11.0.0:
     resolution: {integrity: sha512-1OSmLd3awB/t8qdoEOMazZkNsfVTeY4fTsgzcQFdXNq8ToTN4ZGwrMnlda4K6smTFKD+GRV6O48i6Z4iKgPPpw==}
 
-  remeda@2.17.0:
-    resolution: {integrity: sha512-mBsn4rGLSE788XqzOlePZiXUFNCrLIBVFl1ntzjBq8NqdsLZUQydxQ2naqNr13eBEDoictYLqKlwzhFTxgfydA==}
+  remeda@2.17.3:
+    resolution: {integrity: sha512-xyi2rCQkz2j4BEWbWxPw6JCapv1yBuSwr4Uf9BX00AkesAJaiKvc6Il6thsBidwVZAtNiSaCIXvslkKL0ybz8w==}
 
   repeating@2.0.1:
     resolution: {integrity: sha512-ZqtSMuVybkISo2OWvqvm7iHSWngvdaW3IpsT9/uP8v4gMi591LY6h35wdOfvQdWCKFWZWm2Y1Opp4kV7vQKT6A==}
@@ -3936,8 +3958,8 @@ packages:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
     engines: {node: '>=8'}
 
-  type-fest@4.26.1:
-    resolution: {integrity: sha512-yOGpmOAL7CkKe/91I5O3gPICmJNLJ1G4zFYVAsRHg7M64biSnPtRj0WNQt++bRkjYOqjWXrhnUw1utzmVErAdg==}
+  type-fest@4.27.0:
+    resolution: {integrity: sha512-3IMSWgP7C5KSQqmo1wjhKrwsvXAtF33jO3QY+Uy++ia7hqvgSK6iXbbg5PbDBc1P2ZbNEDgejOrN4YooXvhwCw==}
     engines: {node: '>=16'}
 
   type-is@1.6.18:
@@ -4323,7 +4345,7 @@ snapshots:
       '@babel/core': 7.25.8
       '@babel/helper-module-imports': 7.25.7
       '@babel/helper-simple-access': 7.25.7
-      '@babel/helper-validator-identifier': 7.25.7
+      '@babel/helper-validator-identifier': 7.25.9
       '@babel/traverse': 7.25.7
     transitivePeerDependencies:
       - supports-color
@@ -4365,7 +4387,7 @@ snapshots:
 
   '@babel/highlight@7.25.7':
     dependencies:
-      '@babel/helper-validator-identifier': 7.25.7
+      '@babel/helper-validator-identifier': 7.25.9
       chalk: 2.4.2
       js-tokens: 4.0.0
       picocolors: 1.1.1
@@ -4715,6 +4737,19 @@ snapshots:
       '@rollup/pluginutils': 4.2.1
       preact: 10.24.3
       vite: 5.4.11(@types/node@22.9.0)(lightningcss@1.28.1)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@puppeteer/browsers@2.3.0':
+    dependencies:
+      debug: 4.3.7
+      extract-zip: 2.0.1
+      progress: 2.0.3
+      proxy-agent: 6.4.0
+      semver: 7.6.3
+      tar-fs: 3.0.6
+      unbzip2-stream: 1.4.3
+      yargs: 17.7.2
     transitivePeerDependencies:
       - supports-color
 
@@ -5406,6 +5441,13 @@ snapshots:
 
   character-reference-invalid@2.0.1: {}
 
+  chromium-bidi@0.6.3(devtools-protocol@0.0.1312386):
+    dependencies:
+      devtools-protocol: 0.0.1312386
+      mitt: 3.0.1
+      urlpattern-polyfill: 10.0.0
+      zod: 3.23.8
+
   chromium-bidi@0.8.0(devtools-protocol@0.0.1367902):
     dependencies:
       devtools-protocol: 0.0.1367902
@@ -5806,6 +5848,8 @@ snapshots:
   devlop@1.1.0:
     dependencies:
       dequal: 2.0.3
+
+  devtools-protocol@0.0.1312386: {}
 
   devtools-protocol@0.0.1367902: {}
 
@@ -7649,7 +7693,7 @@ snapshots:
     dependencies:
       '@babel/code-frame': 7.26.2
       index-to-position: 0.1.2
-      type-fest: 4.26.1
+      type-fest: 4.27.0
 
   parse5@7.1.2:
     dependencies:
@@ -7759,6 +7803,18 @@ snapshots:
 
   punycode@2.3.1: {}
 
+  puppeteer-core@22.15.0:
+    dependencies:
+      '@puppeteer/browsers': 2.3.0
+      chromium-bidi: 0.6.3(devtools-protocol@0.0.1312386)
+      debug: 4.3.7
+      devtools-protocol: 0.0.1312386
+      ws: 8.18.0
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+
   puppeteer-core@23.8.0:
     dependencies:
       '@puppeteer/browsers': 2.4.1
@@ -7770,6 +7826,18 @@ snapshots:
     transitivePeerDependencies:
       - bufferutil
       - supports-color
+      - utf-8-validate
+
+  puppeteer@22.15.0(typescript@5.7.0-beta):
+    dependencies:
+      '@puppeteer/browsers': 2.3.0
+      cosmiconfig: 9.0.0(typescript@5.7.0-beta)
+      devtools-protocol: 0.0.1312386
+      puppeteer-core: 22.15.0
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - typescript
       - utf-8-validate
 
   puppeteer@23.8.0(typescript@5.7.0-beta):
@@ -7876,7 +7944,7 @@ snapshots:
     dependencies:
       find-up-simple: 1.0.0
       read-pkg: 9.0.1
-      type-fest: 4.26.1
+      type-fest: 4.27.0
 
   read-pkg-up@1.0.1:
     dependencies:
@@ -7918,7 +7986,7 @@ snapshots:
       '@types/normalize-package-data': 2.4.4
       normalize-package-data: 6.0.0
       parse-json: 8.1.0
-      type-fest: 4.26.1
+      type-fest: 4.27.0
       unicorn-magic: 0.1.0
 
   readable-stream@2.3.8:
@@ -8001,9 +8069,9 @@ snapshots:
       mdast-util-to-markdown: 2.1.0
       unified: 11.0.5
 
-  remeda@2.17.0:
+  remeda@2.17.3:
     dependencies:
-      type-fest: 4.26.1
+      type-fest: 4.27.0
 
   repeating@2.0.1:
     dependencies:
@@ -8449,7 +8517,7 @@ snapshots:
 
   type-fest@0.8.1: {}
 
-  type-fest@4.26.1: {}
+  type-fest@4.27.0: {}
 
   type-is@1.6.18:
     dependencies:
