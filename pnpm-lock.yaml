@@ -58,7 +58,7 @@ importers:
         version: 10.25.0
       remeda:
         specifier: ^2.16.0
-        version: 2.17.3
+        version: 2.17.4
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -85,7 +85,7 @@ importers:
         version: 5.1.0
       remeda:
         specifier: ^2.16.0
-        version: 2.17.3
+        version: 2.17.4
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -124,7 +124,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       remeda:
         specifier: ^2.16.0
-        version: 2.17.3
+        version: 2.17.4
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -148,7 +148,7 @@ importers:
         version: 5.1.0
       remeda:
         specifier: ^2.16.0
-        version: 2.17.3
+        version: 2.17.4
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -193,7 +193,7 @@ importers:
         version: 22.15.0(typescript@5.7.0-beta)
       remeda:
         specifier: ^2.16.0
-        version: 2.17.3
+        version: 2.17.4
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -356,7 +356,7 @@ importers:
         version: 4.0.0
       remeda:
         specifier: ^2.16.0
-        version: 2.17.3
+        version: 2.17.4
       shiki:
         specifier: ^1.22.2
         version: 1.23.1
@@ -3636,8 +3636,8 @@ packages:
   remark-stringify@11.0.0:
     resolution: {integrity: sha512-1OSmLd3awB/t8qdoEOMazZkNsfVTeY4fTsgzcQFdXNq8ToTN4ZGwrMnlda4K6smTFKD+GRV6O48i6Z4iKgPPpw==}
 
-  remeda@2.17.3:
-    resolution: {integrity: sha512-xyi2rCQkz2j4BEWbWxPw6JCapv1yBuSwr4Uf9BX00AkesAJaiKvc6Il6thsBidwVZAtNiSaCIXvslkKL0ybz8w==}
+  remeda@2.17.4:
+    resolution: {integrity: sha512-pviU2Ag7Qx9mOCAKO4voxDx/scfLzdhp3v85qDO4xxntQsU76uE9sgrAAdK1ATn4zzaOJqCXYMMNRP+O9F4Wiw==}
 
   repeating@2.0.1:
     resolution: {integrity: sha512-ZqtSMuVybkISo2OWvqvm7iHSWngvdaW3IpsT9/uP8v4gMi591LY6h35wdOfvQdWCKFWZWm2Y1Opp4kV7vQKT6A==}
@@ -4053,8 +4053,8 @@ packages:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
     engines: {node: '>=8'}
 
-  type-fest@4.27.0:
-    resolution: {integrity: sha512-3IMSWgP7C5KSQqmo1wjhKrwsvXAtF33jO3QY+Uy++ia7hqvgSK6iXbbg5PbDBc1P2ZbNEDgejOrN4YooXvhwCw==}
+  type-fest@4.29.0:
+    resolution: {integrity: sha512-RPYt6dKyemXJe7I6oNstcH24myUGSReicxcHTvCLgzm4e0n8y05dGvcGB15/SoPRBmhlMthWQ9pvKyL81ko8nQ==}
     engines: {node: '>=16'}
 
   type-is@1.6.18:
@@ -7993,7 +7993,7 @@ snapshots:
     dependencies:
       '@babel/code-frame': 7.26.2
       index-to-position: 0.1.2
-      type-fest: 4.27.0
+      type-fest: 4.29.0
 
   parse5@7.1.2:
     dependencies:
@@ -8244,7 +8244,7 @@ snapshots:
     dependencies:
       find-up-simple: 1.0.0
       read-pkg: 9.0.1
-      type-fest: 4.27.0
+      type-fest: 4.29.0
 
   read-pkg-up@1.0.1:
     dependencies:
@@ -8286,7 +8286,7 @@ snapshots:
       '@types/normalize-package-data': 2.4.4
       normalize-package-data: 6.0.0
       parse-json: 8.1.0
-      type-fest: 4.27.0
+      type-fest: 4.29.0
       unicorn-magic: 0.1.0
 
   readable-stream@2.3.8:
@@ -8377,9 +8377,9 @@ snapshots:
       mdast-util-to-markdown: 2.1.0
       unified: 11.0.5
 
-  remeda@2.17.3:
+  remeda@2.17.4:
     dependencies:
-      type-fest: 4.27.0
+      type-fest: 4.29.0
 
   repeating@2.0.1:
     dependencies:
@@ -8823,7 +8823,7 @@ snapshots:
 
   type-fest@0.8.1: {}
 
-  type-fest@4.27.0: {}
+  type-fest@4.29.0: {}
 
   type-is@1.6.18:
     dependencies:
