@@ -1,7 +1,7 @@
 {
   "name": "@examples/preact",
   "private": true,
-  "version": "3.0.3",
+  "version": "3.0.4",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@css-hooks/preact": "3.0.3",
+    "@css-hooks/preact": "3.0.4",
     "@fontsource/inter": "^5.1.0",
     "@preact/preset-vite": "^2.9.1",
     "preact": "^10.24.0",

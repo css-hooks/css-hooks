@@ -1,7 +1,7 @@
 {
   "name": "@css-hooks/preact",
   "description": "CSS Hooks for Preact",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "author": "Nick Saunders",
   "dependencies": {
     "@css-hooks/core": "workspace:*"
