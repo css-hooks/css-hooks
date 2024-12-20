@@ -96,7 +96,7 @@ jobs:
 
       - if: inputs.artifacts == 'release'
         name: prepare readme
-        run: node -e "require('fs').writeFileSync('./README.md', require('fs').readFileSync('./README.md', 'utf8').replace(/<\!-- npm-remove -->[\S\s]*?<\!-- \/npm-remove -->/gm, ''))"
+        run: node -e "require('fs').writeFileSync('./README.md', require('fs').readFileSync('./README.md', 'utf8').replace(/<\!-- npm-remove -->[\S\s]*?<\!-- \/npm-remove -->\s*/gm, ''))"
 
       - if: inputs.artifacts == 'release'
         name: propagate common files
