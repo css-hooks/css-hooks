@@ -76,6 +76,10 @@ jobs:
           npx conventional-changelog -p conventionalcommits -i CHANGELOG.md -s
 
       - if: inputs.artifacts == 'release'
+        name: lockfile update
+        run: pnpm install --lockfile-only
+
+      - if: inputs.artifacts == 'release'
         name: commit version bump
         uses: EndBug/add-and-commit@v9
         with:
