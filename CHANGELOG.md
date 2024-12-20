@@ -1,3 +1,4 @@
+## [3.0.2](https://github.com/css-hooks/css-hooks/compare/v3.0.1...v3.0.2) (2024-12-20)
 ## [3.0.1](https://github.com/css-hooks/css-hooks/compare/v3.0.0...v3.0.1) (2024-10-20)
 
 

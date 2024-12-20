@@ -1,7 +1,7 @@
 {
   "name": "@examples/solid",
   "private": true,
-  "version": "3.0.1",
+  "version": "3.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@css-hooks/solid": "3.0.1",
+    "@css-hooks/solid": "3.0.2",
     "@fontsource/inter": "^5.1.0",
     "remeda": "^2.16.0",
     "rimraf": "^6.0.1",

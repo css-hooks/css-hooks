@@ -1,7 +1,7 @@
 {
   "name": "@css-hooks/react",
   "description": "CSS Hooks for React",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "author": "Nick Saunders",
   "dependencies": {
     "@css-hooks/core": "workspace:*"

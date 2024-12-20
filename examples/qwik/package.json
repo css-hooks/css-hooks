@@ -1,7 +1,7 @@
 {
   "name": "@examples/qwik",
   "private": true,
-  "version": "3.0.1",
+  "version": "3.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@builder.io/qwik": "=1.5.2",
-    "@css-hooks/qwik": "3.0.1",
+    "@css-hooks/qwik": "3.0.2",
     "@fontsource/inter": "^5.1.0",
     "remeda": "^2.16.0",
     "rimraf": "^6.0.1",
