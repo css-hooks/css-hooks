@@ -97,7 +97,7 @@ experience without runtime style injection or build steps.
 
 ### Framework integrations
 
-| <img src="https://github.com/reactjs.png" alt="React" style="width: 24px; height: 24px" /><br/>React | <img src="https://github.com/preactjs.png" alt="Preact" style="width: 24px; height: 24px" /><br/>Preact | <img src="https://github.com/solidjs.png" alt="Solid" style="width: 24px; height: 24px" /><br/>Solid | <img src="https://github.com/qwikdev.png" alt="Qwik" style="width: 24px; height: 24px" /><br/>Qwik |
+| <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React" width="24" height="24" /><br/>React | <img src="https://github.com/preactjs.png" alt="Preact" width="24" height="24" /><br/>Preact | <img src="https://github.com/solidjs.png" alt="Solid" width="24" heght="24" /><br/>Solid | <img src="https://github.com/qwikdev.png" alt="Qwik" width="24" height="24" /><br/>Qwik |
 | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | <div align="center"><a href="https://www.npmjs.com/package/@css-hooks/react">✅</a></div>            | <div align="center"><a href="https://www.npmjs.com/package/@css-hooks/preact">✅</a></div>              | <div align="center"><a href="https://www.npmjs.com/package/@css-hooks/solid">✅</a></div>            | <div align="center"><a href="https://www.npmjs.com/package/@css-hooks/qwik">✅</a></div>           |
 
