@@ -34,7 +34,7 @@ importers:
         version: 12.1.1(eslint@9.15.0)
       prettier:
         specifier: ^3.2.5
-        version: 3.4.1
+        version: 3.4.2
       typescript:
         specifier: 5.7.0-beta
         version: 5.7.0-beta
@@ -3280,8 +3280,8 @@ packages:
     resolution: {integrity: sha512-ravE6m9Atw9Z/jjttRUZ+clIXogdghyZAuWJ3qEzjT+jI/dL1ifAqhZeC5VHzQp1MSt1+jxKkFNemj/iO7tVUA==}
     engines: {node: '>=4'}
 
-  prettier@3.4.1:
-    resolution: {integrity: sha512-G+YdqtITVZmOJje6QkXQWzl3fSfMxFwm1tjTyo9exhkmWSqC4Yhd1+lug++IlR2mvRVAxEDDWYkQdeSztajqgg==}
+  prettier@3.4.2:
+    resolution: {integrity: sha512-e9MewbtFo+Fevyuxn/4rrcDAaq0IYxPGLvObpQjiZBMAzB9IGmzlnG9RZy3FFas+eBMu2vA0CszMeduow5dIuQ==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -7677,7 +7677,7 @@ snapshots:
 
   prepend-http@2.0.0: {}
 
-  prettier@3.4.1: {}
+  prettier@3.4.2: {}
 
   process-nextick-args@2.0.1: {}
 
