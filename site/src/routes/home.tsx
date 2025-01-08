@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useState } from "react";
 import { prerenderToNodeStream } from "react-dom/static";
 import { Link } from "react-router";
 import { pipe } from "remeda";
@@ -24,26 +25,76 @@ import {
 } from "../css.ts";
 import type { Route } from "./+types/home.ts";
 
-export async function loader() {
+async function prerenderDemoSource(source: string) {
   const { prelude: stream } = await prerenderToNodeStream(
-    <>
-      <PseudoClassesDemo />
-      <SelectorDemo />
-      <ResponsiveDemo />
-    </>,
+    <SyntaxHighlighter language="tsx">{source}</SyntaxHighlighter>,
   );
 
-  const demos = await new Promise<string>((resolve, reject) => {
+  return await new Promise<string>((resolve, reject) => {
     const chunks: Buffer[] = [];
     stream.on("data", chunk => chunks.push(Buffer.from(chunk)));
     stream.on("error", err => reject(err));
     stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
   });
-
-  return { demos };
 }
 
-export default function Home({ loaderData: { demos } }: Route.ComponentProps) {
+export async function loader() {
+  const pseudoClasses = await prerenderDemoSource(`<button
+  style={pipe(
+    {
+      background: "${V.blue50}",
+      color: "${V.white}",
+    },
+    on("&:hover", {
+      background: "${V.blue40}",
+    }),
+    on("&:active", {
+      background: "${V.red40}",
+    })
+  })}
+>
+  Save changes
+</button>`);
+
+  const selectors = await prerenderDemoSource(`<label>
+  <input type="checkbox" checked />
+  <span
+    style={pipe(
+      {},
+      on(":checked + &", {
+        textDecoration: "line-through"
+      })
+    )}
+  >
+    Simplify CSS architecture
+  </span>
+</label>`);
+
+  const responsive = await prerenderDemoSource(`<span
+  style={pipe(
+    {},
+    on(or("@container (width < 50px)", "@container (width >= 100px)"), {
+      display: "none"
+    })
+  )}
+>
+  sm
+</span>
+<span
+  style={pipe(
+    {},
+    on("@container (width < 100px)", {
+      display: "none"
+    })
+  )}
+>
+  lg
+</span>`);
+
+  return { pseudoClasses, selectors, responsive };
+}
+
+export default function Home({ loaderData }: Route.ComponentProps) {
   return (
     <>
       <section
@@ -199,10 +250,9 @@ export default function Home({ loaderData: { demos } }: Route.ComponentProps) {
           </div>
         </Block>
       </section>
-      <div
-        style={{ display: "contents" }}
-        dangerouslySetInnerHTML={{ __html: demos }}
-      />
+      <PseudoClassesDemo source={loaderData.pseudoClasses} />
+      <SelectorsDemo source={loaderData.selectors} />
+      <ResponsiveDemo source={loaderData.responsive} />
       <Section title="Benefits">
         <div
           style={{
@@ -821,9 +871,7 @@ function Demo({
           )}
         >
           <CodeWindow>
-            <Preformatted>
-              <SyntaxHighlighter language="tsx">{source}</SyntaxHighlighter>
-            </Preformatted>
+            <Preformatted dangerouslySetInnerHTML={{ __html: source }} />
           </CodeWindow>
         </div>
         <div
@@ -851,25 +899,7 @@ function Demo({
   );
 }
 
-function PseudoClassesDemo() {
-  const source = `
-<button
-  style={pipe(
-    {
-      background: "${V.blue50}",
-      color: "${V.white}",
-    },
-    on("&:hover", {
-      background: "${V.blue40}",
-    }),
-    on("&:active", {
-      background: "${V.red40}",
-    })
-  })}
->
-  Save changes
-</button>
-`.trim();
+function PseudoClassesDemo({ source }: { source: string }) {
   return (
     <Demo
       source={source}
@@ -906,22 +936,7 @@ function PseudoClassesDemo() {
   );
 }
 
-function SelectorDemo() {
-  const source = `
-<label>
-  <input type="checkbox" checked />
-  <span
-    style={pipe(
-      {},
-      on(":checked + &", {
-        textDecoration: "line-through"
-      })
-    )}
-  >
-    Simplify CSS architecture
-  </span>
-</label>
-`.trim();
+function SelectorsDemo({ source }: { source: string }) {
   return (
     <Demo
       source={source}
@@ -953,31 +968,8 @@ function SelectorDemo() {
   );
 }
 
-function ResponsiveDemo() {
-  const source = `
-<span
-  style={pipe(
-    {},
-    on(or("@container (width < 50px)", "@container (width >= 100px)"), {
-      display: "none"
-    })
-  )}
->
-  sm
-</span>
-<span
-  style={pipe(
-    {},
-    on("@container (width < 100px)", {
-      display: "none"
-    })
-  )}
->
-  lg
-</span>
-`.trim();
-
-  const initialWidth = 150;
+function ResponsiveDemo({ source }: { source: string }) {
+  const [width, setWidth] = useState(150);
 
   return (
     <Demo
@@ -998,8 +990,8 @@ function ResponsiveDemo() {
                 fontFamily: "sans-serif",
                 fontWeight: 700,
                 fontSize: "3rem",
-                height: initialWidth,
-                width: initialWidth,
+                height: 150,
+                width,
                 display: "grid",
                 placeItems: "center",
                 containerType: "inline-size",
@@ -1046,19 +1038,28 @@ function ResponsiveDemo() {
             <ScreenReaderOnly>Container width</ScreenReaderOnly>
             <input
               type="range"
-              style={{ width: initialWidth }}
-              max={initialWidth}
-              defaultValue={initialWidth}
+              style={{ width: 150 }}
+              max={150}
+              value={width}
+              onInput={e => {
+                setWidth(parseInt(e.currentTarget.value));
+              }}
             />
           </label>
-          <script>{`
-            (function() {
-              const label = document.currentScript.previousElementSibling;
-              const input = label.querySelector("input");
-              const container = label.previousElementSibling;
-              input.addEventListener("input", () => container.style.width = input.value + "px");
-            })()
-          `}</script>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+              (function() {
+                const label = document.currentScript.previousElementSibling;
+                const input = label.querySelector("input");
+                const container = label.previousElementSibling;
+                input.addEventListener("input", () => {
+                  container.style.width = input.value + "px";
+                });
+              })()
+            `,
+            }}
+          />
         </div>
       }
     />
