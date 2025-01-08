@@ -1,18 +1,18 @@
 import type { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { prerenderToNodeStream } from "react-dom/static";
+import { Link } from "react-router";
 import { pipe } from "remeda";
 import * as V from "varsace";
 
+import { Block } from "../components/block.tsx";
 import {
-  Block,
   CodeSandboxIcon,
   GitHubIcon,
   MenuBookIcon,
-  PageMeta,
-  Preformatted,
-  ScreenReaderOnly,
-  SyntaxHighlighter,
-} from "./components.tsx";
+} from "../components/icons.tsx";
+import { Preformatted } from "../components/preformatted.tsx";
+import { ScreenReaderOnly } from "../components/screen-reader-only.tsx";
+import { SyntaxHighlighter } from "../components/syntax-highlighter.tsx";
 import {
   and,
   dark,
@@ -21,12 +21,31 @@ import {
   not,
   on,
   or,
-} from "./css.ts";
+} from "../css.ts";
+import type { Route } from "./+types/home.ts";
 
-export function Home() {
+export async function loader() {
+  const { prelude: stream } = await prerenderToNodeStream(
+    <>
+      <PseudoClassesDemo />
+      <SelectorDemo />
+      <ResponsiveDemo />
+    </>,
+  );
+
+  const demos = await new Promise<string>((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    stream.on("data", chunk => chunks.push(Buffer.from(chunk)));
+    stream.on("error", err => reject(err));
+    stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+  });
+
+  return { demos };
+}
+
+export default function Home({ loaderData: { demos } }: Route.ComponentProps) {
   return (
     <>
-      <PageMeta description="Hooks add CSS features to native inline styles, with no build steps and minimal runtime." />
       <section
         style={pipe(
           {
@@ -180,9 +199,10 @@ export function Home() {
           </div>
         </Block>
       </section>
-      <PseudoClassesDemo />
-      <SelectorDemo />
-      <ResponsiveDemo />
+      <div
+        style={{ display: "contents" }}
+        dangerouslySetInnerHTML={{ __html: demos }}
+      />
       <Section title="Benefits">
         <div
           style={{

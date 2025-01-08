@@ -1,3 +1,11 @@
+@import "@fontsource-variable/assistant";
+@import "@fontsource-variable/inconsolata";
+@import "@fontsource-variable/inter";
+
+html {
+  overflow-y: scroll;
+}
+
 html,
 body {
   min-height: 100%;
@@ -69,7 +77,7 @@ body {
   font: inherit;
 }
 
-.shiki :has(.diff) .line::before {
+.shiki:has(.diff) .line::before {
   content: "  ";
 }
 

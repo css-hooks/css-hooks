@@ -17,6 +17,7 @@
     "eslint": "^9.14.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "prettier": "^3.2.5",
     "typescript": "5.7.0-beta",
     "typescript-eslint": "^8.12.2"
