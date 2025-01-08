@@ -116,4 +116,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          command: pages deploy site/dist/public --project-name=css-hooks
+          command: pages deploy site/build/client --project-name=css-hooks

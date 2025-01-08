@@ -1,15 +1,16 @@
 {
-  "extends": "../tsconfig.base.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "composite": true,
-    "lib": ["es2023"],
-    "types": ["@types/node"],
-    "module": "node16",
-    "target": "es2022",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "moduleResolution": "node16"
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "lib": ["ES2022"]
   },
-  "include": ["src/common.ts", "src/server.ts", "vite.config.ts"]
+  "include": [
+    "src/data/docs.ts",
+    "build.ts",
+    "global.d.ts",
+    "react-router.config.ts",
+    "vite.config.ts"
+  ]
 }

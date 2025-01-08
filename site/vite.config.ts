@@ -1,8 +1,6 @@
-import react from "@vitejs/plugin-react";
-import type { PluginOption } from "vite";
+import { reactRouter } from "@react-router/dev/vite";
 import { defineConfig } from "vite";
-import { stringPlugin } from "vite-string-plugin";
 
 export default defineConfig({
-  plugins: [react(), stringPlugin() as unknown as PluginOption],
+  plugins: [reactRouter()],
 });

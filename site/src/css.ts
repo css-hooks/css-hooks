@@ -1,14 +1,7 @@
 import { createHooks } from "@css-hooks/react";
+import type { CSSProperties } from "react";
 
-import globalStyles from "./global.css?inline";
-
-const {
-  styleSheet: hookStyles,
-  on,
-  and,
-  or,
-  not,
-} = createHooks(
+export const { styleSheet, on, and, or, not } = createHooks(
   "@supports (height: 100dvh)",
 
   "@media (width < 28em)",
@@ -58,11 +51,6 @@ const {
   "th > &:only-child",
 );
 
-export const styleSheet = () =>
-  [globalStyles, hookStyles()].join(import.meta.env.DEV ? "\n\n" : "");
-
-export { on, and, or, not };
-
 export const dark = or(
   "[data-theme='dark'] &",
   and("[data-theme='auto'] &", "@media (prefers-color-scheme: dark)"),
@@ -76,3 +64,18 @@ export const intentAdjacentSibling = or(
   and(":hover + &", "@media (hover: hover)"),
   ":focus + &",
 );
+
+export function merge(b: CSSProperties | undefined) {
+  return (a: CSSProperties) => {
+    if (!b) {
+      return a;
+    }
+    const style = JSON.parse(JSON.stringify(a)) as CSSProperties;
+    for (const key in b) {
+      const property = key as keyof CSSProperties;
+      delete style[property];
+      Object.assign(style, { [property]: b[property] });
+    }
+    return style;
+  };
+}

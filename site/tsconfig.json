@@ -1,10 +1,10 @@
 {
+  "files": [],
   "compilerOptions": {
     "noEmit": true
   },
   "references": [
     { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.build.json" },
     { "path": "./tsconfig.node.json" }
   ]
 }
