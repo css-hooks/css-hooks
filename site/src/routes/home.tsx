@@ -21,76 +21,34 @@ import {
 } from "../css.ts";
 import type { Route } from "./+types/home.ts";
 
-async function prerenderDemoSource(source: string) {
-  const { prelude: stream } = await prerenderToNodeStream(
-    <SyntaxHighlighter language="tsx">{source}</SyntaxHighlighter>,
-  );
-
-  return await new Promise<string>((resolve, reject) => {
-    const chunks: Buffer[] = [];
-    stream.on("data", chunk => chunks.push(Buffer.from(chunk)));
-    stream.on("error", err => reject(err));
-    stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
-  });
-}
-
 export async function loader() {
-  const pseudoClasses = await prerenderDemoSource(`<button
-  style={pipe(
-    {
-      background: "${V.blue50}",
-      color: "${V.white}",
-    },
-    on("&:hover", {
-      background: "${V.blue40}",
+  const [pseudoClasses, selectors, responsive] = await Promise.all(
+    [
+      <PseudoClassesDemoSource />,
+      <SelectorsDemoSource />,
+      <ResponsiveDemoSource />,
+    ].map(async jsx => {
+      const { prelude: stream } = await prerenderToNodeStream(jsx);
+      return await new Promise<string>((resolve, reject) => {
+        const chunks: Buffer[] = [];
+        stream.on("data", chunk => chunks.push(Buffer.from(chunk)));
+        stream.on("error", err => reject(err));
+        stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+      });
     }),
-    on("&:active", {
-      background: "${V.red40}",
-    })
-  })}
->
-  Save changes
-</button>`);
-
-  const selectors = await prerenderDemoSource(`<label>
-  <input type="checkbox" checked />
-  <span
-    style={pipe(
-      {},
-      on(":checked + &", {
-        textDecoration: "line-through"
-      })
-    )}
-  >
-    Simplify CSS architecture
-  </span>
-</label>`);
-
-  const responsive = await prerenderDemoSource(`<span
-  style={pipe(
-    {},
-    on(or("@container (width < 50px)", "@container (width >= 100px)"), {
-      display: "none"
-    })
-  )}
->
-  sm
-</span>
-<span
-  style={pipe(
-    {},
-    on("@container (width < 100px)", {
-      display: "none"
-    })
-  )}
->
-  lg
-</span>`);
-
-  return { pseudoClasses, selectors, responsive };
+  );
+  if (!pseudoClasses || !selectors || !responsive) {
+    throw new Response("A demo source was unexpectedly empty.", {
+      status: 500,
+      statusText: "Internal Server Error",
+    });
+  }
+  return { demoSource: { pseudoClasses, selectors, responsive } };
 }
 
-export default function Home({ loaderData }: Route.ComponentProps) {
+export default function Home({
+  loaderData: { demoSource },
+}: Route.ComponentProps) {
   return (
     <>
       <section
@@ -246,9 +204,21 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           </div>
         </Block>
       </section>
-      <PseudoClassesDemo source={loaderData.pseudoClasses} />
-      <SelectorsDemo source={loaderData.selectors} />
-      <ResponsiveDemo source={loaderData.responsive} />
+      <Demo
+        title="Pseudo-classes"
+        source={demoSource.pseudoClasses}
+        preview={<PseudoClassesDemoPreview />}
+      />
+      <Demo
+        title="Selectors"
+        source={demoSource.selectors}
+        preview={<SelectorsDemoPreview />}
+      />
+      <Demo
+        title="Responsive design"
+        source={demoSource.responsive}
+        preview={<ResponsiveDemoPreview />}
+      />
       <Section title="Benefits">
         <div
           style={{
@@ -887,170 +857,196 @@ function Demo({
   );
 }
 
-function PseudoClassesDemo({ source }: { source: string }) {
+function PseudoClassesDemoSource() {
   return (
-    <Demo
-      source={source}
-      title="Pseudo-classes"
-      preview={
-        <>
-          <button
-            style={pipe(
-              {
-                margin: 0,
-                padding: "0.75em 1em",
-                borderRadius: "0.5em",
-                border: 0,
-                fontFamily: "sans-serif",
-                fontWeight: 700,
-                fontSize: "1rem",
-                lineHeight: 1,
-                background: V.blue50,
-                color: V.white,
-              },
-              on("&:hover", {
-                background: V.blue40,
-              }),
-              on("&:active", {
-                background: V.red40,
-              }),
-            )}
-          >
-            Save changes
-          </button>
-        </>
-      }
-    />
+    <SyntaxHighlighter language="tsx">{`<button
+  style={pipe(
+    {
+      background: "${V.blue50}",
+      color: "${V.white}",
+    },
+    on("&:hover", {
+      background: "${V.blue40}",
+    }),
+    on("&:active", {
+      background: "${V.red40}",
+    })
+  })}
+>
+  Save changes
+</button>`}</SyntaxHighlighter>
   );
 }
 
-function SelectorsDemo({ source }: { source: string }) {
+function PseudoClassesDemoPreview() {
   return (
-    <Demo
-      source={source}
-      title="Selectors"
-      preview={
-        <label
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.25em",
+    <button
+      style={pipe(
+        {
+          margin: 0,
+          padding: "0.75em 1em",
+          borderRadius: "0.5em",
+          border: 0,
+          fontFamily: "sans-serif",
+          fontWeight: 700,
+          fontSize: "1rem",
+          lineHeight: 1,
+          background: V.blue50,
+          color: V.white,
+        },
+        on("&:hover", {
+          background: V.blue40,
+        }),
+        on("&:active", {
+          background: V.red40,
+        }),
+      )}
+    >
+      Save changes
+    </button>
+  );
+}
+
+function SelectorsDemoSource() {
+  return (
+    <SyntaxHighlighter language="tsx">{`<label>
+  <input type="checkbox" checked />
+  <span
+    style={pipe(
+      {},
+      on(":checked + &", {
+        textDecoration: "line-through"
+      })
+    )}
+  >
+    Simplify CSS architecture
+  </span>
+</label>`}</SyntaxHighlighter>
+  );
+}
+
+function SelectorsDemoPreview() {
+  return (
+    <label
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "0.25em",
+        fontFamily: "sans-serif",
+        fontWeight: 700,
+      }}
+    >
+      <input type="checkbox" defaultChecked />
+      <span
+        style={pipe(
+          {},
+          on(":checked + &", {
+            textDecoration: "line-through",
+          }),
+        )}
+      >
+        Simplify CSS architecture
+      </span>
+    </label>
+  );
+}
+
+function ResponsiveDemoSource() {
+  return (
+    <SyntaxHighlighter language="tsx">{`<span
+  style={pipe(
+    {},
+    on(or("@container (width < 50px)", "@container (width >= 100px)"), {
+      display: "none"
+    })
+  )}
+>
+  sm
+</span>
+<span
+  style={pipe(
+    {},
+    on("@container (width < 100px)", {
+      display: "none"
+    })
+  )}
+>
+  lg
+</span>`}</SyntaxHighlighter>
+  );
+}
+
+function ResponsiveDemoPreview() {
+  const scale = 150;
+
+  const [width, setWidth] = useState(scale);
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div
+        style={pipe(
+          {
+            background: V.white,
+            color: V.black,
             fontFamily: "sans-serif",
             fontWeight: 700,
-          }}
+            fontSize: "3rem",
+            height: scale,
+            width,
+            display: "grid",
+            placeItems: "center",
+            containerType: "inline-size",
+          },
+          on(dark, {
+            background: V.black,
+            color: V.white,
+          }),
+          on(not(dark), {
+            boxShadow: `inset 0 0 0 1px ${V.gray20}`,
+          }),
+        )}
+      >
+        <span
+          style={pipe(
+            {
+              fontSize: "0.5em",
+            },
+            on(or("@container (width < 50px)", "@container (width >= 100px)"), {
+              display: "none",
+            }),
+          )}
         >
-          <input type="checkbox" defaultChecked />
-          <span
-            style={pipe(
-              {},
-              on(":checked + &", {
-                textDecoration: "line-through",
-              }),
-            )}
-          >
-            Simplify CSS architecture
-          </span>
-        </label>
-      }
-    />
-  );
-}
-
-function ResponsiveDemo({ source }: { source: string }) {
-  const [width, setWidth] = useState(150);
-
-  return (
-    <Demo
-      source={source}
-      title="Responsive design"
-      preview={
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-          }}
+          sm
+        </span>
+        <span
+          style={pipe(
+            {},
+            on("@container (width < 100px)", {
+              display: "none",
+            }),
+          )}
         >
-          <div
-            style={pipe(
-              {
-                background: V.white,
-                color: V.black,
-                fontFamily: "sans-serif",
-                fontWeight: 700,
-                fontSize: "3rem",
-                height: 150,
-                width,
-                display: "grid",
-                placeItems: "center",
-                containerType: "inline-size",
-              },
-              on(dark, {
-                background: V.black,
-                color: V.white,
-              }),
-              on(not(dark), {
-                boxShadow: `inset 0 0 0 1px ${V.gray20}`,
-              }),
-            )}
-          >
-            <span
-              style={pipe(
-                {
-                  fontSize: "0.5em",
-                },
-                on(
-                  or(
-                    "@container (width < 50px)",
-                    "@container (width >= 100px)",
-                  ),
-                  {
-                    display: "none",
-                  },
-                ),
-              )}
-            >
-              sm
-            </span>
-            <span
-              style={pipe(
-                {},
-                on("@container (width < 100px)", {
-                  display: "none",
-                }),
-              )}
-            >
-              lg
-            </span>
-          </div>
-          <label>
-            <ScreenReaderOnly>Container width</ScreenReaderOnly>
-            <input
-              type="range"
-              style={{ width: 150 }}
-              max={150}
-              value={width}
-              onInput={e => {
-                setWidth(parseInt(e.currentTarget.value));
-              }}
-            />
-          </label>
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-              (function() {
-                const label = document.currentScript.previousElementSibling;
-                const input = label.querySelector("input");
-                const container = label.previousElementSibling;
-                input.addEventListener("input", () => {
-                  container.style.width = input.value + "px";
-                });
-              })()
-            `,
-            }}
-          />
-        </div>
-      }
-    />
+          lg
+        </span>
+      </div>
+      <label>
+        <ScreenReaderOnly>Container width</ScreenReaderOnly>
+        <input
+          type="range"
+          style={{ width: scale }}
+          max={scale}
+          value={width}
+          onInput={e => {
+            setWidth(parseInt(e.currentTarget.value));
+          }}
+        />
+      </label>
+    </div>
   );
 }
 
