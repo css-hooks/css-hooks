@@ -52,7 +52,7 @@ importers:
         version: link:../packages/react
       '@fontsource/inter':
         specifier: ^5.1.0
-        version: 5.1.0
+        version: 5.1.1
       '@types/react':
         specifier: ^18.2.20
         version: 18.3.12
@@ -671,8 +671,8 @@ packages:
   '@fontsource-variable/inter@5.1.1':
     resolution: {integrity: sha512-OpXFTmiH6tHkYijMvQTycFKBLK4X+SRV6tet1m4YOUH7SzIIlMqDja+ocDtiCA72UthBH/vF+3ZtlMr2rN/wIw==}
 
-  '@fontsource/inter@5.1.0':
-    resolution: {integrity: sha512-zKZR3kf1G0noIes1frLfOHP5EXVVm0M7sV/l9f/AaYf+M/DId35FO4LkigWjqWYjTJZGgplhdv4cB+ssvCqr5A==}
+  '@fontsource/inter@5.1.1':
+    resolution: {integrity: sha512-weN3E+rq0Xb3Z93VHJ+Rc7WOQX9ETJPTAJ+gDcaMHtjft67L58sfS65rAjC5tZUXQ2FdZ/V1/sSzCwZ6v05kJw==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -4454,7 +4454,7 @@ snapshots:
 
   '@fontsource-variable/inter@5.1.1': {}
 
-  '@fontsource/inter@5.1.0': {}
+  '@fontsource/inter@5.1.1': {}
 
   '@humanfs/core@0.19.1': {}
 
