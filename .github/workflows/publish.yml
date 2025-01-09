@@ -54,7 +54,7 @@ jobs:
         env:
           PUPPETEER_EXECUTABLE_PATH: ${{ steps.chrome.outputs.chrome-path }}
 
-      - run: pnpm run -r -F @examples/* build
+      - run: pnpm run -r -F example build
 
       - run: pnpm run -r -F site build
         env:

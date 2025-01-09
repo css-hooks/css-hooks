@@ -1,8 +1,9 @@
 {
-  "name": "@examples/qwik",
+  "name": "example",
   "private": true,
   "version": "3.0.4",
   "type": "module",
+  "main": "src/app.tsx",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -10,9 +11,13 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@builder.io/qwik": "=1.5.2",
-    "@css-hooks/qwik": "3.0.4",
+    "@css-hooks/react": "3.0.4",
     "@fontsource/inter": "^5.1.0",
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "remeda": "^2.16.0",
     "rimraf": "^6.0.1",
     "typescript": "5.7.0-beta",

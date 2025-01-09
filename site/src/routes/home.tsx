@@ -241,7 +241,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               )}
             >
               <CtaButton
-                to="https://githubbox.com/css-hooks/css-hooks/tree/master/examples/react"
+                to="https://githubbox.com/css-hooks/css-hooks/tree/master/example"
                 icon={<CodeSandboxIcon />}
               >
                 Demo

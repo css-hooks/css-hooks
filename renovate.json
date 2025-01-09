@@ -23,8 +23,8 @@
       "semanticCommitScope": "{{parentDir}}"
     },
     {
-      "matchFileNames": ["examples/**/package.json"],
-      "semanticCommitScope": "example-{{parentDir}}"
+      "matchFileNames": ["example/package.json"],
+      "semanticCommitScope": "example"
     },
     {
       "matchFileNames": [".github/workflows/*.yml"],

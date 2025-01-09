@@ -43,7 +43,7 @@ jobs:
             exit 1;
           fi
 
-      - run: pnpm -r -F @examples/* build
+      - run: pnpm -r -F example build
 
       - run: pnpm run -r -F site build
         env:
