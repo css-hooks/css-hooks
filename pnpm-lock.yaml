@@ -70,7 +70,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       remeda:
         specifier: ^2.16.0
-        version: 2.17.4
+        version: 2.17.5
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -109,7 +109,7 @@ importers:
         version: 22.15.0(typescript@5.7.0-beta)
       remeda:
         specifier: ^2.16.0
-        version: 2.17.4
+        version: 2.17.5
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -278,7 +278,7 @@ importers:
         version: 4.0.0
       remeda:
         specifier: ^2.16.0
-        version: 2.17.4
+        version: 2.17.5
       shiki:
         specifier: ^1.26.1
         version: 1.26.1
@@ -3395,8 +3395,8 @@ packages:
   remark-stringify@11.0.0:
     resolution: {integrity: sha512-1OSmLd3awB/t8qdoEOMazZkNsfVTeY4fTsgzcQFdXNq8ToTN4ZGwrMnlda4K6smTFKD+GRV6O48i6Z4iKgPPpw==}
 
-  remeda@2.17.4:
-    resolution: {integrity: sha512-pviU2Ag7Qx9mOCAKO4voxDx/scfLzdhp3v85qDO4xxntQsU76uE9sgrAAdK1ATn4zzaOJqCXYMMNRP+O9F4Wiw==}
+  remeda@2.17.5:
+    resolution: {integrity: sha512-KZNoNSc2ccfAGwPOQB7SIBBGkfS3l8EUFbSz0c9h2A5vAL9eth6weoNDEUGcHoUwxwvcqTPXAiF3F/YGFRw0Tg==}
 
   repeating@2.0.1:
     resolution: {integrity: sha512-ZqtSMuVybkISo2OWvqvm7iHSWngvdaW3IpsT9/uP8v4gMi591LY6h35wdOfvQdWCKFWZWm2Y1Opp4kV7vQKT6A==}
@@ -3797,8 +3797,8 @@ packages:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
     engines: {node: '>=8'}
 
-  type-fest@4.29.0:
-    resolution: {integrity: sha512-RPYt6dKyemXJe7I6oNstcH24myUGSReicxcHTvCLgzm4e0n8y05dGvcGB15/SoPRBmhlMthWQ9pvKyL81ko8nQ==}
+  type-fest@4.32.0:
+    resolution: {integrity: sha512-rfgpoi08xagF3JSdtJlCwMq9DGNDE0IMh3Mkpc1wUypg9vPi786AiqeBBKcqvIkq42azsBM85N490fyZjeUftw==}
     engines: {node: '>=16'}
 
   typed-array-buffer@1.0.2:
@@ -7462,7 +7462,7 @@ snapshots:
     dependencies:
       '@babel/code-frame': 7.26.2
       index-to-position: 0.1.2
-      type-fest: 4.29.0
+      type-fest: 4.32.0
 
   parse5@7.2.1:
     dependencies:
@@ -7720,7 +7720,7 @@ snapshots:
     dependencies:
       find-up-simple: 1.0.0
       read-pkg: 9.0.1
-      type-fest: 4.29.0
+      type-fest: 4.32.0
 
   read-pkg-up@1.0.1:
     dependencies:
@@ -7762,7 +7762,7 @@ snapshots:
       '@types/normalize-package-data': 2.4.4
       normalize-package-data: 6.0.0
       parse-json: 8.1.0
-      type-fest: 4.29.0
+      type-fest: 4.32.0
       unicorn-magic: 0.1.0
 
   readable-stream@2.3.8:
@@ -7856,9 +7856,9 @@ snapshots:
       mdast-util-to-markdown: 2.1.0
       unified: 11.0.5
 
-  remeda@2.17.4:
+  remeda@2.17.5:
     dependencies:
-      type-fest: 4.29.0
+      type-fest: 4.32.0
 
   repeating@2.0.1:
     dependencies:
@@ -8275,7 +8275,7 @@ snapshots:
 
   type-fest@0.8.1: {}
 
-  type-fest@4.29.0: {}
+  type-fest@4.32.0: {}
 
   typed-array-buffer@1.0.2:
     dependencies:
