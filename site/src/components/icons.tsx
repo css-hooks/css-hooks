@@ -18,6 +18,17 @@ function IconSvg({ style, ...restProps }: ComponentProps<"svg">) {
   );
 }
 
+export function DemoIcon() {
+  return (
+    <IconSvg viewBox="0 0 24 24">
+      <path
+        d="M12,2C6.48,2,2,6.48,2,12s4.48,10,10,10s10-4.48,10-10S17.52,2,12,2z M12,20c-4.41,0-8-3.59-8-8s3.59-8,8-8s8,3.59,8,8 S16.41,20,12,20z M9.5,16.5l7-4.5l-7-4.5V16.5z"
+        fill="currentColor"
+      />
+    </IconSvg>
+  );
+}
+
 export function ExpandMoreIcon() {
   return (
     <IconSvg viewBox="0 -960 960 960">
@@ -33,17 +44,6 @@ export function ArrowDropDownIcon() {
   return (
     <IconSvg>
       <path d="M7 10l5 5 5-5H7z" fill="currentColor" />
-    </IconSvg>
-  );
-}
-
-export function CodeSandboxIcon() {
-  return (
-    <IconSvg viewBox="0 0 256 296">
-      <path
-        d="M115.498 261.088v-106.61L23.814 101.73v60.773l41.996 24.347v45.7l49.688 28.54zm23.814.627l50.605-29.151V185.78l42.269-24.495v-60.011l-92.874 53.621v106.82zm80.66-180.887l-48.817-28.289l-42.863 24.872l-43.188-24.897l-49.252 28.667l91.914 52.882l92.206-53.235zM0 222.212V74.495L127.987 0L256 74.182v147.797l-128.016 73.744L0 222.212z"
-        fill="currentColor"
-      />
     </IconSvg>
   );
 }

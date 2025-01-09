@@ -3,7 +3,6 @@
   "private": true,
   "version": "3.0.4",
   "type": "module",
-  "main": "src/app.tsx",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

@@ -6,11 +6,7 @@ import { pipe } from "remeda";
 import * as V from "varsace";
 
 import { Block } from "../components/block.tsx";
-import {
-  CodeSandboxIcon,
-  GitHubIcon,
-  MenuBookIcon,
-} from "../components/icons.tsx";
+import { DemoIcon, GitHubIcon, MenuBookIcon } from "../components/icons.tsx";
 import { Preformatted } from "../components/preformatted.tsx";
 import { ScreenReaderOnly } from "../components/screen-reader-only.tsx";
 import { SyntaxHighlighter } from "../components/syntax-highlighter.tsx";
@@ -241,8 +237,8 @@ export default function Home({ loaderData }: Route.ComponentProps) {
               )}
             >
               <CtaButton
-                to="https://githubbox.com/css-hooks/css-hooks/tree/master/example"
-                icon={<CodeSandboxIcon />}
+                to="https://stackblitz.com/github/css-hooks/css-hooks/tree/master/example?file=src/app.tsx"
+                icon={<DemoIcon />}
               >
                 Demo
               </CtaButton>
@@ -647,7 +643,7 @@ function CtaButton({
         {
           display: "inline-flex",
           alignItems: "center",
-          gap: "0.5rem",
+          gap: "0.75rem",
           backgroundColor: V.gray50,
           color: V.white,
           textDecoration: "none",
@@ -690,20 +686,12 @@ function CtaButton({
     >
       {icon ? (
         <div
-          style={pipe(
-            {
-              width: "1em",
-              height: "1em",
-              display: "grid",
-              placeItems: "center",
-            },
-            on(not("&:empty"), {
-              paddingRight: "0.5em",
-            }),
-            on("&:empty", {
-              width: 0,
-            }),
-          )}
+          style={{
+            width: "1em",
+            height: "1em",
+            display: "grid",
+            placeItems: "center",
+          }}
         >
           {icon}
         </div>
