@@ -35,7 +35,7 @@
     "remeda": "^2.16.0",
     "shiki": "^1.26.1",
     "slug": "^10.0.0",
-    "typescript": "5.7.0-beta",
+    "typescript": "5.7.3",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",
     "valibot": "1.0.0-beta.11",

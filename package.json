@@ -19,7 +19,7 @@
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-unused-imports": "^4.1.4",
     "prettier": "^3.2.5",
-    "typescript": "5.7.0-beta",
+    "typescript": "5.7.3",
     "typescript-eslint": "^8.12.2"
   },
   "license": "MIT",
