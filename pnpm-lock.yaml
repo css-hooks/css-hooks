@@ -78,8 +78,8 @@ importers:
         specifier: 5.7.3
         version: 5.7.3
       varsace:
-        specifier: '=0.0.4'
-        version: 0.0.4
+        specifier: '=0.2.1'
+        version: 0.2.1
       vite:
         specifier: ^6.0.7
         version: 6.0.7(@types/node@22.10.5)(lightningcss@1.28.2)
@@ -4066,8 +4066,8 @@ packages:
     resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
-  varsace@0.0.4:
-    resolution: {integrity: sha512-L0CMKFIRqUOuqMrKDqNUZTcy3EfXodYsdzlB5EWjo3O3rEiyTAnXd9Ouzv6D2FWiYldoDU5GJT2K/IaXuoypLA==}
+  varsace@0.2.1:
+    resolution: {integrity: sha512-YgTXh/6HEcI5+z6Ob7RyLrCDLoFzWF+mOB0e3HXB+S2iMGTqTHF/ZgK8T2t98hAyTsNhDTtqMZna/8wiRofJBA==}
 
   vfile-location@5.0.3:
     resolution: {integrity: sha512-5yXvWDEgqeiYiBe1lbxYF7UMAIm/IcopxMHrMQDq3nvKcjPKIhZklUKL+AE7J7uApI4kwe2snsK+eI6UTj9EHg==}
@@ -8674,7 +8674,7 @@ snapshots:
 
   validate-npm-package-name@5.0.1: {}
 
-  varsace@0.0.4: {}
+  varsace@0.2.1: {}
 
   vfile-location@5.0.3:
     dependencies:
