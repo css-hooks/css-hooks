@@ -77,9 +77,6 @@ importers:
       typescript:
         specifier: 5.7.3
         version: 5.7.3
-      varsace:
-        specifier: '=0.0.4'
-        version: 0.0.4
       vite:
         specifier: ^6.0.7
         version: 6.0.7(@types/node@22.10.5)(lightningcss@1.29.1)
@@ -3998,9 +3995,6 @@ packages:
   validate-npm-package-name@5.0.1:
     resolution: {integrity: sha512-OljLrQ9SQdOUqTaQxqL5dEfZWrXExyyWsozYlAWFawPVNuD83igl7uJD2RTkNMbniIYgt8l81eCJGIdQF7avLQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
-
-  varsace@0.0.4:
-    resolution: {integrity: sha512-L0CMKFIRqUOuqMrKDqNUZTcy3EfXodYsdzlB5EWjo3O3rEiyTAnXd9Ouzv6D2FWiYldoDU5GJT2K/IaXuoypLA==}
 
   vfile-location@5.0.3:
     resolution: {integrity: sha512-5yXvWDEgqeiYiBe1lbxYF7UMAIm/IcopxMHrMQDq3nvKcjPKIhZklUKL+AE7J7uApI4kwe2snsK+eI6UTj9EHg==}
@@ -8513,8 +8507,6 @@ snapshots:
       spdx-expression-parse: 3.0.1
 
   validate-npm-package-name@5.0.1: {}
-
-  varsace@0.0.4: {}
 
   vfile-location@5.0.3:
     dependencies:

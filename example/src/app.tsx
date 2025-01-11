@@ -1,8 +1,8 @@
 import { pipe } from "remeda";
-import * as V from "varsace";
 
-import { and, on } from "./css.js";
-import { Logo } from "./logo.js";
+import { black, blue, gray, red, white } from "./colors.ts";
+import { and, on } from "./css.ts";
+import { Logo } from "./logo.tsx";
 
 export function App() {
   return (
@@ -14,16 +14,16 @@ export function App() {
           right: 0,
           bottom: 0,
           left: 0,
-          background: V.white,
-          color: V.black,
+          background: white,
+          color: black,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
         },
         on("@media (prefers-color-scheme: dark)", {
-          background: V.black,
-          color: V.white,
+          background: black,
+          color: white,
         }),
       )}
     >
@@ -40,25 +40,25 @@ export function App() {
             letterSpacing: "-0.03em",
             border: 0,
             textDecoration: "none",
-            background: V.gray50,
-            color: V.white,
+            background: gray(60),
+            color: white,
             padding: "0.5em 0.75em",
             display: "inline-block",
           },
           on("&:hover", {
-            background: V.blue40,
+            background: blue(50),
           }),
           on("&:active", {
-            background: V.red40,
+            background: red(50),
           }),
           on("@media (prefers-color-scheme: dark)", {
-            background: V.gray70,
+            background: gray(70),
           }),
           on(and("@media (prefers-color-scheme: dark)", "&:hover"), {
-            background: V.blue50,
+            background: blue(50),
           }),
           on(and("@media (prefers-color-scheme: dark)", "&:active"), {
-            background: V.red50,
+            background: red(50),
           }),
         )}
       >
