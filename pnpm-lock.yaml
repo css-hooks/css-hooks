@@ -70,7 +70,7 @@ importers:
         version: 19.0.0(react@19.0.0)
       remeda:
         specifier: ^2.16.0
-        version: 2.17.5
+        version: 2.19.0
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -109,7 +109,7 @@ importers:
         version: 22.15.0(typescript@5.7.3)
       remeda:
         specifier: ^2.16.0
-        version: 2.17.5
+        version: 2.19.0
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
@@ -278,7 +278,7 @@ importers:
         version: 4.0.0
       remeda:
         specifier: ^2.16.0
-        version: 2.17.5
+        version: 2.19.0
       shiki:
         specifier: ^1.26.1
         version: 1.26.1
@@ -3506,8 +3506,8 @@ packages:
   remark-stringify@11.0.0:
     resolution: {integrity: sha512-1OSmLd3awB/t8qdoEOMazZkNsfVTeY4fTsgzcQFdXNq8ToTN4ZGwrMnlda4K6smTFKD+GRV6O48i6Z4iKgPPpw==}
 
-  remeda@2.17.5:
-    resolution: {integrity: sha512-KZNoNSc2ccfAGwPOQB7SIBBGkfS3l8EUFbSz0c9h2A5vAL9eth6weoNDEUGcHoUwxwvcqTPXAiF3F/YGFRw0Tg==}
+  remeda@2.19.0:
+    resolution: {integrity: sha512-B/2+zHNPXu0BAopJU8ZrqMjA0u56M/l6BUxDq8AcU+3LWlOYVuf98I6qpYrB5BeeEICunpmXPcQl2ReGXkiQyw==}
 
   repeating@2.0.1:
     resolution: {integrity: sha512-ZqtSMuVybkISo2OWvqvm7iHSWngvdaW3IpsT9/uP8v4gMi591LY6h35wdOfvQdWCKFWZWm2Y1Opp4kV7vQKT6A==}
@@ -8082,7 +8082,7 @@ snapshots:
       mdast-util-to-markdown: 2.1.0
       unified: 11.0.5
 
-  remeda@2.17.5:
+  remeda@2.19.0:
     dependencies:
       type-fest: 4.32.0
 
