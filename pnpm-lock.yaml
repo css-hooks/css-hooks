@@ -295,16 +295,8 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
       valibot:
-<<<<<<< HEAD
         specifier: 1.0.0-beta.11
         version: 1.0.0-beta.11(typescript@5.7.0-beta)
-      varsace:
-        specifier: ^0.2.1
-        version: 0.2.1
-=======
-        specifier: 1.0.0-beta.9
-        version: 1.0.0-beta.9(typescript@5.7.0-beta)
->>>>>>> 5f59182 (refactor(site): remove varsace dependency)
       vite:
         specifier: ^5.4.11
         version: 5.4.11(@types/node@22.10.5)(lightningcss@1.28.2)
@@ -3265,7 +3257,6 @@ packages:
     engines: {node: '>=0.6.0', teleport: '>=0.2.0'}
     deprecated: |-
       You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
-
       (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
 
   query-string@5.1.1:
