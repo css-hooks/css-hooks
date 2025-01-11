@@ -1,10 +1,10 @@
 import puppeteer from "puppeteer";
 import { renderToString } from "react-dom/server";
 import * as v from "valibot";
-import * as V from "varsace";
 
 import { Emblem } from "../components/emblem.tsx";
 import { styleSheet } from "../css.ts";
+import { gray } from "../design/colors.ts";
 import type { Route } from "./+types/icon.ts";
 
 export async function loader({ params }: Route.LoaderArgs) {
@@ -41,7 +41,7 @@ export async function loader({ params }: Route.LoaderArgs) {
           <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
           <div
             style={{
-              background: V.gray85,
+              background: gray(85),
               width: "100dvw",
               height: "100dvh",
               borderRadius: 9999,

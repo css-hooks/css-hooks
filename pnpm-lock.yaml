@@ -295,11 +295,16 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
       valibot:
+<<<<<<< HEAD
         specifier: 1.0.0-beta.11
         version: 1.0.0-beta.11(typescript@5.7.0-beta)
       varsace:
         specifier: ^0.2.1
         version: 0.2.1
+=======
+        specifier: 1.0.0-beta.9
+        version: 1.0.0-beta.9(typescript@5.7.0-beta)
+>>>>>>> 5f59182 (refactor(site): remove varsace dependency)
       vite:
         specifier: ^5.4.11
         version: 5.4.11(@types/node@22.10.5)(lightningcss@1.28.2)
@@ -3943,9 +3948,6 @@ packages:
 
   varsace@0.0.4:
     resolution: {integrity: sha512-L0CMKFIRqUOuqMrKDqNUZTcy3EfXodYsdzlB5EWjo3O3rEiyTAnXd9Ouzv6D2FWiYldoDU5GJT2K/IaXuoypLA==}
-
-  varsace@0.2.1:
-    resolution: {integrity: sha512-YgTXh/6HEcI5+z6Ob7RyLrCDLoFzWF+mOB0e3HXB+S2iMGTqTHF/ZgK8T2t98hAyTsNhDTtqMZna/8wiRofJBA==}
 
   vfile-location@5.0.3:
     resolution: {integrity: sha512-5yXvWDEgqeiYiBe1lbxYF7UMAIm/IcopxMHrMQDq3nvKcjPKIhZklUKL+AE7J7uApI4kwe2snsK+eI6UTj9EHg==}
@@ -8436,8 +8438,6 @@ snapshots:
   validate-npm-package-name@5.0.1: {}
 
   varsace@0.0.4: {}
-
-  varsace@0.2.1: {}
 
   vfile-location@5.0.3:
     dependencies:

@@ -1,10 +1,10 @@
 import { pipe } from "remeda";
-import * as V from "varsace";
 
 import { NavLink } from "../components/nav-link.tsx";
 import { dark, not, on } from "../css.ts";
 import { docs } from "../data/docs.ts";
 import { createMetaDescriptors } from "../data/meta.ts";
+import { gray } from "../design/colors.ts";
 import type { Route } from "./+types/docs.ts";
 
 export const meta: Route.MetaFunction = createMetaDescriptors({
@@ -44,10 +44,10 @@ export default function Docs() {
             gap: "2em",
           },
           on(dark, {
-            background: V.gray85,
+            background: gray(85),
           }),
           on(not(dark), {
-            boxShadow: `0 0 0 1px ${V.gray20}`,
+            boxShadow: `0 0 0 1px ${gray(20)}`,
           }),
         )}
       >

@@ -1,8 +1,8 @@
 import type { CSSProperties } from "react";
 import { pipe } from "remeda";
-import * as V from "varsace";
 
 import { dark, on } from "../css.ts";
+import { gray, white } from "../design/colors.ts";
 import { Emblem } from "./emblem.tsx";
 
 export function Logo({ size = "2rem" }: { size?: CSSProperties["fontSize"] }) {
@@ -22,10 +22,10 @@ export function Logo({ size = "2rem" }: { size?: CSSProperties["fontSize"] }) {
       <div
         style={pipe(
           {
-            color: V.gray90,
+            color: gray(70),
           },
           on(dark, {
-            color: V.white,
+            color: white,
           }),
         )}
       >

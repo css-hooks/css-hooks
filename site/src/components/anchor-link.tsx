@@ -1,16 +1,16 @@
 import type { ComponentProps } from "react";
 import { pipe } from "remeda";
-import * as V from "varsace";
 
 import { and, dark, hover, merge, not, on } from "../css.ts";
+import { blue, red } from "../design/colors.ts";
 
 export const anchorLinkStyle = pipe(
   {
     outlineWidth: 0,
     outlineOffset: 2,
     outlineStyle: "solid",
-    outlineColor: V.blue20,
-    color: V.blue50,
+    outlineColor: blue(20),
+    color: blue(60),
   },
   on("&:has(*)", {
     display: "inline-flex",
@@ -19,20 +19,20 @@ export const anchorLinkStyle = pipe(
     textDecoration: "none",
   }),
   on(hover, {
-    color: V.blue40,
+    color: blue(50),
   }),
   on("&:active", {
-    color: V.red40,
+    color: red(50),
   }),
   on(dark, {
-    outlineColor: V.blue50,
-    color: V.blue30,
+    outlineColor: blue(50),
+    color: blue(30),
   }),
   on(and(dark, hover), {
-    color: V.blue20,
+    color: blue(20),
   }),
   on(and(dark, "&:active"), {
-    color: V.red20,
+    color: red(20),
   }),
   on("&:focus-visible", {
     outlineWidth: 2,

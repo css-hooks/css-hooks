@@ -6,7 +6,6 @@ import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import { pipe } from "remeda";
 import slug from "slug";
-import * as V from "varsace";
 
 import { AnchorLink } from "../components/anchor-link.tsx";
 import { EditIcon, ExpandMoreIcon } from "../components/icons.tsx";
@@ -16,6 +15,15 @@ import { SyntaxHighlighter } from "../components/syntax-highlighter.tsx";
 import { and, dark, hover, not, on, or } from "../css.ts";
 import { docs } from "../data/docs.ts";
 import { createMetaDescriptors } from "../data/meta.ts";
+import {
+  blue,
+  gray,
+  orange,
+  pink,
+  red,
+  teal,
+  white,
+} from "../design/colors.ts";
 import { rehypeClassName, rehypeStyle } from "../rehype.ts";
 import type { Route } from "./+types/doc.ts";
 
@@ -123,12 +131,12 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6, style: CSSProperties) {
                   display: "inline-grid",
                   placeItems: "center",
                   borderRadius: 999,
-                  background: V.pink10,
-                  color: V.pink50,
+                  background: pink(10),
+                  color: pink(60),
                 },
                 on(dark, {
-                  background: V.pink50,
-                  color: V.pink10,
+                  background: pink(60),
+                  color: pink(10),
                 }),
               )}
             >
@@ -249,10 +257,10 @@ export async function loader({ params }: Route.LoaderArgs) {
                 borderWidth: 1,
                 borderSpacing: 0,
                 borderCollapse: "collapse",
-                borderColor: V.gray20,
+                borderColor: gray(20),
               },
               on("@media (prefers-color-scheme: dark)", {
-                borderColor: V.gray70,
+                borderColor: gray(70),
               }),
             ),
             tablecell: () =>
@@ -264,24 +272,24 @@ export async function loader({ params }: Route.LoaderArgs) {
                   padding: "calc(0.375em - 0.5px) 0.75em",
                 },
                 on(not(or(dark, ".group:nth-child(even) &")), {
-                  background: V.white,
+                  background: white,
                 }),
                 on(and(not(dark), ".group:nth-child(even) &"), {
-                  background: `color-mix(in srgb, ${V.white}, ${V.gray05})`,
+                  background: `color-mix(in srgb, ${white}, ${gray(5)})`,
                 }),
                 on(and(dark, not(".group:nth-child(even) &")), {
-                  background: `color-mix(in srgb, ${V.gray85}, ${V.gray90})`,
+                  background: `color-mix(in srgb, ${gray(85)}, ${gray(90)})`,
                 }),
                 on(and(dark, ".group:nth-child(even) &"), {
-                  background: V.gray85,
+                  background: gray(85),
                 }),
               ),
             tr: pipe(
               {
-                borderColor: V.gray20,
+                borderColor: gray(20),
               },
               on(dark, {
-                borderColor: V.gray70,
+                borderColor: gray(70),
               }),
             ),
           },
@@ -365,7 +373,7 @@ export async function loader({ params }: Route.LoaderArgs) {
               <span style={{ display: "block" }}>
                 <strong
                   style={{
-                    color: type === "WARNING" ? V.orange30 : V.blue30,
+                    color: type === "WARNING" ? orange(30) : blue(30),
                     display: "inline-flex",
                     alignItems: "center",
                     gap: "0.375em",
@@ -407,18 +415,18 @@ export async function loader({ params }: Route.LoaderArgs) {
                   marginLeft: 0,
                   marginRight: 0,
                   marginBlock: "1.5rem",
-                  borderColor: V.pink20,
-                  color: V.gray70,
-                  background: V.white,
+                  borderColor: pink(20),
+                  color: gray(70),
+                  background: white,
                   ...style,
                 },
                 on(not(dark), {
-                  boxShadow: `inset 0 0 0 1px ${V.gray20}`,
+                  boxShadow: `inset 0 0 0 1px ${gray(20)}`,
                 }),
                 on(dark, {
-                  borderColor: V.pink60,
-                  background: V.gray85,
-                  color: V.gray30,
+                  borderColor: pink(60),
+                  background: gray(85),
+                  color: gray(30),
                 }),
               )}
               {...restProps}
@@ -442,11 +450,11 @@ export async function loader({ params }: Route.LoaderArgs) {
               className={className}
               style={pipe(
                 {
-                  color: V.teal60,
+                  color: teal(60),
                   font: "inherit",
                   fontFamily: "'Inconsolata Variable', monospace",
                 },
-                on(dark, { color: V.teal30 }),
+                on(dark, { color: teal(30) }),
               )}
             >
               {children}
@@ -491,11 +499,11 @@ export async function loader({ params }: Route.LoaderArgs) {
                 border: 0,
                 width: "100%",
                 height: 1,
-                background: V.gray10,
+                background: gray(10),
                 ...style,
               },
               on("@media (prefers-color-scheme: dark)", {
-                background: V.gray80,
+                background: gray(80),
               }),
             )}
             {...restProps}
@@ -520,16 +528,16 @@ export async function loader({ params }: Route.LoaderArgs) {
             style={pipe(
               {
                 padding: "1rem 1.5rem",
-                background: V.white,
+                background: white,
                 marginBlock: "1.5rem",
                 overflow: "auto",
                 ...style,
               },
               on(not(dark), {
-                boxShadow: `inset 0 0 0 1px ${V.gray20}`,
+                boxShadow: `inset 0 0 0 1px ${gray(20)}`,
               }),
               on(dark, {
-                background: V.gray85,
+                background: gray(85),
               }),
             )}
             {...restProps}
@@ -578,11 +586,11 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
       <nav
         style={pipe(
           {
-            background: V.gray05,
+            background: gray(5),
             boxSizing: "border-box",
           },
           on(dark, {
-            background: V.gray85,
+            background: gray(85),
           }),
           on("@media (width >= 44em)", {
             flexBasis: "24ch",
@@ -598,39 +606,39 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
               padding: "1rem 1.25rem",
               gap: "0.25rem",
               fontSize: "1.25rem",
-              color: V.gray60,
+              color: gray(60),
               outlineWidth: 0,
-              outlineColor: V.blue20,
+              outlineColor: blue(20),
               outlineStyle: "solid",
               outlineOffset: -2,
             },
             on(dark, {
-              outlineColor: V.blue50,
-              color: V.gray40,
+              outlineColor: blue(50),
+              color: gray(40),
             }),
             on("&:has(:focus-visible)", {
               outlineWidth: 2,
             }),
             on(or(hover, "&:active"), {
-              background: V.white,
+              background: white,
             }),
             on(hover, {
-              color: V.blue50,
+              color: blue(50),
             }),
             on("&:active", {
-              color: V.red50,
+              color: red(50),
             }),
             on(
               and(or(hover, "&:active"), "@media (prefers-color-scheme: dark)"),
               {
-                background: V.gray80,
+                background: gray(80),
               },
             ),
             on(and(hover, dark), {
-              color: V.blue20,
+              color: blue(20),
             }),
             on(and("&:active", dark), {
-              color: V.red20,
+              color: red(20),
             }),
             on("@media (width >= 44em)", {
               display: "none",
@@ -744,10 +752,10 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
                       border: 0,
                       width: "100%",
                       height: 1,
-                      background: V.gray10,
+                      background: gray(10),
                     },
                     on(dark, {
-                      background: V.gray80,
+                      background: gray(80),
                     }),
                   )}
                 />

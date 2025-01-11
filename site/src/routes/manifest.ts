@@ -1,4 +1,4 @@
-import * as V from "varsace";
+import { gray } from "../design/colors.ts";
 
 export function loader() {
   return new Response(
@@ -8,7 +8,7 @@ export function loader() {
       short_name: "CSS Hooks",
       start_url: ".",
       display: "standalone",
-      background_color: V.gray90,
+      background_color: gray(90),
       description:
         "Hooks add CSS features to native inline styles, with no build steps and minimal runtime.",
       icons: [

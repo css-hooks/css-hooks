@@ -1,10 +1,10 @@
 import puppeteer from "puppeteer";
 import type { ReactNode } from "react";
 import { renderToString } from "react-dom/server";
-import * as V from "varsace";
 
 import { Logo } from "../components/logo.tsx";
 import { styleSheet } from "../css.ts";
+import { gray, pink } from "../design/colors.ts";
 
 export async function loader() {
   const browser = await puppeteer.launch();
@@ -30,7 +30,7 @@ export async function loader() {
               alignItems: "center",
               width: "100dvw",
               height: "100dvh",
-              background: V.gray85,
+              background: gray(85),
             }}
           >
             <Banner>
@@ -38,7 +38,7 @@ export async function loader() {
                 Do the
                 <span
                   style={{
-                    color: V.pink30,
+                    color: pink(30),
                   }}
                 >
                   impossible
@@ -50,7 +50,7 @@ export async function loader() {
               style={{
                 width: "100%",
                 flex: 1,
-                background: V.gray90,
+                background: gray(90),
                 display: "flex",
                 justifyContent: "center",
               }}
@@ -89,7 +89,7 @@ function Banner({ children }: { children?: ReactNode }) {
         lineHeight: 1,
         fontSize: "2.5rem",
         letterSpacing: "-0.03em",
-        color: V.gray50,
+        color: gray(55),
         display: "flex",
       }}
     >

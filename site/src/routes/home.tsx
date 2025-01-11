@@ -1,9 +1,8 @@
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { useState } from "react";
 import { prerenderToNodeStream } from "react-dom/static";
 import { Link } from "react-router";
 import { pipe } from "remeda";
-import * as V from "varsace";
 
 import { Block } from "../components/block.tsx";
 import { DemoIcon, GitHubIcon, MenuBookIcon } from "../components/icons.tsx";
@@ -19,6 +18,18 @@ import {
   on,
   or,
 } from "../css.ts";
+import {
+  black,
+  blue,
+  gray,
+  green,
+  pink,
+  purple,
+  red,
+  teal,
+  white,
+  yellow,
+} from "../design/colors.ts";
 import type { Route } from "./+types/home.ts";
 
 export async function loader() {
@@ -54,16 +65,14 @@ export default function Home({
       <section
         style={pipe(
           {
-            color: V.white,
+            color: white,
             padding: "4rem 0",
             textAlign: "center",
             lineHeight: 1.25,
+            background: gray(11),
           },
           on(dark, {
-            background: V.gray85,
-          }),
-          on(not(dark), {
-            background: `linear-gradient(transparent, transparent calc(100% - 2px), ${V.gray10} calc(100% - 2px))`,
+            background: gray(85),
           }),
         )}
       >
@@ -76,8 +85,11 @@ export default function Home({
                 lineHeight: 1,
                 fontWeight: 700,
                 letterSpacing: "-0.03em",
-                color: V.gray50,
+                color: gray(45),
               },
+              on(dark, {
+                color: gray(55),
+              }),
               on("@media (width >= 44em)", {
                 fontSize: "3.75rem",
               }),
@@ -85,10 +97,15 @@ export default function Home({
           >
             Do the{" "}
             <em
-              style={{
-                color: V.pink30,
-                fontStyle: "normal",
-              }}
+              style={pipe(
+                {
+                  color: pink(45),
+                  fontStyle: "normal",
+                },
+                on(dark, {
+                  color: pink(30),
+                }),
+              )}
             >
               impossible
             </em>
@@ -107,7 +124,7 @@ export default function Home({
               {
                 margin: 0,
                 marginTop: "2rem",
-                color: V.black,
+                color: gray(70),
                 fontSize: "1rem",
                 lineHeight: 1.25,
               },
@@ -119,7 +136,7 @@ export default function Home({
                 marginTop: "1rem",
               }),
               on(dark, {
-                color: V.white,
+                color: white,
               }),
             )}
           >
@@ -229,7 +246,14 @@ export default function Home({
         >
           <Feature
             color="purple"
-            iconPath="M96 208H48c-8.8 0-16-7.2-16-16s7.2-16 16-16h48c8.8 0 16 7.2 16 16s-7.2 16-16 16zm28.1-67.9c-4.2 0-8.3-1.7-11.3-4.7l-33.9-33.9c-6.2-6.2-6.2-16.4 0-22.6s16.4-6.2 22.6 0l33.9 33.9c6.3 6.2 6.3 16.4 0 22.6c-3 3-7 4.7-11.3 4.7zM192 112c-8.8 0-16-7.2-16-16V48c0-8.8 7.2-16 16-16s16 7.2 16 16v48c0 8.8-7.2 16-16 16zm67.9 28.1c-8.8 0-16-7.2-16-16c0-4.2 1.7-8.3 4.7-11.3l33.9-33.9c6.2-6.2 16.4-6.2 22.6 0c6.2 6.2 6.2 16.4 0 22.6l-33.9 33.9c-3 3-7.1 4.7-11.3 4.7zM90.2 309.8c-8.8 0-16-7.2-16-16c0-4.2 1.7-8.3 4.7-11.3l33.9-33.9c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6l-33.9 33.9c-3 3-7.1 4.7-11.3 4.7zm144-142.8c-18.4-18.7-48.5-19-67.2-.7s-19 48.5-.7 67.2l.7.7l39.5 39.5c3.1 3.1 8.2 3.1 11.3 0l55.9-55.9c3.1-3.1 3.1-8.2 0-11.3L234.2 167zM457 389.8L307.6 240.4c-3.1-3.1-8.2-3.1-11.3 0l-55.9 55.9c-3.1 3.1-3.1 8.2 0 11.3L389.8 457c18.4 18.7 48.5 19 67.2.7c18.7-18.4 19-48.5.7-67.2c-.2-.2-.4-.5-.7-.7z"
+            icon={
+              <FeatureIconSvg>
+                <path
+                  d="M7.5 5.6L10 7 8.6 4.5 10 2 7.5 3.4 5 2l1.4 2.5L5 7zm12 9.8L17 14l1.4 2.5L17 19l2.5-1.4L22 19l-1.4-2.5L22 14zM22 2l-2.5 1.4L17 2l1.4 2.5L17 7l2.5-1.4L22 7l-1.4-2.5zm-7.63 5.29c-.39-.39-1.02-.39-1.41 0L1.29 18.96c-.39.39-.39 1.02 0 1.41l2.34 2.34c.39.39 1.02.39 1.41 0L16.7 11.05c.39-.39.39-1.02 0-1.41l-2.33-2.35zm-1.03 5.49l-2.12-2.12 2.44-2.44 2.12 2.12-2.44 2.44z"
+                  fill="currentColor"
+                />
+              </FeatureIconSvg>
+            }
             headline="Inline styles made practical"
           >
             Hooks take the simplest styling approach to the next level, removing
@@ -237,7 +261,14 @@ export default function Home({
           </Feature>
           <Feature
             color="yellow"
-            iconPath="M288 464h-64a16 16 0 0 0 0 32h64a16 16 0 0 0 0-32Zm16-48h-96a16 16 0 0 0 0 32h96a16 16 0 0 0 0-32Zm65.42-353.31C339.35 32.58 299.07 16 256 16A159.62 159.62 0 0 0 96 176c0 46.62 17.87 90.23 49 119.64l4.36 4.09C167.37 316.57 192 339.64 192 360v24a16 16 0 0 0 16 16h24a8 8 0 0 0 8-8V274.82a8 8 0 0 0-5.13-7.47A130.73 130.73 0 0 1 208.71 253a16 16 0 1 1 18.58-26c7.4 5.24 21.65 13 28.71 13s21.31-7.78 28.73-13a16 16 0 0 1 18.56 26a130.73 130.73 0 0 1-26.16 14.32a8 8 0 0 0-5.13 7.47V392a8 8 0 0 0 8 8h24a16 16 0 0 0 16-16v-24c0-19.88 24.36-42.93 42.15-59.77l4.91-4.66C399.08 265 416 223.61 416 176a159.16 159.16 0 0 0-46.58-113.31Z"
+            icon={
+              <FeatureIconSvg>
+                <path
+                  d="M9 21c0 .5.4 1 1 1h4c.6 0 1-.5 1-1v-1H9v1zm3-19C8.1 2 5 5.1 5 9c0 2.4 1.2 4.5 3 5.7V17c0 .5.4 1 1 1h6c.6 0 1-.5 1-1v-2.3c1.8-1.3 3-3.4 3-5.7 0-3.9-3.1-7-7-7z"
+                  fill="currentColor"
+                />
+              </FeatureIconSvg>
+            }
             headline="Intuitive state-driven styling"
           >
             Effortlessly define styles for states like hover, focus, and active.
@@ -245,7 +276,28 @@ export default function Home({
           </Feature>
           <Feature
             color="teal"
-            iconPath="M202.24 74C166.11 56.75 115.61 48.3 48 48a31.36 31.36 0 0 0-17.92 5.33A32 32 0 0 0 16 79.9V366c0 19.34 13.76 33.93 32 33.93c71.07 0 142.36 6.64 185.06 47a4.11 4.11 0 0 0 6.94-3V106.82a15.89 15.89 0 0 0-5.46-12A143 143 0 0 0 202.24 74Zm279.68-20.7A31.33 31.33 0 0 0 464 48c-67.61.3-118.11 8.71-154.24 26a143.31 143.31 0 0 0-32.31 20.78a15.93 15.93 0 0 0-5.45 12v337.13a3.93 3.93 0 0 0 6.68 2.81c25.67-25.5 70.72-46.82 185.36-46.81a32 32 0 0 0 32-32v-288a32 32 0 0 0-14.12-26.61Z"
+            icon={
+              <FeatureIconSvg>
+                <path
+                  d="M21,5c-1.11-0.35-2.33-0.5-3.5-0.5c-1.95,0-4.05,0.4-5.5,1.5c-1.45-1.1-3.55-1.5-5.5-1.5S2.45,4.9,1,6v14.65 c0,0.25,0.25,0.5,0.5,0.5c0.1,0,0.15-0.05,0.25-0.05C3.1,20.45,5.05,20,6.5,20c1.95,0,4.05,0.4,5.5,1.5c1.35-0.85,3.8-1.5,5.5-1.5 c1.65,0,3.35,0.3,4.75,1.05c0.1,0.05,0.15,0.05,0.25,0.05c0.25,0,0.5-0.25,0.5-0.5V6C22.4,5.55,21.75,5.25,21,5z M21,18.5 c-1.1-0.35-2.3-0.5-3.5-0.5c-1.7,0-4.15,0.65-5.5,1.5V8c1.35-0.85,3.8-1.5,5.5-1.5c1.2,0,2.4,0.15,3.5,0.5V18.5z"
+                  fill="currentColor"
+                />
+                <g>
+                  <path
+                    d="M17.5,10.5c0.88,0,1.73,0.09,2.5,0.26V9.24C19.21,9.09,18.36,9,17.5,9c-1.7,0-3.24,0.29-4.5,0.83v1.66 C14.13,10.85,15.7,10.5,17.5,10.5z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M13,12.49v1.66c1.13-0.64,2.7-0.99,4.5-0.99c0.88,0,1.73,0.09,2.5,0.26V11.9c-0.79-0.15-1.64-0.24-2.5-0.24 C15.8,11.66,14.26,11.96,13,12.49z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M17.5,14.33c-1.7,0-3.24,0.29-4.5,0.83v1.66c1.13-0.64,2.7-0.99,4.5-0.99c0.88,0,1.73,0.09,2.5,0.26v-1.52 C19.21,14.41,18.36,14.33,17.5,14.33z"
+                    fill="currentColor"
+                  />
+                </g>
+              </FeatureIconSvg>
+            }
             headline="Reusable knowledge"
           >
             Hooks enhance the way you already write inline styles, rather than
@@ -253,7 +305,14 @@ export default function Home({
           </Feature>
           <Feature
             color="green"
-            iconPath="M425.7 118.25A240 240 0 0 0 76.32 447l.18.2c.33.35.64.71 1 1.05c.74.84 1.58 1.79 2.57 2.78a41.17 41.17 0 0 0 60.36-.42a157.13 157.13 0 0 1 231.26 0a41.18 41.18 0 0 0 60.65.06l3.21-3.5l.18-.2a239.93 239.93 0 0 0-10-328.76ZM240 128a16 16 0 0 1 32 0v32a16 16 0 0 1-32 0ZM128 304H96a16 16 0 0 1 0-32h32a16 16 0 0 1 0 32Zm48.8-95.2a16 16 0 0 1-22.62 0l-22.63-22.62a16 16 0 0 1 22.63-22.63l22.62 22.63a16 16 0 0 1 0 22.62Zm149.3 23.1l-47.5 75.5a31 31 0 0 1-7 7a30.11 30.11 0 0 1-35-49l75.5-47.5a10.23 10.23 0 0 1 11.7 0a10.06 10.06 0 0 1 2.3 14Zm31.72-23.1a16 16 0 0 1-22.62-22.62l22.62-22.63a16 16 0 0 1 22.63 22.63Zm65.88 227.6ZM416 304h-32a16 16 0 0 1 0-32h32a16 16 0 0 1 0 32Z"
+            icon={
+              <FeatureIconSvg>
+                <path
+                  d="M20.38 8.57l-1.23 1.85a8 8 0 0 1-.22 7.58H5.07A8 8 0 0 1 15.58 6.85l1.85-1.23A10 10 0 0 0 3.35 19a2 2 0 0 0 1.72 1h13.85a2 2 0 0 0 1.74-1 10 10 0 0 0-.27-10.44zm-9.79 6.84a2 2 0 0 0 2.83 0l5.66-8.49-8.49 5.66a2 2 0 0 0 0 2.83z"
+                  fill="currentColor"
+                />
+              </FeatureIconSvg>
+            }
             headline="Predictable performance"
           >
             Hooks are pure, don&apos;t depend on style injection, and avoid
@@ -261,10 +320,22 @@ export default function Home({
           </Feature>
           <Feature
             color="blue"
-            iconPath={[
-              "M503.58 126.2a16.85 16.85 0 0 0-27.07-4.55l-51.15 51.15a11.15 11.15 0 0 1-15.66 0l-22.48-22.48a11.17 11.17 0 0 1 0-15.67l50.88-50.89a16.85 16.85 0 0 0-5.27-27.4c-39.71-17-89.08-7.45-120 23.29c-26.81 26.61-34.83 68-22 113.7a11 11 0 0 1-3.16 11.1L114.77 365.1a56.76 56.76 0 1 0 80.14 80.18L357 272.08a11 11 0 0 1 10.9-3.17c45 12 86 4 112.43-22c15.2-15 25.81-36.17 29.89-59.71c3.83-22.2 1.41-44.44-6.64-61Z",
-              "M.94-11.59-43.72-38.4-74.07-66.22l-66.07 70.61c28.24 30 53.8 57.85 65 70.88l.07.08A30 30 0 0 0 383.72 464h1.1a30.11 30.11 0 0 0 21-8.62l.07-.07l33.43-33.37a29.46 29.46 0 0 0-2-43.53ZM118.54 214.55a20.48 20.48 0 0 0-3-10.76a2.76 2.76 0 0 1 2.62-4.22h.06c.84.09 5.33.74 11.7 4.61c4.73 2.87 18.23 12.08 41.73 35.54a34.23 34.23 0 0 0 7.22 22.12l66.23-61.55a33.73 33.73 0 0 0-21.6-9.2a2.65 2.65 0 0 1-.21-.26l-.65-.69l-24.54-33.84a28.45 28.45 0 0 1-4-26.11a35.23 35.23 0 0 1 11.78-16.35c5.69-4.41 18.53-9.72 29.44-10.62a52.92 52.92 0 0 1 15.19.94a65.57 65.57 0 0 1 7.06 2.13a15.46 15.46 0 0 0 2.15.63a16 16 0 0 0 16.38-25.06c-.26-.35-1.32-1.79-2.89-3.73a91.85 91.85 0 0 0-9.6-10.36c-8.15-7.36-29.27-19.77-57-19.77a123.13 123.13 0 0 0-46.3 9c-38.37 15.45-63.47 36.58-75.01 47.79l-.09.09A222.14 222.14 0 0 0 63.7 129.5a27 27 0 0 0-4.7 11.77a7.33 7.33 0 0 1-7.71 6.17H50.2a20.65 20.65 0 0 0-14.59 5.9L6.16 182.05l-.32.32a20.89 20.89 0 0 0-.24 28.72c.19.2.37.39.57.58L53.67 258a21 21 0 0 0 14.65 6a20.65 20.65 0 0 0 14.59-5.9l29.46-28.79a20.51 20.51 0 0 0 6.17-14.76Z",
-            ]}
+            icon={
+              <FeatureIconSvg>
+                <rect
+                  height="8.48"
+                  transform="matrix(0.7071 -0.7071 0.7071 0.7071 -6.8717 17.6255)"
+                  width="3"
+                  x="16.34"
+                  y="12.87"
+                  fill="currentColor"
+                />
+                <path
+                  d="M17.5,10c1.93,0,3.5-1.57,3.5-3.5c0-0.58-0.16-1.12-0.41-1.6l-2.7,2.7L16.4,6.11l2.7-2.7C18.62,3.16,18.08,3,17.5,3 C15.57,3,14,4.57,14,6.5c0,0.41,0.08,0.8,0.21,1.16l-1.85,1.85l-1.78-1.78l0.71-0.71L9.88,5.61L12,3.49 c-1.17-1.17-3.07-1.17-4.24,0L4.22,7.03l1.41,1.41H2.81L2.1,9.15l3.54,3.54l0.71-0.71V9.15l1.41,1.41l0.71-0.71l1.78,1.78 l-7.41,7.41l2.12,2.12L16.34,9.79C16.7,9.92,17.09,10,17.5,10z"
+                  fill="currentColor"
+                />
+              </FeatureIconSvg>
+            }
             headline="Extreme maintainability"
           >
             Inline styles tightly integrate with markup, promoting local
@@ -272,11 +343,14 @@ export default function Home({
           </Feature>
           <Feature
             color="pink"
-            iconPath={[
-              "M256 428c-52.35 0-111.39-11.61-157.93-31c-17.07-7.19-31.69-18.82-43.64-28a4 4 0 0 0-6.43 3.18v12.58c0 28.07 23.49 53.22 66.14 70.82C152.29 471.33 202.67 480 256 480s103.7-8.67 141.86-24.42C440.51 438 464 412.83 464 384.76v-12.58a4 4 0 0 0-6.43-3.18c-11.95 9.17-26.57 20.81-43.65 28c-46.54 19.39-105.57 31-157.92 31Zm208-301.49c-.81-27.65-24.18-52.4-66-69.85C359.74 40.76 309.34 32 256 32s-103.74 8.76-141.91 24.66c-41.78 17.41-65.15 42.11-66 69.69L48 144c0 6.41 5.2 16.48 14.63 24.73c11.13 9.73 27.65 19.33 47.78 27.73C153.24 214.36 207.67 225 256 225s102.76-10.68 145.59-28.58c20.13-8.4 36.65-18 47.78-27.73C458.8 160.49 464 150.42 464 144Z",
-              "M413.92 226c-46.53 19.43-105.57 31-157.92 31s-111.39-11.57-157.93-31c-17.07-7.15-31.69-18.79-43.64-28a4 4 0 0 0-6.43 3.22V232c0 6.41 5.2 14.48 14.63 22.73c11.13 9.74 27.65 19.33 47.78 27.74C153.24 300.34 207.67 311 256 311s102.76-10.68 145.59-28.57c20.13-8.41 36.65-18 47.78-27.74C458.8 246.47 464 238.41 464 232v-30.78a4 4 0 0 0-6.43-3.18c-11.95 9.17-26.57 20.81-43.65 27.96Z",
-              "M413.92 312c-46.54 19.41-105.57 31-157.92 31s-111.39-11.59-157.93-31c-17.07-7.17-31.69-18.81-43.64-28a4 4 0 0 0-6.43 3.2V317c0 6.41 5.2 14.47 14.62 22.71c11.13 9.74 27.66 19.33 47.79 27.74C153.24 385.32 207.66 396 256 396s102.76-10.68 145.59-28.57c20.13-8.41 36.65-18 47.78-27.74C458.8 331.44 464 323.37 464 317v-29.8a4 4 0 0 0-6.43-3.18c-11.95 9.17-26.57 20.81-43.65 27.98Z",
-            ]}
+            icon={
+              <FeatureIconSvg>
+                <path
+                  d="M20 13H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zM7 19c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM20 3H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1zM7 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"
+                  fill="currentColor"
+                />
+              </FeatureIconSvg>
+            }
             headline="Server-side reliability"
           >
             Directly embedded within HTML markup without side effects, hooks
@@ -484,10 +558,10 @@ export default function Home({
               gridTemplateColumns:
                 "repeat(auto-fit, minmax(min(24rem, 100%), 1fr))",
               padding: "2rem",
-              background: V.gray05,
+              background: gray(10),
             },
             on(dark, {
-              background: V.gray95,
+              background: gray(95),
             }),
           )}
         >
@@ -614,8 +688,8 @@ function CtaButton({
           display: "inline-flex",
           alignItems: "center",
           gap: "0.75rem",
-          backgroundColor: V.gray50,
-          color: V.white,
+          backgroundColor: gray(50),
+          color: white,
           textDecoration: "none",
           padding: "0.5em 0.75em",
           fontSize: "1.5rem",
@@ -623,31 +697,31 @@ function CtaButton({
           fontWeight: 700,
           lineHeight: 1,
           outlineStyle: "solid",
-          outlineColor: V.blue20,
+          outlineColor: blue(20),
           outlineWidth: 0,
           outlineOffset: 2,
         },
         on(dark, {
-          backgroundColor: V.gray60,
-          outlineColor: V.blue50,
+          backgroundColor: gray(60),
+          outlineColor: blue(50),
         }),
         on("&.primary", {
-          backgroundColor: V.purple50,
+          backgroundColor: purple(55),
         }),
         on(and("&.primary", dark), {
-          backgroundColor: V.purple60,
+          backgroundColor: purple(65),
         }),
         on(intent, {
-          backgroundColor: V.blue40,
+          backgroundColor: blue(45),
         }),
         on(and(dark, intent), {
-          backgroundColor: V.blue50,
+          backgroundColor: blue(60),
         }),
         on("&:active", {
-          backgroundColor: V.red40,
+          backgroundColor: red(45),
         }),
         on(and(dark, "&:active"), {
-          backgroundColor: V.red50,
+          backgroundColor: red(50),
         }),
         on("&:focus-visible", {
           outlineWidth: 2,
@@ -702,7 +776,7 @@ function Section({
             lineHeight: 1.25,
             letterSpacing: "-0.03em",
             margin: 0,
-            color: V.gray50,
+            color: gray(50),
           }}
         >
           {title}
@@ -721,17 +795,17 @@ function CodeWindow({ children }: { children: ReactNode }) {
           display: "flex",
           flexDirection: "column",
           alignItems: "stretch",
-          color: V.gray20,
+          color: gray(30),
         },
         on(dark, {
-          color: V.gray70,
+          color: gray(70),
         }),
       )}
     >
       <div
         style={pipe(
           {
-            background: V.gray05,
+            background: gray(12),
             display: "flex",
             padding: 8,
             gap: 4,
@@ -743,11 +817,11 @@ function CodeWindow({ children }: { children: ReactNode }) {
             borderBottomWidth: 0,
           },
           on(dark, {
-            background: V.gray85,
+            background: gray(85),
           }),
         )}
       >
-        {[V.red30, V.yellow30, V.green30].map(color => (
+        {[red(30), yellow(30), green(30)].map(color => (
           <div
             key={color}
             style={pipe(
@@ -768,7 +842,7 @@ function CodeWindow({ children }: { children: ReactNode }) {
       <div
         style={pipe(
           {
-            background: V.white,
+            background: white,
             borderWidth: 1,
             borderStyle: "solid",
             borderColor: "currentColor",
@@ -778,7 +852,7 @@ function CodeWindow({ children }: { children: ReactNode }) {
             overflow: "auto",
           },
           on(dark, {
-            background: V.gray85,
+            background: gray(85),
           }),
         )}
       >
@@ -798,7 +872,13 @@ function Demo({
   title: ReactNode;
 }) {
   return (
-    <Section title={<span style={{ color: V.pink30 }}>{title}</span>}>
+    <Section
+      title={
+        <span style={pipe({ color: pink(45) }, on(dark, { color: pink(30) }))}>
+          {title}
+        </span>
+      }
+    >
       <div
         style={pipe(
           {
@@ -839,14 +919,14 @@ function Demo({
               flex: 1,
               display: "grid",
               placeItems: "center",
-              backgroundColor: V.white,
-              backgroundImage: `linear-gradient(45deg, ${V.gray05} 25%, transparent 25%), linear-gradient(-45deg, ${V.gray05} 25%, transparent 25%), linear-gradient(45deg, transparent 75%, ${V.gray05} 75%), linear-gradient(-45deg, transparent 75%, ${V.gray05} 75%)`,
+              backgroundColor: white,
+              backgroundImage: `linear-gradient(45deg, ${gray(15)} 25%, transparent 25%), linear-gradient(-45deg, ${gray(15)} 25%, transparent 25%), linear-gradient(45deg, transparent 75%, ${gray(15)} 75%), linear-gradient(-45deg, transparent 75%, ${gray(15)} 75%)`,
               backgroundSize: "24px 24px",
               backgroundPosition: "0 0, 0 12px, 12px -12px, -12px 0px",
             },
             on(dark, {
-              backgroundColor: V.gray90,
-              backgroundImage: `linear-gradient(45deg, ${V.gray85} 25%, transparent 25%), linear-gradient(-45deg, ${V.gray85} 25%, transparent 25%), linear-gradient(45deg, transparent 75%, ${V.gray85} 75%), linear-gradient(-45deg, transparent 75%, ${V.gray85} 75%)`,
+              backgroundColor: gray(90),
+              backgroundImage: `linear-gradient(45deg, ${gray(85)} 25%, transparent 25%), linear-gradient(-45deg, ${gray(85)} 25%, transparent 25%), linear-gradient(45deg, transparent 75%, ${gray(85)} 75%), linear-gradient(-45deg, transparent 75%, ${gray(85)} 75%)`,
             }),
           )}
         >
@@ -862,14 +942,14 @@ function PseudoClassesDemoSource() {
     <SyntaxHighlighter language="tsx">{`<button
   style={pipe(
     {
-      background: "${V.blue50}",
-      color: "${V.white}",
+      background: "${blue(60)}",
+      color: "${white}",
     },
     on("&:hover", {
-      background: "${V.blue40}",
+      background: "${blue(50)}",
     }),
     on("&:active", {
-      background: "${V.red40}",
+      background: "${red(50)}",
     })
   })}
 >
@@ -891,14 +971,14 @@ function PseudoClassesDemoPreview() {
           fontWeight: 700,
           fontSize: "1rem",
           lineHeight: 1,
-          background: V.blue50,
-          color: V.white,
+          background: blue(60),
+          color: white,
         },
         on("&:hover", {
-          background: V.blue40,
+          background: blue(50),
         }),
         on("&:active", {
-          background: V.red40,
+          background: red(50),
         }),
       )}
     >
@@ -991,8 +1071,8 @@ function ResponsiveDemoPreview() {
       <div
         style={pipe(
           {
-            background: V.white,
-            color: V.black,
+            background: white,
+            color: black,
             fontFamily: "sans-serif",
             fontWeight: 700,
             fontSize: "3rem",
@@ -1003,11 +1083,11 @@ function ResponsiveDemoPreview() {
             containerType: "inline-size",
           },
           on(dark, {
-            background: V.black,
-            color: V.white,
+            background: black,
+            color: white,
           }),
           on(not(dark), {
-            boxShadow: `inset 0 0 0 1px ${V.gray20}`,
+            boxShadow: `inset 0 0 0 1px ${gray(20)}`,
           }),
         )}
       >
@@ -1061,8 +1141,8 @@ function DesignedFor({
     <div
       style={pipe(
         {
-          background: V.gray05,
-          color: V.gray80,
+          background: gray(10),
+          color: gray(80),
           padding: 32,
           display: "flex",
           flexDirection: "column",
@@ -1070,8 +1150,8 @@ function DesignedFor({
           alignItems: "center",
         },
         on(dark, {
-          background: V.gray85,
-          color: V.gray10,
+          background: gray(85),
+          color: gray(10),
         }),
       )}
     >
@@ -1091,21 +1171,26 @@ function DesignedFor({
               lineHeight: 1,
               textTransform: "uppercase",
               letterSpacing: "0.01em",
-              color: V.gray70,
+              color: gray(70),
             },
             on(dark, {
-              color: V.gray40,
+              color: gray(40),
             }),
           )}
         >
           Designed for
         </span>
         <span
-          style={{
-            display: "inline-block",
-            fontSize: "2rem",
-            marginTop: "0.25em",
-          }}
+          style={pipe(
+            {
+              display: "inline-block",
+              fontSize: "2rem",
+              marginTop: "0.25em",
+            },
+            on(not(dark), {
+              color: gray(50),
+            }),
+          )}
         >
           {framework}
         </span>
@@ -1163,7 +1248,12 @@ function TestimonialAuthor({
         />
       </div>
       <div style={{ gridArea: "name" }}>{name}</div>
-      <div style={{ gridArea: "handle", color: V.gray50 }}>{`@${handle}`}</div>
+      <div
+        style={pipe(
+          { gridArea: "handle", color: gray(50) },
+          on(dark, { color: gray(45) }),
+        )}
+      >{`@${handle}`}</div>
     </div>
   );
 }
@@ -1185,28 +1275,28 @@ function Testimonial({
           {
             textDecoration: "none",
             color: "inherit",
-            background: V.white,
+            background: white,
             flexDirection: "column",
             gap: "1rem",
             padding: "2rem",
             outlineWidth: 0,
             outlineOffset: 2,
-            outlineColor: V.blue20,
+            outlineColor: blue(20),
             outlineStyle: "solid",
           },
           on("&:focus-visible", {
             outlineWidth: 2,
           }),
           on("&:active", {
-            boxShadow: `0 0 0 1px ${V.red20}`,
+            boxShadow: `0 0 0 1px ${red(20)}`,
           }),
           on(dark, {
-            boxShadow: `inset 0 0 0 1px ${V.gray70}`,
-            background: V.gray90,
-            outlineColor: V.blue50,
+            boxShadow: `inset 0 0 0 1px ${gray(70)}`,
+            background: gray(90),
+            outlineColor: blue(50),
           }),
           on(and(dark, "&:active"), {
-            background: V.gray85,
+            background: gray(85),
           }),
         )}
       >
@@ -1226,16 +1316,37 @@ function Testimonial({
   );
 }
 
+function FeatureIconSvg({
+  children,
+}: {
+  children: ReactElement | ReactElement[];
+}) {
+  const size = "1.5rem";
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      style={{
+        minWidth: size,
+        maxWidth: size,
+        minHeight: size,
+        maxHeight: size,
+      }}
+    >
+      {children}
+    </svg>
+  );
+}
+
 function Feature({
   children,
   color,
   headline,
-  iconPath,
+  icon,
 }: {
   children: ReactNode;
   color: "blue" | "pink" | "yellow" | "green" | "teal" | "purple";
   headline: ReactNode;
-  iconPath: string | string[];
+  icon: ReactElement;
 }) {
   return (
     <section
@@ -1250,40 +1361,40 @@ function Feature({
             alignItems: "center",
           },
           on(".blue &", {
-            color: V.blue50,
+            color: blue(55),
           }),
           on(".pink &", {
-            color: V.pink50,
+            color: pink(55),
           }),
           on(".yellow &", {
-            color: V.yellow50,
+            color: yellow(55),
           }),
           on(".green &", {
-            color: V.green50,
+            color: green(55),
           }),
           on(".teal &", {
-            color: V.teal50,
+            color: teal(55),
           }),
           on(".purple &", {
-            color: V.purple50,
+            color: purple(55),
           }),
           on(and(dark, ".blue &"), {
-            color: V.blue20,
+            color: blue(20),
           }),
           on(and(dark, ".pink &"), {
-            color: V.pink20,
+            color: pink(20),
           }),
           on(and(dark, ".yellow &"), {
-            color: V.yellow20,
+            color: yellow(20),
           }),
           on(and(dark, ".green &"), {
-            color: V.green20,
+            color: green(20),
           }),
           on(and(dark, ".teal &"), {
-            color: V.teal20,
+            color: teal(20),
           }),
           on(and(dark, ".purple &"), {
-            color: V.purple20,
+            color: purple(20),
           }),
         )}
       >
@@ -1299,60 +1410,56 @@ function Feature({
               placeItems: "center",
             },
             on(".blue &", {
-              background: V.blue10,
-              boxShadow: `0 0 0 1px ${V.blue30}`,
+              background: blue(15),
+              boxShadow: `0 0 0 1px ${blue(30)}`,
             }),
             on(".pink &", {
-              background: V.pink10,
-              boxShadow: `0 0 0 1px ${V.pink30}`,
+              background: pink(15),
+              boxShadow: `0 0 0 1px ${pink(30)}`,
             }),
             on(".yellow &", {
-              background: V.yellow10,
-              boxShadow: `0 0 0 1px ${V.yellow30}`,
+              background: yellow(15),
+              boxShadow: `0 0 0 1px ${yellow(30)}`,
             }),
             on(".green &", {
-              background: V.green10,
-              boxShadow: `0 0 0 1px ${V.green30}`,
+              background: green(15),
+              boxShadow: `0 0 0 1px ${green(30)}`,
             }),
             on(".teal &", {
-              background: V.teal10,
-              boxShadow: `0 0 0 1px ${V.teal30}`,
+              background: teal(15),
+              boxShadow: `0 0 0 1px ${teal(30)}`,
             }),
             on(".purple &", {
-              background: V.purple10,
-              boxShadow: `0 0 0 1px ${V.purple30}`,
+              background: purple(15),
+              boxShadow: `0 0 0 1px ${purple(30)}`,
             }),
             on(and(dark, ".blue &"), {
-              background: V.blue50,
-              boxShadow: `0 0 32px 0 ${V.blue60}`,
+              background: blue(50),
+              boxShadow: `0 0 32px 0 ${blue(60)}`,
             }),
             on(and(dark, ".pink &"), {
-              background: V.pink50,
-              boxShadow: `0 0 32px 0 ${V.pink60}`,
+              background: pink(50),
+              boxShadow: `0 0 32px 0 ${pink(60)}`,
             }),
             on(and(dark, ".yellow &"), {
-              background: V.yellow50,
-              boxShadow: `0 0 32px 0 ${V.yellow70}`,
+              background: yellow(50),
+              boxShadow: `0 0 32px 0 ${yellow(70)}`,
             }),
             on(and(dark, ".green &"), {
-              background: V.green50,
-              boxShadow: `0 0 32px 0 ${V.green70}`,
+              background: green(50),
+              boxShadow: `0 0 32px 0 ${green(70)}`,
             }),
             on(and(dark, ".teal &"), {
-              background: V.teal50,
-              boxShadow: `0 0 32px 0 ${V.teal70}`,
+              background: teal(50),
+              boxShadow: `0 0 32px 0 ${teal(70)}`,
             }),
             on(and(dark, ".purple &"), {
-              background: V.purple50,
-              boxShadow: `0 0 32px 0 ${V.purple60}`,
+              background: purple(50),
+              boxShadow: `0 0 32px 0 ${purple(60)}`,
             }),
           )}
         >
-          <svg width="1.5rem" height="1.5rem" viewBox="0 0 512 512">
-            {(typeof iconPath === "string" ? [iconPath] : iconPath).map(p => (
-              <path key={p} fill="currentColor" d={p} />
-            ))}
-          </svg>
+          {icon}
         </div>
         <span style={{ fontWeight: 700 }}>{headline}</span>
       </div>

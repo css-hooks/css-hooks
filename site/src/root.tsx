@@ -11,7 +11,6 @@ import {
 } from "react-router";
 import { pipe } from "remeda";
 import * as v from "valibot";
-import * as V from "varsace";
 
 import type { Route } from "./+types/root.ts";
 import {
@@ -26,6 +25,7 @@ import { NavLink } from "./components/nav-link.tsx";
 import { ScreenReaderOnly } from "./components/screen-reader-only.tsx";
 import { and, dark, hover, not, on, styleSheet } from "./css.ts";
 import { createMetaDescriptors } from "./data/meta.ts";
+import { black, blue, gray, red, white } from "./design/colors.ts";
 
 export const meta: Route.MetaFunction = createMetaDescriptors({
   description:
@@ -92,28 +92,28 @@ function ThemeSwitcher() {
           display: "inline-flex",
           outlineWidth: 0,
           outlineStyle: "solid",
-          outlineColor: V.blue20,
+          outlineColor: blue(20),
           outlineOffset: 2,
-          color: V.blue50,
+          color: blue(60),
         },
         on("&:has(:focus-visible)", {
           outlineWidth: 2,
         }),
         on(hover, {
-          color: V.blue40,
+          color: blue(50),
         }),
         on("&:active", {
-          color: V.red40,
+          color: red(50),
         }),
         on(dark, {
-          outlineColor: V.blue50,
-          color: V.blue30,
+          outlineColor: blue(50),
+          color: blue(30),
         }),
         on(and(dark, hover), {
-          color: V.blue20,
+          color: blue(20),
         }),
         on(and(dark, "&:active"), {
-          color: V.red20,
+          color: red(20),
         }),
       )}
     >
@@ -164,8 +164,8 @@ function ThemeSwitcher() {
               key={theme}
               style={{
                 fontSize: "1rem",
-                background: V.white,
-                color: V.black,
+                background: white,
+                color: black,
               }}
             >
               {theme}
@@ -205,8 +205,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <div
           style={pipe(
             {
-              background: V.white,
-              color: V.gray90,
+              background: white,
+              color: gray(90),
               display: "flex",
               flexDirection: "column",
               minHeight: "100vh",
@@ -215,8 +215,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
               minHeight: "100dvh",
             }),
             on(dark, {
-              background: V.gray90,
-              color: V.white,
+              background: gray(90),
+              color: white,
             }),
           )}
         >
@@ -233,16 +233,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 justifyContent: "space-between",
                 WebkitBackdropFilter: "blur(32px)",
                 backdropFilter: "blur(32px)",
-                color: V.black,
+                color: black,
                 padding: "1.5rem",
                 borderStyle: "solid",
                 borderWidth: 0,
                 borderBottomWidth: 2,
-                borderColor: V.gray10,
+                borderColor: gray(10),
               },
               on(dark, {
-                borderColor: V.gray95,
-                color: V.white,
+                borderColor: gray(95),
+                color: white,
               }),
             )}
           >
@@ -294,10 +294,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   gap: "0.5rem 2rem",
                 },
                 on(dark, {
-                  background: V.gray95,
+                  background: gray(95),
                 }),
                 on(not(dark), {
-                  boxShadow: `0 -2px 0 0 ${V.gray10}`,
+                  boxShadow: `0 -2px 0 0 ${gray(10)}`,
                 }),
               )}
             >
