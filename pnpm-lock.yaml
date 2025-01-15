@@ -292,8 +292,8 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
       valibot:
-        specifier: 1.0.0-beta.11
-        version: 1.0.0-beta.11(typescript@5.7.3)
+        specifier: 1.0.0-beta.12
+        version: 1.0.0-beta.12(typescript@5.7.3)
       vite:
         specifier: ^6.0.7
         version: 6.0.7(@types/node@22.10.6)(lightningcss@1.29.1)
@@ -3987,8 +3987,8 @@ packages:
       typescript:
         optional: true
 
-  valibot@1.0.0-beta.11:
-    resolution: {integrity: sha512-Ztl5Iks1Ql7Z6CwkS5oyqguN3G8tmUiNlsHpqbDt6DLMpm+eu+n8Q7f921gI3uHvNZ8xDVkd4cEJP5t+lELOfw==}
+  valibot@1.0.0-beta.12:
+    resolution: {integrity: sha512-j3WIxJ0pmUFMfdfUECn3YnZPYOiG0yHYcFEa/+RVgo0I+MXE3ToLt7gNRLtY5pwGfgNmsmhenGZfU5suu9ijUA==}
     peerDependencies:
       typescript: '>=5'
     peerDependenciesMeta:
@@ -8507,7 +8507,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.7.3
 
-  valibot@1.0.0-beta.11(typescript@5.7.3):
+  valibot@1.0.0-beta.12(typescript@5.7.3):
     optionalDependencies:
       typescript: 5.7.3
 
