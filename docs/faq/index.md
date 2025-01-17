@@ -75,6 +75,18 @@ to make this approach more flexible and promote reuse.
 
 ---
 
+### Do inline styles negatively impact performance?
+
+Inline styles have significant performance advantages over CSS such as more
+efficient code-splitting and the elimination of render-blocking CSS requests. In
+his article
+[Are Inline Styles Faster than CSS?](https://danielnagy.me/posts/Post_tsr8q6sx37pl)
+Daniel Nagy evaluates inline styles and CSS across various metrics such as
+rendering time, HTML/JavaScript size, browser performance, and Web Vitals. His
+findings suggest that inline styles often outperform CSS in these areas.
+
+---
+
 ### What if my question isn't answered here?
 
 Please
