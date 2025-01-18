@@ -545,6 +545,11 @@ export async function loader({ params }: Route.LoaderArgs) {
             <Preformatted as="div">{children}</Preformatted>
           </pre>
         ),
+        table: ({ node: _node, ...restProps }) => (
+          <div style={{ maxWidth: "100%", overflowX: "auto" }}>
+            <table {...restProps} />
+          </div>
+        ),
       }}
     >
       {doc.body}
