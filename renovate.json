@@ -40,9 +40,9 @@
     },
     {
       "matchFileNames": ["package.json", "packages/**/package.json"],
-      "matchPackagePatterns": ["@microsoft/api"],
       "groupName": "api-extractor",
-      "schedule": ["* 8 4 * *"]
+      "schedule": ["* 8 4 * *"],
+      "matchPackageNames": ["/@microsoft/api/"]
     },
     {
       "matchPackageNames": ["/eslint/"],
@@ -55,19 +55,19 @@
       "schedule": ["* 8 2 * *"]
     },
     {
-      "matchPackagePatterns": ["shiki"],
       "groupName": "shiki",
-      "schedule": ["* 8 3 * *"]
+      "schedule": ["* 8 3 * *"],
+      "matchPackageNames": ["/shiki/"]
     },
     {
-      "matchPackagePatterns": ["slug"],
       "groupName": "slug",
-      "schedule": ["* 8 5 * *"]
+      "schedule": ["* 8 5 * *"],
+      "matchPackageNames": ["/slug/"]
     },
     {
-      "matchPackagePatterns": ["qwik"],
       "groupName": "qwik",
-      "enabled": false
+      "enabled": false,
+      "matchPackageNames": ["/qwik/"]
     }
   ]
 }
