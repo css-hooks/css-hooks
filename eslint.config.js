@@ -11,7 +11,13 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ["**/dist/**", "**/cjs/**", "**/esm/**", "**/types/**"],
+    ignores: [
+      "**/cjs/**",
+      "**/esm/**",
+      "**/types/**",
+      "site/.react-router/**",
+      "site/build/**",
+    ],
   },
   {
     languageOptions: {

@@ -43,9 +43,12 @@ your plans before making any significant investment of your valuable time.
 
 ### Development environment
 
-The only strict requirement for developing CSS Hooks is Node.js. Review the
-[CI workflow](.github/workflows/ci.yml) to determine which version you should
-use.
+The only strict requirements for developing CSS Hooks are:
+
+1. [Node.js](https://nodejs.org): See [.nvmrc](.nvmrc) for the required version.
+1. [PNPM](https://pnpm.io): See
+   [package.json](https://github.com/search?q=repo%3Acss-hooks%2Fcss-hooks++path%3Apackage.json+packageManager&type=code)
+   for the required version.
 
 If you are a [VS Code](https://code.visualstudio.com) user, please consider
 installing the [recommended extensions](.vscode/extensions.json) for CSS Hooks
@@ -62,11 +65,8 @@ Angular's
 Please verify your changes before submitting a pull request using the following
 commands:
 
-1. `npx prettier --check .`, which ensures that code files conform to the
-   project's formatting standards;
-1. `npm run lint --workspaces --if-present`, which alerts you to potential
-   problems in your JavaScript code; and
-1. `npm test --workspaces --if-present`, which runs the unit tests.
+1. `pnpm check`
+1. `pnpm -r test`
 
 ### Submitting a pull request
 

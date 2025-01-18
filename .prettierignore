@@ -1,11 +1,9 @@
-**/dist/**
 /CHANGELOG.md
 /docs/api
 /packages/**/cjs
 /packages/**/esm
-/packages/**/out
 /packages/**/types
 /pnpm-lock.yaml
-/site/dist
-/site/server
+/site/.react-router
+/site/build
 /temp
