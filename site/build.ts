@@ -45,7 +45,7 @@ await Promise.all(
         ...route.split("/"),
       );
       const fileStream = fs.createWriteStream(filePath);
-      await new Promise((resolve, reject) => {
+      await new Promise<void>((resolve, reject) => {
         const stream = responseStream.pipe(fileStream);
         stream.on("finish", resolve);
         stream.on("error", reject);

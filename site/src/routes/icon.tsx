@@ -28,7 +28,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 
   const { width, height } = paramsParseResult.output;
 
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
 
   const page = await browser.newPage();
 

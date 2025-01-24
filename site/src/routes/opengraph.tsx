@@ -7,7 +7,7 @@ import { styleSheet } from "../css.ts";
 import { gray, pink } from "../design/colors.ts";
 
 export async function loader() {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
 
   const page = await browser.newPage();
 
