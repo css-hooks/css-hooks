@@ -299,7 +299,7 @@ importers:
         version: 6.0.11(@types/node@22.13.0)(lightningcss@1.29.1)
       vite-node:
         specifier: ^3.0.0
-        version: 3.0.4(@types/node@22.13.0)(lightningcss@1.29.1)
+        version: 3.0.5(@types/node@22.13.0)(lightningcss@1.29.1)
 
 packages:
 
@@ -4169,8 +4169,8 @@ packages:
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
 
-  vite-node@3.0.4:
-    resolution: {integrity: sha512-7JZKEzcYV2Nx3u6rlvN8qdo3QV7Fxyt6hx+CCKz9fbWxdX5IvUOmTWEAxMrWxaiSf7CKGLJQ5rFu8prb/jBjOA==}
+  vite-node@3.0.5:
+    resolution: {integrity: sha512-02JEJl7SbtwSDJdYS537nU6l+ktdvcREfLksk/NDAqtdKWGqHl+joXzEubHROmS3E6pip+Xgu2tFezMu75jH7A==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
 
@@ -8857,7 +8857,7 @@ snapshots:
       - tsx
       - yaml
 
-  vite-node@3.0.4(@types/node@22.13.0)(lightningcss@1.29.1):
+  vite-node@3.0.5(@types/node@22.13.0)(lightningcss@1.29.1):
     dependencies:
       cac: 6.7.14
       debug: 4.4.0
