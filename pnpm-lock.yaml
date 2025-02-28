@@ -103,7 +103,7 @@ importers:
         version: 1.29.1
       puppeteer:
         specifier: ^24.0.0
-        version: 24.2.0(typescript@5.7.3)
+        version: 24.2.1(typescript@5.7.3)
       remeda:
         specifier: ^2.16.0
         version: 2.20.1
@@ -254,7 +254,7 @@ importers:
         version: 5.1.23
       puppeteer:
         specifier: ^24.0.0
-        version: 24.2.0(typescript@5.7.3)
+        version: 24.2.1(typescript@5.7.3)
       react:
         specifier: ^19.0.0
         version: 19.0.0
@@ -1496,9 +1496,9 @@ packages:
     resolution: {integrity: sha512-ilQs4fm/l9eMfWY2dY0WCIUplSUp7U0CT1vrqMg1MUdeZl4fypu5UP0XcDBK5WBQPJAKP1b7XEodISmekH/CEg==}
     engines: {bare: '>=1.7.0'}
 
-  bare-os@3.4.0:
-    resolution: {integrity: sha512-9Ous7UlnKbe3fMi7Y+qh0DwAup6A1JkYgPnjvMDNOlmnxNRQvQ/7Nst+OnUQKzk0iAT0m9BisbDVp9gCv8+ETA==}
-    engines: {bare: '>=1.6.0'}
+  bare-os@3.5.1:
+    resolution: {integrity: sha512-LvfVNDcWLw2AnIw5f2mWUgumW3I3N/WYGiWeimhQC1Ybt71n2FjlS9GJKeCnFeg1MKZHxzIFmpFnBXDI+sBeFg==}
+    engines: {bare: '>=1.14.0'}
 
   bare-path@3.0.0:
     resolution: {integrity: sha512-tyfW2cQcB5NN8Saijrhqn0Zh7AnFNsnczRcuWODH0eYAXBsJ5gVxAUuNr7tsHSC6IZ77cA0SitzT+s47kot8Mw==}
@@ -1615,8 +1615,8 @@ packages:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
     engines: {node: '>= 14.16.0'}
 
-  chromium-bidi@1.2.0:
-    resolution: {integrity: sha512-XtdJ1GSN6S3l7tO7F77GhNsw0K367p0IsLYf2yZawCVAKKC3lUvDhPdMVrB2FNhmhfW43QGYbEX3Wg6q0maGwQ==}
+  chromium-bidi@1.3.0:
+    resolution: {integrity: sha512-G3x1bkST13kmbL7+dT/oRkNH/7C4UqG+0YQpmySrzXspyOhYgDNc6lhSGpj3cuexvH25WTENhTYq2Tt9JRXtbw==}
     peerDependencies:
       devtools-protocol: '*'
 
@@ -3274,8 +3274,8 @@ packages:
     resolution: {integrity: sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==}
     engines: {node: '>=6'}
 
-  pac-proxy-agent@7.1.0:
-    resolution: {integrity: sha512-Z5FnLVVZSnX7WjBg0mhDtydeRZ1xMcATZThjySQUHqr+0ksP8kqaw23fNKkaaN/Z8gwLUs/W7xdl0I75eP2Xyw==}
+  pac-proxy-agent@7.2.0:
+    resolution: {integrity: sha512-TEB8ESquiLMc0lV8vcd5Ql/JAKAoyzHFXaStwjkzpOpC5Yv+pIzLfHvjTSdf3vpa2bMiUQrg9i6276yn8666aA==}
     engines: {node: '>= 14'}
 
   pac-resolver@7.0.1:
@@ -3466,12 +3466,12 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  puppeteer-core@24.2.0:
-    resolution: {integrity: sha512-e4A4/xqWdd4kcE6QVHYhJ+Qlx/+XpgjP4d8OwBx0DJoY/nkIRhSgYmKQnv7+XSs1ofBstalt+XPGrkaz4FoXOQ==}
+  puppeteer-core@24.2.1:
+    resolution: {integrity: sha512-bCypUh3WXzETafv1TCFAjIUnI8BiQ/d+XvEfEXDLcIMm9CAvROqnBmbt79yBjwasoDZsgfXnUmIJU7Y27AalVQ==}
     engines: {node: '>=18'}
 
-  puppeteer@24.2.0:
-    resolution: {integrity: sha512-z8vv7zPEgrilIbOo3WNvM+2mXMnyM9f4z6zdrB88Fzeuo43Oupmjrzk3EpuvuCtyK0A7Lsllfx7Z+4BvEEGJcQ==}
+  puppeteer@24.2.1:
+    resolution: {integrity: sha512-Euno62ou0cd0dTkOYTNioSOsFF4VpSnz4ldD38hi9ov9xCNtr8DbhmoJRUx+V9OuPgecueZbKOohRrnrhkbg3Q==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -3772,8 +3772,8 @@ packages:
     resolution: {integrity: sha512-HehCEsotFqbPW9sJ8WVYB6UbmIMv7kUUORIF2Nncq4VQvBfNBLibW9YZR5dlYCSUhwcD628pRllm7n+E+YTzJw==}
     engines: {node: '>= 14'}
 
-  socks@2.8.3:
-    resolution: {integrity: sha512-l5x7VUUWbjVFbafGLxPWkYsHIhEvmF85tbIeFZWc8ZPtoMyybuEhL7Jye/ooC4/d48FgOjSJXgsF/AJPYCW8Zw==}
+  socks@2.8.4:
+    resolution: {integrity: sha512-D3YaD0aRxR3mEcqnidIs7ReYJFVzWdd6fXJYUM8ixcQcJRGTka/b3saV0KflYhyVJXKhb947GndU35SxYNResQ==}
     engines: {node: '>= 10.0.0', npm: '>= 3.0.0'}
 
   solid-js@1.9.5:
@@ -4277,8 +4277,8 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  ws@8.18.0:
-    resolution: {integrity: sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==}
+  ws@8.18.1:
+    resolution: {integrity: sha512-RKW2aJZMXeMxVpnZ6bck+RswznaxmzdULiBr6KY7XkTnW8uvt0iT9H5DkHUChXrc+uurzwa0rVI16n/Xzjdz1w==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       bufferutil: ^4.0.1
@@ -4326,8 +4326,8 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  zod@3.24.1:
-    resolution: {integrity: sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A==}
+  zod@3.24.2:
+    resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -5573,12 +5573,12 @@ snapshots:
       - bare-buffer
     optional: true
 
-  bare-os@3.4.0:
+  bare-os@3.5.1:
     optional: true
 
   bare-path@3.0.0:
     dependencies:
-      bare-os: 3.4.0
+      bare-os: 3.5.1
     optional: true
 
   bare-stream@2.6.5(bare-events@2.5.4):
@@ -5693,11 +5693,11 @@ snapshots:
     dependencies:
       readdirp: 4.1.1
 
-  chromium-bidi@1.2.0(devtools-protocol@0.0.1402036):
+  chromium-bidi@1.3.0(devtools-protocol@0.0.1402036):
     dependencies:
       devtools-protocol: 0.0.1402036
       mitt: 3.0.1
-      zod: 3.24.1
+      zod: 3.24.2
 
   cliui@8.0.1:
     dependencies:
@@ -7812,7 +7812,7 @@ snapshots:
 
   p-try@2.2.0: {}
 
-  pac-proxy-agent@7.1.0:
+  pac-proxy-agent@7.2.0:
     dependencies:
       '@tootallnate/quickjs-emscripten': 0.23.0
       agent-base: 7.1.3
@@ -7980,7 +7980,7 @@ snapshots:
       http-proxy-agent: 7.0.2
       https-proxy-agent: 7.0.6
       lru-cache: 7.18.3
-      pac-proxy-agent: 7.1.0
+      pac-proxy-agent: 7.2.0
       proxy-from-env: 1.1.0
       socks-proxy-agent: 8.0.5
     transitivePeerDependencies:
@@ -8006,27 +8006,27 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  puppeteer-core@24.2.0:
+  puppeteer-core@24.2.1:
     dependencies:
       '@puppeteer/browsers': 2.7.1
-      chromium-bidi: 1.2.0(devtools-protocol@0.0.1402036)
+      chromium-bidi: 1.3.0(devtools-protocol@0.0.1402036)
       debug: 4.4.0
       devtools-protocol: 0.0.1402036
       typed-query-selector: 2.12.0
-      ws: 8.18.0
+      ws: 8.18.1
     transitivePeerDependencies:
       - bare-buffer
       - bufferutil
       - supports-color
       - utf-8-validate
 
-  puppeteer@24.2.0(typescript@5.7.3):
+  puppeteer@24.2.1(typescript@5.7.3):
     dependencies:
       '@puppeteer/browsers': 2.7.1
-      chromium-bidi: 1.2.0(devtools-protocol@0.0.1402036)
+      chromium-bidi: 1.3.0(devtools-protocol@0.0.1402036)
       cosmiconfig: 9.0.0(typescript@5.7.3)
       devtools-protocol: 0.0.1402036
-      puppeteer-core: 24.2.0
+      puppeteer-core: 24.2.1
       typed-query-selector: 2.12.0
     transitivePeerDependencies:
       - bare-buffer
@@ -8414,11 +8414,11 @@ snapshots:
     dependencies:
       agent-base: 7.1.3
       debug: 4.4.0
-      socks: 2.8.3
+      socks: 2.8.4
     transitivePeerDependencies:
       - supports-color
 
-  socks@2.8.3:
+  socks@2.8.4:
     dependencies:
       ip-address: 9.0.5
       smart-buffer: 4.2.0
@@ -8925,7 +8925,7 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-  ws@8.18.0: {}
+  ws@8.18.1: {}
 
   xtend@4.0.2: {}
 
@@ -8961,6 +8961,6 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod@3.24.1: {}
+  zod@3.24.2: {}
 
   zwitch@2.0.4: {}
