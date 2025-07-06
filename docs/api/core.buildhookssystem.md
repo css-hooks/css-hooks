@@ -49,6 +49,7 @@ _(Optional)_ The function used to stringify values when merging conditional styl
 
 </td></tr>
 </tbody></table>
+
 **Returns:**
 
 [CreateHooksFn](./core.createhooksfn.md)<!-- -->&lt;CSSProperties&gt;
