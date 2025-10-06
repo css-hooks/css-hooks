@@ -69,7 +69,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-+import { css } from './css.ts'
++import { on } from './css.ts'
 +import { pipe } from 'remeda'
 
 function App() {
