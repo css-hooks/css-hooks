@@ -61,7 +61,7 @@ export const docs = Object.entries(
         index,
         pathname,
         level,
-        editURL: `https://github.com/css-hooks/css-hooks/edit/master/docs${key.substring("../../docs".length)}`,
+        editURL: `https://github.com/css-hooks/css-hooks/edit/latest/docs${key.substring("../../docs".length)}`,
       },
     };
   });

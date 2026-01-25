@@ -16,7 +16,7 @@ on:
 
 jobs:
   publish:
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/latest'
     runs-on: ubuntu-22.04
     steps:
       - name: checkout

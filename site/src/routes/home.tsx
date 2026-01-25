@@ -212,7 +212,7 @@ export default function Home({
               )}
             >
               <CtaButton
-                to="https://stackblitz.com/github/css-hooks/css-hooks/tree/master/example?file=src/app.tsx"
+                to="https://stackblitz.com/github/css-hooks/css-hooks/tree/latest/example?file=src/app.tsx"
                 icon={<DemoIcon />}
               >
                 Demo
