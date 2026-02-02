@@ -1,8 +1,9 @@
 // @ts-check
 
 import eslint from "@eslint/js";
-// @ts-expect-error eslint-plugin-import does indeed have a default export
+import prettierConfig from "eslint-config-prettier/flat";
 import importPlugin from "eslint-plugin-import";
+import prettier from "eslint-plugin-prettier";
 import importSortPlugin from "eslint-plugin-simple-import-sort";
 import unusedImportPlugin from "eslint-plugin-unused-imports";
 import tseslint from "typescript-eslint";
@@ -15,6 +16,7 @@ export default tseslint.config(
       "**/cjs/**",
       "**/esm/**",
       "**/types/**",
+      "node_modules",
       "site/.react-router/**",
       "site/build/**",
     ],
@@ -72,9 +74,8 @@ export default tseslint.config(
       ],
     },
   },
-  // @ts-expect-error type of `rules` is inferred incorrectly
-  ...["core", "preact", "qwik", "react", "solid"].map(pkg => ({
-    files: [`packages/${pkg}/**/*`],
+  {
+    files: [`packages/**/*`],
     rules: {
       "import/no-extraneous-dependencies": [
         "error",
@@ -82,11 +83,10 @@ export default tseslint.config(
           devDependencies: true,
           peerDependencies: true,
           optionalDependencies: false,
-          packageDir: `packages/${pkg}`,
         },
       ],
     },
-  })),
+  },
   {
     files: ["commitlint.config.js", "eslint.config.js", "**/vite.config.ts"],
     rules: {
@@ -99,4 +99,13 @@ export default tseslint.config(
       "import/no-default-export": "off",
     },
   },
+  {
+    plugins: {
+      prettier,
+    },
+    rules: {
+      "prettier/prettier": "error",
+    },
+  },
+  prettierConfig,
 );

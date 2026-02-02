@@ -1,0 +1,13 @@
+{
+  "name": "@scripts/readme",
+  "version": "3.0.4",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node main.ts"
+  },
+  "dependencies": {
+    "remeda": "^2.33.4",
+    "valibot": "^1.2.0"
+  }
+}
