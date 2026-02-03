@@ -1,11 +1,9 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
   "eslint.useFlatConfig": true,
-  "rewrap.wrappingColumn": 80,
-  "rewrap.autoWrap.enabled": true,
   "javascript.preferences.importModuleSpecifierEnding": "js",
   "typescript.preferences.importModuleSpecifierEnding": "js",
   "javascript.preferences.importModuleSpecifier": "relative",
   "typescript.preferences.importModuleSpecifier": "relative",
-  "editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" }
+  "editor.codeActionsOnSave": { "source.fixAll.eslint": true }
 }

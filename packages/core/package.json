@@ -4,16 +4,12 @@
   "version": "3.0.4",
   "author": "Nick Saunders",
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.39.4",
     "@types/color": "^3.0.6",
-    "@types/node": "^22.7.5",
     "color": "^4.2.3",
     "csstype": "^3.1.3",
     "lightningcss": "^1.23.0",
     "puppeteer": "^24.0.0",
-    "remeda": "^2.16.0",
-    "rimraf": "^6.0.1",
-    "typescript": "5.8.3"
+    "remeda": "^2.16.0"
   },
   "files": [
     "cjs",
@@ -33,9 +29,25 @@
     "directory": "packages/core"
   },
   "scripts": {
-    "clean": "rimraf cjs esm types",
-    "prepare": "tsc && tsc --project tsconfig.cjs.json && api-extractor run",
-    "test": "node --experimental-strip-types --conditions @css-hooks/source --test src/index.test.ts"
+    "build": "wireit",
+    "prepublishOnly": "wireit",
+    "test": "node --conditions @css-hooks/source --test src/index.test.ts"
+  },
+  "wireit": {
+    "apix": {
+      "command": "api-extractor run",
+      "dependencies": [
+        "build"
+      ]
+    },
+    "build": {
+      "command": "tsc && tsc --project tsconfig.cjs.json"
+    },
+    "prepublishOnly": {
+      "dependencies": [
+        "build"
+      ]
+    }
   },
   "types": "types",
   "exports": {

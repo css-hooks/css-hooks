@@ -1,4 +1,4 @@
-<p align="center">
+<p align="center" id="logos">
   <!-- npm-remove -->
   <a href="https://css-hooks.com/#gh-dark-mode-only" target="_blank">
     <img alt="CSS Hooks" src="https://raw.githubusercontent.com/css-hooks/css-hooks/HEAD/.github/logo-dark.svg" width="310" height="64" style="max-width: 100%;">
@@ -9,7 +9,7 @@
   </a>
 </p>
 
-<p align="center">
+<p align="center" id="badges">
   <a href="https://github.com/css-hooks/css-hooks/actions/workflows/build.yml"><img src="https://img.shields.io/github/actions/workflow/status/css-hooks/css-hooks/build.yml?branch=latest" alt="Build Status"></a>
   <a href="https://www.npmjs.com/org/css-hooks"><img src="https://img.shields.io/npm/v/@css-hooks%2Fcore.svg" alt="Latest Release"></a>
   <!-- npm-remove -->

@@ -1,0 +1,12 @@
+{
+  "name": "@scripts/calculate-version",
+  "version": "3.0.4",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node main.ts"
+  },
+  "dependencies": {
+    "semver": "^7.5.3"
+  }
+}

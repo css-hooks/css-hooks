@@ -4,11 +4,23 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc && NODE_ENV=production react-router build",
-    "dev": "vite dev"
+    "build": "wireit",
+    "dev": "vite dev",
+    "prepare": "wireit"
+  },
+  "wireit": {
+    "build": {
+      "command": "tsc && NODE_ENV=production react-router build",
+      "dependencies": [
+        "../packages/react:build"
+      ]
+    },
+    "prepare": {
+      "command": "react-router typegen"
+    }
   },
   "dependencies": {
-    "@css-hooks/react": "workspace:*",
+    "@css-hooks/react": "file:../packages/react",
     "@fontsource-variable/assistant": "^5.1.1",
     "@fontsource-variable/inconsolata": "^5.1.1",
     "@fontsource-variable/inter": "^5.1.1",
@@ -16,7 +28,6 @@
     "@react-router/node": "^7.6.2",
     "@total-typescript/ts-reset": "^0.6.1",
     "@types/hast": "^3.0.4",
-    "@types/node": "^22.10.5",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
     "@types/slug": "^5.0.9",
@@ -34,7 +45,6 @@
     "remeda": "^2.16.0",
     "shiki": "^2.0.0",
     "slug": "^10.0.0",
-    "typescript": "5.8.3",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",
     "valibot": "1.0.0",
