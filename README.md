@@ -1,21 +1,12 @@
 <p align="center" id="logos">
-  <!-- npm-remove -->
-  <a href="https://css-hooks.com/#gh-dark-mode-only" target="_blank">
-    <img alt="CSS Hooks" src="https://raw.githubusercontent.com/css-hooks/css-hooks/HEAD/.github/logo-dark.svg" width="310" height="64" style="max-width: 100%;">
-  </a>
-  <!-- /npm-remove -->
-  <a href="https://css-hooks.com/#gh-light-mode-only" target="_blank">
-    <img alt="CSS Hooks" src="https://raw.githubusercontent.com/css-hooks/css-hooks/HEAD/.github/logo-light.svg" width="310" height="64" style="max-width: 100%;">
-  </a>
+  <img alt="CSS Hooks" src=".github/logo-light.svg#gh-light-mode-only" height="64" style="max-width: 100%;">
+  <img alt="CSS Hooks" src=".github/logo-dark.svg#gh-dark-mode-only" height="64" style="max-width: 100%;">
 </p>
 
 <p align="center" id="badges">
-  <a href="https://github.com/css-hooks/css-hooks/actions/workflows/build.yml"><img src="https://img.shields.io/github/actions/workflow/status/css-hooks/css-hooks/build.yml?branch=latest" alt="Build Status"></a>
-  <a href="https://www.npmjs.com/org/css-hooks"><img src="https://img.shields.io/npm/v/@css-hooks%2Fcore.svg" alt="Latest Release"></a>
-  <!-- npm-remove -->
-  <a href="https://bundlephobia.com/package/@css-hooks/core"><img src="https://img.shields.io/bundlephobia/minzip/%40css-hooks%2Fcore" alt="npm bundle size"></a>
-  <!-- /npm-remove -->
-  <a href="https://github.com/css-hooks/css-hooks/blob/latest/LICENSE"><img src="https://img.shields.io/npm/l/css-hooks.svg" alt="License"></a>
+  <a href="https://github.com/css-hooks/css-hooks/tree/v3.0.5-next.0"><img src="https://img.shields.io/badge/tag-v3.0.5--next.0-hotpink" alt="tag v3.0.5-next.0"></a>
+  <a href="https://www.npmjs.com/package/@css-hooks/core/v/3.0.5-next.0"><img src="https://img.shields.io/badge/npm-v3.0.5--next.0-hotpink" alt="npm version"></a>
+  <a href="https://github.com/css-hooks/css-hooks/blob/v3.0.5-next.0/LICENSE"><img src="https://img.shields.io/badge/license-MIT-hotpink" alt="license"></a>
 </p>
 
 ---
