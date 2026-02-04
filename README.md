@@ -4,9 +4,9 @@
 </p>
 
 <p align="center" id="badges">
-  <a href="https://github.com/css-hooks/css-hooks/tree/v3.0.5"><img src="https://img.shields.io/badge/tag-v3.0.5-blue" alt="tag v3.0.5"></a>
-  <a href="https://www.npmjs.com/package/@css-hooks/core/v/3.0.5"><img src="https://img.shields.io/badge/npm-v3.0.5-blue" alt="npm version"></a>
-  <a href="https://github.com/css-hooks/css-hooks/blob/v3.0.5/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="license"></a>
+  <a href="https://github.com/css-hooks/css-hooks/tree/next"><img src="https://img.shields.io/badge/branch-next-hotpink" alt="branch next"></a>
+  <a href="https://www.npmjs.com/package/@css-hooks/core/v/next"><img src="https://img.shields.io/npm/v/@css-hooks/core/next.svg?label=npm&color=hotpink" alt="npm version"></a>
+  <a href="https://github.com/css-hooks/css-hooks/blob/next/LICENSE"><img src="https://img.shields.io/badge/license-MIT-hotpink" alt="license"></a>
 </p>
 
 ---
