@@ -1,0 +1,123 @@
+name: release
+
+on:
+  push:
+    branches:
+      - latest
+      - next
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    if: >
+      !startsWith(github.event.head_commit.message, 'misc: release v') &&
+      github.event.head_commit.message != 'misc: readme updates' &&
+      github.event.head_commit.message != 'merge latest into next'
+    steps:
+      - id: app_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.RELEASE_BOT_APP_ID }}
+          private-key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref_name }}
+          token: ${{ steps.app_token.outputs.token }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - id: version
+        run: npm start -w @scripts/calculate-version -- ${{ github.ref_name }}
+
+      - run: npm run start -w @scripts/apply-version -- "${{ steps.version.outputs.NEW_VERSION }}"
+
+      - run: npm start -w @scripts/readme -- --ref v${{ steps.version.outputs.NEW_VERSION }}
+
+      - uses: EndBug/add-and-commit@v9
+        with:
+          add: package.json package-lock.json README.md **/package.json
+          message: "misc: release v${{ steps.version.outputs.NEW_VERSION }}"
+          committer_name: CSS Hooks Release Bot
+          committer_email: ${{ vars.RELEASE_BOT_APP_ID }}+CSS-Hooks-Release-Bot[bot]@users.noreply.github.com
+
+      - uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ steps.app_token.outputs.token }}
+        with:
+          tag_name: v${{ steps.version.outputs.NEW_VERSION }}
+          target_commitish: ${{ github.ref_name }}
+          prerelease: ${{ github.ref_name == 'next' }}
+          body: ${{ steps.version.outputs.RELEASE_BODY }}
+
+      - run: npm start -w @scripts/readme -- --ref v${{ steps.version.outputs.NEW_VERSION }} --npm
+
+      - if: github.ref_name == 'latest'
+        run: npm publish --workspaces --if-present --access public --provenance
+
+      - if: github.ref_name == 'next'
+        run: npm publish --workspaces --if-present --access public --provenance --tag next
+
+  cleanup:
+    runs-on: ubuntu-latest
+    if: github.ref_name == 'latest'
+    needs: publish
+    steps:
+      - id: app_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.RELEASE_BOT_APP_ID }}
+          private-key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
+
+      - uses: morbalint/git-merge-action@v1
+        with:
+          source: latest
+          target: next
+          strategy_options: "ours"
+          user_name: CSS Hooks Release Bot
+          user_email: ${{ vars.RELEASE_BOT_APP_ID }}+CSS-Hooks-Release-Bot[bot]@users.noreply.github.com
+          token: ${{ steps.app_token.outputs.token }}
+
+      - uses: actions/checkout@v4
+        with:
+          ref: next
+          token: ${{ steps.app_token.outputs.token }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm start -w @scripts/readme -- --ref next
+
+      - uses: EndBug/add-and-commit@v9
+        with:
+          add: README.md
+          message: "misc: readme updates"
+          committer_name: CSS Hooks Release Bot
+          committer_email: ${{ vars.RELEASE_BOT_APP_ID }}+CSS-Hooks-Release-Bot[bot]@users.noreply.github.com
+
+      - name: pr
+        run: |
+          PR_TITLE="misc: release latest"
+          PR_BODY="This pull request is automatically managed and kept open indefinitely. It proposes merging all new development from the **\`next\`** branch into **\`latest\`**. Merge this PR when the next \"latest\" stable release is ready."
+          gh pr create \
+            --title "$PR_TITLE" \
+            --body "$PR_BODY" \
+            --base latest \
+            --head next \
+            --repo ${{ github.repository }} || echo "PR already exists or could not be created."
+        env:
+          GITHUB_TOKEN: ${{ steps.app_token.outputs.token }}

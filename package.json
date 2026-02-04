@@ -1,32 +1,49 @@
 {
   "name": "css-hooks",
   "description": "Monorepo for @css-hooks/* packages",
-  "version": "3.0.4",
+  "version": "3.0.5-next.2",
   "type": "module",
   "scripts": {
-    "check": "prettier --check . && eslint .",
-    "docs": "pnpm run -r prepare && api-documenter markdown -i temp -o docs/api",
-    "fix": "prettier --write . && eslint --fix ."
+    "docs": "wireit"
   },
+  "wireit": {
+    "docs": {
+      "command": "api-documenter markdown -i temp -o docs/api",
+      "dependencies": [
+        "./packages/core:apix",
+        "./packages/preact:apix",
+        "./packages/react:apix",
+        "./packages/qwik:apix",
+        "./packages/solid:apix"
+      ]
+    }
+  },
+  "workspaces": [
+    "packages/*",
+    "example",
+    "scripts/*",
+    "site"
+  ],
   "devDependencies": {
     "@eslint/js": "^9.30.1",
     "@microsoft/api-documenter": "^7.26.29",
-    "conventional-changelog-cli": "^5.0.0",
-    "conventional-github-releaser": "^3.1.5",
-    "conventional-recommended-bump": "^10.0.0",
+    "@microsoft/api-extractor": "^7.56.0",
+    "@types/node": "^24.10.9",
     "eslint": "^9.30.1",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.5",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-unused-imports": "^4.1.4",
     "prettier": "^3.6.2",
-    "typescript": "5.8.3",
-    "typescript-eslint": "^8.35.1"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.35.1",
+    "wireit": "^0.14.12"
   },
   "license": "MIT",
   "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/css-hooks/css-hooks.git"
-  },
-  "packageManager": "pnpm@10.2.1+sha512.398035c7bd696d0ba0b10a688ed558285329d27ea994804a52bad9167d8e3a72bcb993f9699585d3ca25779ac64949ef422757a6c31102c12ab932e5cbe5cc92"
+  }
 }

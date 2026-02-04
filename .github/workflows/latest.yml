@@ -1,0 +1,47 @@
+name: latest
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - edited
+      - reopened
+    branches:
+      - latest
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  title:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: deepakputhraya/action-pr-title@v1.0.2
+        with:
+          regex: "^misc: release latest$"
+          github_token: ${{ github.token }}
+
+  source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check
+        run: |
+          if [ "${{ github.event.pull_request.head.ref }}" != "next" ]; then
+            echo "PRs to the 'latest' branch must come from the 'next' branch."
+            exit 1
+          fi
+
+  releasable:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm -w @scripts/calculate-version start -- ${{ github.event.pull_request.base.ref }}

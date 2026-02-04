@@ -1,16 +1,13 @@
 {
   "name": "@css-hooks/solid",
   "description": "CSS Hooks for Solid",
-  "version": "3.0.4",
+  "version": "3.0.5-next.2",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "workspace:*"
+    "@css-hooks/core": "3.0.5-next.2"
   },
   "devDependencies": {
-    "@microsoft/api-extractor": "^7.39.4",
-    "rimraf": "^6.0.1",
-    "solid-js": "^1.7.11",
-    "typescript": "5.8.3"
+    "solid-js": "^1.7.11"
   },
   "files": [
     "cjs",
@@ -32,9 +29,28 @@
     "directory": "packages/solid"
   },
   "scripts": {
-    "clean": "rimraf cjs esm types",
-    "prepare": "tsc && tsc --project tsconfig.cjs.json && api-extractor run",
-    "test": "node --experimental-strip-types --conditions @css-hooks/source --test src/index.test.ts"
+    "build": "wireit",
+    "prepublishOnly": "wireit",
+    "test": "node --conditions @css-hooks/source --test src/index.test.ts"
+  },
+  "wireit": {
+    "apix": {
+      "command": "api-extractor run",
+      "dependencies": [
+        "build"
+      ]
+    },
+    "build": {
+      "command": "tsc && tsc --project tsconfig.cjs.json",
+      "dependencies": [
+        "../core:build"
+      ]
+    },
+    "prepublishOnly": {
+      "dependencies": [
+        "build"
+      ]
+    }
   },
   "type": "module",
   "types": "types",

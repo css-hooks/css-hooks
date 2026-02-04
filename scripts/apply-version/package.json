@@ -1,0 +1,12 @@
+{
+  "name": "@scripts/apply-version",
+  "version": "3.0.5-next.2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node main.ts"
+  },
+  "dependencies": {
+    "valibot": "^1.2.0"
+  }
+}
