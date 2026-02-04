@@ -8,5 +8,8 @@
   },
   "dependencies": {
     "semver": "^7.5.3"
+  },
+  "devDependencies": {
+    "@types/semver": "^7.7.1"
   }
 }
