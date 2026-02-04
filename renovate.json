@@ -1,73 +1,55 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended",
-    ":prConcurrentLimit10",
-    ":semanticCommitTypeAll(refactor)",
-    ":semanticCommitScopeDisabled",
-    ":automergeLinters",
-    ":automergePatch",
-    ":automergeRequireAllStatusChecks",
-    ":automergeTypes",
-    ":reviewer(nsaunders)"
-  ],
+  "extends": ["config:recommended", ":reviewer(nsaunders)"],
+  "baseBranches": ["next"],
+  "labels": ["dependencies"],
   "prConcurrentLimit": 1,
-  "ignorePaths": [],
+  "prHourlyLimit": 1,
+  "minimumReleaseAge": "3 days",
   "packageRules": [
     {
-      "matchFileNames": ["package.json"],
-      "semanticCommitScope": "root"
+      "description": "Block Microsoft tools that break Markdown output",
+      "matchPackageNames": [
+        "@microsoft/api-documenter",
+        "@microsoft/api-extractor"
+      ],
+      "enabled": false
     },
     {
-      "matchFileNames": ["packages/**/package.json"],
-      "semanticCommitScope": "{{parentDir}}"
+      "description": "Ignore internal monorepo packages",
+      "matchPackagePatterns": ["^@css-hooks/"],
+      "enabled": false
     },
     {
-      "matchFileNames": ["example/package.json"],
-      "semanticCommitScope": "example"
+      "description": "Maintenance Monday: Group all minor/patch updates except fonts",
+      "matchUpdateTypes": ["minor", "patch"],
+      "excludePackagePatterns": ["^@fontsource"],
+      "groupName": "weekly maintenance",
+      "schedule": ["before 5am on monday"],
+      "commitMessagePrefix": "misc:"
     },
     {
-      "matchFileNames": [".github/workflows/*.yml"],
-      "semanticCommitType": "ci"
+      "description": "Fonts: separate group to prevent clogging main PR",
+      "matchPackagePatterns": ["^@fontsource"],
+      "groupName": "fonts",
+      "commitMessagePrefix": "misc:"
     },
     {
-      "matchFileNames": [".github/workflows/build.yml"],
-      "semanticCommitScope": "build"
+      "description": "Major updates: Manual only, no auto-merge, specific prefix",
+      "matchUpdateTypes": ["major"],
+      "commitMessagePrefix": "BREAKING CHANGE:",
+      "automerge": false
     },
     {
-      "matchFileNames": [".github/workflows/publish.yml"],
-      "semanticCommitScope": "publish"
-    },
-    {
-      "matchFileNames": ["package.json", "packages/**/package.json"],
-      "groupName": "api-extractor",
-      "schedule": ["* 8 4 * *"],
-      "matchPackageNames": ["/@microsoft/api/"]
-    },
-    {
-      "matchPackageNames": ["/eslint/"],
-      "groupName": "eslint",
-      "schedule": ["* 8 1 * *"]
-    },
-    {
-      "matchPackageNames": ["/babel/"],
-      "groupName": "babel",
-      "schedule": ["* 8 2 * *"]
-    },
-    {
-      "groupName": "shiki",
-      "schedule": ["* 8 3 * *"],
-      "matchPackageNames": ["/shiki/"]
-    },
-    {
-      "groupName": "slug",
-      "schedule": ["* 8 5 * *"],
-      "matchPackageNames": ["/slug/"]
-    },
-    {
-      "groupName": "qwik",
-      "enabled": false,
-      "matchPackageNames": ["/qwik/"]
+      "description": "Disable GitHub Action updates",
+      "matchManagers": ["github-actions"],
+      "enabled": false
     }
-  ]
+  ],
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "addLabels": ["security"],
+    "commitMessagePrefix": "fix:",
+    "automerge": false
+  }
 }
