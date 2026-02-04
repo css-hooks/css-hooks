@@ -8,6 +8,12 @@
   "minimumReleaseAge": "3 days",
   "packageRules": [
     {
+      "description": "Default major update prefix (Broadest rule)",
+      "matchUpdateTypes": ["major"],
+      "commitMessagePrefix": "breaking:",
+      "automerge": false
+    },
+    {
       "description": "Block Microsoft tools that break Markdown output",
       "matchPackageNames": [
         "@microsoft/api-documenter",
@@ -21,11 +27,21 @@
       "enabled": false
     },
     {
-      "description": "Maintenance Monday: Group all minor/patch updates except fonts",
+      "description": "Override: Always use misc for devDependencies (prevents version bumps)",
+      "matchDepTypes": ["devDependencies"],
+      "commitMessagePrefix": "misc:"
+    },
+    {
+      "description": "Override: Always use misc for non-package workspaces (site, example, scripts)",
+      "matchFileNames": ["!(packages/**/package.json)"],
+      "commitMessagePrefix": "misc:"
+    },
+    {
+      "description": "Weekly Maintenance: Group all minor/patch updates except fonts",
       "matchUpdateTypes": ["minor", "patch"],
       "excludePackagePatterns": ["^@fontsource"],
       "groupName": "weekly maintenance",
-      "schedule": ["before 5am on monday"],
+      "schedule": ["before 5am on saturday"],
       "commitMessagePrefix": "misc:"
     },
     {
@@ -33,12 +49,6 @@
       "matchPackagePatterns": ["^@fontsource"],
       "groupName": "fonts",
       "commitMessagePrefix": "misc:"
-    },
-    {
-      "description": "Major updates: Manual only, no auto-merge, specific prefix",
-      "matchUpdateTypes": ["major"],
-      "commitMessagePrefix": "BREAKING CHANGE:",
-      "automerge": false
     },
     {
       "description": "Disable GitHub Action updates",

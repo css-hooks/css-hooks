@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: deepakputhraya/action-pr-title@v1.0.2
         with:
-          allowed_prefixes: "fix:,feat:,BREAKING CHANGE:,misc:"
+          allowed_prefixes: "fix:,feat:,breaking:,misc:"
           prefix_case_sensitive: true
           regex: "^[A-Za-z\\s]+: \\S.*$"
           github_token: ${{ github.token }}

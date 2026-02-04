@@ -5,7 +5,7 @@ import { promisify } from "node:util";
 import semver from "semver";
 
 const commitPrefixes = {
-  breakingChange: "BREAKING CHANGE:",
+  breakingChange: "breaking:",
   feat: "feat:",
   fix: "fix:",
 };
