@@ -6,6 +6,9 @@
   "prConcurrentLimit": 1,
   "prHourlyLimit": 1,
   "minimumReleaseAge": "3 days",
+  "commitMessageAction": "{{lowerCase action}}",
+  "commitMessageTopic": "{{lowerCase depName}}",
+  "commitMessageExtra": "to v{{lowerCase newVersion}}",
   "packageRules": [
     {
       "description": "Default major update prefix (Broadest rule)",
@@ -40,7 +43,7 @@
       "description": "Weekly Maintenance: Group all minor/patch updates except fonts",
       "matchUpdateTypes": ["minor", "patch"],
       "excludePackagePatterns": ["^@fontsource"],
-      "groupName": "weekly maintenance",
+      "groupName": "dependencies",
       "schedule": ["before 5am on saturday"],
       "commitMessagePrefix": "misc:"
     },
