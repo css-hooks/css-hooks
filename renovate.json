@@ -6,7 +6,7 @@
   "prConcurrentLimit": 1,
   "prHourlyLimit": 1,
   "minimumReleaseAge": "3 days",
-  "commitMessageAction": "{{lowercase action}}",
+  "commitMessageAction": "update",
   "commitMessageTopic": "{{lowercase depName}}",
   "commitMessageExtra": "to v{{lowercase newVersion}}",
   "packageRules": [
