@@ -6,9 +6,9 @@
   "prConcurrentLimit": 1,
   "prHourlyLimit": 1,
   "minimumReleaseAge": "3 days",
-  "commitMessageAction": "{{lowerCase action}}",
-  "commitMessageTopic": "{{lowerCase depName}}",
-  "commitMessageExtra": "to v{{lowerCase newVersion}}",
+  "commitMessageAction": "{{lowercase action}}",
+  "commitMessageTopic": "{{lowercase depName}}",
+  "commitMessageExtra": "to v{{lowercase newVersion}}",
   "packageRules": [
     {
       "description": "Default major update prefix (Broadest rule)",
