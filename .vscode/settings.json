@@ -5,5 +5,7 @@
   "typescript.preferences.importModuleSpecifierEnding": "js",
   "javascript.preferences.importModuleSpecifier": "relative",
   "typescript.preferences.importModuleSpecifier": "relative",
-  "editor.codeActionsOnSave": { "source.fixAll.eslint": true }
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  }
 }
