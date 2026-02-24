@@ -1,7 +1,7 @@
 {
   "name": "example",
   "private": true,
-  "version": "3.0.6-next.8",
+  "version": "3.0.6-next.9",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@css-hooks/react": "3.0.6-next.8",
+    "@css-hooks/react": "3.0.6-next.9",
     "@fontsource/inter": "^5.1.0",
     "@types/react": "^19.0.4",
     "@types/react-dom": "^19.0.2",
