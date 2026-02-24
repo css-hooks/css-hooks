@@ -54,6 +54,10 @@
       "commitMessagePrefix": "misc:"
     },
     {
+      "matchPackageNames": ["color", "@types/color"],
+      "groupName": "color package and types"
+    },
+    {
       "description": "Disable GitHub Action updates",
       "matchManagers": ["github-actions"],
       "enabled": false
