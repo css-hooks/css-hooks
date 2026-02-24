@@ -32,7 +32,7 @@
     "@types/react-dom": "^19.0.2",
     "@types/slug": "^5.0.9",
     "front-matter": "^4.0.2",
-    "glob": "^11.0.0",
+    "glob": "^13.0.0",
     "hast": "^1.0.0",
     "isbot": "^5",
     "puppeteer": "^24.0.0",
