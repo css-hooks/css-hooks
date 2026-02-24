@@ -1,6 +1,6 @@
 {
   "name": "@scripts/readme",
-  "version": "3.0.6-next.10",
+  "version": "3.0.6-next.11",
   "private": true,
   "type": "module",
   "scripts": {
