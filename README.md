@@ -4,9 +4,9 @@
 </p>
 
 <p align="center" id="badges">
-  <a href="https://github.com/css-hooks/css-hooks/tree/v3.0.6-next.14"><img src="https://img.shields.io/badge/tag-v3.0.6--next.14-hotpink" alt="tag v3.0.6-next.14"></a>
-  <a href="https://www.npmjs.com/package/@css-hooks/core/v/3.0.6-next.14"><img src="https://img.shields.io/badge/npm-v3.0.6--next.14-hotpink" alt="npm version"></a>
-  <a href="https://github.com/css-hooks/css-hooks/blob/v3.0.6-next.14/LICENSE"><img src="https://img.shields.io/badge/license-MIT-hotpink" alt="license"></a>
+  <a href="https://github.com/css-hooks/css-hooks/tree/v3.0.6-next.15"><img src="https://img.shields.io/badge/tag-v3.0.6--next.15-hotpink" alt="tag v3.0.6-next.15"></a>
+  <a href="https://www.npmjs.com/package/@css-hooks/core/v/3.0.6-next.15"><img src="https://img.shields.io/badge/npm-v3.0.6--next.15-hotpink" alt="npm version"></a>
+  <a href="https://github.com/css-hooks/css-hooks/blob/v3.0.6-next.15/LICENSE"><img src="https://img.shields.io/badge/license-MIT-hotpink" alt="license"></a>
 </p>
 
 ---
