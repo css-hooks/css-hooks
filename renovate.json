@@ -54,6 +54,11 @@
       "commitMessagePrefix": "misc:"
     },
     {
+      "description": "Disable eslint upgrades until ecosystem catches up",
+      "matchPackageNames": ["eslint", "@eslint/js"],
+      "allowedVersions": "<10.0.0"
+    },
+    {
       "description": "Disable GitHub Action updates",
       "matchManagers": ["github-actions"],
       "enabled": false
