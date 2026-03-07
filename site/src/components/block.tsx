@@ -4,8 +4,9 @@ export function Block({ children }: { children?: ReactNode }) {
   return (
     <div
       style={{
-        width: "calc(100vw - 4rem)",
-        maxWidth: "80rem",
+        containerType: "inline-size",
+        width: "calc(100vw - 64px)",
+        maxWidth: 1280,
         margin: "0 auto",
       }}
     >
