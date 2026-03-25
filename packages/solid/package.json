@@ -1,10 +1,10 @@
 {
   "name": "@css-hooks/solid",
   "description": "CSS Hooks for Solid",
-  "version": "3.0.6-next.20",
+  "version": "3.0.6-next.21",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "3.0.6-next.20"
+    "@css-hooks/core": "3.0.6-next.21"
   },
   "devDependencies": {
     "solid-js": "^1.7.11"

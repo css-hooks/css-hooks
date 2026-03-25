@@ -1,10 +1,10 @@
 {
   "name": "@css-hooks/react",
   "description": "CSS Hooks for React",
-  "version": "3.0.6-next.20",
+  "version": "3.0.6-next.21",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "3.0.6-next.20"
+    "@css-hooks/core": "3.0.6-next.21"
   },
   "devDependencies": {
     "@types/react": "^19.0.4"
