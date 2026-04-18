@@ -19,6 +19,10 @@ async function main() {
     process.exit(1);
   }
 
+  const rootPkgPath = resolve(rootDirectory, "package.json");
+  const rootPkg = JSON.parse(await readFile(rootPkgPath, "utf-8"));
+  const currentVersion: string = rootPkg.version;
+
   console.log(`🚀 Bumping all workspaces to: ${newVersion}`);
 
   await exec(
@@ -76,6 +80,17 @@ async function main() {
   });
 
   await Promise.all(patchPromises);
+
+  const homeTsxPath = resolve(rootDirectory, "site/src/routes/home.tsx");
+  const homeTsxContent = await readFile(homeTsxPath, "utf-8");
+  const updatedHomeTsx = homeTsxContent.replace(
+    /\/github\/css-hooks\/css-hooks\/tree\/[^/]+\/example/,
+    `/github/css-hooks/css-hooks/tree/v${currentVersion}/example`,
+  );
+  if (updatedHomeTsx !== homeTsxContent) {
+    await writeFile(homeTsxPath, updatedHomeTsx);
+    console.log(`✅ Updated StackBlitz link to v${currentVersion} in home.tsx`);
+  }
 
   console.log("📦 Refreshing lockfile...");
   await exec("npm install --package-lock-only", { cwd: rootDirectory });
