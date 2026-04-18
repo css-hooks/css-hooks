@@ -36,7 +36,7 @@ export async function loader({ params }: Route.LoaderArgs) {
     "<!DOCTYPE html>" +
       renderToString(
         <body style={{ margin: 0 }}>
-          <Logomark height="100dvh" shade={50} />
+          <Logomark height="100dvh" />
         </body>,
       ),
   );
