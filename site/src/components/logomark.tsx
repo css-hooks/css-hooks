@@ -2,10 +2,7 @@ import type { CSSProperties } from "react";
 
 import { purple } from "../design/colors.ts";
 
-export function Logomark({
-  height = "1em",
-  shade = 61,
-}: Pick<CSSProperties, "height"> & { shade?: Parameters<typeof purple>[0] }) {
+export function Logomark({ height = "1em" }: Pick<CSSProperties, "height">) {
   return (
     <div
       style={{
@@ -14,7 +11,7 @@ export function Logomark({
         display: "grid",
         gridTemplateRows: "repeat(5, 1fr)",
         gridTemplateColumns: "3fr 4fr 3fr 4fr 3fr",
-        color: purple(shade),
+        color: purple(61),
         borderRadius: "0 12.5% 12.5%",
         overflow: "hidden",
       }}
