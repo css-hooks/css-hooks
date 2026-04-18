@@ -4,6 +4,7 @@ import eslint from "@eslint/js";
 import prettierConfig from "eslint-config-prettier/flat";
 import importPlugin from "eslint-plugin-import";
 import prettier from "eslint-plugin-prettier";
+import react from "eslint-plugin-react";
 import importSortPlugin from "eslint-plugin-simple-import-sort";
 import unusedImportPlugin from "eslint-plugin-unused-imports";
 import tseslint from "typescript-eslint";
@@ -97,6 +98,29 @@ export default tseslint.config(
     files: ["site/**"],
     rules: {
       "import/no-default-export": "off",
+    },
+  },
+  {
+    files: ["site/**/*.tsx"],
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
+    },
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
+    plugins: {
+      react,
+    },
+    rules: {
+      ...react.configs.recommended.rules,
+      ...react.configs["jsx-runtime"].rules,
+      "react/function-component-definition": "error",
     },
   },
   {

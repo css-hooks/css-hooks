@@ -39,14 +39,14 @@ Modify `src/index.tsx` to add the style sheet to the document:
 <!-- prettier-ignore-start -->
 
 ```diff
-/* @refresh reload */
-import { render } from 'solid-js/web'
+ /* @refresh reload */
+ import { render } from 'solid-js/web'
 
-import './index.css'
-import App from './App'
+ import './index.css'
+ import App from './App'
 +import { styleSheet } from './css'
 
-const root = document.getElementById('root')
+ const root = document.getElementById('root')
 
 -render(() => <App />, root!)
 +render(
@@ -70,30 +70,30 @@ button is pressed:
 <!-- prettier-ignore-start -->
 
 ```diff
-// src/App.tsx
+ // src/App.tsx
 
-import { createSignal } from 'solid-js'
-import solidLogo from './assets/solid.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+ import { createSignal } from 'solid-js'
+ import solidLogo from './assets/solid.svg'
+ import viteLogo from '/vite.svg'
+ import './App.css'
 +import { on } from './css'
 +import { pipe } from 'remeda'
 
-function App() {
-  const [count, setCount] = createSignal(0)
+ function App() {
+   const [count, setCount] = createSignal(0)
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://solidjs.com" target="_blank">
-          <img src={solidLogo} className="logo solid" alt="Solid logo" />
-        </a>
-      </div>
-      <h1>Vite + Solid</h1>
-      <div className="card">
+   return (
+     <>
+       <div>
+         <a href="https://vitejs.dev" target="_blank">
+           <img src={viteLogo} className="logo" alt="Vite logo" />
+         </a>
+         <a href="https://solidjs.com" target="_blank">
+           <img src={solidLogo} className="logo solid" alt="Solid logo" />
+         </a>
+       </div>
+       <h1>Vite + Solid</h1>
+       <div className="card">
 -        <button onClick={() => setCount((count) => count + 1)}>
 +        <button
 +          onClick={() => setCount((count) => count + 1)}
@@ -106,20 +106,20 @@ function App() {
 +            })
 +          )}
 +        >
-          count is {count()}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and Solid logos to learn more
-      </p>
-    </>
-  )
-}
+           count is {count()}
+         </button>
+         <p>
+           Edit <code>src/App.tsx</code> and save to test HMR
+         </p>
+       </div>
+       <p className="read-the-docs">
+         Click on the Vite and Solid logos to learn more
+       </p>
+     </>
+   )
+ }
 
-export default App
+ export default App
 ```
 
 <!-- prettier-ignore-end -->

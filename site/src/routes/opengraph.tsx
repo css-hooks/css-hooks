@@ -18,7 +18,7 @@ export async function loader() {
       renderToString(
         <body style={{ margin: 0 }} data-theme="dark">
           <link
-            href="https://fonts.googleapis.com/css2?family=Assistant&family=Inter&display=swap"
+            href="https://fonts.googleapis.com/css2?family=Assistant&family=Geist&display=swap"
             rel="stylesheet"
           />
           <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
@@ -55,7 +55,7 @@ export async function loader() {
                 justifyContent: "center",
               }}
             >
-              <Logo size="8rem" />
+              <Logo height="8rem" />
             </div>
             <Banner>
               <div>native inline styles.</div>
@@ -71,7 +71,7 @@ export async function loader() {
 
   await browser.close();
 
-  return new Response(image, {
+  return new Response(Buffer.from(image), {
     status: 200,
     headers: {
       "Content-Type": "image/png",
@@ -84,7 +84,7 @@ function Banner({ children }: { children?: ReactNode }) {
     <div
       style={{
         padding: "1em",
-        fontFamily: "'Inter', sans-serif",
+        fontFamily: "'Geist', sans-serif",
         fontWeight: 700,
         lineHeight: 1,
         fontSize: "2.5rem",

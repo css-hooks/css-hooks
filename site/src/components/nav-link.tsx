@@ -10,19 +10,22 @@ export function NavLink({
   style,
   ...restProps
 }: ComponentProps<typeof ReactRouter.NavLink>) {
+  const selectedClass = "a";
+  const selected = `&.${selectedClass}`;
   return (
     <ReactRouter.NavLink
       style={props =>
         pipe(
           anchorLinkStyle,
-          on("&.selected", {
+          on(selected, {
             color: "inherit",
+            textDecorationColor: "transparent",
           }),
           merge(typeof style === "function" ? style(props) : style),
         )
       }
       className={classNameProps =>
-        `${classNameProps.isActive ? "selected" : ""}${className ? ` ${typeof className === "string" ? className : className(classNameProps)}` : ""}`
+        `${classNameProps.isActive ? selectedClass : ""}${className ? ` ${typeof className === "string" ? className : className(classNameProps)}` : ""}`
       }
       {...restProps}
     />

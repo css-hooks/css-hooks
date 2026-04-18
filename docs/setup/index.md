@@ -143,11 +143,11 @@ about the syntax used to create hooks.
 Add the generated style sheet to your app. For example, in your `App` component:
 
 ```diff
-// src/app.tsx
+ // src/app.tsx
 
-import { styleSheet } from "./css";
+ import { styleSheet } from "./css";
 
-export function App() {
+ export function App() {
 -  return <HomePage />;
 +  return (
 +    <>
@@ -155,7 +155,7 @@ export function App() {
 +      <HomePage />
 +    </>
 +  );
-}
+ }
 ```
 
 <!-- prettier-ignore-start -->

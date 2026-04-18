@@ -27,7 +27,7 @@
     "@css-hooks/react": "3.0.6-next.21",
     "@fontsource-variable/assistant": "^5.1.1",
     "@fontsource-variable/inconsolata": "^5.1.1",
-    "@fontsource-variable/inter": "^5.1.1",
+    "@fontsource-variable/geist": "^5.1.1",
     "@react-router/dev": "^7.6.2",
     "@total-typescript/ts-reset": "^0.6.1",
     "@types/hast": "^3.0.4",
