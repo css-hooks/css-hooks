@@ -4,6 +4,7 @@ import { prerenderToNodeStream } from "react-dom/static";
 import { Link } from "react-router";
 import { pipe } from "remeda";
 
+import { version } from "../../package.json";
 import { Block } from "../components/block.tsx";
 import { Hr } from "../components/hr.tsx";
 import { CheckIcon, ContentCopyIcon } from "../components/icons.tsx";
@@ -215,7 +216,9 @@ export default function Home({
                   )}
                 >
                   <div style={{ display: "grid", minWidth: 240 }}>
-                    <CtaButton to="https://stackblitz.com/github/css-hooks/css-hooks/tree/latest/example?file=src/app.tsx">
+                    <CtaButton
+                      to={`https://stackblitz.com/github/css-hooks/css-hooks/tree/v${version}/example?file=src/app.tsx`}
+                    >
                       View Demo
                     </CtaButton>
                   </div>
