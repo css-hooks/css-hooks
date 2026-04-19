@@ -179,35 +179,34 @@ export default function Home({
               </p>
               <div
                 style={{
-                  display: "inline-flex",
+                  display: "inline-grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  width: "100%",
+                  maxWidth: 480,
                   gap: 16,
                   marginTop: "1em",
                 }}
               >
-                <div style={{ display: "grid", minWidth: 240 }}>
-                  <CtaButton to="/docs" theme="primary">
-                    Documentation
+                <CtaButton to="/docs" theme="primary">
+                  Docs
+                </CtaButton>
+                <div
+                  style={pipe(
+                    {
+                      display: "contents",
+                    },
+                    on("@media (width >= 44em)", {
+                      display: "none",
+                    }),
+                  )}
+                >
+                  <CtaButton to="https://github.com/css-hooks/css-hooks">
+                    Star
                   </CtaButton>
                 </div>
                 <div
                   style={pipe(
                     {
-                      display: "contents",
-                    },
-                    on("@media (width >= 44em)", {
-                      display: "none",
-                    }),
-                  )}
-                >
-                  <div style={{ display: "grid", minWidth: 240 }}>
-                    <CtaButton to="https://github.com/css-hooks/css-hooks">
-                      Star
-                    </CtaButton>
-                  </div>
-                </div>
-                <div
-                  style={pipe(
-                    {
                       display: "none",
                     },
                     on("@media (width >= 44em)", {
@@ -215,13 +214,11 @@ export default function Home({
                     }),
                   )}
                 >
-                  <div style={{ display: "grid", minWidth: 240 }}>
-                    <CtaButton
-                      to={`https://stackblitz.com/github/css-hooks/css-hooks/tree/v${version}/example?file=src/app.tsx`}
-                    >
-                      View Demo
-                    </CtaButton>
-                  </div>
+                  <CtaButton
+                    to={`https://stackblitz.com/github/css-hooks/css-hooks/tree/v${version}/example?file=src/app.tsx`}
+                  >
+                    Demo
+                  </CtaButton>
                 </div>
               </div>
             </div>
