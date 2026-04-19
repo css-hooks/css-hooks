@@ -95,10 +95,14 @@ async function main() {
           )
           .join("");
 
-        return readme.replace(
-          /<div[^>]+id="badges"[^>]*>([\S\s]*?)<\/div>/m,
+        const updated = readme.replace(
+          /<(\w+)[^>]+id="badges"[^>]*>([\S\s]*?)<\/\1>/m,
           `<div align="center" id="badges">${badges}\n</div>`,
         );
+        if (updated === readme) {
+          throw new Error("Could not find badges section in README.md");
+        }
+        return updated;
       },
       readme => readme.replace(/@css-hooks\/core/g, packageName),
     );
