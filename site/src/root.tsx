@@ -252,21 +252,28 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 gap: "1em",
               }}
             >
-              {[
-                { to: "/docs", Icon: MenuBookIcon, label: "Documentation" },
-                {
-                  to: "https://github.com/css-hooks/css-hooks",
-                  Icon: GitHubIcon,
-                  label: "Source on GitHub",
-                },
-              ].map(({ to, Icon, label }) => (
-                <HeaderUtility key={to} asChild>
-                  <Link to={to}>
-                    <Icon />
-                    <ScreenReaderOnly>{label}</ScreenReaderOnly>
-                  </Link>
-                </HeaderUtility>
-              ))}
+              <div
+                style={pipe(
+                  { display: "none" },
+                  on("@media (width >= 44em)", { display: "contents" }),
+                )}
+              >
+                {[
+                  { to: "/docs", Icon: MenuBookIcon, label: "Documentation" },
+                  {
+                    to: "https://github.com/css-hooks/css-hooks",
+                    Icon: GitHubIcon,
+                    label: "Source on GitHub",
+                  },
+                ].map(({ to, Icon, label }) => (
+                  <HeaderUtility key={to} asChild>
+                    <Link to={to}>
+                      <Icon />
+                      <ScreenReaderOnly>{label}</ScreenReaderOnly>
+                    </Link>
+                  </HeaderUtility>
+                ))}
+              </div>
               <ThemeSwitcher />
             </div>
           </header>
