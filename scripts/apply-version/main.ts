@@ -85,6 +85,17 @@ async function main() {
 
   await Promise.all(patchPromises);
 
+  const homeTsxPath = resolve(rootDirectory, "site/src/routes/home.tsx");
+  const homeTsxContent = await readFile(homeTsxPath, "utf-8");
+  const updatedHomeTsx = homeTsxContent.replace(
+    /\bhttps:\/\/stackblitz\.com\/github\/css-hooks\/css-hooks\/tree\/[^/]+\/example\?file=src\/app\.tsx\b/g,
+    `https://stackblitz.com/github/css-hooks/css-hooks/tree/v${newVersion}/example?file=src/app.tsx`,
+  );
+  if (updatedHomeTsx !== homeTsxContent) {
+    await writeFile(homeTsxPath, updatedHomeTsx);
+    console.log(`✅ Updated StackBlitz link in: ${homeTsxPath}`);
+  }
+
   console.log("📦 Refreshing lockfile...");
   await exec("npm install --package-lock-only", { cwd: rootDirectory });
 
