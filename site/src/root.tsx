@@ -321,7 +321,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     ["GitHub", "https://github.com/css-hooks/css-hooks"],
                     ["NPM", "https://www.npmjs.com/org/css-hooks"],
                     ["X", "https://www.x.com/csshooks"],
-                    ["Facebook", "https://www.facebook.com/csshooks"],
                   ] as const
                 ).map(([children, to]) => (
                   <NavLink key={to} to={to}>
