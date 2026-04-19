@@ -28,7 +28,10 @@ async function main() {
     );
   } catch (e: unknown) {
     const err = e as { stderr?: string };
-    if (!err.stderr?.includes("Version not changed")) {
+    if (
+      !err.stderr?.includes("Version not changed") &&
+      !err.stderr?.includes("notarget")
+    ) {
       throw e;
     }
     console.log("ℹ️  Version already set, skipping npm version bump.");
