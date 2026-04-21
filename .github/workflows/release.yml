@@ -52,9 +52,8 @@ jobs:
           committer_email: ${{ vars.RELEASE_BOT_APP_ID }}+CSS-Hooks-Release-Bot[bot]@users.noreply.github.com
 
       - uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ steps.app_token.outputs.token }}
         with:
+          token: ${{ steps.app_token.outputs.token }}
           tag_name: v${{ steps.version.outputs.NEW_VERSION }}
           target_commitish: ${{ github.ref_name }}
           prerelease: ${{ github.ref_name == 'next' }}

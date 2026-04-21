@@ -12,18 +12,10 @@ import { EditIcon, ExpandMoreIcon } from "../components/icons.tsx";
 import { NavLink } from "../components/nav-link.tsx";
 import { Preformatted } from "../components/preformatted.tsx";
 import { SyntaxHighlighter } from "../components/syntax-highlighter.tsx";
-import { and, dark, hover, not, on, or } from "../css.ts";
+import { and, dark, extractClassName, hover, not, on, or } from "../css.ts";
 import { docs } from "../data/docs.ts";
 import { createMetaDescriptors } from "../data/meta.ts";
-import {
-  blue,
-  gray,
-  orange,
-  pink,
-  red,
-  teal,
-  white,
-} from "../design/colors.ts";
+import { blue, gray, orange, purple, teal, white } from "../design/colors.ts";
 import { rehypeClassName, rehypeStyle } from "../rehype.ts";
 import type { Route } from "./+types/doc.ts";
 
@@ -81,10 +73,19 @@ function MenuList({ children }: { children: ReactNode }) {
   );
 }
 
-function MenuItem({ children, pathname, title }: MenuItem) {
+function MenuItem({
+  children,
+  pathname,
+  title,
+  level = 0,
+}: MenuItem & { level?: number }) {
   return (
-    <li style={{ marginTop: "0.25em" }}>
-      <NavLink to={pathname} end>
+    <li style={{ marginTop: level === 0 ? "1em" : "0.4em" }}>
+      <NavLink
+        to={pathname}
+        end
+        style={{ fontWeight: level === 0 ? 500 : undefined }}
+      >
         {title}
       </NavLink>
       {children.length ? (
@@ -94,7 +95,7 @@ function MenuItem({ children, pathname, title }: MenuItem) {
               a.order < b.order ? -1 : a.order > b.order ? 1 : 0,
             )
             .map(child => (
-              <MenuItem key={child.pathname} {...child} />
+              <MenuItem key={child.pathname} {...child} level={level + 1} />
             ))}
         </MenuList>
       ) : (
@@ -126,21 +127,24 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6, style: CSSProperties) {
               style={pipe(
                 {
                   transform: "translateY(-22.5%)",
-                  width: "0.75em",
-                  height: "0.75em",
+                  fontSize: "0.75em",
+                  width: "1em",
+                  aspectRatio: 1,
                   display: "inline-grid",
                   placeItems: "center",
                   borderRadius: 999,
-                  background: pink(10),
-                  color: pink(60),
+                  background: purple(10),
+                  color: purple(60),
                 },
                 on(dark, {
-                  background: pink(60),
-                  color: pink(10),
+                  background: purple(60),
+                  color: purple(10),
                 }),
               )}
             >
-              <span style={{ fontSize: "0.5em" }}>{step}</span>
+              <span style={{ fontSize: "0.666em", lineHeight: "1.5em" }}>
+                {step}
+              </span>
             </span>
             {` ${content}`}
           </>
@@ -331,6 +335,13 @@ export async function loader({ params }: Route.LoaderArgs) {
           node: _node,
           ...restProps
         }) => {
+          const note = "&.a";
+          const warning = "&.b";
+          const hasNote = `&:has(.${extractClassName(note)})` as const;
+          const hasWarning = `&:has(.${extractClassName(warning)})` as const;
+          const noteColor = purple;
+          const warningColor = orange;
+
           const children = (function alertify(
             alert,
             node: ReactNode,
@@ -372,12 +383,28 @@ export async function loader({ params }: Route.LoaderArgs) {
             (type: "WARNING" | "NOTE") => (
               <span style={{ display: "block" }}>
                 <strong
-                  style={{
-                    color: type === "WARNING" ? orange(30) : blue(30),
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.375em",
-                  }}
+                  className={extractClassName(
+                    type === "WARNING" ? warning : note,
+                  )}
+                  style={pipe(
+                    {
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "0.375em",
+                    },
+                    on(warning, {
+                      color: warningColor(50),
+                    }),
+                    on(note, {
+                      color: noteColor(50),
+                    }),
+                    on(and(dark, warning), {
+                      color: warningColor(40),
+                    }),
+                    on(and(dark, note), {
+                      color: noteColor(40),
+                    }),
+                  )}
                 >
                   <svg
                     viewBox="0 0 16 16"
@@ -402,7 +429,7 @@ export async function loader({ params }: Route.LoaderArgs) {
                 </strong>
               </span>
             ),
-            createElement("div", { children: childrenProp }),
+            createElement("div", { children: childrenProp }), // eslint-disable-line react/no-children-prop
           );
           return (
             <blockquote
@@ -415,7 +442,7 @@ export async function loader({ params }: Route.LoaderArgs) {
                   marginLeft: 0,
                   marginRight: 0,
                   marginBlock: "1.5rem",
-                  borderColor: pink(20),
+                  borderColor: gray(50),
                   color: gray(70),
                   background: white,
                   ...style,
@@ -424,9 +451,20 @@ export async function loader({ params }: Route.LoaderArgs) {
                   boxShadow: `inset 0 0 0 1px ${gray(20)}`,
                 }),
                 on(dark, {
-                  borderColor: pink(60),
                   background: gray(85),
                   color: gray(30),
+                }),
+                on(hasWarning, {
+                  borderColor: warningColor(40),
+                }),
+                on(hasNote, {
+                  borderColor: noteColor(40),
+                }),
+                on(and(dark, hasWarning), {
+                  borderColor: warningColor(61),
+                }),
+                on(and(dark, hasNote), {
+                  borderColor: noteColor(61),
                 }),
               )}
               {...restProps}
@@ -591,15 +629,21 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
       <nav
         style={pipe(
           {
-            background: gray(5),
             boxSizing: "border-box",
+            borderStyle: "solid",
+            borderColor: gray(15),
+            borderTopWidth: 0,
+            borderRightWidth: 0,
+            borderBottomWidth: 1,
+            borderLeftWidth: 0,
           },
-          on(dark, {
-            background: gray(85),
-          }),
           on("@media (width >= 44em)", {
             flexBasis: "24ch",
             flexShrink: 0,
+            borderRightWidth: 1,
+          }),
+          on(dark, {
+            borderColor: gray(80),
           }),
         )}
       >
@@ -611,7 +655,8 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
               padding: "1rem 1.25rem",
               gap: "0.25rem",
               fontSize: "1.25rem",
-              color: gray(60),
+              background: gray(12),
+              color: gray(55),
               outlineWidth: 0,
               outlineColor: blue(20),
               outlineStyle: "solid",
@@ -619,31 +664,27 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
             },
             on(dark, {
               outlineColor: blue(50),
-              color: gray(40),
+              background: gray(80),
+              color: white,
             }),
             on("&:has(:focus-visible)", {
               outlineWidth: 2,
             }),
-            on(or(hover, "&:active"), {
-              background: white,
-            }),
             on(hover, {
-              color: blue(50),
+              background: gray(15),
+              color: gray(58),
             }),
             on("&:active", {
-              color: red(50),
+              background: gray(18),
+              color: gray(61),
             }),
-            on(
-              and(or(hover, "&:active"), "@media (prefers-color-scheme: dark)"),
-              {
-                background: gray(80),
-              },
-            ),
             on(and(hover, dark), {
-              color: blue(20),
+              background: gray(78),
+              color: white,
             }),
             on(and("&:active", dark), {
-              color: red(20),
+              background: gray(76),
+              color: white,
             }),
             on("@media (width >= 44em)", {
               display: "none",
@@ -747,6 +788,7 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
                 style={{
                   display: "flex",
                   flexDirection: "column",
+                  alignItems: "flex-start",
                   gap: "1rem",
                 }}
               >

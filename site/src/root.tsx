@@ -3,6 +3,7 @@ import "./global.css";
 import { useEffect, useState } from "react";
 import {
   isRouteErrorResponse,
+  Link,
   Links,
   Meta,
   Outlet,
@@ -13,6 +14,7 @@ import { pipe } from "remeda";
 import * as v from "valibot";
 
 import type { Route } from "./+types/root.ts";
+import { HeaderUtility } from "./components/header-utility.tsx";
 import {
   ArrowDropDownIcon,
   DarkModeIcon,
@@ -23,9 +25,9 @@ import {
 import { Logo } from "./components/logo.tsx";
 import { NavLink } from "./components/nav-link.tsx";
 import { ScreenReaderOnly } from "./components/screen-reader-only.tsx";
-import { and, dark, hover, not, on, styleSheet } from "./css.ts";
+import { dark, not, on, or, styleSheet } from "./css.ts";
 import { createMetaDescriptors } from "./data/meta.ts";
-import { black, blue, gray, red, white } from "./design/colors.ts";
+import { black, gray, purple, white } from "./design/colors.ts";
 
 export const meta: Route.MetaFunction = createMetaDescriptors({
   description:
@@ -85,101 +87,81 @@ function ThemeSwitcher() {
   }, []);
 
   return (
-    <div
-      style={pipe(
-        {
+    <HeaderUtility asChild>
+      <div
+        style={{
           position: "relative",
           display: "inline-flex",
-          outlineWidth: 0,
-          outlineStyle: "solid",
-          outlineColor: blue(20),
-          outlineOffset: 2,
-          color: blue(60),
-        },
-        on("&:has(:focus-visible)", {
-          outlineWidth: 2,
-        }),
-        on(hover, {
-          color: blue(50),
-        }),
-        on("&:active", {
-          color: red(50),
-        }),
-        on(dark, {
-          outlineColor: blue(50),
-          color: blue(30),
-        }),
-        on(and(dark, hover), {
-          color: blue(20),
-        }),
-        on(and(dark, "&:active"), {
-          color: red(20),
-        }),
-      )}
-    >
-      <div style={{ display: "inline-flex" }}>
-        <div
-          style={pipe(
-            {
-              display: "none",
-            },
-            on(dark, {
-              display: "contents",
-            }),
-          )}
-        >
-          <DarkModeIcon />
+        }}
+      >
+        <div style={{ display: "inline-flex" }}>
+          <div
+            style={pipe(
+              {
+                display: "none",
+              },
+              on(dark, {
+                display: "contents",
+              }),
+            )}
+          >
+            <DarkModeIcon />
+          </div>
+          <div
+            style={pipe(
+              {
+                display: "none",
+              },
+              on(not(dark), {
+                display: "contents",
+              }),
+            )}
+          >
+            <LightModeIcon />
+          </div>
+          <ArrowDropDownIcon />
         </div>
-        <div
-          style={pipe(
-            {
-              display: "none",
-            },
-            on(not(dark), {
-              display: "contents",
-            }),
-          )}
-        >
-          <LightModeIcon />
-        </div>
-        <ArrowDropDownIcon />
+        <label>
+          <ScreenReaderOnly>Theme</ScreenReaderOnly>
+          <select
+            style={{
+              fontSize: 0,
+              position: "absolute",
+              inset: 0,
+              opacity: 0,
+            }}
+            value={theme}
+            onChange={e => {
+              localStorage.setItem(themeKey, e.target.value);
+              document.documentElement.setAttribute(themeAttr, e.target.value);
+            }}
+          >
+            {themes.map(theme => (
+              <option
+                key={theme}
+                style={{
+                  background: white,
+                  color: black,
+                }}
+              >
+                {theme}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
-      <label>
-        <ScreenReaderOnly>Theme</ScreenReaderOnly>
-        <select
-          style={{
-            fontSize: 0,
-            position: "absolute",
-            inset: 0,
-            opacity: 0,
-          }}
-          value={theme}
-          onChange={e => {
-            localStorage.setItem(themeKey, e.target.value);
-            document.documentElement.setAttribute(themeAttr, e.target.value);
-          }}
-        >
-          {themes.map(theme => (
-            <option
-              key={theme}
-              style={{
-                fontSize: "1rem",
-                background: white,
-                color: black,
-              }}
-            >
-              {theme}
-            </option>
-          ))}
-        </select>
-      </label>
-    </div>
+    </HeaderUtility>
   );
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="auto" suppressHydrationWarning>
+    <html
+      lang="en"
+      data-theme="auto"
+      style={{ fontSize: "round(up, 1em, 4px)" }}
+      suppressHydrationWarning
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -194,7 +176,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body
         style={{
-          fontFamily: "'Inter Variable', sans-serif",
+          fontFamily: "'Geist Variable', sans-serif",
           lineHeight: 1.25,
           margin: 0,
           minHeight: "100dvh",
@@ -234,23 +216,32 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 WebkitBackdropFilter: "blur(32px)",
                 backdropFilter: "blur(32px)",
                 color: black,
-                padding: "1.5rem",
-                borderStyle: "solid",
-                borderWidth: 0,
-                borderBottomWidth: 2,
-                borderColor: gray(10),
+                padding: 24,
+                fontSize: "2rem",
+                lineHeight: 1,
               },
               on(dark, {
-                borderColor: gray(95),
                 color: white,
               }),
             )}
           >
             <a
               href="/"
-              style={{
-                textDecoration: "none",
-              }}
+              style={pipe(
+                {
+                  textDecoration: "none",
+                  outlineWidth: 0,
+                  outlineStyle: "solid",
+                  outlineColor: purple(20),
+                  outlineOffset: 2,
+                },
+                on(dark, {
+                  outlineColor: purple(50),
+                }),
+                on(or("&:focus-visible", "&:has(:focus-visible)"), {
+                  outlineWidth: 2,
+                }),
+              )}
             >
               <Logo />
             </a>
@@ -261,14 +252,28 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 gap: "1em",
               }}
             >
-              <NavLink to="/docs">
-                <MenuBookIcon />
-                <ScreenReaderOnly>Documentation</ScreenReaderOnly>
-              </NavLink>
-              <NavLink to="https://github.com/css-hooks/css-hooks">
-                <GitHubIcon />
-                <ScreenReaderOnly>Source on GitHub</ScreenReaderOnly>
-              </NavLink>
+              <div
+                style={pipe(
+                  { display: "none" },
+                  on("@media (width >= 44em)", { display: "contents" }),
+                )}
+              >
+                {[
+                  { to: "/docs", Icon: MenuBookIcon, label: "Documentation" },
+                  {
+                    to: "https://github.com/css-hooks/css-hooks",
+                    Icon: GitHubIcon,
+                    label: "Source on GitHub",
+                  },
+                ].map(({ to, Icon, label }) => (
+                  <HeaderUtility key={to} asChild>
+                    <Link to={to}>
+                      <Icon />
+                      <ScreenReaderOnly>{label}</ScreenReaderOnly>
+                    </Link>
+                  </HeaderUtility>
+                ))}
+              </div>
               <ThemeSwitcher />
             </div>
           </header>
@@ -285,13 +290,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <div
               style={pipe(
                 {
-                  padding: "1rem",
+                  padding: "1em",
                   display: "flex",
                   flexWrap: "wrap",
                   alignItems: "flex-end",
                   justifyContent: "center",
                   textAlign: "center",
-                  gap: "0.5rem 2rem",
+                  rowGap: 8,
+                  columnGap: 32,
                 },
                 on(dark, {
                   background: gray(95),
@@ -301,7 +307,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 }),
               )}
             >
-              <Logo size="1.5rem" />
+              <Logo />
               <div
                 style={{
                   flexBasis: "calc((60rem - 100%) * 999)",
@@ -322,7 +328,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     ["GitHub", "https://github.com/css-hooks/css-hooks"],
                     ["NPM", "https://www.npmjs.com/org/css-hooks"],
                     ["X", "https://www.x.com/csshooks"],
-                    ["Facebook", "https://www.facebook.com/csshooks"],
                   ] as const
                 ).map(([children, to]) => (
                   <NavLink key={to} to={to}>

@@ -4,7 +4,8 @@
     "module": "ESNext",
     "moduleResolution": "Node",
     "noEmit": true,
-    "customConditions": null
+    "customConditions": null,
+    "types": ["node"]
   },
   "include": ["main.ts"]
 }

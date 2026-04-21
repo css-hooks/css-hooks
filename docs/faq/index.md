@@ -8,14 +8,12 @@ order: 6
 
 ### Is CSS Hooks widely supported in browsers?
 
-The underlying mechanism of CSS Hooks leverages specific behaviors of CSS
-variables codified in the
-[CSS Custom Properties Level 1 spec](https://www.w3.org/TR/css-variables/#guaranteed-invalid).
-As such, it is expected to work in any browser that supports custom properties:
+CSS Hooks requires support for the `revert-layer` keyword, which is available in
+all modern browsers:
 
 | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/chrome/chrome_24x24.png" alt="Chrome" /><br/>Chrome | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/edge/edge_24x24.png" alt="Edge" /><br/>Edge | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/safari/safari_24x24.png" alt="Safari" /><br/>Safari | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/firefox/firefox_24x24.png" alt="Firefox" /><br/>Firefox | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/opera/opera_24x24.png" alt="Opera" /><br/>Opera |
 | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| <div align="center">49+</div>                                                                                             | <div align="center">16+</div>                                                                                     | <div align="center">10+</div>                                                                                             | <div align="center">31+</div>                                                                                                 | <div align="center">36+</div>                                                                                         |
+| <div align="center">99+</div>                                                                                             | <div align="center">99+</div>                                                                                     | <div align="center">15.4+</div>                                                                                           | <div align="center">97+</div>                                                                                                 | <div align="center">85+</div>                                                                                         |
 
 ---
 

@@ -39,21 +39,18 @@ async function main() {
       rootReadmeContent,
       readme =>
         readme.replace(
-          /<p[^>]+id="logos"[^>]*>([\S\s]*?)<\/p>/m,
-          `<p align="center" id="logos">${(npm
+          /<div[^>]+id="wordmark"[^>]*>([\S\s]*?)<\/div>/m,
+          `<div id="wordmark">${(npm
             ? [
-                `https://github.com/css-hooks/css-hooks/raw/${ref}/.github/logo-light.svg`,
+                `https://github.com/css-hooks/css-hooks/raw/${ref}/.github/wordmark-dark.svg`,
               ]
             : [
-                ".github/logo-light.svg#gh-light-mode-only",
-                ".github/logo-dark.svg#gh-dark-mode-only",
+                ".github/wordmark-dark.svg#gh-light-mode-only",
+                ".github/wordmark-light.svg#gh-dark-mode-only",
               ]
           )
-            .map(
-              src =>
-                `\n  <img alt="CSS Hooks" src="${src}" height="64" style="max-width: 100%;">`,
-            )
-            .join("")}\n</p>`,
+            .map(src => `\n    <img alt="CSS Hooks" src="${src}" width="256">`)
+            .join("")}\n  </div>`,
         ),
       readme => {
         const refType =
@@ -64,8 +61,8 @@ async function main() {
               : "ref";
         const color =
           ref === "latest" || /^v[0-9]+\.[0-9]+\.[0-9]+$/.test(ref)
-            ? "blue"
-            : "hotpink";
+            ? "663399"
+            : "ffd700";
         const published = refType === "branch" || refType === "tag";
 
         const badges = [
@@ -98,9 +95,13 @@ async function main() {
           )
           .join("");
 
+        const badgesRegex = /<(\w+)[^>]+id="badges"[^>]*>([\S\s]*?)<\/\1>/m;
+        if (!badgesRegex.test(readme)) {
+          throw new Error("Could not find badges section in README.md");
+        }
         return readme.replace(
-          /<p[^>]+id="badges"[^>]*>([\S\s]*?)<\/p>/m,
-          `<p align="center" id="badges">${badges}\n</p>`,
+          badgesRegex,
+          `<div align="center" id="badges">${badges}\n</div>`,
         );
       },
       readme => readme.replace(/@css-hooks\/core/g, packageName),

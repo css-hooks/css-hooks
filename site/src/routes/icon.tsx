@@ -2,9 +2,7 @@ import puppeteer from "puppeteer";
 import { renderToString } from "react-dom/server";
 import * as v from "valibot";
 
-import { Emblem } from "../components/emblem.tsx";
-import { styleSheet } from "../css.ts";
-import { gray } from "../design/colors.ts";
+import { Logomark } from "../components/logomark.tsx";
 import type { Route } from "./+types/icon.ts";
 
 export async function loader({ params }: Route.LoaderArgs) {
@@ -37,39 +35,8 @@ export async function loader({ params }: Route.LoaderArgs) {
   await page.setContent(
     "<!DOCTYPE html>" +
       renderToString(
-        <body style={{ margin: 0 }} data-theme="dark">
-          <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-          <div
-            style={{
-              background: gray(85),
-              width: "100dvw",
-              height: "100dvh",
-              borderRadius: 9999,
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100dvw",
-              height: "100dvh",
-              display: "grid",
-              placeItems: "center",
-              fontSize: "80dvmax",
-            }}
-          >
-            <div
-              style={{
-                display: "inline-flex",
-                position: "relative",
-                top: "-5dvh",
-                left: "2.5dvw",
-              }}
-            >
-              <Emblem />
-            </div>
-          </div>
+        <body style={{ margin: 0 }}>
+          <Logomark height="100dvh" />
         </body>,
       ),
   );
@@ -78,7 +45,7 @@ export async function loader({ params }: Route.LoaderArgs) {
 
   await browser.close();
 
-  return new Response(image, {
+  return new Response(Buffer.from(image), {
     status: 200,
     headers: {
       "Content-Type": "image/png",

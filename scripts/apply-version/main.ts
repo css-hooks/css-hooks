@@ -21,10 +21,21 @@ async function main() {
 
   console.log(`🚀 Bumping all workspaces to: ${newVersion}`);
 
-  await exec(
-    `npm version ${newVersion} --no-git-tag-version --workspaces --include-workspace-root`,
-    { cwd: rootDirectory },
-  );
+  try {
+    await exec(
+      `npm version ${newVersion} --no-git-tag-version --workspaces --include-workspace-root`,
+      { cwd: rootDirectory },
+    );
+  } catch (e: unknown) {
+    const err = e as { stderr?: string };
+    if (
+      !err.stderr?.includes("Version not changed") &&
+      !err.stderr?.includes("notarget")
+    ) {
+      throw e;
+    }
+    console.log("ℹ️  Version already set, skipping npm version bump.");
+  }
 
   const { stdout } = await exec("npm query .workspace", { cwd: rootDirectory });
   const workspaceData = parse(

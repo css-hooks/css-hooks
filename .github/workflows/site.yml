@@ -2,9 +2,8 @@ name: site
 
 on:
   push:
-    branches:
-      - latest
-      - next
+    tags:
+      - "v*"
 
 jobs:
   deploy:
@@ -25,4 +24,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_TOKEN }}
           accountId: ${{ vars.CF_ACCOUNT_ID }}
-          command: pages deploy site/build/client --project-name=css-hooks --branch=${{ github.ref_name }}
+          command: >-
+            pages deploy site/build/client --project-name=css-hooks
+            --branch=${{ contains(github.ref_name, '-next.') && 'next' || 'latest' }}

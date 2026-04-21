@@ -1,13 +1,18 @@
-<p align="center" id="logos">
-  <img alt="CSS Hooks" src=".github/logo-light.svg#gh-light-mode-only" height="64" style="max-width: 100%;">
-  <img alt="CSS Hooks" src=".github/logo-dark.svg#gh-dark-mode-only" height="64" style="max-width: 100%;">
-</p>
+<div align="center">
+  <img alt="CSS Hooks" src=".github/logomark.svg" height="128" /><br/><br/>
+  <div id="wordmark">
+    <img alt="CSS Hooks" src=".github/wordmark-dark.svg#gh-light-mode-only" width="256">
+    <img alt="CSS Hooks" src=".github/wordmark-light.svg#gh-dark-mode-only" width="256">
+  </div>
+</div>
 
-<p align="center" id="badges">
-  <a href="https://github.com/css-hooks/css-hooks/tree/v3.0.5"><img src="https://img.shields.io/badge/tag-v3.0.5-blue" alt="tag v3.0.5"></a>
-  <a href="https://www.npmjs.com/package/@css-hooks/core/v/3.0.5"><img src="https://img.shields.io/badge/npm-v3.0.5-blue" alt="npm version"></a>
-  <a href="https://github.com/css-hooks/css-hooks/blob/v3.0.5/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="license"></a>
-</p>
+<br/>
+
+<div align="center" id="badges">
+  <a href="https://github.com/css-hooks/css-hooks/tree/v3.0.6-next.32"><img src="https://img.shields.io/badge/tag-v3.0.6--next.32-ffd700" alt="tag v3.0.6-next.32"></a>
+  <a href="https://www.npmjs.com/package/@css-hooks/core/v/3.0.6-next.32"><img src="https://img.shields.io/badge/npm-v3.0.6--next.32-ffd700" alt="npm version"></a>
+  <a href="https://github.com/css-hooks/css-hooks/blob/v3.0.6-next.32/LICENSE"><img src="https://img.shields.io/badge/license-MIT-ffd700" alt="license"></a>
+</div>
 
 ---
 
@@ -99,7 +104,7 @@ experience without runtime style injection or build steps.
 
 | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/chrome/chrome_24x24.png" alt="Chrome" /><br/>Chrome | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/edge/edge_24x24.png" alt="Edge" /><br/>Edge | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/safari/safari_24x24.png" alt="Safari" /><br/>Safari | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/firefox/firefox_24x24.png" alt="Firefox" /><br/>Firefox | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/opera/opera_24x24.png" alt="Opera" /><br/>Opera |
 | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| <div align="center">49+</div>                                                                                             | <div align="center">16+</div>                                                                                     | <div align="center">10+</div>                                                                                             | <div align="center">31+</div>                                                                                                 | <div align="center">36+</div>                                                                                         |
+| <div align="center">99+</div>                                                                                             | <div align="center">99+</div>                                                                                     | <div align="center">15.4+</div>                                                                                           | <div align="center">97+</div>                                                                                                 | <div align="center">85+</div>                                                                                         |
 
 ## Documentation
 
