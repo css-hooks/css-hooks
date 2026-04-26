@@ -20,6 +20,11 @@ async function main() {
     throw new Error("Please provide a ref using --ref <name>");
   }
 
+  const siteUrl =
+    ref === "latest" || /^v[0-9]+\.[0-9]+\.[0-9]+$/.test(ref)
+      ? "https://css-hooks.com"
+      : "https://next.css-hooks.com";
+
   const { stdout } = await exec("npm query .workspace", { cwd: rootDir });
   const workspaceData = v.parse(
     v.pipe(
@@ -39,6 +44,11 @@ async function main() {
       rootReadmeContent,
       readme =>
         readme.replace(
+          /<a[^>]+id="logomark"[^>]*>[\S\s]*?<\/a>/m,
+          `<a id="logomark" href="${siteUrl}"><img alt="CSS Hooks" src="${npm ? `https://github.com/css-hooks/css-hooks/raw/${ref}/.github/logomark.svg` : `.github/logomark.svg`}" height="128" /></a>`,
+        ),
+      readme =>
+        readme.replace(
           /<div[^>]+id="wordmark"[^>]*>([\S\s]*?)<\/div>/m,
           `<div id="wordmark">${(npm
             ? [
@@ -49,7 +59,10 @@ async function main() {
                 ".github/wordmark-light.svg#gh-dark-mode-only",
               ]
           )
-            .map(src => `\n    <img alt="CSS Hooks" src="${src}" width="256">`)
+            .map(
+              src =>
+                `\n    <a href="${siteUrl}"><img alt="CSS Hooks" src="${src}" width="256"></a>`,
+            )
             .join("")}\n  </div>`,
         ),
       readme => {

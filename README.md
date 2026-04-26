@@ -1,5 +1,5 @@
 <div align="center">
-  <img alt="CSS Hooks" src=".github/logomark.svg" height="128" /><br/><br/>
+  <a id="logomark" href="https://css-hooks.com"><img alt="CSS Hooks" src=".github/logomark.svg" height="128" /></a><br/><br/>
   <div id="wordmark">
     <img alt="CSS Hooks" src=".github/wordmark-dark.svg#gh-light-mode-only" width="256">
     <img alt="CSS Hooks" src=".github/wordmark-light.svg#gh-dark-mode-only" width="256">
