@@ -52,16 +52,25 @@ async function main() {
           /<div[^>]+id="wordmark"[^>]*>([\S\s]*?)<\/div>/m,
           `<div id="wordmark">${(npm
             ? [
-                `https://github.com/css-hooks/css-hooks/raw/${ref}/.github/wordmark-dark.svg`,
+                {
+                  src: `https://github.com/css-hooks/css-hooks/raw/${ref}/.github/wordmark-dark.svg`,
+                  fragment: "",
+                },
               ]
             : [
-                ".github/wordmark-dark.svg#gh-light-mode-only",
-                ".github/wordmark-light.svg#gh-dark-mode-only",
+                {
+                  src: ".github/wordmark-dark.svg",
+                  fragment: "#gh-light-mode-only",
+                },
+                {
+                  src: ".github/wordmark-light.svg",
+                  fragment: "#gh-dark-mode-only",
+                },
               ]
           )
             .map(
-              src =>
-                `\n    <a href="${siteUrl}"><img alt="CSS Hooks" src="${src}" width="256"></a>`,
+              ({ src, fragment }) =>
+                `\n    <a href="${siteUrl}${fragment}"><img alt="CSS Hooks" src="${src}" width="256"></a>`,
             )
             .join("")}\n  </div>`,
         ),
