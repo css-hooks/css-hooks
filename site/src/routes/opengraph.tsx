@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import { chromium } from "playwright";
 import { renderToString } from "react-dom/server";
 
 import { Logo } from "../components/logo.tsx";
@@ -6,11 +6,11 @@ import { styleSheet } from "../css.ts";
 import { gray } from "../design/colors.ts";
 
 export async function loader() {
-  const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+  const browser = await chromium.launch();
 
   const page = await browser.newPage();
 
-  await page.setViewport({ width: 1200, height: 630 });
+  await page.setViewportSize({ width: 1200, height: 630 });
 
   await page.setContent(
     "<!DOCTYPE html>" +
@@ -32,7 +32,7 @@ export async function loader() {
       ),
   );
 
-  await page.waitForNetworkIdle({ idleTime: 1 });
+  await page.waitForLoadState("networkidle");
 
   const image = await page.screenshot({ type: "png" });
 

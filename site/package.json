@@ -36,7 +36,7 @@
     "@types/slug": "^5.0.9",
     "front-matter": "^4.0.2",
     "hast": "npm:empty-pkg@1.0.0",
-    "puppeteer": "^24.0.0",
+    "playwright": "^1.47.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^10.0.0",
