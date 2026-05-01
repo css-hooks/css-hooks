@@ -67,7 +67,7 @@ export default function Home({
   loaderData: { demoSource },
 }: Route.ComponentProps) {
   return (
-    <>
+    <main style={{ display: "contents" }}>
       <section
         style={{
           position: "relative",
@@ -474,7 +474,7 @@ export default function Home({
                         >
                           {label}
                         </span>
-                        <h3
+                        <h2
                           style={pipe(
                             {
                               margin: 0,
@@ -490,7 +490,7 @@ export default function Home({
                           )}
                         >
                           {headline}
-                        </h3>
+                        </h2>
                       </div>
                       <p
                         style={pipe(
@@ -885,7 +885,7 @@ export default function Home({
           </div>
         </Section>
       </div>
-    </>
+    </main>
   );
 }
 
