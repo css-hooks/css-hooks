@@ -1,6 +1,6 @@
 {
   "name": "@scripts/apply-version",
-  "version": "3.0.8-next.0",
+  "version": "3.0.8-next.1",
   "private": true,
   "type": "module",
   "scripts": {

@@ -1,6 +1,6 @@
 {
   "name": "site",
-  "version": "3.0.8-next.0",
+  "version": "3.0.8-next.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -24,7 +24,7 @@
     "isbot": "^5"
   },
   "devDependencies": {
-    "@css-hooks/react": "3.0.8-next.0",
+    "@css-hooks/react": "3.0.8-next.1",
     "@fontsource-variable/assistant": "^5.1.1",
     "@fontsource-variable/inconsolata": "^5.1.1",
     "@fontsource-variable/geist": "^5.1.1",
