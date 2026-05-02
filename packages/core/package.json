@@ -1,7 +1,7 @@
 {
   "name": "@css-hooks/core",
   "description": "CSS Hooks core library",
-  "version": "3.0.8-next.1",
+  "version": "3.1.0-next.0",
   "author": "Nick Saunders",
   "devDependencies": {
     "color": "^5.0.3",
