@@ -48,12 +48,14 @@ export type StringifyFn = (
  *    which the condition applies. The `&` character must appear somewhere.
  * 2. A `@media`, `@container`, or `@supports` at-rule. The value must begin
  *    with one of these keywords, followed by a space.
+ * 3. The `@starting-style` at-rule (exactly, with no additional parameters).
  *
  * @public
  */
 export type Selector =
   | `${string}&${string}`
-  | `@${"media" | "container" | "supports"} ${string}`;
+  | `@${"media" | "container" | "supports"} ${string}`
+  | "@starting-style";
 
 /**
  * Enhances a style object by merging in conditional declarations.

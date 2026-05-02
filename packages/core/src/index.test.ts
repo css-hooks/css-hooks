@@ -261,6 +261,36 @@ describe(`in ${selectedBrowser}`, () => {
       }
     });
 
+    it("supports @starting-style hooks", async () => {
+      const { styleSheet, on } = createHooks("@starting-style");
+
+      await page.addStyleTag({ content: styleSheet() });
+
+      await createStyledElement(
+        "div",
+        pipe(
+          {
+            width: "100px",
+            height: "100px",
+            backgroundColor: "black",
+            opacity: 1,
+            transition: "opacity 1s",
+          },
+          on("@starting-style", {
+            opacity: 0,
+          }),
+        ),
+      );
+
+      const screenshotBefore = await page.locator("div").screenshot();
+
+      await page.waitForTimeout(300);
+
+      const screenshotAfter = await page.locator("div").screenshot();
+
+      assert.notDeepStrictEqual(screenshotBefore, screenshotAfter);
+    });
+
     it("falls back to the previous cascade layer when the condition is not met", async () => {
       const { styleSheet, on } = createHooks("&:hover");
 
