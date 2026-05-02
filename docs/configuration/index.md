@@ -55,6 +55,15 @@ a space, e.g.
 ```
 <!--prettier-ignore-end-->
 
+`@starting-style` is also supported as a standalone at-rule (with no additional
+parameters), e.g.
+
+<!--prettier-ignore-start-->
+```typescript
+"@starting-style"
+```
+<!--prettier-ignore-end-->
+
 ## Reusable conditions
 
 If you find yourself using specific combinations of hooks frequently, you can
