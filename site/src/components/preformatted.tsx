@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { monospace } from "../design/typography.ts";
+
 export function Preformatted({
   as: Tag = "pre",
   dangerouslySetInnerHTML,
@@ -13,7 +15,7 @@ export function Preformatted({
     <Tag
       dangerouslySetInnerHTML={dangerouslySetInnerHTML}
       style={{
-        fontFamily: "'Inconsolata Variable', monospace",
+        fontFamily: monospace,
         fontSize: "1rem",
         marginBlock: 0,
       }}
