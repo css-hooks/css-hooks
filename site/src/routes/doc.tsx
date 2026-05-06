@@ -16,6 +16,7 @@ import { and, dark, extractClassName, hover, not, on, or } from "../css.ts";
 import { docs } from "../data/docs.ts";
 import { createMetaDescriptors } from "../data/meta.ts";
 import { blue, gray, orange, purple, teal, white } from "../design/colors.ts";
+import { monospace } from "../design/typography.ts";
 import { rehypeClassName, rehypeStyle } from "../rehype.ts";
 import type { Route } from "./+types/doc.ts";
 
@@ -490,7 +491,7 @@ export async function loader({ params }: Route.LoaderArgs) {
                 {
                   color: teal(60),
                   font: "inherit",
-                  fontFamily: "'Inconsolata Variable', monospace",
+                  fontFamily: monospace,
                 },
                 on(dark, { color: teal(30) }),
               )}

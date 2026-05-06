@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import { chromium } from "playwright";
 import { renderToString } from "react-dom/server";
 import * as v from "valibot";
 
@@ -26,11 +26,11 @@ export async function loader({ params }: Route.LoaderArgs) {
 
   const { width, height } = paramsParseResult.output;
 
-  const browser = await puppeteer.launch({ args: ["--no-sandbox"] });
+  const browser = await chromium.launch();
 
   const page = await browser.newPage();
 
-  await page.setViewport({ width, height });
+  await page.setViewportSize({ width, height });
 
   await page.setContent(
     "<!DOCTYPE html>" +

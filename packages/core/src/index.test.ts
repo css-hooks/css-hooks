@@ -5,13 +5,22 @@ import { after, afterEach, before, beforeEach, describe, it } from "node:test";
 import Color from "color";
 import type * as CSS from "csstype";
 import * as lightningcss from "lightningcss";
-import type { Browser, Page } from "puppeteer";
-import puppeteer from "puppeteer";
+import type { Browser, Page } from "playwright";
+import { chromium, firefox, webkit } from "playwright";
 import { pipe } from "remeda";
 
 import { buildHooksSystem } from "./index.ts";
 
 events.setMaxListeners(50);
+
+const browsers = { chromium, firefox, webkit };
+
+const selectedBrowser =
+  (Object.keys(browsers) as (keyof typeof browsers)[]).find(
+    browser => browser === process.env["BROWSER"],
+  ) || "chromium";
+
+const browserType = browsers[selectedBrowser];
 
 function useMode(mode: "development" | "production") {
   const backup = process.env["NODE_ENV"];
@@ -31,13 +40,13 @@ function withMode<T>(mode: Parameters<typeof useMode>[0], f: () => T): T {
   }
 }
 
-describe("in browser", () => {
+describe(`in ${selectedBrowser}`, () => {
   const createHooks = buildHooksSystem<CSS.Properties>();
 
   let browser: Browser, page: Page;
 
   before(async () => {
-    browser = await puppeteer.launch();
+    browser = await browserType.launch();
   });
 
   beforeEach(async () => {
@@ -47,12 +56,12 @@ describe("in browser", () => {
     );
   });
 
-  afterEach(() => {
-    page.close();
+  afterEach(async () => {
+    await page.close();
   });
 
-  after(() => {
-    browser.close();
+  after(async () => {
+    await browser.close();
   });
 
   function createStyledElement(
@@ -81,19 +90,29 @@ describe("in browser", () => {
     );
   }
 
-  async function queryAndGetComputedStyle(
+  function getComputedPropertyValue(
     selector: string,
-  ): Promise<ReturnType<typeof getComputedStyle>> {
-    const computedStyle = await page.evaluate(selector => {
-      const el = document.querySelector(selector);
-      if (!el) {
-        throw new Error(
-          `No element matches the provided selector: ${selector}`,
-        );
-      }
-      return JSON.stringify(getComputedStyle(el));
-    }, selector);
-    return JSON.parse(computedStyle) as ReturnType<typeof getComputedStyle>;
+    property: keyof CSSStyleDeclaration,
+  ) {
+    return page.evaluate(
+      ({ selector, property }) => {
+        const el = document.querySelector(selector);
+        if (!el) {
+          throw new Error(
+            `No element matches the provided selector: ${selector}`,
+          );
+        }
+        const computedStyle = getComputedStyle(el);
+        const value = computedStyle[property as keyof CSSStyleDeclaration];
+        if (typeof value !== "string" && typeof value !== "number") {
+          throw new Error(
+            `Unexpected value type for property "${String(property)}"`,
+          );
+        }
+        return value;
+      },
+      { selector, property },
+    );
   }
 
   function queryAndSetClassName(selector: string, className: string) {
@@ -139,7 +158,7 @@ describe("in browser", () => {
         );
 
         const actualDefaultColor = Color(
-          (await queryAndGetComputedStyle("button")).color,
+          await getComputedPropertyValue("button", "color"),
         );
 
         assert.deepStrictEqual(actualDefaultColor, expectedDefaultColor);
@@ -147,7 +166,7 @@ describe("in browser", () => {
         await page.hover("button");
 
         const actualHoverColor = Color(
-          (await queryAndGetComputedStyle("button")).color,
+          await getComputedPropertyValue("button", "color"),
         );
 
         assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
@@ -174,19 +193,19 @@ describe("in browser", () => {
         ),
       );
 
-      const { padding: actualDefaultPadding } =
-        await queryAndGetComputedStyle("div");
+      const actualDefaultPadding = await getComputedPropertyValue(
+        "div",
+        "paddingTop",
+      );
 
       assert.strictEqual(actualDefaultPadding, expectedDefaultPadding);
 
-      await page.setViewport({
-        width: 480,
-        height: 800,
-        deviceScaleFactor: 1,
-      });
+      await page.setViewportSize({ width: 480, height: 800 });
 
-      const { padding: actualMobilePadding } =
-        await queryAndGetComputedStyle("div");
+      const actualMobilePadding = await getComputedPropertyValue(
+        "div",
+        "paddingTop",
+      );
 
       assert.strictEqual(actualMobilePadding, expectedMobilePadding);
     });
@@ -211,15 +230,19 @@ describe("in browser", () => {
         ),
       );
 
-      let { fontSize: actualDefaultFontSize } =
-        await queryAndGetComputedStyle("div");
+      let actualDefaultFontSize = await getComputedPropertyValue(
+        "div",
+        "fontSize",
+      );
 
       assert.strictEqual(actualDefaultFontSize, expectedDefaultFontSize);
 
       for (const className of ["a b", "a c"]) {
         await queryAndSetClassName("div", className);
-        ({ fontSize: actualDefaultFontSize } =
-          await queryAndGetComputedStyle("div"));
+        actualDefaultFontSize = await getComputedPropertyValue(
+          "div",
+          "fontSize",
+        );
         assert.deepStrictEqual(actualDefaultFontSize, expectedDefaultFontSize);
       }
 
@@ -227,13 +250,45 @@ describe("in browser", () => {
 
       for (const className of ["a", "a d"]) {
         await queryAndSetClassName("div", className);
-        const { fontSize: actualConditionMetFontSize } =
-          await queryAndGetComputedStyle("div");
+        const actualConditionMetFontSize = await getComputedPropertyValue(
+          "div",
+          "fontSize",
+        );
         assert.strictEqual(
           actualConditionMetFontSize,
           expectedConditionMetFontSize,
         );
       }
+    });
+
+    it("supports @starting-style hooks", async () => {
+      const { styleSheet, on } = createHooks("@starting-style");
+
+      await page.addStyleTag({ content: styleSheet() });
+
+      await createStyledElement(
+        "div",
+        pipe(
+          {
+            width: "100px",
+            height: "100px",
+            backgroundColor: "black",
+            opacity: 1,
+            transition: "opacity 1s",
+          },
+          on("@starting-style", {
+            opacity: 0,
+          }),
+        ),
+      );
+
+      const screenshotBefore = await page.locator("div").screenshot();
+
+      await page.waitForTimeout(300);
+
+      const screenshotAfter = await page.locator("div").screenshot();
+
+      assert.notDeepStrictEqual(screenshotBefore, screenshotAfter);
     });
 
     it("falls back to the previous cascade layer when the condition is not met", async () => {
@@ -257,7 +312,7 @@ describe("in browser", () => {
       );
 
       const actualDefaultColor = Color(
-        (await queryAndGetComputedStyle("button")).color,
+        await getComputedPropertyValue("button", "color"),
       );
 
       assert.deepStrictEqual(actualDefaultColor, expectedDefaultColor);
@@ -265,7 +320,7 @@ describe("in browser", () => {
       await page.hover("button");
 
       const actualHoverColor = Color(
-        (await queryAndGetComputedStyle("button")).color,
+        await getComputedPropertyValue("button", "color"),
       );
 
       assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
