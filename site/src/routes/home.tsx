@@ -131,8 +131,7 @@ export default function Home({
                   {
                     margin: 0,
                     fontSize: "4em",
-                    fontWeight: 400,
-                    letterSpacing: "-0.03em",
+                    fontWeight: 300,
                     lineHeight: 1.125,
                     color: gray(75),
                   },
@@ -147,7 +146,10 @@ export default function Home({
               >
                 <strong
                   style={pipe(
-                    { fontWeight: 600, color: purple(61) },
+                    {
+                      fontWeight: 600,
+                      color: purple(61),
+                    },
                     on(dark, {
                       color: "inherit",
                     }),
@@ -162,8 +164,8 @@ export default function Home({
                 style={pipe(
                   {
                     fontSize: "1.5em",
+                    textWrap: "balance",
                     color: gray(60),
-                    maxWidth: "48ch",
                   },
                   on(not(dark), {
                     color: purple(60),
@@ -173,9 +175,8 @@ export default function Home({
                   }),
                 )}
               >
-                The styling system that gives native inline styles
-                pseudo-classes, media queries, container queries, feature
-                queries, and selector logic.
+                The styling system that supercharges native inline styles with
+                pseudo-classes, responsive queries, and advanced selector logic.
               </p>
               <div
                 style={{
@@ -456,7 +457,7 @@ export default function Home({
                               fontSize: "0.75em",
                               lineHeight: 1,
                               fontWeight: 700,
-                              letterSpacing: "0.0125em",
+                              letterSpacing: "0.0625em",
                               textTransform: "uppercase",
                               paddingBlock: 4,
                               paddingInline: 8,
@@ -480,7 +481,6 @@ export default function Home({
                               margin: 0,
                               fontSize: 20,
                               fontWeight: 700,
-                              letterSpacing: "-0.0125em",
                               lineHeight: 1.25,
                               color: gray(65),
                             },

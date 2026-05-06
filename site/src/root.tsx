@@ -1,5 +1,3 @@
-import "./global.css";
-
 import { useEffect, useState } from "react";
 import {
   isRouteErrorResponse,
@@ -28,6 +26,7 @@ import { ScreenReaderOnly } from "./components/screen-reader-only.tsx";
 import { dark, not, on, or, styleSheet } from "./css.ts";
 import { createMetaDescriptors } from "./data/meta.ts";
 import { black, gray, purple, white } from "./design/colors.ts";
+import { sansSerif } from "./design/typography.ts";
 
 export const meta: Route.MetaFunction = createMetaDescriptors({
   description:
@@ -159,7 +158,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <html
       lang="en"
       data-theme="auto"
-      style={{ fontSize: "round(up, 1em, 4px)" }}
+      style={{ overflowY: "scroll", minHeight: "100dvh" }}
       suppressHydrationWarning
     >
       <head>
@@ -176,12 +175,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body
         style={{
-          fontFamily: "'Geist Variable', sans-serif",
+          fontFamily: sansSerif,
+          fontSize: "round(up, 1rem, 4px)",
           lineHeight: 1.25,
           margin: 0,
           minHeight: "100dvh",
           display: "flex",
           flexDirection: "column",
+          alignItems: "stretch",
         }}
       >
         <div
