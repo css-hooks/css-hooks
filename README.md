@@ -1,17 +1,17 @@
 <div align="center">
-  <a id="logomark" href="https://css-hooks.com"><img alt="CSS Hooks" src=".github/logomark.svg" height="128" /></a><br/><br/>
+  <a id="logomark" href="https://next.css-hooks.com"><img alt="CSS Hooks" src=".github/logomark.svg" height="128" /></a><br/><br/>
   <div id="wordmark">
-    <a href="https://css-hooks.com#gh-light-mode-only"><img alt="CSS Hooks" src=".github/wordmark-dark.svg" width="256"></a>
-    <a href="https://css-hooks.com#gh-dark-mode-only"><img alt="CSS Hooks" src=".github/wordmark-light.svg" width="256"></a>
+    <a href="https://next.css-hooks.com#gh-light-mode-only"><img alt="CSS Hooks" src=".github/wordmark-dark.svg" width="256"></a>
+    <a href="https://next.css-hooks.com#gh-dark-mode-only"><img alt="CSS Hooks" src=".github/wordmark-light.svg" width="256"></a>
   </div>
 </div>
 
 <br/>
 
 <div align="center" id="badges">
-  <a href="https://github.com/css-hooks/css-hooks/tree/v3.1.1"><img src="https://img.shields.io/badge/tag-v3.1.1-663399" alt="tag v3.1.1"></a>
-  <a href="https://www.npmjs.com/package/@css-hooks/core/v/3.1.1"><img src="https://img.shields.io/badge/npm-v3.1.1-663399" alt="npm version"></a>
-  <a href="https://github.com/css-hooks/css-hooks/blob/v3.1.1/LICENSE"><img src="https://img.shields.io/badge/license-MIT-663399" alt="license"></a>
+  <a href="https://github.com/css-hooks/css-hooks/tree/next"><img src="https://img.shields.io/badge/branch-next-ffd700" alt="branch next"></a>
+  <a href="https://www.npmjs.com/package/@css-hooks/core/v/next"><img src="https://img.shields.io/npm/v/@css-hooks/core/next.svg?label=npm&color=ffd700" alt="npm version"></a>
+  <a href="https://github.com/css-hooks/css-hooks/blob/next/LICENSE"><img src="https://img.shields.io/badge/license-MIT-ffd700" alt="license"></a>
 </div>
 
 ---
