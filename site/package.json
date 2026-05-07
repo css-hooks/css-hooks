@@ -1,6 +1,6 @@
 {
   "name": "site",
-  "version": "3.1.1-next.0",
+  "version": "3.1.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -24,7 +24,7 @@
     "isbot": "^5"
   },
   "devDependencies": {
-    "@css-hooks/react": "3.1.1-next.0",
+    "@css-hooks/react": "3.1.1",
     "@react-router/dev": "^7.6.2",
     "@total-typescript/ts-reset": "^0.6.1",
     "@types/hast": "^3.0.4",
