@@ -1,17 +1,17 @@
 <div align="center">
-  <a id="logomark" href="https://css-hooks.com"><img alt="CSS Hooks" src=".github/logomark.svg" height="128" /></a><br/><br/>
+  <a id="logomark" href="https://next.css-hooks.com"><img alt="CSS Hooks" src=".github/logomark.svg" height="128" /></a><br/><br/>
   <div id="wordmark">
-    <a href="https://css-hooks.com#gh-light-mode-only"><img alt="CSS Hooks" src=".github/wordmark-dark.svg" width="256"></a>
-    <a href="https://css-hooks.com#gh-dark-mode-only"><img alt="CSS Hooks" src=".github/wordmark-light.svg" width="256"></a>
+    <a href="https://next.css-hooks.com#gh-light-mode-only"><img alt="CSS Hooks" src=".github/wordmark-dark.svg" width="256"></a>
+    <a href="https://next.css-hooks.com#gh-dark-mode-only"><img alt="CSS Hooks" src=".github/wordmark-light.svg" width="256"></a>
   </div>
 </div>
 
 <br/>
 
 <div align="center" id="badges">
-  <a href="https://github.com/css-hooks/css-hooks/tree/v3.1.1"><img src="https://img.shields.io/badge/tag-v3.1.1-663399" alt="tag v3.1.1"></a>
-  <a href="https://www.npmjs.com/package/@css-hooks/core/v/3.1.1"><img src="https://img.shields.io/badge/npm-v3.1.1-663399" alt="npm version"></a>
-  <a href="https://github.com/css-hooks/css-hooks/blob/v3.1.1/LICENSE"><img src="https://img.shields.io/badge/license-MIT-663399" alt="license"></a>
+  <a href="https://github.com/css-hooks/css-hooks/tree/v3.1.2-next.3"><img src="https://img.shields.io/badge/tag-v3.1.2--next.3-ffd700" alt="tag v3.1.2-next.3"></a>
+  <a href="https://www.npmjs.com/package/@css-hooks/core/v/3.1.2-next.3"><img src="https://img.shields.io/badge/npm-v3.1.2--next.3-ffd700" alt="npm version"></a>
+  <a href="https://github.com/css-hooks/css-hooks/blob/v3.1.2-next.3/LICENSE"><img src="https://img.shields.io/badge/license-MIT-ffd700" alt="license"></a>
 </div>
 
 ---
@@ -96,15 +96,15 @@ experience without runtime style injection or build steps.
 
 ### Framework integrations
 
-| <img src="https://dl.svgcdn.com/svg/logos/react.svg" alt="React" width="24" height="24" />React | <img src="https://dl.svgcdn.com/svg/logos/preact.svg" alt="Preact" width="24" height="24" />Preact | <img src="https://dl.svgcdn.com/svg/logos/solidjs-icon.svg" alt="Solid" width="24" height="24" />Solid | <img src="https://dl.svgcdn.com/svg/logos/qwik-icon.svg" alt="Qwik" width="24" height="24" />Qwik |
-| :---------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------: |
-|                                               ✅                                                |                                                 ✅                                                 |                                                   ✅                                                   |                                                ✅                                                 |
+| <img src="https://dl.svgcdn.com/svg/logos/react.svg" alt="React" width="24" height="24" /><br/>React | <img src="https://dl.svgcdn.com/svg/logos/preact.svg" alt="Preact" width="24" height="24" /><br/>Preact | <img src="https://dl.svgcdn.com/svg/logos/solidjs-icon.svg" alt="Solid" width="24" height="24" /><br/>Solid | <img src="https://dl.svgcdn.com/svg/logos/qwik-icon.svg" alt="Qwik" width="24" height="24" /><br/>Qwik |
+| :--------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: |
+|                                                  ✅                                                  |                                                   ✅                                                    |                                                     ✅                                                      |                                                   ✅                                                   |
 
 ### Browser support
 
-| <img src="https://dl.svgcdn.com/svg/logos/chrome.svg" alt="Chrome" width="24" height="24" />Chrome | <img src="https://dl.svgcdn.com/svg/logos/microsoft-edge.svg" alt="Edge" width="24" height="24" />Edge | <img src="https://dl.svgcdn.com/svg/logos/safari.svg" alt="Safari" width="24" height="24" />Safari | <img src="https://dl.svgcdn.com/svg/logos/firefox.svg" alt="Firefox" width="24" height="24" />Firefox | <img src="https://dl.svgcdn.com/svg/logos/opera.svg" alt="Opera" width="24" height="24" />Opera |
-| :------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------: |
-|                                                99+                                                 |                                                  99+                                                   |                                               15.4+                                                |                                                  97+                                                  |                                               85+                                               |
+| <img src="https://dl.svgcdn.com/svg/logos/chrome.svg" alt="Chrome" width="24" height="24" /><br/>Chrome | <img src="https://dl.svgcdn.com/svg/logos/microsoft-edge.svg" alt="Edge" width="24" height="24" /><br/>Edge | <img src="https://dl.svgcdn.com/svg/logos/safari.svg" alt="Safari" width="24" height="24" /><br/>Safari | <img src="https://dl.svgcdn.com/svg/logos/firefox.svg" alt="Firefox" width="24" height="24" /><br/>Firefox | <img src="https://dl.svgcdn.com/svg/logos/opera.svg" alt="Opera" width="24" height="24" /><br/>Opera |
+| :-----------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------: |
+|                                                   99+                                                   |                                                     99+                                                     |                                                  15.4+                                                  |                                                    97+                                                     |                                                 85+                                                  |
 
 ## Documentation
 
