@@ -57,9 +57,7 @@ To migrate:
 ```typescript
 // src/css.ts
 
-export const {
-  /* ... */
-} = createHooks({
+export const {/* ... */} = createHooks({
   hooks: ({ or }) => ({
     "&:hover": "&:hover",
     "&:intent": or("&:hover", "&:focus"),
@@ -78,9 +76,7 @@ export const {
 ```typescript
 // src/css.ts
 
-export const {
-  /* ... */
-} = createHooks("&:hover", "&:focus");
+export const {/* ... */} = createHooks("&:hover", "&:focus");
 ```
 
 ## Defining reusable conditions
