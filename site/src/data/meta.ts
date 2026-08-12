@@ -16,8 +16,7 @@ type CreateMetaDescriptorArgs = {
 export const createMetaDescriptors =
   <Args extends { location: { pathname: string } }>(
     argsIn:
-      CreateMetaDescriptorArgs
-      | ((args: Args) => CreateMetaDescriptorArgs),
+      CreateMetaDescriptorArgs | ((args: Args) => CreateMetaDescriptorArgs),
   ): ((args: Args) => MetaDescriptors) =>
   (args: Args) => {
     const defaultImage = "/opengraph.png";
