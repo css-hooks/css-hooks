@@ -13,7 +13,7 @@
  * @public
  */
 export type Condition<S> =
-  | S
+  S
   | { and: Condition<S>[] }
   | { or: Condition<S>[] }
   | { not: Condition<S> };
