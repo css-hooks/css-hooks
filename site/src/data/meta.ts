@@ -16,7 +16,7 @@ type CreateMetaDescriptorArgs = {
 export const createMetaDescriptors =
   <Args extends { location: { pathname: string } }>(
     argsIn:
-      | CreateMetaDescriptorArgs
+      CreateMetaDescriptorArgs
       | ((args: Args) => CreateMetaDescriptorArgs),
   ): ((args: Args) => MetaDescriptors) =>
   (args: Args) => {
