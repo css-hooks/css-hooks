@@ -13,10 +13,7 @@
  * @public
  */
 export type Condition<S> =
-  | S
-  | { and: Condition<S>[] }
-  | { or: Condition<S>[] }
-  | { not: Condition<S> };
+  S | { and: Condition<S>[] } | { or: Condition<S>[] } | { not: Condition<S> };
 
 /**
  * Function to convert a value into a string.
