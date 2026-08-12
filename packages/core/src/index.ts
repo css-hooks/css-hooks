@@ -13,10 +13,7 @@
  * @public
  */
 export type Condition<S> =
-  | S
-  | { and: Condition<S>[] }
-  | { or: Condition<S>[] }
-  | { not: Condition<S> };
+  S | { and: Condition<S>[] } | { or: Condition<S>[] } | { not: Condition<S> };
 
 /**
  * Function to convert a value into a string.
@@ -190,12 +187,12 @@ export function buildHooksSystem<
       styleSheet() {
         const indent = Array(2).fill(space).join("");
         return `*${space}{${newline}${selectors
-          .flatMap(selector => [
+          .flatMap((selector) => [
             `${indent}--${createHash(selector)}-0:${space}initial;`,
             `${indent}--${createHash(selector)}-1:${space};`,
           ])
           .join(newline)}${newline}}${newline}${selectors
-          .flatMap(def => {
+          .flatMap((def) => {
             if (def.startsWith("@")) {
               return [
                 `${def} {`,
@@ -217,9 +214,9 @@ export function buildHooksSystem<
       },
       and: (...and) => ({ and }),
       or: (...or) => ({ or }),
-      not: not => ({ not }),
+      not: (not) => ({ not }),
       on(condition, conditionalStyle) {
-        return fallbackStyle => {
+        return (fallbackStyle) => {
           const style = { ...fallbackStyle };
           for (const property in conditionalStyle) {
             const conditionalValue = stringify(
@@ -292,7 +289,7 @@ export function buildHooksSystem<
             }
             if ("or" in condition) {
               return buildExpression(
-                { and: condition.or.map(not => ({ not })) },
+                { and: condition.or.map((not) => ({ not })) },
                 valueIfFalse,
                 valueIfTrue,
               );
