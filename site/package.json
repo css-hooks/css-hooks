@@ -42,7 +42,7 @@
     "remark-gfm": "^4.0.0",
     "remeda": "^2.16.0",
     "shiki": "^4.0.0",
-    "slug": "^11.0.0",
+    "slug": "^12.0.0",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.0.0",
     "valibot": "1.4.2",
