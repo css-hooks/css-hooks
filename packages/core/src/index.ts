@@ -87,7 +87,7 @@ export interface CreateHooksResult<S, CSSProperties> {
    */
   on: (
     condition: Condition<S>,
-    style: CSSProperties,
+    style: CSSProperties | ((style: CSSProperties) => CSSProperties),
   ) => EnhanceStyleFn<CSSProperties>;
 
   /**
@@ -215,8 +215,12 @@ export function buildHooksSystem<
       and: (...and) => ({ and }),
       or: (...or) => ({ or }),
       not: not => ({ not }),
-      on(condition, conditionalStyle) {
+      on(condition, conditionalStyleOrFn) {
         return fallbackStyle => {
+          const conditionalStyle =
+            conditionalStyleOrFn instanceof Function
+              ? conditionalStyleOrFn(fallbackStyle)
+              : conditionalStyleOrFn;
           const style = { ...fallbackStyle };
           for (const property in conditionalStyle) {
             const conditionalValue = stringify(

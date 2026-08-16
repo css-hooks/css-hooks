@@ -83,7 +83,7 @@ Negates a condition.
 
 </td><td>
 
-(condition: [Condition](./core.condition.md)<!-- -->&lt;S&gt;, style: CSSProperties) =&gt; [EnhanceStyleFn](./core.enhancestylefn.md)<!-- -->&lt;CSSProperties&gt;
+(condition: [Condition](./core.condition.md)<!-- -->&lt;S&gt;, style: CSSProperties \| ((style: CSSProperties) =&gt; CSSProperties)) =&gt; [EnhanceStyleFn](./core.enhancestylefn.md)<!-- -->&lt;CSSProperties&gt;
 
 
 </td><td>
