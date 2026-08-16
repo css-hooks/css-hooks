@@ -38,7 +38,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - run: npx prettier -c "**/*.{json,md,yml}"
+      - run: npx prettier -c "**/*.{js,ts,tsx,json,md,yml}"
 
   eslint:
     runs-on: ubuntu-latest
