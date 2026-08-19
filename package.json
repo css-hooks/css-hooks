@@ -1,7 +1,7 @@
 {
   "name": "css-hooks",
   "description": "Monorepo for @css-hooks/* packages",
-  "version": "3.2.0-next.5",
+  "version": "3.2.0-next.6",
   "type": "module",
   "scripts": {
     "docs": "wireit",
