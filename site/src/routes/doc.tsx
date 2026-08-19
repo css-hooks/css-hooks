@@ -608,10 +608,13 @@ export async function loader({ params }: Route.LoaderArgs) {
   };
 }
 
-export const meta: Route.MetaFunction = createMetaDescriptors(({ data }) => ({
-  title: data.attributes.title,
-  description: data.attributes.description,
-}));
+export const meta: Route.MetaFunction = createMetaDescriptors(
+  ({ loaderData }) => ({
+    title: loaderData?.attributes.title,
+    description:
+      loaderData?.attributes.description ?? "Documentation for CSS Hooks.",
+  }),
+);
 
 export default function Doc({ loaderData: doc }: Route.ComponentProps) {
   return (
