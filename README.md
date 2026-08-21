@@ -9,9 +9,9 @@
 <br/>
 
 <div align="center" id="badges">
-  <a href="https://github.com/css-hooks/css-hooks/tree/v3.2.0-next.7"><img src="https://img.shields.io/badge/tag-v3.2.0--next.7-ffd700" alt="tag v3.2.0-next.7"></a>
-  <a href="https://www.npmjs.com/package/@css-hooks/core/v/3.2.0-next.7"><img src="https://img.shields.io/badge/npm-v3.2.0--next.7-ffd700" alt="npm version"></a>
-  <a href="https://github.com/css-hooks/css-hooks/blob/v3.2.0-next.7/LICENSE"><img src="https://img.shields.io/badge/license-MIT-ffd700" alt="license"></a>
+  <a href="https://github.com/css-hooks/css-hooks/tree/v3.2.0-next.8"><img src="https://img.shields.io/badge/tag-v3.2.0--next.8-ffd700" alt="tag v3.2.0-next.8"></a>
+  <a href="https://www.npmjs.com/package/@css-hooks/core/v/3.2.0-next.8"><img src="https://img.shields.io/badge/npm-v3.2.0--next.8-ffd700" alt="npm version"></a>
+  <a href="https://github.com/css-hooks/css-hooks/blob/v3.2.0-next.8/LICENSE"><img src="https://img.shields.io/badge/license-MIT-ffd700" alt="license"></a>
 </div>
 
 ---
