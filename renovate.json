@@ -34,7 +34,7 @@
     {
       "description": "Block typescript v7 without linting support",
       "matchPackageNames": ["typescript"],
-      "ignoreVersions": ["~7.0"]
+      "allowedVersions": "/^[0-68-9]|7\\.[^0]/"
     },
     {
       "description": "Ignore internal monorepo packages",
