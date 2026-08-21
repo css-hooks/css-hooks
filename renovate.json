@@ -11,6 +11,13 @@
   "commitMessageExtra": "to v{{lowercase newVersion}}",
   "packageRules": [
     {
+      "matchUpdateTypes": ["configMigration"],
+      "commitMessagePrefix": "misc:",
+      "commitMessageTopic": "configuration",
+      "commitMessageAction": "migrate",
+      "prTitle": "misc: migrate renovate configuration"
+    },
+    {
       "description": "Default major update prefix (Broadest rule)",
       "matchUpdateTypes": ["major"],
       "commitMessagePrefix": "breaking:",
@@ -23,6 +30,11 @@
         "@microsoft/api-extractor"
       ],
       "enabled": false
+    },
+    {
+      "description": "Block typescript v7 without linting support",
+      "matchPackageNames": ["typescript"],
+      "ignoreVersions": ["~7.0"]
     },
     {
       "description": "Ignore internal monorepo packages",
