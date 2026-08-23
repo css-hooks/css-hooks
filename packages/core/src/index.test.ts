@@ -7,7 +7,7 @@ import type * as CSS from "csstype";
 import * as lightningcss from "lightningcss";
 import type { Browser, Page } from "playwright";
 import { chromium, firefox, webkit } from "playwright";
-import { pipe, piped } from "remeda";
+import { pipe } from "remeda";
 
 import { buildHooksSystem } from "./index.ts";
 
@@ -326,72 +326,6 @@ describe(`in ${selectedBrowser}`, () => {
       assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
     });
   }
-
-  it("supports nesting", async () => {
-    const { styleSheet, on, or } = createHooks("&.a", "&.b", "&.c", "&.d");
-
-    const expectedDefaultColor = Color("gray"),
-      expectedCMatchColor = Color("red"),
-      expectedDMatchColor = Color("blue");
-
-    await page.addStyleTag({ content: styleSheet() });
-
-    await createStyledElement(
-      "div",
-      pipe(
-        {
-          width: "100px",
-          height: "100px",
-          backgroundColor: expectedDefaultColor.string(),
-        },
-        on(
-          or("&.a", "&.b"),
-          piped(
-            on("&.c", {
-              backgroundColor: expectedCMatchColor.string(),
-            }),
-            on("&.d", {
-              backgroundColor: expectedDMatchColor.string(),
-            }),
-          ),
-        ),
-      ),
-    );
-
-    for (const className of ["", "a", "b", "a b", "c", "d", "c d"]) {
-      await queryAndSetClassName("div", className);
-
-      assert.deepStrictEqual(
-        Color(await getComputedPropertyValue("div", "backgroundColor")),
-        expectedDefaultColor,
-      );
-    }
-
-    for (const className of ["a c", "b c", "a b c"]) {
-      await queryAndSetClassName("div", className);
-
-      assert.deepStrictEqual(
-        Color(await getComputedPropertyValue("div", "backgroundColor")),
-        expectedCMatchColor,
-      );
-    }
-
-    for (const className of [
-      "a d",
-      "b d",
-      "a b d",
-      "a c d",
-      "b c d",
-      "a b c d",
-    ]) {
-      await queryAndSetClassName("div", className);
-
-      assert.deepStrictEqual(
-        Color(await getComputedPropertyValue("div", "backgroundColor")),
-        expectedDMatchColor,
-      );
-    }
-  });
 });
 
 it("uses the specified stringify function when merging values", () => {

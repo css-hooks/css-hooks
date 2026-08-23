@@ -9,5 +9,5 @@ Enhances a style object with conditional styles.
 **Signature:**
 
 ```typescript
-on: (condition: Condition<S>, style: CSSProperties | ((style: CSSProperties) => CSSProperties)) => EnhanceStyleFn<CSSProperties>;
+on: (condition: Condition<S>, style: CSSProperties) => EnhanceStyleFn<CSSProperties>;
 ```
