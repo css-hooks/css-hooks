@@ -87,7 +87,7 @@ export interface CreateHooksResult<S, CSSProperties> {
    */
   on: (
     condition: Condition<S>,
-    style: CSSProperties | ((style: CSSProperties) => CSSProperties),
+    style: CSSProperties,
   ) => EnhanceStyleFn<CSSProperties>;
 
   /**
@@ -215,19 +215,12 @@ export function buildHooksSystem<
       and: (...and) => ({ and }),
       or: (...or) => ({ or }),
       not: not => ({ not }),
-      on(condition, conditionalStyleOrFn) {
+      on(condition, overrideStyle) {
         return fallbackStyle => {
-          const conditionalStyle =
-            conditionalStyleOrFn instanceof Function
-              ? conditionalStyleOrFn(fallbackStyle)
-              : conditionalStyleOrFn;
           const style = { ...fallbackStyle };
-          for (const property in conditionalStyle) {
-            const conditionalValue = stringify(
-              conditionalStyle[property],
-              property,
-            );
-            if (conditionalValue === null) {
+          for (const property in overrideStyle) {
+            const overrideValue = stringify(overrideStyle[property], property);
+            if (overrideValue === null) {
               continue;
             }
             let fallbackValue = "revert-layer";
@@ -239,7 +232,7 @@ export function buildHooksSystem<
             }
             const [value, extraDecls] = buildExpression(
               condition,
-              conditionalValue,
+              overrideValue,
               fallbackValue,
             );
             Object.assign(style, { [property]: value }, extraDecls);

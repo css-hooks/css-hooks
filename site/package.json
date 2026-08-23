@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "wireit",
-    "dev": "react-router dev",
+    "dev": "vite dev",
     "prepare": "wireit"
   },
   "wireit": {
