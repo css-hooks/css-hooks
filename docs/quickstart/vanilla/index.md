@@ -37,7 +37,8 @@ export const { styleSheet, on } = createHooks("&:active");
  * Converts a style object to a string.
  *
  * @remarks
- * This functionality (or equivalent) would typically be bundled with an app framework.
+ * This functionality (or equivalent) would typically be bundled with an app
+ * framework.
  */
 export function styleObjectToString(obj: Record<string, unknown>) {
   return Object.entries(obj)

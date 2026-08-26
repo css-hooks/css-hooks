@@ -7,8 +7,7 @@
 /**
  * Represents the conditions under which a given hook or declaration applies.
  *
- * @typeParam S - The basic type of condition to enhance with boolean
- * operations.
+ * @typeParam S - The basic type of condition to enhance with boolean operations
  *
  * @public
  */
@@ -16,18 +15,16 @@ export type Condition<S> =
   S | { and: Condition<S>[] } | { or: Condition<S>[] } | { not: Condition<S> };
 
 /**
- * Function to convert a value into a string.
- *
- * @param value - The value to stringify
- *
- * @param propertyName - The property name corresponding to the value being
- * stringified
+ * Function to convert a value into a string
  *
  * @remarks
- * Used for merging a conditional property value with the fallback value.
+ * Used for merging a conditional property value with the fallback value
  *
- * @returns The stringified value, or `undefined` if the value cannot be
- * stringified
+ * @param value - The value to stringify
+ * @param propertyName - The property name corresponding to the value being
+ *   stringified
+ *
+ * @returns The stringified value, or `null` if the value cannot be stringified
  *
  * @public
  */
@@ -40,12 +37,13 @@ export type StringifyFn = (
  * Represents the selector logic used to create a hook.
  *
  * @remarks
- * Two types are supported:
- * 1. A basic selector, where `&` is used as a placeholder for the element to
- *    which the condition applies. The `&` character must appear somewhere.
- * 2. A `@media`, `@container`, or `@supports` at-rule. The value must begin
- *    with one of these keywords, followed by a space.
- * 3. The `@starting-style` at-rule (exactly, with no additional parameters).
+ * Three forms are supported:
+ *
+ * 1. A basic selector, where `&` is used as a placeholder for the element to which
+ *    the condition applies. The `&` character must appear somewhere.
+ * 2. `@media`, `@container`, and `@supports` at-rules. Each value must begin with
+ *    its keyword, followed by a space.
+ * 3. `@starting-style` with no additional parameters
  *
  * @public
  */
@@ -55,53 +53,84 @@ export type Selector =
   | "@starting-style";
 
 /**
- * Enhances a style object by merging in conditional declarations.
+ * Resolves the CSS property names that conflict with an override style.
  *
- * @typeParam CSSProperties - The type of a standard (flat) style object,
- * typically defined by an app framework (e.g., React's `CSSProperties` type).
- *
- * @param style - The original style object containing default/fallback values
- *
- * @returns An enhanced style object with conditional styles applied
- *
- * @public
+ * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
+ *   they conflict with
+ * @typeParam OverrideCSSProperties - The conditional declarations for which
+ *   conflicting properties are resolved
  */
-export type EnhanceStyleFn<CSSProperties> = (
-  style: CSSProperties,
-) => CSSProperties;
+type CSSPropertyConflictKeys<
+  CSSPropertyConflicts extends object,
+  OverrideCSSProperties,
+> = CSSPropertyConflicts[keyof OverrideCSSProperties &
+  keyof CSSPropertyConflicts] &
+  PropertyKey;
+
+/**
+ * Prevents conflicting CSS properties from being assigned values in a base
+ * style.
+ *
+ * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
+ *   with which they conflict
+ * @typeParam OverrideCSSProperties - The conditional declarations for which
+ *   conflicting properties are forbidden
+ */
+type ForbidCSSPropertyConflicts<
+  CSSPropertyConflicts extends object,
+  OverrideCSSProperties,
+> = {
+  [
+    P in CSSPropertyConflictKeys<CSSPropertyConflicts, OverrideCSSProperties>
+  ]?: never;
+};
 
 /**
  * An object containing the functions needed to support and use the configured
- * hooks.
+ * hooks
  *
  * @typeParam S - The type of the selector logic for which to generate hooks
- *
- * @typeParam CSSProperties - The type of a standard (flat) style object,
- * typically defined by an app framework (e.g., React's `CSSProperties` type).
- *
- * @public
+ * @typeParam CSSProperties - The type of a style object, typically defined by
+ *   an app framework (e.g., React's `CSSProperties` type)
+ * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
+ *   with which they conflict
  */
-export interface CreateHooksResult<S, CSSProperties> {
+interface CreateHooksResult<
+  S,
+  CSSProperties,
+  CSSPropertyConflicts extends object,
+> {
   /**
-   * Enhances a style object with conditional styles.
+   * Creates a function that enhances a style object with conditional override
+   * styles.
    */
-  on: (
+  on: <
+    OverrideCSSProperties extends CSSProperties,
+    BaseCSSProperties extends Omit<
+      CSSProperties,
+      CSSPropertyConflictKeys<CSSPropertyConflicts, OverrideCSSProperties>
+    >,
+  >(
     condition: Condition<S>,
-    style: CSSProperties,
-  ) => EnhanceStyleFn<CSSProperties>;
+    overrideStyle: OverrideCSSProperties,
+  ) => (
+    style: CSSProperties &
+      BaseCSSProperties &
+      ForbidCSSPropertyConflicts<CSSPropertyConflicts, OverrideCSSProperties>,
+  ) => BaseCSSProperties & OverrideCSSProperties;
 
   /**
    * Combines a list of conditions into a single condition which is true when
    * all of the specified conditions are true.
    *
    * @typeParam C - The type of the conditions which must all be true in order
-   * for the condition to be true.
+   *   for the condition to be true
    *
    * @param conditions - The conditions which must all be true in order for the
-   * condition to be true.
+   *   condition to be true
    *
    * @returns A condition that is true when all of the specified conditions are
-   * true.
+   *   true
    */
   and: <C extends Condition<S>[]>(...conditions: C) => { and: C };
 
@@ -110,74 +139,83 @@ export interface CreateHooksResult<S, CSSProperties> {
    * any of the specified conditions are true.
    *
    * @typeParam C - The type of the conditions any one of which must be true in
-   * order for the condition to be true.
+   *   order for the condition to be true
    *
    * @param conditions - The conditions any one of which must be true in order
-   * for the condition to be true.
+   *   for the condition to be true
    *
    * @returns A condition that is true when any of the specified conditions are
-   * true.
+   *   true
    */
   or: <C extends Condition<S>[]>(...conditions: C) => { or: C };
 
   /**
    * Negates a condition.
    *
-   * @typeParam condition - The type of the condition which must be false in
-   * order for the resulting condition to be true.
+   * @typeParam C - The type of the condition which must be false in order for
+   *   the resulting condition to be true
    *
    * @param condition - The condition which must be false in order for the
-   * resulting condition to be true.
+   *   resulting condition to be true
    *
    * @returns A condition that is true when the specified condition is false.
    */
   not: <C extends Condition<S>>(condition: C) => { not: C };
 
-  /**
-   * The style sheet required to support the configured hooks.
-   */
+  /** Returns the style sheet required to support the configured hooks. */
   styleSheet: () => string;
 }
 
 /**
  * Represents the function used to define hooks and related configuration.
  *
- * @typeParam CSSProperties - The type of a standard (flat) style object,
- * typically defined by an app framework (e.g., React's `CSSProperties` type).
+ * @typeParam CSSProperties - The type of a style object, typically defined by
+ *   an app framework (e.g., React's `CSSProperties` type)
+ * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
+ *   with which they conflict
+ * @typeParam S - The type of selectors for which to create hooks
  *
- * @typeParam S - The type of selectors for which to create hooks.
- *
- * @param selectors - The selectors for which to create hooks.
+ * @param selectors - The selectors for which to create hooks
  *
  * @returns An object containing the functions needed to support and use the
- * configured hooks.
+ *   configured hooks
  *
  * @public
  */
-export type CreateHooksFn<CSSProperties> = <S extends Selector>(
+export type CreateHooksFn<
+  CSSProperties,
+  CSSPropertyConflicts extends object = object,
+> = <S extends Selector>(
   ...selectors: S[]
-) => CreateHooksResult<S, CSSProperties>;
+) => CreateHooksResult<S, CSSProperties, CSSPropertyConflicts>;
 
 /**
  * Creates a flavor of CSS Hooks tailored to a specific app framework.
  *
- * @param stringify - The function used to stringify values when merging
- * conditional styles.
- *
- * @returns The `createHooks` function used to bootstrap CSS Hooks within an app
- * or component library.
- *
  * @remarks
  * Primarily for internal use, advanced use cases, or when an appropriate
- * framework integration is not provided.
+ * framework integration is not provided
+ *
+ * @typeParam CSSProperties - The type of a style object, typically defined by
+ *   an app framework (e.g., React's `CSSProperties` type)
+ * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
+ *   with which they conflict
+ *
+ * @param stringify - The function used to stringify values when merging
+ *   override styles
+ *
+ * @returns The `createHooks` function used to bootstrap CSS Hooks within an app
+ *   or component library
  *
  * @public
- *
  */
 export function buildHooksSystem<
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   CSSProperties extends { [P: string]: any } = Record<string, unknown>,
->(stringify: StringifyFn = String): CreateHooksFn<CSSProperties> {
+  CSSPropertyConflicts extends object = object,
+>(
+  stringify: StringifyFn = String,
+): CreateHooksFn<CSSProperties, CSSPropertyConflicts> {
   return (...selectors: string[]) => {
     const [space, newline] =
       // @ts-expect-error bundler expected to replace `process.env.NODE_ENV` expression
@@ -188,8 +226,8 @@ export function buildHooksSystem<
         const indent = Array(2).fill(space).join("");
         return `*${space}{${newline}${selectors
           .flatMap(selector => [
-            `${indent}--${createHash(selector)}-0:${space}initial;`,
-            `${indent}--${createHash(selector)}-1:${space};`,
+            `${indent}--${createHash(selector)}0:${space}initial;`,
+            `${indent}--${createHash(selector)}1:${space};`,
           ])
           .join(newline)}${newline}}${newline}${selectors
           .flatMap(def => {
@@ -197,16 +235,16 @@ export function buildHooksSystem<
               return [
                 `${def} {`,
                 `${indent}* {`,
-                `${indent}${indent}--${createHash(def)}-0:${space};`,
-                `${indent}${indent}--${createHash(def)}-1:${space}initial;`,
+                `${indent}${indent}--${createHash(def)}0:${space};`,
+                `${indent}${indent}--${createHash(def)}1:${space}initial;`,
                 `${indent}}`,
                 "}",
               ];
             }
             return [
               `${def.replace(/&/g, "*")}${space}{`,
-              `${indent}--${createHash(def)}-0:${space};`,
-              `${indent}--${createHash(def)}-1:${space}initial;`,
+              `${indent}--${createHash(def)}0:${space};`,
+              `${indent}--${createHash(def)}1:${space}initial;`,
               "}",
             ];
           })
@@ -216,7 +254,9 @@ export function buildHooksSystem<
       or: (...or) => ({ or }),
       not: not => ({ not }),
       on(condition, overrideStyle) {
-        return fallbackStyle => {
+        return <ActualBaseCSSProperties extends CSSProperties>(
+          fallbackStyle: ActualBaseCSSProperties,
+        ) => {
           const style = { ...fallbackStyle };
           for (const property in overrideStyle) {
             const overrideValue = stringify(overrideStyle[property], property);
@@ -237,7 +277,7 @@ export function buildHooksSystem<
             );
             Object.assign(style, { [property]: value }, extraDecls);
           }
-          return style;
+          return style as typeof style & typeof overrideStyle;
           function buildExpression(
             condition: string | Condition<string>,
             valueIfTrue: string,
@@ -258,9 +298,9 @@ export function buildHooksSystem<
                 valFalse = `var(--${hash})`;
               }
               return [
-                `var(--${createHash(condition)}-1,${space}${valTrue})${space}var(--${createHash(
+                `var(--${createHash(condition)}1,${space}${valTrue})${space}var(--${createHash(
                   condition,
-                )}-0,${space}${valFalse})`,
+                )}0,${space}${valFalse})`,
                 extraDecls,
               ];
             }
@@ -302,18 +342,33 @@ export function buildHooksSystem<
   };
 }
 
-function createHash(obj: unknown) {
-  const jsonString = JSON.stringify(obj);
+const hashAlphabet =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
-  let hashValue = 0;
+function createHash(value: string) {
+  let h1 = 0xdeadbeef;
+  let h2 = 0x41c6ce57;
 
-  for (let i = 0; i < jsonString.length; i++) {
-    const charCode = jsonString.charCodeAt(i);
-    hashValue = (hashValue << 5) - hashValue + charCode;
-    hashValue &= 0x7fffffff;
+  for (let i = 0; i < value.length; i++) {
+    const code = value.charCodeAt(i);
+    h1 = Math.imul(h1 ^ code, 0x9e3779b1);
+    h2 = Math.imul(h2 ^ code, 0x5f356495);
   }
 
-  const str = hashValue.toString(36);
+  h1 =
+    Math.imul(h1 ^ (h1 >>> 16), 0x85ebca6b) ^
+    Math.imul(h2 ^ (h2 >>> 13), 0xc2b2ae35);
+  h2 =
+    Math.imul(h2 ^ (h2 >>> 16), 0x85ebca6b) ^
+    Math.imul(h1 ^ (h1 >>> 13), 0xc2b2ae35);
 
-  return /^[0-9]/.test(str) ? `a${str}` : str;
+  let hash = (h1 >>> 0) + 0x100000000 * (h2 & 0xf);
+  let encoded = "";
+
+  for (let i = 0; i < 6; i++) {
+    encoded = hashAlphabet.charAt(hash % 64) + encoded;
+    hash = Math.floor(hash / 64);
+  }
+
+  return encoded;
 }

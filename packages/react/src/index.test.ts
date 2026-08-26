@@ -1,9 +1,12 @@
 import assert from "node:assert";
 import { describe, it } from "node:test";
 
+import { pipe } from "remeda";
+
 import {
   _stringifyValue as stringifyValue,
   _unitlessNumbers as unitlessNumbers,
+  createHooks,
 } from "./index.ts";
 
 describe("`stringifyValue` function", () => {
@@ -29,3 +32,14 @@ describe("`stringifyValue` function", () => {
     });
   });
 });
+
+{
+  const { on } = createHooks("&");
+  pipe(
+    {
+      // @ts-expect-error `margin` conflicts with `marginTop`
+      margin: 0,
+    },
+    on("&", { marginTop: 1 }),
+  );
+}

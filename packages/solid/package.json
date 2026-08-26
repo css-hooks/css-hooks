@@ -7,6 +7,7 @@
     "@css-hooks/core": "3.2.0-next.10"
   },
   "devDependencies": {
+    "remeda": "^2.45.0",
     "solid-js": "^1.7.11"
   },
   "files": [
@@ -30,6 +31,7 @@
   },
   "scripts": {
     "build": "wireit",
+    "codegen": "npm run --silent start -w @scripts/css-property-conflicts -- --casing kebab > src/css-property-conflicts.ts",
     "prepublishOnly": "wireit",
     "test": "node --conditions @css-hooks/source --test src/index.test.ts"
   },

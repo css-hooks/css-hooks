@@ -14,5 +14,7 @@ export type Selector = `${string}&${string}` | `@${"media" | "container" | "supp
 
 ## Remarks
 
-Two types are supported: 1. A basic selector, where `&` is used as a placeholder for the element to which the condition applies. The `&` character must appear somewhere. 2. A `@media`<!-- -->, `@container`<!-- -->, or `@supports` at-rule. The value must begin with one of these keywords, followed by a space. 3. The `@starting-style` at-rule (exactly, with no additional parameters).
+Three forms are supported:
+
+1. A basic selector, where `&` is used as a placeholder for the element to which the condition applies. The `&` character must appear somewhere. 2. `@media`<!-- -->, `@container`<!-- -->, and `@supports` at-rules. Each value must begin with its keyword, followed by a space. 3. `@starting-style` with no additional parameters
 
