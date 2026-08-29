@@ -217,9 +217,17 @@ export function buildHooksSystem<
   stringify: StringifyFn = String,
 ): CreateHooksFn<CSSProperties, CSSPropertyConflicts> {
   return (...selectors: string[]) => {
-    const [space, newline] =
+    let space = "";
+    let newline = "";
+    try {
       // @ts-expect-error bundler expected to replace `process.env.NODE_ENV` expression
-      process.env.NODE_ENV === "development" ? [" ", "\n"] : ["", ""];
+      if (process.env.NODE_ENV === "development") {
+        space = " ";
+        newline = "\n";
+      }
+    } catch {
+      // `process.env.NODE_ENV` is absent in unbundled browser environments
+    }
 
     return {
       styleSheet() {
