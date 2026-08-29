@@ -7,7 +7,8 @@
     "@css-hooks/core": "3.2.0-next.10"
   },
   "devDependencies": {
-    "@builder.io/qwik": "^1.9.0"
+    "@builder.io/qwik": "^1.9.0",
+    "remeda": "^2.45.0"
   },
   "files": [
     "cjs",
@@ -36,6 +37,7 @@
   },
   "scripts": {
     "build": "wireit",
+    "codegen": "npm run --silent start -w @scripts/css-property-conflicts -- --casing camel --casing kebab > src/css-property-conflicts.ts",
     "prepublishOnly": "wireit",
     "test": "node --conditions @css-hooks/source --test src/index.test.ts"
   },

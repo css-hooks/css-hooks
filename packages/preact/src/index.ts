@@ -1,11 +1,14 @@
 /**
- *  CSS Hooks for {@link https://preactjs.com | Preact}
+ * CSS Hooks for {@link https://preactjs.com | Preact}
  *
  * @packageDocumentation
  */
 
+import type { CreateHooksFn } from "@css-hooks/core";
 import { buildHooksSystem } from "@css-hooks/core";
-import type { JSX } from "preact";
+import type { CSSProperties } from "preact";
+
+import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
 export type * from "@css-hooks/core";
 
@@ -14,11 +17,12 @@ const IS_NON_DIMENSIONAL =
 
 /**
  * A {@link @css-hooks/core#CreateHooksFn} configured to use Preact's
- * `JSX.CSSProperties` type and logic for converting CSS values into strings.
+ * `CSSProperties` type and logic for converting CSS values into strings
  *
  * @public
  */
-export const createHooks = buildHooksSystem<JSX.CSSProperties>(_stringifyValue);
+export const createHooks: CreateHooksFn<CSSProperties, CSSPropertyConflicts> =
+  buildHooksSystem<CSSProperties, CSSPropertyConflicts>(_stringifyValue);
 
 /** @internal */
 export function _stringifyValue(value: unknown, propertyName: string) {

@@ -26,7 +26,7 @@ Description
 
 </td><td>
 
-A [CreateHooksFn](./core.createhooksfn.md) configured to use Preact's `JSX.CSSProperties` type and logic for converting CSS values into strings.
+A [CreateHooksFn](./core.createhooksfn.md) configured to use Preact's `CSSProperties` type and logic for converting CSS values into strings
 
 
 </td></tr>
