@@ -352,8 +352,8 @@ export function buildHooksSystem<
   };
 }
 
-const hashAlphabet =
-  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+const hashAlphabet = "abcdefghijklmnopqrstuvwxyz0123456789-_";
+const hashAlphabetLength = hashAlphabet.length;
 
 function createHash(value: string) {
   let h1 = 0xdeadbeef;
@@ -375,9 +375,9 @@ function createHash(value: string) {
   let hash = (h1 >>> 0) + 0x100000000 * (h2 & 0xf);
   let encoded = "";
 
-  for (let i = 0; i < 6; i++) {
-    encoded = hashAlphabet.charAt(hash % 64) + encoded;
-    hash = Math.floor(hash / 64);
+  for (let i = 0; i < 7; i++) {
+    encoded = hashAlphabet.charAt(hash % hashAlphabetLength) + encoded;
+    hash = Math.floor(hash / hashAlphabetLength);
   }
 
   return encoded;
