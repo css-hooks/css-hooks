@@ -1,10 +1,10 @@
 {
   "name": "@css-hooks/qwik",
   "description": "CSS Hooks for Qwik",
-  "version": "4.0.0-next.2",
+  "version": "4.0.0-next.3",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "4.0.0-next.2"
+    "@css-hooks/core": "4.0.0-next.3"
   },
   "devDependencies": {
     "@builder.io/qwik": "^1.9.0",
