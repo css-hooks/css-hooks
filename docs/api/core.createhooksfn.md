@@ -11,5 +11,5 @@ Represents the function used to define hooks and related configuration.
 ```typescript
 export type CreateHooksFn<CSSProperties, CSSPropertyConflicts extends object = object> = <S extends Selector>(...selectors: S[]) => CreateHooksResult<S, CSSProperties, CSSPropertyConflicts>;
 ```
-**References:** [Selector](./core.selector.md)
+**References:** [Selector](./core.selector.md)<!-- -->, [CreateHooksResult](./core.createhooksresult.md)
 
