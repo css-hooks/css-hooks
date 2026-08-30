@@ -94,8 +94,10 @@ type ForbidCSSPropertyConflicts<
  *   an app framework (e.g., React's `CSSProperties` type)
  * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
  *   with which they conflict
+ *
+ * @public
  */
-interface CreateHooksResult<
+export interface CreateHooksResult<
   S,
   CSSProperties,
   CSSPropertyConflicts extends object,
