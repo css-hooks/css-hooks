@@ -357,7 +357,7 @@ it("uses fixed-width hashes without known polynomial collisions", () => {
     return propertyName;
   });
 
-  assert(propertyNames.every(name => /^[A-Za-z0-9_-]{6}[01]$/.test(name)));
+  assert(propertyNames.every(name => /^[a-z0-9_-]{7}[01]$/.test(name)));
   assert.strictEqual(
     new Set(propertyNames.map(name => name.slice(0, -1))).size,
     2,
@@ -480,7 +480,10 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
   );
   const { on } = createHooks("&:hover");
   const { width } = pipe({ width: 100 }, on("&:hover", { width: "200px" }));
-  assert.strictEqual(width, "var(--Lh11Md1,200px)var(--Lh11Md0,revert-layer)");
+  assert.match(
+    width,
+    /var\(--[a-z0-9_-]+1,200px\)var\(--[a-z0-9_-]+0,revert-layer\)/,
+  );
 });
 
 // type-level tests
