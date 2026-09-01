@@ -500,6 +500,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
   // defined in conflict map
   pipe(
     {
+      color: "red",
       // @ts-expect-error shorthand/longhand conflict
       marginTop: 0,
     },

@@ -85,6 +85,20 @@ type ForbidCSSPropertyConflicts<
   ]?: never;
 };
 
+/** Preserves a style's shape while replacing conflicting property values. */
+type CSSPropertiesWithoutConflicts<
+  CSSProperties,
+  CSSPropertyConflicts extends object,
+  OverrideCSSProperties,
+> = {
+  [P in keyof CSSProperties]: P extends CSSPropertyConflictKeys<
+    CSSPropertyConflicts,
+    OverrideCSSProperties
+  >
+    ? never
+    : CSSProperties[P];
+} & ForbidCSSPropertyConflicts<CSSPropertyConflicts, OverrideCSSProperties>;
+
 /**
  * An object containing the functions needed to support and use the configured
  * hooks
@@ -116,9 +130,11 @@ export interface CreateHooksResult<
     condition: Condition<S>,
     overrideStyle: OverrideCSSProperties,
   ) => (
-    style: CSSProperties &
-      BaseCSSProperties &
-      ForbidCSSPropertyConflicts<CSSPropertyConflicts, OverrideCSSProperties>,
+    style: CSSPropertiesWithoutConflicts<
+      CSSProperties & BaseCSSProperties,
+      CSSPropertyConflicts,
+      OverrideCSSProperties
+    >,
   ) => BaseCSSProperties & OverrideCSSProperties;
 
   /**
