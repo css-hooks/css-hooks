@@ -247,13 +247,17 @@ export function buildHooksSystem<
       // `process.env.NODE_ENV` is absent in unbundled browser environments
     }
 
+    const selectorHashes = new Map(
+      selectors.map(selector => [selector, createHash(selector)]),
+    );
+
     return {
       styleSheet() {
         const indent = Array(2).fill(space).join("");
         return `*${space}{${newline}${selectors
           .flatMap(selector => [
-            `${indent}--${createHash(selector)}0:${space}initial;`,
-            `${indent}--${createHash(selector)}1:${space};`,
+            `${indent}--${selectorHashes.get(selector)}0:${space}initial;`,
+            `${indent}--${selectorHashes.get(selector)}1:${space};`,
           ])
           .join(newline)}${newline}}${newline}${selectors
           .flatMap(def => {
@@ -261,16 +265,16 @@ export function buildHooksSystem<
               return [
                 `${def} {`,
                 `${indent}* {`,
-                `${indent}${indent}--${createHash(def)}0:${space};`,
-                `${indent}${indent}--${createHash(def)}1:${space}initial;`,
+                `${indent}${indent}--${selectorHashes.get(def)}0:${space};`,
+                `${indent}${indent}--${selectorHashes.get(def)}1:${space}initial;`,
                 `${indent}}`,
                 "}",
               ];
             }
             return [
               `${def.replace(/&/g, "*")}${space}{`,
-              `${indent}--${createHash(def)}0:${space};`,
-              `${indent}--${createHash(def)}1:${space}initial;`,
+              `${indent}--${selectorHashes.get(def)}0:${space};`,
+              `${indent}--${selectorHashes.get(def)}1:${space}initial;`,
               "}",
             ];
           })
@@ -323,10 +327,10 @@ export function buildHooksSystem<
                 extraDecls[`--${hash}`] = valFalse;
                 valFalse = `var(--${hash})`;
               }
+              const selectorHash =
+                selectorHashes.get(condition) || createHash(condition);
               return [
-                `var(--${createHash(condition)}1,${space}${valTrue})${space}var(--${createHash(
-                  condition,
-                )}0,${space}${valFalse})`,
+                `var(--${selectorHash}1,${space}${valTrue})${space}var(--${selectorHash}0,${space}${valFalse})`,
                 extraDecls,
               ];
             }
