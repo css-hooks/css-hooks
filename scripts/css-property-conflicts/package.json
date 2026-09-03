@@ -1,6 +1,6 @@
 {
   "name": "@scripts/css-property-conflicts",
-  "version": "4.0.0-next.6",
+  "version": "4.0.0-next.7",
   "private": true,
   "type": "module",
   "scripts": {
