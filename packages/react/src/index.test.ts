@@ -1,6 +1,7 @@
 import assert from "node:assert";
 import { describe, it } from "node:test";
 
+import type { CSSProperties } from "react";
 import { pipe } from "remeda";
 
 import {
@@ -42,4 +43,11 @@ describe("`stringifyValue` function", () => {
     },
     on("&", { marginTop: 1 }),
   );
+
+  pipe(
+    { color: "red", textDecoration: "none" },
+    on("&", { color: "green" }),
+    on("&", { color: "blue" }),
+    on("&", { textDecoration: "underline" }),
+  ) satisfies CSSProperties;
 }

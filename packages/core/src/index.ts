@@ -122,20 +122,26 @@ export interface CreateHooksResult<
    */
   on: <
     OverrideCSSProperties extends CSSProperties,
-    BaseCSSProperties extends Omit<
-      CSSProperties,
-      CSSPropertyConflictKeys<CSSPropertyConflicts, OverrideCSSProperties>
-    >,
+    BaseCSSProperties extends CSSProperties,
   >(
     condition: Condition<S>,
     overrideStyle: OverrideCSSProperties,
   ) => (
-    style: CSSPropertiesWithoutConflicts<
-      CSSProperties & BaseCSSProperties,
+    style: CSSProperties &
+      CSSPropertiesWithoutConflicts<
+        BaseCSSProperties,
+        CSSPropertyConflicts,
+        OverrideCSSProperties
+      >,
+  ) => Omit<
+    CSSPropertiesWithoutConflicts<
+      BaseCSSProperties,
       CSSPropertyConflicts,
       OverrideCSSProperties
     >,
-  ) => BaseCSSProperties & OverrideCSSProperties;
+    keyof OverrideCSSProperties
+  > &
+    OverrideCSSProperties;
 
   /**
    * Combines a list of conditions into a single condition which is true when
