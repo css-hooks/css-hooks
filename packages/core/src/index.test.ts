@@ -542,3 +542,25 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
     }),
   );
 }
+
+// exact style inference across transforms
+{
+  const createHooks = buildHooksSystem<
+    {
+      color?: string;
+      textDecoration?: string;
+      textDecorationColor?: string;
+    },
+    { textDecoration: "textDecorationColor" }
+  >();
+  const { on } = createHooks("&");
+
+  const style = pipe(
+    { color: "red", textDecoration: "none" },
+    on("&", { color: "green" as const }),
+    on("&", { color: "blue" as const }),
+    on("&", { textDecoration: "underline" as const }),
+  );
+
+  style satisfies { color: "blue"; textDecoration: "underline" };
+}
