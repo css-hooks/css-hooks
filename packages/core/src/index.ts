@@ -67,25 +67,7 @@ type CSSPropertyConflictKeys<
   keyof CSSPropertyConflicts] &
   PropertyKey;
 
-/**
- * Prevents conflicting CSS properties from being assigned values in a base
- * style.
- *
- * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
- *   with which they conflict
- * @typeParam OverrideCSSProperties - The conditional declarations for which
- *   conflicting properties are forbidden
- */
-type ForbidCSSPropertyConflicts<
-  CSSPropertyConflicts extends object,
-  OverrideCSSProperties,
-> = {
-  [
-    P in CSSPropertyConflictKeys<CSSPropertyConflicts, OverrideCSSProperties>
-  ]?: never;
-};
-
-/** Preserves a style's shape while replacing conflicting property values. */
+/** Preserves a style's shape while rejecting known-present conflicts. */
 type CSSPropertiesWithoutConflicts<
   CSSProperties,
   CSSPropertyConflicts extends object,
@@ -95,9 +77,11 @@ type CSSPropertiesWithoutConflicts<
     CSSPropertyConflicts,
     OverrideCSSProperties
   >
-    ? never
+    ? Pick<CSSProperties, P> extends Required<Pick<CSSProperties, P>>
+      ? never
+      : CSSProperties[P]
     : CSSProperties[P];
-} & ForbidCSSPropertyConflicts<CSSPropertyConflicts, OverrideCSSProperties>;
+};
 
 /**
  * An object containing the functions needed to support and use the configured
