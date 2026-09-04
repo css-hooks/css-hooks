@@ -564,3 +564,25 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 
   style satisfies { color: "blue"; textDecoration: "underline" };
 }
+
+// optional conflicts in a contextually inferred style
+{
+  type CSSProperties = {
+    background?: string;
+    backgroundAttachment?: string;
+    flexDirection?: "row" | "column";
+    minHeight?: string;
+  };
+
+  const createHooks = buildHooksSystem<
+    CSSProperties,
+    { background: "backgroundAttachment" }
+  >();
+  const { on } = createHooks("&");
+
+  pipe(
+    { flexDirection: "column" },
+    on("&", { minHeight: "100dvh" }),
+    on("&", { background: "black" }),
+  );
+}
