@@ -17,18 +17,20 @@ export default function Docs() {
   return (
     <main
       style={{
-        margin: "1rem auto",
-        width: "calc(100% - 4rem)",
+        marginBlock: 16,
+        marginInline: "auto",
+        width: "calc(100% - 64px)",
         maxWidth: "60ch",
       }}
     >
       <h1
         style={{
           margin: 0,
-          fontSize: "2.2rem",
+          fontSize: "2em",
           fontWeight: 400,
           lineHeight: 1.25,
-          marginBlock: "1.375rem",
+          marginBlockStart: 0,
+          marginBlockEnd: 16,
         }}
       >
         Documentation
@@ -38,10 +40,10 @@ export default function Docs() {
           {
             listStyleType: "none",
             margin: 0,
-            padding: "2em",
+            padding: 32,
             display: "flex",
             flexDirection: "column",
-            gap: "2em",
+            gap: 32,
           },
           on(dark, {
             background: gray(85),
@@ -60,7 +62,7 @@ export default function Docs() {
           )
           .map(({ attributes: { pathname, title, description } }) => (
             <li key={pathname}>
-              <span style={{ fontSize: "1.5em" }}>
+              <span style={{ fontSize: "1.5em", lineHeight: 4 / 3 }}>
                 <NavLink to={pathname}>{title}</NavLink>
               </span>
               <br />

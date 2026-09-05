@@ -72,7 +72,6 @@ export default function Home({
         style={{
           position: "relative",
           overflowX: "clip",
-          fontSize: "1rem",
           marginTop: "calc(-48px - 2em)",
           width: "100%",
         }}
@@ -83,8 +82,8 @@ export default function Home({
             {
               position: "relative",
               overflow: "hidden",
-              paddingTop: "8.75em",
-              paddingBottom: "8em",
+              paddingTop: 140,
+              paddingBottom: 128,
             },
             on(not(dark), {
               background: [
@@ -123,7 +122,7 @@ export default function Home({
                 flexDirection: "column",
                 alignItems: "center",
                 textAlign: "center",
-                gap: "0.5em",
+                gap: 8,
               }}
             >
               <h1
@@ -164,6 +163,7 @@ export default function Home({
                 style={pipe(
                   {
                     fontSize: "1.5em",
+                    lineHeight: 4 / 3,
                     textWrap: "balance",
                     color: gray(60),
                   },
@@ -185,7 +185,7 @@ export default function Home({
                   width: "100%",
                   maxWidth: 480,
                   gap: 16,
-                  marginTop: "1em",
+                  marginTop: 16,
                 }}
               >
                 <CtaButton to="/docs" theme="primary">
@@ -229,8 +229,8 @@ export default function Home({
         <div
           style={{
             position: "relative",
-            marginTop: "-4em",
-            paddingBottom: "4em",
+            marginTop: -64,
+            paddingBottom: 64,
           }}
         >
           {(
@@ -248,16 +248,16 @@ export default function Home({
                 left: "50%",
                 top: 0,
                 width: "150%",
-                height: "5em",
+                height: 80,
                 transform: "translate(-50%, -50%)",
                 background: `radial-gradient(ellipse at center, ${withAlpha(purple(30), 0.55)} 0%, ${withAlpha(purple(45), 0.35)} 30%, ${withAlpha(purple(60), 0.15)} 55%, transparent 75%)`,
                 filter: "blur(12px)",
               },
               {
                 left: "50%",
-                top: "1em",
+                top: 16,
                 width: "70%",
-                height: "5em",
+                height: 80,
                 transform: "translate(-50%, -50%)",
                 background: `radial-gradient(ellipse at center, ${withAlpha(blue(40), 0.35)} 0%, ${withAlpha(blue(55), 0.15)} 35%, transparent 70%)`,
                 filter: "blur(16px)",
@@ -266,7 +266,7 @@ export default function Home({
                 left: "50%",
                 top: 0,
                 width: "28%",
-                height: "8em",
+                height: 128,
                 transform: "translate(-50%, -50%)",
                 background: `radial-gradient(ellipse at center, ${white} 0%, ${withAlpha(purple(10), 0.95)} 10%, ${withAlpha(purple(20), 0.75)} 22%, ${withAlpha(purple(40), 0.45)} 40%, ${withAlpha(purple(60), 0.15)} 60%, transparent 75%)`,
                 filter: "blur(14px)",
@@ -275,7 +275,7 @@ export default function Home({
                 left: "50%",
                 top: 0,
                 width: "55%",
-                height: "3em",
+                height: 48,
                 transform: "translate(-50%, -50%)",
                 background: `radial-gradient(ellipse at center, ${white} 0%, ${withAlpha(purple(20), 0.7)} 25%, transparent 65%)`,
                 filter: "blur(8px)",
@@ -710,7 +710,6 @@ export default function Home({
                   key={framework}
                   style={pipe(
                     {
-                      fontSize: "1rem",
                       background: gray(10),
                       color: gray(80),
                       display: "flex",
@@ -901,6 +900,7 @@ function InstallCommand({ framework }: { framework: string }) {
           gap: "0.5em",
           fontFamily: monospace,
           fontSize: "0.75em",
+          lineHeight: 4 / 3,
           color: gray(55),
         },
         on(dark, {
@@ -1121,7 +1121,7 @@ function Section({
         <ScreenReaderOnly>
           <h1>{title}</h1>
         </ScreenReaderOnly>
-        <div style={{ fontSize: "1rem" }}>{children}</div>
+        <div>{children}</div>
       </Block>
     </section>
   );
@@ -1183,7 +1183,7 @@ function CodeWindow({ children }: { children: ReactNode }) {
             borderStyle: "solid",
             borderBottomLeftRadius: 8,
             borderBottomRightRadius: 8,
-            padding: "1rem",
+            padding: 16,
             overflow: "auto",
           },
           merge(bg),
@@ -1267,7 +1267,6 @@ function Demo({
                 {
                   color: gray(70),
                   fontWeight: 700,
-                  fontSize: "1rem",
                   letterSpacing: "-0.01em",
                 },
                 on(dark, { color: gray(20) }),
@@ -1356,7 +1355,7 @@ function PseudoClassesDemoPreview() {
           border: 0,
           fontFamily: "sans-serif",
           fontWeight: 700,
-          fontSize: "1rem",
+          fontSize: "1em",
           lineHeight: 1,
           background: blue(60),
           color: white,
@@ -1462,7 +1461,7 @@ function ResponsiveDemoPreview() {
             color: black,
             fontFamily: "sans-serif",
             fontWeight: 700,
-            fontSize: "3rem",
+            fontSize: "3em",
             height: scale,
             width,
             display: "grid",
@@ -1482,6 +1481,7 @@ function ResponsiveDemoPreview() {
           style={pipe(
             {
               fontSize: "0.5em",
+              lineHeight: 4 / 3,
             },
             on(or("@container (width < 50px)", "@container (width >= 100px)"), {
               display: "none",
@@ -1532,7 +1532,8 @@ function TestimonialAuthor({
         display: "grid",
         gridTemplateAreas: "'avatar name' 'avatar handle'",
         gridTemplateColumns: "auto 1fr",
-        gap: "0 1rem",
+        rowGap: 0,
+        columnGap: 16,
       }}
     >
       <div
@@ -1577,7 +1578,7 @@ function Testimonial({
             background: white,
             flexDirection: "column",
             gap: 16,
-            padding: "2rem",
+            padding: 32,
             outlineWidth: 0,
             outlineOffset: 2,
             outlineColor: purple(20),
