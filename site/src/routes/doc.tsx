@@ -61,7 +61,9 @@ function MenuList({ children }: { children: ReactNode }) {
         {
           listStyleType: "none",
           margin: 0,
-          padding: 0,
+          paddingTop: 0,
+          paddingRight: 0,
+          paddingBottom: 0,
           paddingLeft: 0,
         },
         on(".group &.group", {
