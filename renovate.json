@@ -32,6 +32,11 @@
       "enabled": false
     },
     {
+      "description": "Keep CSS conflict generation data updates manual",
+      "matchPackageNames": ["@webref/css"],
+      "enabled": false
+    },
+    {
       "description": "Block typescript v7 without linting support",
       "matchPackageNames": ["typescript"],
       "allowedVersions": "/^[0-68-9]|7\\.[^0]/"
