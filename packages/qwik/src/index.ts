@@ -11,6 +11,7 @@ import { buildHooksSystem } from "@css-hooks/core";
 import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
 export type * from "@css-hooks/core";
+export type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
 /** @internal */
 export function _stringifyValue(value: unknown, propertyName: string) {

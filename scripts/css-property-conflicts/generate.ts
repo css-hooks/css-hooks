@@ -270,6 +270,8 @@ export async function renderCSSPropertyConflicts(
 
 /**
  * A map of conflicting CSS property names
+ *
+ * @public
  */
 export type CSSPropertyConflicts = ${renderSetMap(declarationConflicts)};
 `,

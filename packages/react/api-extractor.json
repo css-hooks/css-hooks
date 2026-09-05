@@ -8,12 +8,5 @@
         "customConditions": null
       }
     }
-  },
-  "messages": {
-    "extractorMessageReporting": {
-      "ae-forgotten-export": {
-        "logLevel": "none"
-      }
-    }
   }
 }

@@ -11,6 +11,7 @@ import type { JSX } from "solid-js";
 import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
 export type * from "@css-hooks/core";
+export type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
 /**
  * A {@link @css-hooks/core#CreateHooksFn} configured to use Solid's
