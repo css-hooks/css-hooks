@@ -1,114 +1,74 @@
 ---
 title: Usage
-description: How to apply CSS Hooks in component styles
+description: Apply base styles and override styles with CSS Hooks.
 order: 5
 ---
 
 # Usage
 
-This guide demonstrates how to use CSS Hooks to apply conditional styles to your
-components with the `pipe` and `on` functions.
+Use `pipe()` to start with base styles and apply override styles with `on()`. A
+hook's override styles apply only while its registered condition matches.
 
-## Basic usage
-
-To apply styles to a component, use the `pipe` function to define the base
-(default) styles and the `on` function to define conditional styles that
-override the base styles when certain conditions are met.
-
-### Example: Base styles
-
-```jsx
+```tsx
 // src/button.tsx
 
 import { pipe } from "remeda";
 
-function Button() {
-  return (
-    <button
-      style={pipe({
-        background: "#666", // base value
-        color: "white",
-      })}
-    >
-      Click Me
-    </button>
-  );
-}
-```
+import { intent, on } from "./css";
 
-### Example: Adding conditional styles
-
-```jsx
-// src/button.tsx
-
-import { pipe } from "remeda";
-import { on, and, or } from "./css";
-
-function Button() {
+export function Button() {
   return (
     <button
       style={pipe(
         {
-          background: "#666", // base value
+          background: "#666",
           color: "white",
-        },
-        on(or(and("@media (hover: hover)", "&:hover"), "&:focus"), {
-          background: "#009", // conditionally applied value on hover or focus
-        }),
-        on("&:active", {
-          background: "#900", // conditionally applied value when active
-        }),
-      )}
-    >
-      Hover, Focus, or Click Me
-    </button>
-  );
-}
-```
-
-## Important: Avoiding property conflicts
-
-When defining conditional styles, ensure you do not mix shorthand and longhand
-property names between base and conditional styles. For example, avoid using
-both `margin` and `marginLeft` for the same element to prevent unexpected
-behavior.
-
-## Factoring out reusable conditions
-
-If you frequently use specific combinations of hooks, consider defining them as
-reusable conditions and exporting them from your `css.ts` module. For example:
-
-```typescript
-// src/css.ts
-
-export const hoverOnly = and("@media (hover: hover)", "&:hover");
-export const intent = or(hoverOnly, "&:focus");
-```
-
-```jsx
-// src/button.tsx
-
-import { pipe } from "remeda";
-import { on, intent } from "./css";
-
-function Button() {
-  return (
-    <button
-      style={pipe(
-        {
-          background: "#666", // base value
-          color: "white",
+          transition: "background 150ms, transform 75ms",
         },
         on(intent, {
-          background: "#009", // conditionally applied value on hover or focus
+          background: "#009",
         }),
         on("&:active", {
-          background: "#900", // conditionally applied value when active
+          transform: "scale(0.98)",
         }),
       )}
     >
-      Hover, Focus, or Click Me
+      Save changes
     </button>
   );
 }
 ```
+
+This example assumes the hooks in the [Configuration](../configuration/index.md)
+guide: `intent` combines `@media (hover: hover)`, `&:hover`, and
+`&:focus-visible`; `&:active` is registered separately.
+
+## Override order
+
+When multiple matching hooks set the same property, the later override in the
+pipeline wins. Put broad conditions first and more specific states afterward.
+
+```tsx
+style={pipe(
+  { background: "#666" },
+  on("&:hover", { background: "#009" }),
+  on("&:active", { background: "#900" }),
+)}
+```
+
+Here, an active button is also hovered, but the `&:active` override takes
+precedence.
+
+## Avoid shorthand conflicts
+
+Do not mix a shorthand property with one of its longhands across base styles and
+override styles. This is a
+[widely recognized source of defects](https://github.com/react/react/blob/f1f7ed2ac267a21dd2e3e67c4a606b9cf56e360b/packages/react-dom-bindings/src/client/CSSPropertyOperations.js#L247-L251)
+in inline styles. Instead, use the shorthand exclusively or its longhand
+equivalents throughout the base style object and overrides.
+
+## Reuse conditions
+
+Keep frequently used conditions in `css.ts`, where they can be composed and
+exported alongside `on`. See [Configuration](../configuration/index.md) for an
+example using `and` and `or`.

@@ -1,7 +1,8 @@
 ---
-title: v1 -> v2
-description: Update your app to version 2 of CSS Hooks.
+title: v2
+description: Upgrade your app from v1 to v2.
 order: 2
+hidden: true
 ---
 
 # Migrating to v2
@@ -63,7 +64,8 @@ you may want to consider setting this option:
 fallback: "unset",
 ```
 
-For more information, see the [Configuration](../configuration/index.md) guide.
+For more information, see the [Configuration](../../configuration/index.md)
+guide.
 
 ### Updating the `sort` option
 
@@ -81,7 +83,7 @@ sort: {
 ```
 
 For more information about sorting, please review the
-[Configuration](../configuration/index.md) guide.
+[Configuration](../../configuration/index.md) guide.
 
 ## Setup
 

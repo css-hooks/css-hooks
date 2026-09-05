@@ -40,6 +40,7 @@ export const docs = Object.entries(
           title: "API",
           description: "Detailed API reference",
           order: key.endsWith("index.md") ? 99 : -1,
+          hidden: false,
         },
         body: value,
       };
@@ -51,6 +52,7 @@ export const docs = Object.entries(
           title: v.string(),
           description: v.string(),
           order: v.number(),
+          hidden: v.optional(v.boolean(), false),
         }),
         body: v.string(),
       }),

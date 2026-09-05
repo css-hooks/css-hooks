@@ -768,7 +768,9 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
           <MenuList>
             {menu(
               doc.attributes.pathname,
-              docs.filter(({ attributes: { order } }) => order >= 0),
+              docs.filter(
+                ({ attributes: { order, hidden } }) => order >= 0 && !hidden,
+              ),
             )
               .sort((a, b) =>
                 a.order < b.order ? -1 : a.order > b.order ? 1 : 0,

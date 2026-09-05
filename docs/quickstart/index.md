@@ -1,19 +1,18 @@
 ---
 title: Quickstart
-description: Get up and running in a few simple steps.
+description: Add CSS Hooks to a new project.
 order: 2
 ---
 
 # Quickstart
 
-Welcome to CSS Hooks! In just a few steps, this Quickstart guide will help you
-take the simplest styling approach to the next level. To get started, choose
-your preferred framework below.
-
-## 0. Choose framework
+Choose the framework for your new project:
 
 - [React](./react/index.md)
 - [Preact](./preact/index.md)
 - [Solid](./solid/index.md)
 - [Qwik](./qwik/index.md)
 - [No framework](./vanilla/index.md)
+
+For an existing application or an unsupported framework, follow the generic
+[Setup](../setup/index.md) guide.

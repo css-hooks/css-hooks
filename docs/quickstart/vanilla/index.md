@@ -1,12 +1,12 @@
 ---
 title: No framework
-description: Get up and running with vanilla JavaScript in a few simple steps.
+description: Add CSS Hooks to a new vanilla TypeScript project.
 order: 99
 ---
 
 # Quickstart: No framework
 
-## 1. Initialize project
+## 1. Create the project
 
 ```bash
 npm create vite@latest css-hooks-playground -- --template vanilla-ts
@@ -14,134 +14,57 @@ cd css-hooks-playground
 npm install @css-hooks/core remeda
 ```
 
-## 2. Start dev server
+## 2. Define a hook
 
-```bash
-npm run dev
-```
-
-Visit http://localhost:5173 to view changes in real time.
-
-## 3. Set up CSS Hooks
-
-Create a `src/css.ts` module with the following contents:
+Create `src/css.ts`:
 
 ```typescript
 import { buildHooksSystem } from "@css-hooks/core";
 
 const createHooks = buildHooksSystem();
 
-export const { styleSheet, on } = createHooks("&:active");
+export const { on, styleSheet } = createHooks("&:active");
+```
 
-/**
- * Converts a style object to a string.
- *
- * @remarks
- * This functionality (or equivalent) would typically be bundled with an app
- * framework.
- */
-export function styleObjectToString(obj: Record<string, unknown>) {
-  return Object.entries(obj)
-    .filter(
-      ([, value]) => typeof value === "string" || typeof value === "number",
-    )
-    .map(
-      ([property, value]) =>
-        `${/^--/.test(property) ? property : property.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`)}: ${value}`,
-    )
+## 3. Render the generated stylesheet
+
+Add the stylesheet to the document once, near the application entry point:
+
+```typescript
+import { styleSheet } from "./css";
+
+const style = document.createElement("style");
+style.textContent = styleSheet();
+document.head.append(style);
+```
+
+## 4. Apply an override style
+
+The core package returns a style object. Your renderer must convert that object
+to an inline style string. This minimal example only supports the string values
+used below; use a renderer-appropriate serializer in an application.
+
+```typescript
+import { pipe } from "remeda";
+
+import { on } from "./css";
+
+function styleObjectToString(style: Record<string, string>) {
+  return Object.entries(style)
+    .map(([property, value]) => `${property}: ${value}`)
     .join("; ");
 }
+
+const buttonStyle = pipe(
+  { transition: "transform 75ms" },
+  on("&:active", { transform: "scale(0.9)" }),
+);
+
+document
+  .querySelector<HTMLButtonElement>("#button")!
+  .setAttribute("style", styleObjectToString(buttonStyle));
 ```
 
-## 4. Add style sheet
-
-Modify `src/main.ts` to add the style sheet to the document:
-
-<!-- prettier-ignore-start -->
-
-```diff
- import './style.css'
- import typescriptLogo from './typescript.svg'
- import viteLogo from '/vite.svg'
- import { setupCounter } from './counter.ts'
-+import { styleSheet } from './css.ts'
-
- document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-+  <style>${styleSheet()}</style>
-   <div>
-     <a href="https://vitejs.dev" target="_blank">
-       <img src="${viteLogo}" class="logo" alt="Vite logo" />
-     </a>
-     <a href="https://www.typescriptlang.org/" target="_blank">
-       <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-     </a>
-     <h1>Vite + TypeScript</h1>
-     <div class="card">
-       <button id="counter" type="button"></button>
-     </div>
-     <p class="read-the-docs">
-       Click on the Vite and TypeScript logos to learn more
-     </p>
-   </div>
- `
-
- setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
-```
-
-<!-- prettier-ignore-end -->
-
-## 5. Add conditional style
-
-Use the configured `&:active` hook to implement an effect when the counter
-button is pressed:
-
-<!-- prettier-ignore-start -->
-
-```diff
- // src/main.ts
-
- import './style.css'
- import typescriptLogo from './typescript.svg'
- import viteLogo from '/vite.svg'
- import { setupCounter } from './counter.ts'
--import { styleSheet } from './css.ts'
-+import { on, styleObjectToString, styleSheet } from './css.ts'
-+import { pipe } from 'remeda'
-
- document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-   <style>${styleSheet()}</style>
-   <div>
-     <a href="https://vitejs.dev" target="_blank">
-       <img src="${viteLogo}" class="logo" alt="Vite logo" />
-     </a>
-     <a href="https://www.typescriptlang.org/" target="_blank">
-       <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-     </a>
-     <h1>Vite + TypeScript</h1>
-     <div class="card">
--      <button id="counter" type="button"></button>
-+      <button
-+        id="counter"
-+        type="button"
-+        style="${styleObjectToString(
-+          pipe(
-+            {
-+              transition: 'transform 75ms',
-+            },
-+            on('&:active', {
-+              transform: 'scale(0.9)'
-+            })
-+          )
-+        )}">
-+      </button>
-     </div>
-     <p class="read-the-docs">
-       Click on the Vite and TypeScript logos to learn more
-     </p>
-   </div>
- `
-
- setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
-```
-
-<!-- prettier-ignore-end -->
+Run `npm run dev` to try it. Continue to
+[Configuration](../../configuration/index.md) to define more hooks, then see
+[Usage](../../usage/index.md) for composition patterns.

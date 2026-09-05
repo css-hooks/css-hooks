@@ -1,12 +1,12 @@
 ---
 title: Solid
-description: Get up and running with Solid in a few simple steps.
+description: Add CSS Hooks to a new Solid project.
 order: 3
 ---
 
 # Quickstart: Solid
 
-## 1. Initialize project
+## 1. Create the project
 
 ```bash
 npm create vite@latest css-hooks-playground -- --template solid-ts
@@ -14,112 +14,60 @@ cd css-hooks-playground
 npm install @css-hooks/solid remeda
 ```
 
-## 2. Start dev server
+## 2. Define a hook
 
-```bash
-npm run dev
-```
-
-Visit http://localhost:5173 to view changes in real time.
-
-## 3. Set up CSS Hooks
-
-Create a `src/css.ts` module with the following contents:
+Create `src/css.ts`:
 
 ```typescript
 import { createHooks } from "@css-hooks/solid";
 
-export const { styleSheet, on } = createHooks("&:active");
+export const { on, styleSheet } = createHooks("&:active");
 ```
 
-## 4. Add style sheet
+## 3. Render the generated stylesheet
 
-Modify `src/index.tsx` to add the style sheet to the document:
+Render `styleSheet()` once at the application root. In `src/index.tsx`:
 
-<!-- prettier-ignore-start -->
+```tsx
+import { render } from "solid-js/web";
 
-```diff
- /* @refresh reload */
- import { render } from 'solid-js/web'
+import App from "./App";
+import { styleSheet } from "./css";
 
- import './index.css'
- import App from './App'
-+import { styleSheet } from './css'
-
- const root = document.getElementById('root')
-
--render(() => <App />, root!)
-+render(
-+  () => (
-+    <>
-+      <style innerHTML={styleSheet()} />
-+      <App />
-+    </>
-+  ),
-+  root!
-+)
+render(
+  () => (
+    <>
+      <style innerHTML={styleSheet()} />
+      <App />
+    </>
+  ),
+  document.getElementById("root")!,
+);
 ```
 
-<!-- prettier-ignore-end -->
+## 4. Apply an override style
 
-## 5. Add conditional style
+Use the registered `&:active` hook in a component:
 
-Use the configured `&:active` hook to implement an effect when the counter
-button is pressed:
+```tsx
+import { pipe } from "remeda";
 
-<!-- prettier-ignore-start -->
+import { on } from "./css";
 
-```diff
- // src/App.tsx
-
- import { createSignal } from 'solid-js'
- import solidLogo from './assets/solid.svg'
- import viteLogo from '/vite.svg'
- import './App.css'
-+import { on } from './css'
-+import { pipe } from 'remeda'
-
- function App() {
-   const [count, setCount] = createSignal(0)
-
-   return (
-     <>
-       <div>
-         <a href="https://vitejs.dev" target="_blank">
-           <img src={viteLogo} className="logo" alt="Vite logo" />
-         </a>
-         <a href="https://solidjs.com" target="_blank">
-           <img src={solidLogo} className="logo solid" alt="Solid logo" />
-         </a>
-       </div>
-       <h1>Vite + Solid</h1>
-       <div className="card">
--        <button onClick={() => setCount((count) => count + 1)}>
-+        <button
-+          onClick={() => setCount((count) => count + 1)}
-+          style={pipe(
-+            {
-+              transition: "transform 75ms",
-+            },
-+            on("&:active", {
-+              transform: "scale(0.9)"
-+            })
-+          )}
-+        >
-           count is {count()}
-         </button>
-         <p>
-           Edit <code>src/App.tsx</code> and save to test HMR
-         </p>
-       </div>
-       <p className="read-the-docs">
-         Click on the Vite and Solid logos to learn more
-       </p>
-     </>
-   )
- }
-
- export default App
+export default function App() {
+  return (
+    <button
+      style={pipe(
+        { transition: "transform 75ms" },
+        on("&:active", { transform: "scale(0.9)" }),
+      )}
+    >
+      Press me
+    </button>
+  );
+}
 ```
 
-<!-- prettier-ignore-end -->
+Run `npm run dev` to try it. Continue to
+[Configuration](../../configuration/index.md) to define more hooks, then see
+[Usage](../../usage/index.md) for composition patterns.
