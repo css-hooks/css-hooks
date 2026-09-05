@@ -2,7 +2,10 @@ import fm from "front-matter";
 import * as v from "valibot";
 
 export const docs = Object.entries(
-  import.meta.glob("../../../docs/**/*.md", { eager: true, query: "raw" }),
+  import.meta.glob(
+    ["../../../docs/**/*.md", "!../../../docs/**/*.csspropertyconflicts.md"],
+    { eager: true, query: "raw" },
+  ),
 )
   .filter(
     (x): x is [string, { default: string }] =>

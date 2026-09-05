@@ -324,6 +324,9 @@ export async function loader({ params }: Route.LoaderArgs) {
                 ? doc.attributes.pathname
                 : doc.attributes.pathname.replace(/\/[^/]+\/$/, "/"),
             );
+          if (to.endsWith(".csspropertyconflicts/")) {
+            return <>{children}</>;
+          }
           return (
             <AnchorLink
               href={to}
