@@ -63,6 +63,27 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run build --workspaces --if-present
 
+  typescript:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [5, 7]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm install --no-save typescript@${{ matrix.version }}
+      - name: build
+        run: |
+          npx tsc --project packages/core/tsconfig.json --noEmit
+          npx tsc --project packages/preact/tsconfig.json --noEmit
+          npx tsc --project packages/qwik/tsconfig.json --noEmit
+          npx tsc --project packages/react/tsconfig.json --noEmit
+          npx tsc --project packages/solid/tsconfig.json --noEmit
+
   test:
     runs-on: ubuntu-latest
     steps:
