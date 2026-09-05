@@ -11,6 +11,7 @@ import type { CSSProperties } from "react";
 import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
 export type * from "@css-hooks/core";
+export type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
 // See https://github.com/facebook/react/blob/main/packages/react-dom-bindings/src/client/CSSPropertyOperations.js
 /** @internal */

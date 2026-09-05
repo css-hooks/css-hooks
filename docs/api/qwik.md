@@ -32,3 +32,29 @@ A [CreateHooksFn](./core.createhooksfn.md) configured to use Qwik's `CSSProperti
 </td></tr>
 </tbody></table>
 
+## Type Aliases
+
+<table><thead><tr><th>
+
+Type Alias
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[CSSPropertyConflicts](./qwik.csspropertyconflicts.md)
+
+
+</td><td>
+
+A map of conflicting CSS property names
+
+
+</td></tr>
+</tbody></table>
+

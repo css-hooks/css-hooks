@@ -11,6 +11,7 @@ import type { CSSProperties } from "preact";
 import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
 export type * from "@css-hooks/core";
+export type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
 const IS_NON_DIMENSIONAL =
   /acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i;
