@@ -83,7 +83,7 @@ Negates a condition.
 
 </td><td>
 
-&lt;OverrideCSSProperties extends CSSProperties, BaseCSSProperties extends CSSProperties&gt;(condition: [Condition](./core.condition.md)<!-- -->&lt;S&gt;, overrideStyle: OverrideCSSProperties) =&gt; (style: CSSProperties &amp; CSSPropertiesWithoutConflicts&lt;BaseCSSProperties, CSSPropertyConflicts, OverrideCSSProperties&gt;) =&gt; Omit&lt;CSSPropertiesWithoutConflicts&lt;BaseCSSProperties, CSSPropertyConflicts, OverrideCSSProperties&gt;, keyof OverrideCSSProperties&gt; &amp; OverrideCSSProperties
+&lt;OverrideCSSProperties extends CSSProperties, BaseCSSProperties extends CSSProperties&gt;(condition: [Condition](./core.condition.md)<!-- -->&lt;S&gt;, overrideStyle: OverrideCSSProperties) =&gt; (style: CSSProperties &amp; CSSPropertiesWithoutConflicts&lt;BaseCSSProperties, CSSPropertyConflicts, OverrideCSSProperties&gt;) =&gt; Omit&lt;BaseCSSProperties, keyof OverrideCSSProperties&gt; &amp; OverrideCSSProperties
 
 
 </td><td>
