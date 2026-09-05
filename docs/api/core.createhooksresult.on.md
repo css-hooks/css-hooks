@@ -9,5 +9,5 @@ Creates a function that enhances a style object with conditional override styles
 **Signature:**
 
 ```typescript
-on: <OverrideCSSProperties extends CSSProperties, BaseCSSProperties extends CSSProperties>(condition: Condition<S>, overrideStyle: OverrideCSSProperties) => (style: CSSProperties & CSSPropertiesWithoutConflicts<BaseCSSProperties, CSSPropertyConflicts, OverrideCSSProperties>) => Omit<CSSPropertiesWithoutConflicts<BaseCSSProperties, CSSPropertyConflicts, OverrideCSSProperties>, keyof OverrideCSSProperties> & OverrideCSSProperties;
+on: <OverrideCSSProperties extends CSSProperties, BaseCSSProperties extends CSSProperties>(condition: Condition<S>, overrideStyle: OverrideCSSProperties) => (style: CSSProperties & CSSPropertiesWithoutConflicts<BaseCSSProperties, CSSPropertyConflicts, OverrideCSSProperties>) => Omit<BaseCSSProperties, keyof OverrideCSSProperties> & OverrideCSSProperties;
 ```

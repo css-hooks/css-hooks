@@ -117,14 +117,7 @@ export interface CreateHooksResult<
         CSSPropertyConflicts,
         OverrideCSSProperties
       >,
-  ) => Omit<
-    CSSPropertiesWithoutConflicts<
-      BaseCSSProperties,
-      CSSPropertyConflicts,
-      OverrideCSSProperties
-    >,
-    keyof OverrideCSSProperties
-  > &
+  ) => Omit<BaseCSSProperties, keyof OverrideCSSProperties> &
     OverrideCSSProperties;
 
   /**
