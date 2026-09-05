@@ -10,7 +10,7 @@
   },
   "wireit": {
     "build": {
-      "command": "tsc && NODE_ENV=production react-router build",
+      "command": "tsc -b && NODE_ENV=production react-router build",
       "dependencies": [
         "../packages/react:build"
       ]
