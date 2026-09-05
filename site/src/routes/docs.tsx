@@ -55,7 +55,8 @@ export default function Docs() {
       >
         {docs
           .filter(
-            ({ attributes: { level, order } }) => level === 0 && order >= 0,
+            ({ attributes: { level, order, hidden } }) =>
+              level === 0 && order >= 0 && !hidden,
           )
           .sort(({ attributes: { order: a } }, { attributes: { order: b } }) =>
             a < b ? -1 : a > b ? 1 : 0,

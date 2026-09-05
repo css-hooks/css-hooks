@@ -1,7 +1,8 @@
 ---
-title: v3 -> v4
-description: Update your app to version 4 of CSS Hooks.
+title: v4
+description: Upgrade your app from v3 to v4.
 order: 0
+hidden: true
 ---
 
 # Migrating to v4
@@ -12,7 +13,7 @@ changing any code.
 ## Property conflict protection
 
 The React, Preact, Qwik, and Solid integrations now use TypeScript to prevent
-conflicting CSS declarations across base and conditional styles. For example, v3
+conflicting CSS declarations across base and override styles. For example, v3
 allowed a shorthand and one of its longhands to be mixed:
 
 ```typescript
@@ -21,7 +22,7 @@ pipe({ margin: 0 }, on("&:hover", { marginTop: 8 }));
 
 This can produce unexpected results because the declarations can overwrite one
 another. In v4, it is a type error. Use the same property for the base and
-conditional values instead:
+override values instead:
 
 ```typescript
 pipe({ marginTop: 0 }, on("&:hover", { marginTop: 8 }));
