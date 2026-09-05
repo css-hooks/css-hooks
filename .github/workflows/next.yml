@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [5, 7]
+        version: [5.8, 7]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
