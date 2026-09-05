@@ -7,7 +7,7 @@
     "@css-hooks/core": "4.0.0-next.17"
   },
   "devDependencies": {
-    "preact": ">=10.0.0 <11.0.0",
+    "preact": "^11.0.0-0",
     "remeda": "^2.45.0"
   },
   "files": [
@@ -22,7 +22,7 @@
   "module": "esm",
   "type": "module",
   "peerDependencies": {
-    "preact": ">=10.0.0 <11.0.0"
+    "preact": "^10.27.2 || ^11.0.0-0"
   },
   "peerDependenciesMeta": {
     "preact": {
