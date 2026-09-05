@@ -1,10 +1,10 @@
 {
   "name": "@css-hooks/react",
   "description": "CSS Hooks for React",
-  "version": "4.0.0-next.11",
+  "version": "4.0.0-next.12",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "4.0.0-next.11"
+    "@css-hooks/core": "4.0.0-next.12"
   },
   "devDependencies": {
     "@types/react": "^19.0.4",
