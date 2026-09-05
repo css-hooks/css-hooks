@@ -1,18 +1,14 @@
 ---
 title: Configuration
-description: Define your hooks and configuration options.
+description: Define the selectors and at-rules available to your style props.
 order: 4
 ---
 
 # Configuration
 
-Set up your hooks using the `createHooks` function introduced in the
-[Setup](../setup) guide. This function allows you to define various hooks that
-can be used throughout your application.
-
-## Basic hook setup
-
-To set up your hooks, use the `createHooks` function as follows:
+Register each selector and at-rule that your components will use with `on()`.
+The generated stylesheet evaluates these conditions, while the component's style
+object supplies the declarations.
 
 ```typescript
 // src/css.ts
@@ -20,65 +16,56 @@ To set up your hooks, use the `createHooks` function as follows:
 import { createHooks } from "@css-hooks/react";
 
 export const { on, and, or, not, styleSheet } = createHooks(
+  "&:hover",
+  "&:focus-visible",
+  "&:active",
   "@media (hover: hover)",
   "@container (min-width: 320px)",
   "@supports (height: 100dvh)",
-  "&:hover",
-  // Add more hooks as needed.
 );
 ```
 
-## Selector syntax
+## CSS selectors
 
-Hooks are defined using a selector syntax based on CSS rulesets. There are two
-types:
-
-### Element selectors
-
-Use `&` as a placeholder for the element to which the condition applies. The `&`
-character must appear somewhere in the selector, e.g.
+Use `&` as a placeholder for the current element, i.e. the element whose style
+object the hook filters. A selector must target that element, whether it
+describes the element's own state or its surrounding context.
 
 <!--prettier-ignore-start-->
 ```typescript
-"&:hover"
+"&:hover" // The element is hovered.
+".group:hover &" // The element is inside a hovered .group.
+":checked + &" // The element follows a checked input.
 ```
 <!--prettier-ignore-end-->
 
-### At-rule selectors
+## At-rules
 
-At-rule selectors start with `@media`, `@container`, or `@supports`, followed by
-a space, e.g.
+Hooks support `@media`, `@container`, `@supports`, and `@starting-style`.
 
 <!--prettier-ignore-start-->
 ```typescript
 "@media (min-width: 600px)"
-```
-<!--prettier-ignore-end-->
-
-`@starting-style` is also supported as a standalone at-rule (with no additional
-parameters), e.g.
-
-<!--prettier-ignore-start-->
-```typescript
+"@container (min-width: 320px)"
+"@supports (height: 100dvh)"
 "@starting-style"
 ```
 <!--prettier-ignore-end-->
 
-## Reusable conditions
+## Compose reusable conditions
 
-If you find yourself using specific combinations of hooks frequently, you can
-create reusable conditions using the `and`, `or`, and `not` functions and export
-them from your `css.ts` module:
+Use `and`, `or`, and `not` to create named conditions from registered hooks.
 
 ```typescript
-// src/css.ts
-
-// Combining hooks for reusable conditions
 export const hoverOnly = and("@media (hover: hover)", "&:hover");
+export const intent = or(hoverOnly, "&:focus-visible");
 ```
 
-## Using the hooks
+For best results, define generic, atomic hooks and register each one. A hook
+such as `&:hover` works on its own and, through `and`, `or`, and `not`, combines
+with hooks such as `&:focus` and `&:enabled` to express more specific
+conditions. The combinators build on hooks you have already registered, which
+promotes reuse and keeps the generated stylesheet small.
 
-Now that you know how to define hooks, complete the [Setup](../setup) guide if
-you haven't already, or proceed to the [Usage](../usage/index.md) guide to learn
-how to use your hooks.
+Continue to [Usage](../usage/index.md) to apply these conditions as override
+styles.

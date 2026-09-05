@@ -1,13 +1,17 @@
 /**
- *  CSS Hooks for {@link https://qwik.dev | Qwik}
+ * CSS Hooks for {@link https://qwik.dev | Qwik}
  *
  * @packageDocumentation
  */
 
 import type { CSSProperties } from "@builder.io/qwik";
+import type { CreateHooksFn } from "@css-hooks/core";
 import { buildHooksSystem } from "@css-hooks/core";
 
+import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
+
 export type * from "@css-hooks/core";
+export type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
 /** @internal */
 export function _stringifyValue(value: unknown, propertyName: string) {
@@ -23,15 +27,16 @@ export function _stringifyValue(value: unknown, propertyName: string) {
 
 /**
  * A {@link @css-hooks/core#CreateHooksFn} configured to use Qwik's
- * `CSSProperties` type and logic for converting CSS values into strings.
+ * `CSSProperties` type and logic for converting CSS values into strings
  *
  * @public
  */
-export const createHooks = buildHooksSystem<CSSProperties>(_stringifyValue);
+export const createHooks: CreateHooksFn<CSSProperties, CSSPropertyConflicts> =
+  buildHooksSystem<CSSProperties, CSSPropertyConflicts>(_stringifyValue);
 
 /**
- * Following code (c) Builder.io.
- * Source modified to account for custom properties.
+ * Following code (c) Builder.io. Source modified to account for custom
+ * properties.
  */
 
 /**

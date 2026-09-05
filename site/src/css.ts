@@ -20,6 +20,7 @@ export const { styleSheet, on, and, or, not } = createHooks(
 
   "&:active",
   "&:focus-visible",
+  "&:first-child",
   "&:has(*)",
   "&:has(:focus)",
   "&:has(:focus-visible)",

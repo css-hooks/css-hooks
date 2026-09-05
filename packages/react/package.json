@@ -1,13 +1,14 @@
 {
   "name": "@css-hooks/react",
   "description": "CSS Hooks for React",
-  "version": "3.1.2",
+  "version": "4.0.0-next.18",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "3.1.2"
+    "@css-hooks/core": "4.0.0-next.18"
   },
   "devDependencies": {
-    "@types/react": "^19.0.4"
+    "@types/react": "^19.0.4",
+    "remeda": "^2.45.0"
   },
   "files": [
     "cjs",
@@ -36,6 +37,7 @@
   },
   "scripts": {
     "build": "wireit",
+    "codegen": "npm run --silent start -w @scripts/css-property-conflicts -- --casing camel > src/css-property-conflicts.ts",
     "prepublishOnly": "wireit",
     "test": "node --conditions @css-hooks/source --test src/index.test.ts"
   },

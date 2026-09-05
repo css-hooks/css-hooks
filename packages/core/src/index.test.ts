@@ -348,6 +348,22 @@ it("uses the specified stringify function when merging values", () => {
   assert.match(fontSize.toString(), /fontSize__24px/);
 });
 
+it("uses fixed-width hashes without known polynomial collisions", () => {
+  const createHooks = buildHooksSystem();
+  const { styleSheet } = createHooks("&.Aa", "&.BB");
+  const propertyNames = [...styleSheet().matchAll(/--([^:]+):/g)].map(match => {
+    const propertyName = match[1];
+    assert(propertyName);
+    return propertyName;
+  });
+
+  assert(propertyNames.every(name => /^[a-z0-9_-]{7}[01]$/.test(name)));
+  assert.strictEqual(
+    new Set(propertyNames.map(name => name.slice(0, -1))).size,
+    2,
+  );
+});
+
 describe("in production mode (vs. debug)", () => {
   const createHooks = buildHooksSystem<CSS.Properties>();
 
@@ -464,8 +480,109 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
   );
   const { on } = createHooks("&:hover");
   const { width } = pipe({ width: 100 }, on("&:hover", { width: "200px" }));
-  assert.strictEqual(
+  assert.match(
     width,
-    "var(--mbscpo-1,200px)var(--mbscpo-0,revert-layer)",
+    /var\(--[a-z0-9_-]+1,200px\)var\(--[a-z0-9_-]+0,revert-layer\)/,
   );
 });
+
+// type-level tests
+
+// conflict protection
+{
+  const createHooks = buildHooksSystem<
+    CSS.Properties<number>,
+    { margin: "marginTop"; padding: "paddingTop" }
+  >();
+
+  const { on } = createHooks("&");
+
+  // defined in conflict map
+  pipe(
+    {
+      color: "red",
+      // @ts-expect-error shorthand/longhand conflict
+      marginTop: 0,
+    },
+    on("&", {
+      margin: 1,
+    }),
+  );
+
+  // both properties defined in conflict map but don't conflict with each other
+  pipe(
+    {
+      margin: 0,
+    },
+    on("&", {
+      padding: 1,
+    }),
+  );
+
+  // property not defined in conflict map - no conflict
+  pipe(
+    {
+      color: "red",
+    },
+    on("&", {
+      margin: 0,
+    }),
+  );
+
+  pipe(
+    {
+      paddingTop: 0,
+    },
+    // @ts-expect-error conflicts detected across transforms
+    on("&", {
+      margin: 0,
+    }),
+    on("&", {
+      padding: 0,
+    }),
+  );
+}
+
+// exact style inference across transforms
+{
+  const createHooks = buildHooksSystem<
+    {
+      color?: string;
+      textDecoration?: string;
+      textDecorationColor?: string;
+    },
+    { textDecoration: "textDecorationColor" }
+  >();
+  const { on } = createHooks("&");
+
+  const style = pipe(
+    { color: "red", textDecoration: "none" },
+    on("&", { color: "green" as const }),
+    on("&", { color: "blue" as const }),
+    on("&", { textDecoration: "underline" as const }),
+  );
+
+  style satisfies { color: "blue"; textDecoration: "underline" };
+}
+
+// optional conflicts in a contextually inferred style
+{
+  type CSSProperties = {
+    background?: string;
+    backgroundAttachment?: string;
+    flexDirection?: "row" | "column";
+    minHeight?: string;
+  };
+
+  const createHooks = buildHooksSystem<
+    CSSProperties,
+    { background: "backgroundAttachment" }
+  >();
+  const { on } = createHooks("&");
+
+  pipe(
+    { flexDirection: "column" },
+    on("&", { minHeight: "100dvh" }),
+    on("&", { background: "black" }),
+  );
+}

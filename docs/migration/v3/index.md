@@ -1,7 +1,8 @@
 ---
-title: v2 -> v3
-description: Update your app to version 3 of CSS Hooks.
+title: v3
+description: Upgrade your app from v2 to v3.
 order: 1
+hidden: true
 ---
 
 # Migrating to v3
@@ -57,9 +58,7 @@ To migrate:
 ```typescript
 // src/css.ts
 
-export const {
-  /* ... */
-} = createHooks({
+export const {/* ... */} = createHooks({
   hooks: ({ or }) => ({
     "&:hover": "&:hover",
     "&:intent": or("&:hover", "&:focus"),
@@ -78,9 +77,7 @@ export const {
 ```typescript
 // src/css.ts
 
-export const {
-  /* ... */
-} = createHooks("&:hover", "&:focus");
+export const {/* ... */} = createHooks("&:hover", "&:focus");
 ```
 
 ## Defining reusable conditions
@@ -99,8 +96,8 @@ export const intent = or("&:hover", "&:focus");
 
 ## Pipeline function
 
-The v3 API uses a pipeline function to apply conditional styles. This function
-can be obtained from third-party utility libraries such as:
+The v3 API uses a pipeline function to apply override styles. This function can
+be obtained from third-party utility libraries such as:
 
 - `pipe` from [Remeda](https://remedajs.com/docs/#pipe)
 - `pipe` from

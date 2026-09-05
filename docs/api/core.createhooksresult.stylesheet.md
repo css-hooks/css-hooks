@@ -4,7 +4,7 @@
 
 ## CreateHooksResult.styleSheet property
 
-The style sheet required to support the configured hooks.
+Returns the style sheet required to support the configured hooks.
 
 **Signature:**
 

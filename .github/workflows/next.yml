@@ -38,7 +38,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - run: npx prettier -c "**/*.{json,md,yml}"
+      - run: npx prettier -c "**/*.{js,ts,tsx,json,md,yml}"
 
   eslint:
     runs-on: ubuntu-latest
@@ -62,6 +62,27 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run build --workspaces --if-present
+
+  typescript:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [5.8, 7]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm install --no-save typescript@${{ matrix.version }}
+      - name: build
+        run: |
+          npx tsc --project packages/core/tsconfig.json --noEmit
+          npx tsc --project packages/preact/tsconfig.json --noEmit
+          npx tsc --project packages/qwik/tsconfig.json --noEmit
+          npx tsc --project packages/react/tsconfig.json --noEmit
+          npx tsc --project packages/solid/tsconfig.json --noEmit
 
   test:
     runs-on: ubuntu-latest
@@ -97,5 +118,24 @@ jobs:
             echo 'Error: API documentation is out of sync with code changes.'
             echo 'Please run "npm run docs" locally and commit the updated markdown files.'
             git status --porcelain docs/api
+            exit 1
+          fi
+
+  codegen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run codegen --workspaces --if-present
+      - name: check
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            echo 'Error: Generated files are out of sync.'
+            echo 'Please run "npm run codegen --workspaces --if-present" locally and commit the updated files.'
+            git status --porcelain
             exit 1
           fi

@@ -1,12 +1,12 @@
 ---
 title: Preact
-description: Get up and running with Preact in a few simple steps.
+description: Add CSS Hooks to a new Preact project.
 order: 2
 ---
 
 # Quickstart: Preact
 
-## 1. Initialize project
+## 1. Create the project
 
 ```bash
 npm create vite@latest css-hooks-playground -- --template preact-ts
@@ -14,104 +14,58 @@ cd css-hooks-playground
 npm install @css-hooks/preact remeda
 ```
 
-## 2. Start dev server
+## 2. Define a hook
 
-```bash
-npm run dev
-```
-
-Visit http://localhost:5173 to view changes in real time.
-
-## 3. Set up CSS Hooks
-
-Create a `src/css.ts` module with the following contents:
+Create `src/css.ts`:
 
 ```typescript
 import { createHooks } from "@css-hooks/preact";
 
-export const { styleSheet, on } = createHooks("&:active");
+export const { on, styleSheet } = createHooks("&:active");
 ```
 
-## 4. Add style sheet
+## 3. Render the generated stylesheet
 
-Modify `src/main.tsx` to add the style sheet to the document:
+Render `styleSheet()` once at the application root. In `src/main.tsx`:
 
-<!-- prettier-ignore-start -->
+```tsx
+import { render } from "preact";
 
-```diff
- import { render } from 'preact'
- import { App } from './app.tsx'
- import './index.css'
-+import { styleSheet } from './css.ts'
+import { App } from "./app";
+import { styleSheet } from "./css";
 
--render(<App />, document.getElementById('app')!)
-+render(
-+  <>
-+    <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-+    <App />
-+  </>,
-+  document.getElementById('app')!
-+)
+render(
+  <>
+    <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
+    <App />
+  </>,
+  document.getElementById("app")!,
+);
 ```
 
-<!-- prettier-ignore-end -->
+## 4. Apply an override style
 
-## 5. Add conditional style
+Use the registered `&:active` hook in a component:
 
-Use the configured `&:active` hook to implement an effect when the counter
-button is pressed:
+```tsx
+import { pipe } from "remeda";
 
-<!-- prettier-ignore-start -->
+import { on } from "./css";
 
-```diff
- // src/app.tsx
-
- import { useState } from 'preact/hooks'
- import preactLogo from './assets/preact.svg'
- import viteLogo from '/vite.svg'
- import './app.css'
-+import { on } from './css.ts'
-+import { pipe } from 'remeda'
-
- export function App() {
-   const [count, setCount] = useState(0)
-
-   return (
-     <>
-       <div>
-         <a href="https://vitejs.dev" target="_blank">
-           <img src={viteLogo} className="logo" alt="Vite logo" />
-         </a>
-         <a href="https://preactjs.com" target="_blank">
-           <img src={preactLogo} className="logo preact" alt="Preact logo" />
-         </a>
-       </div>
-       <h1>Vite + Preact</h1>
-       <div className="card">
--        <button onClick={() => setCount((count) => count + 1)}>
-+        <button
-+          onClick={() => setCount((count) => count + 1)}
-+          style={pipe(
-+            {
-+              transition: "transform 75ms",
-+            },
-+            on("&:active", {
-+              transform: "scale(0.9)"
-+            })
-+          )}
-+        >
-           count is {count}
-         </button>
-         <p>
-           Edit <code>src/app.tsx</code> and save to test HMR
-         </p>
-       </div>
-       <p className="read-the-docs">
-         Click on the Vite and Preact logos to learn more
-       </p>
-     </>
-   )
- }
+export function App() {
+  return (
+    <button
+      style={pipe(
+        { transition: "transform 75ms" },
+        on("&:active", { transform: "scale(0.9)" }),
+      )}
+    >
+      Press me
+    </button>
+  );
+}
 ```
 
-<!-- prettier-ignore-end -->
+Run `npm run dev` to try it. Continue to
+[Configuration](../../configuration/index.md) to define more hooks, then see
+[Usage](../../usage/index.md) for composition patterns.

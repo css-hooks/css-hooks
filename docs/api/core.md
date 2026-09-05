@@ -52,7 +52,7 @@ Description
 
 </td><td>
 
-An object containing the functions needed to support and use the configured hooks.
+An object containing the functions needed to support and use the configured hooks
 
 
 </td></tr>
@@ -95,17 +95,6 @@ Represents the function used to define hooks and related configuration.
 </td></tr>
 <tr><td>
 
-[EnhanceStyleFn](./core.enhancestylefn.md)
-
-
-</td><td>
-
-Enhances a style object by merging in conditional declarations.
-
-
-</td></tr>
-<tr><td>
-
 [Selector](./core.selector.md)
 
 
@@ -122,7 +111,7 @@ Represents the selector logic used to create a hook.
 
 </td><td>
 
-Function to convert a value into a string.
+Function to convert a value into a string
 
 
 </td></tr>

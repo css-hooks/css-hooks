@@ -158,7 +158,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <html
       lang="en"
       data-theme="auto"
-      style={{ overflowY: "scroll", minHeight: "100dvh" }}
+      style={{
+        fontSize: "round(up, 1rem, 4px)",
+        overflowY: "scroll",
+        minHeight: "100dvh",
+      }}
       suppressHydrationWarning
     >
       <head>
@@ -176,7 +180,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body
         style={{
           fontFamily: sansSerif,
-          fontSize: "round(up, 1rem, 4px)",
           lineHeight: 1.25,
           margin: 0,
           minHeight: "100dvh",
@@ -218,7 +221,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 backdropFilter: "blur(32px)",
                 color: black,
                 padding: 24,
-                fontSize: "2rem",
+                fontSize: "2em",
                 lineHeight: 1,
               },
               on(dark, {
@@ -291,7 +294,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             <div
               style={pipe(
                 {
-                  padding: "1em",
+                  padding: 16,
                   display: "flex",
                   flexWrap: "wrap",
                   alignItems: "flex-end",
@@ -311,7 +314,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <Logo />
               <div
                 style={{
-                  flexBasis: "calc((60rem - 100%) * 999)",
+                  flexBasis: "calc((60em - 100%) * 999)",
                   flexGrow: 1,
                 }}
               />
