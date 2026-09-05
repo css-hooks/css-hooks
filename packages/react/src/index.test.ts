@@ -50,4 +50,43 @@ describe("`stringifyValue` function", () => {
     on("&", { color: "blue" }),
     on("&", { textDecoration: "underline" }),
   ) satisfies CSSProperties;
+
+  // Keep long pipelines from recursively nesting conflict-validation types.
+  pipe(
+    { display: "inline-flex", alignItems: "center" },
+    on("&", { fontWeight: 500, color: "red" }),
+    on("&", { gap: 8, padding: 6, transitionProperty: "color" }),
+    on("&", { color: "blue" }),
+    on("&", {
+      justifyContent: "center",
+      fontSize: "1rem",
+      fontWeight: 600,
+      outline: "none",
+      borderRadius: 8,
+      boxShadow: "none",
+      transitionTimingFunction: "ease-in-out",
+      transitionDuration: "0.1s",
+      transitionProperty: "background-color",
+    }),
+    on("&", { boxShadow: "0 0 0 2px black" }),
+    on("&", { padding: 12, color: "black", backgroundColor: "transparent" }),
+    on("&", { color: "green" }),
+    on("&", {
+      gap: 6,
+      color: "gray",
+      backgroundColor: "white",
+      borderColor: "black",
+      borderStyle: "solid",
+      borderWidth: 1,
+    }),
+    on("&", { color: "white", backgroundColor: "black" }),
+    on("&", { opacity: 0.5 }),
+  ) satisfies CSSProperties;
+
+  // Repeated overrides should remain assignable after type widening.
+  pipe(
+    { animationDuration: "300ms" },
+    on("&", { animationName: "dialogOut" }),
+    on("&", { animationName: "dialogIn" }),
+  ) satisfies CSSProperties;
 }
