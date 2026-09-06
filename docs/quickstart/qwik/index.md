@@ -29,7 +29,7 @@ export const { on, styleSheet } = createHooks("&:active");
 Render `styleSheet()` once at the application root. In `src/main.tsx`:
 
 ```tsx
-import { render } from "@builder.io/qwik";
+import { render } from "@qwik.dev/core";
 
 import { App } from "./app";
 import { styleSheet } from "./css";
@@ -48,7 +48,7 @@ render(
 Use the registered `&:active` hook in a component:
 
 ```tsx
-import { component$ } from "@builder.io/qwik";
+import { component$ } from "@qwik.dev/core";
 import { pipe } from "remeda";
 
 import { on } from "./css";

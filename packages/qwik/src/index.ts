@@ -4,9 +4,9 @@
  * @packageDocumentation
  */
 
-import type { CSSProperties } from "@builder.io/qwik";
 import type { CreateHooksFn } from "@css-hooks/core";
 import { buildHooksSystem } from "@css-hooks/core";
+import type { CSSProperties } from "@qwik.dev/core";
 
 import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
