@@ -29,7 +29,7 @@ export const { on, styleSheet } = createHooks("&:active");
 Render `styleSheet()` once at the application root. In `src/index.tsx`:
 
 ```tsx
-import { render } from "solid-js/web";
+import { render } from "@solidjs/web";
 
 import App from "./App";
 import { styleSheet } from "./css";
