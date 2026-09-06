@@ -11,10 +11,42 @@ order: 4
 ```bash
 npm create vite@latest css-hooks-playground -- --template qwik-ts
 cd css-hooks-playground
-npm install @css-hooks/qwik remeda
 ```
 
-## 2. Define a hook
+## 2. Upgrade to Qwik 2
+
+The Vite `qwik-ts` template ships Qwik 1, which does not support Vite 8. Replace
+it with Qwik 2 and install CSS Hooks:
+
+```bash
+npm uninstall @builder.io/qwik
+npm install @css-hooks/qwik@next @qwik.dev/core remeda
+```
+
+Then update `vite.config.ts`:
+
+```diff
+-import { qwikVite } from "@builder.io/qwik/optimizer";
++import { qwikVite } from "@qwik.dev/core/optimizer";
+ import { defineConfig } from "vite";
+
+ export default defineConfig({
+   plugins: [
+     qwikVite({
+       csr: true,
+     }),
+   ],
+ });
+```
+
+And change `jsxImportSource` in `tsconfig.app.json`:
+
+```diff
+-    "jsxImportSource": "@builder.io/qwik",
++    "jsxImportSource": "@qwik.dev/core",
+```
+
+## 3. Define a hook
 
 Create `src/css.ts`:
 
@@ -24,11 +56,13 @@ import { createHooks } from "@css-hooks/qwik";
 export const { on, styleSheet } = createHooks("&:active");
 ```
 
-## 3. Render the generated stylesheet
+## 4. Render the generated stylesheet
 
 Render `styleSheet()` once at the application root. In `src/main.tsx`:
 
 ```tsx
+import "@qwik.dev/core/qwikloader.js";
+
 import { render } from "@qwik.dev/core";
 
 import { App } from "./app";
@@ -43,7 +77,7 @@ render(
 );
 ```
 
-## 4. Apply an override style
+## 5. Apply an override style
 
 Use the registered `&:active` hook in a component:
 

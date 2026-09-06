@@ -11,7 +11,7 @@ order: 2
 ```bash
 npm create vite@latest css-hooks-playground -- --template preact-ts
 cd css-hooks-playground
-npm install @css-hooks/preact remeda
+npm install @css-hooks/preact@next remeda
 ```
 
 ## 2. Define a hook

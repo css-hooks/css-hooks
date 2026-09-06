@@ -11,10 +11,45 @@ order: 3
 ```bash
 npm create vite@latest css-hooks-playground -- --template solid-ts
 cd css-hooks-playground
-npm install @css-hooks/solid remeda
 ```
 
-## 2. Define a hook
+## 2. Upgrade to Solid 2
+
+The Vite `solid-ts` template targets Solid 1, but `@css-hooks/solid` v4 targets
+Solid 2. Replace the Solid 1 plugin and packages with their Solid 2 equivalents:
+
+```bash
+npm uninstall vite-plugin-solid
+npm install solid-js@next @solidjs/web@next
+npm install -D @solidjs/vite-plugin
+```
+
+Then replace the plugin in `vite.config.ts`:
+
+```diff
+ import { defineConfig } from "vite";
+-import solid from "vite-plugin-solid";
++import solid from "@solidjs/vite-plugin";
+
+ export default defineConfig({
+   plugins: [solid()],
+ });
+```
+
+And change `jsxImportSource` in `tsconfig.app.json`:
+
+```diff
+-    "jsxImportSource": "solid-js",
++    "jsxImportSource": "@solidjs/web",
+```
+
+## 3. Install CSS Hooks
+
+```bash
+npm install @css-hooks/solid@next remeda
+```
+
+## 4. Define a hook
 
 Create `src/css.ts`:
 
@@ -24,7 +59,7 @@ import { createHooks } from "@css-hooks/solid";
 export const { on, styleSheet } = createHooks("&:active");
 ```
 
-## 3. Render the generated stylesheet
+## 5. Render the generated stylesheet
 
 Render `styleSheet()` once at the application root. In `src/index.tsx`:
 
@@ -45,7 +80,7 @@ render(
 );
 ```
 
-## 4. Apply an override style
+## 6. Apply an override style
 
 Use the registered `&:active` hook in a component:
 

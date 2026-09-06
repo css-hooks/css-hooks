@@ -11,7 +11,7 @@ order: 1
 ```bash
 npm create vite@latest css-hooks-playground -- --template react-ts
 cd css-hooks-playground
-npm install @css-hooks/react remeda
+npm install @css-hooks/react@next remeda
 ```
 
 ## 2. Define a hook
