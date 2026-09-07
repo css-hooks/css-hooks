@@ -1,10 +1,10 @@
 {
   "name": "@css-hooks/preact",
   "description": "CSS Hooks for Preact",
-  "version": "4.0.0-next.26",
+  "version": "4.0.0-next.27",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "4.0.0-next.26"
+    "@css-hooks/core": "4.0.0-next.27"
   },
   "devDependencies": {
     "preact": "^11.0.0-0",
