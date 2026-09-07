@@ -9,7 +9,7 @@ import type { Browser, Page } from "playwright";
 import { chromium, firefox, webkit } from "playwright";
 import { pipe } from "remeda";
 
-import { buildHooksSystem } from "./index.ts";
+import { buildHooksSystem, mergeStyles } from "./index.ts";
 
 events.setMaxListeners(50);
 
@@ -39,6 +39,54 @@ function withMode<T>(mode: Parameters<typeof useMode>[0], f: () => T): T {
     teardown();
   }
 }
+
+describe("`mergeStyles` function", () => {
+  it("merges an override style without modifying either input", () => {
+    const baseStyle = { color: "red", display: "block" };
+    const overrideStyle = { color: "blue", opacity: 0.5 };
+
+    const style = pipe(baseStyle, mergeStyles(overrideStyle));
+
+    assert.deepEqual(style, {
+      display: "block",
+      color: "blue",
+      opacity: 0.5,
+    });
+    assert.notStrictEqual(style, baseStyle);
+    assert.deepEqual(baseStyle, { color: "red", display: "block" });
+    assert.deepEqual(overrideStyle, { color: "blue", opacity: 0.5 });
+  });
+
+  it("moves override properties after base properties", () => {
+    const style = pipe(
+      { marginTop: 8, margin: 0 },
+      mergeStyles({ marginTop: 16 }),
+    );
+
+    assert.deepEqual(Object.keys(style), ["margin", "marginTop"]);
+  });
+
+  it("returns the base style when the override style is absent", () => {
+    const baseStyle = { color: "red" };
+    const style = pipe(baseStyle, mergeStyles(undefined));
+
+    assert.strictEqual(style, baseStyle);
+    style satisfies typeof baseStyle;
+  });
+
+  it("preserves exact style types", () => {
+    const style = pipe(
+      { color: "red", display: "block" } as const,
+      mergeStyles({ color: "blue", opacity: 0.5 }),
+    );
+
+    style satisfies {
+      color: "blue";
+      display: "block";
+      opacity: 0.5;
+    };
+  });
+});
 
 describe(`in ${selectedBrowser}`, () => {
   const createHooks = buildHooksSystem<CSS.Properties>();
@@ -540,6 +588,17 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
     on("&", {
       padding: 0,
     }),
+  );
+
+  pipe(
+    {
+      // @ts-expect-error a later generic merge does not mask internal conflicts
+      marginTop: 0,
+    },
+    on("&", {
+      margin: 1,
+    }),
+    mergeStyles({} as CSS.Properties<number>),
   );
 }
 

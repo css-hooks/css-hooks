@@ -18,7 +18,7 @@ import {
   intent,
   intentAdjacentSibling,
   light,
-  merge,
+  mergeStyles,
   not,
   on,
   or,
@@ -306,7 +306,7 @@ export default function Home({
               style={pipe(
                 {},
                 on(dark, style),
-                merge({
+                mergeStyles({
                   position: "absolute",
                   pointerEvents: "none",
                 }),
@@ -1156,8 +1156,8 @@ function CodeWindow({ children }: { children: ReactNode }) {
             borderTopLeftRadius: 8,
             borderTopRightRadius: 8,
           },
-          merge(bg),
-          merge(border),
+          mergeStyles(bg),
+          mergeStyles(border),
         )}
       >
         {[0, 1, 2].map(i => (
@@ -1186,8 +1186,8 @@ function CodeWindow({ children }: { children: ReactNode }) {
             padding: 16,
             overflow: "auto",
           },
-          merge(bg),
-          merge(border),
+          mergeStyles(bg),
+          mergeStyles(border),
         )}
       >
         {children}

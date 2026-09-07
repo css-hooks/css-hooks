@@ -54,18 +54,18 @@ Hooks support `@media`, `@container`, `@supports`, and `@starting-style`.
 
 ## Compose reusable conditions
 
-Use `and`, `or`, and `not` to create named conditions from registered hooks.
+Use `and`, `or`, and `not` to create conditions from other conditions/hooks.
 
 ```typescript
 export const hoverOnly = and("@media (hover: hover)", "&:hover");
 export const intent = or(hoverOnly, "&:focus-visible");
 ```
 
-For best results, define generic, atomic hooks and register each one. A hook
-such as `&:hover` works on its own and, through `and`, `or`, and `not`, combines
-with hooks such as `&:focus` and `&:enabled` to express more specific
-conditions. The combinators build on hooks you have already registered, which
-promotes reuse and keeps the generated stylesheet small.
+For best results, create generic atomic hooks. A hook such as `&:hover` works on
+its own and, through `and`, `or`, and `not`, combines with hooks such as
+`&:focus` and `&:enabled` to express more specific conditions. The combinators
+build on existing hooks, which promotes reuse and keeps the generated stylesheet
+small.
 
-Continue to [Usage](../usage/index.md) to apply these conditions as override
+Continue to [Usage](../usage/index.md) to apply these conditions with override
 styles.

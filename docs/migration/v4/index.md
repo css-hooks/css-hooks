@@ -7,8 +7,8 @@ hidden: true
 
 # Migrating to v4
 
-v4 makes no changes to the public runtime API, so most apps can upgrade without
-changing any code.
+v4 makes no breaking changes to the existing public runtime API, so most apps
+can upgrade without changing any code.
 
 ## Property conflict protection
 
