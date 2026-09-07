@@ -159,7 +159,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
       lang="en"
       data-theme="auto"
       style={{
-        fontSize: "round(up, 1rem, 4px)",
         overflowY: "scroll",
         minHeight: "100dvh",
       }}
