@@ -16,9 +16,11 @@ npm install @css-hooks/core@next remeda
 
 ## 2. Define a hook
 
-Create `src/css.ts`:
+Create a module for styling utilities:
 
 ```typescript
+// src/css.ts
+
 import { buildHooksSystem } from "@css-hooks/core";
 
 const createHooks = buildHooksSystem();
@@ -28,9 +30,12 @@ export const { on, styleSheet } = createHooks("&:active");
 
 ## 3. Render the generated stylesheet
 
-Add the stylesheet to the document once, near the application entry point:
+Add the generated stylesheet to the document once near the application entry
+point:
 
 ```typescript
+// src/main.ts
+
 import { styleSheet } from "./css";
 
 const style = document.createElement("style");
@@ -40,11 +45,13 @@ document.head.append(style);
 
 ## 4. Apply an override style
 
-The core package returns a style object. Your renderer must convert that object
-to an inline style string. This minimal example only supports the string values
-used below; use a renderer-appropriate serializer in an application.
+The core package returns a style object, so convert it to an inline style string
+before applying it. This minimal example only supports the string values used
+below; use a renderer-appropriate serializer in an application.
 
 ```typescript
+// src/main.ts
+
 import { pipe } from "remeda";
 
 import { on } from "./css";

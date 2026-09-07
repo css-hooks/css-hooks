@@ -24,9 +24,11 @@ npm install solid-js@next @solidjs/web@next
 npm install -D @solidjs/vite-plugin
 ```
 
-Then replace the plugin in `vite.config.ts`:
+Then replace the Solid 1 Vite plugin:
 
 ```diff
+// vite.config.ts
+
  import { defineConfig } from "vite";
 -import solid from "vite-plugin-solid";
 +import solid from "@solidjs/vite-plugin";
@@ -36,9 +38,11 @@ Then replace the plugin in `vite.config.ts`:
  });
 ```
 
-And change `jsxImportSource` in `tsconfig.app.json`:
+Point `jsxImportSource` at Solid 2:
 
 ```diff
+// tsconfig.app.json
+
 -    "jsxImportSource": "solid-js",
 +    "jsxImportSource": "@solidjs/web",
 ```
@@ -51,9 +55,11 @@ npm install @css-hooks/solid@next remeda
 
 ## 4. Define a hook
 
-Create `src/css.ts`:
+Create a module for styling utilities:
 
 ```typescript
+// src/css.ts
+
 import { createHooks } from "@css-hooks/solid";
 
 export const { on, styleSheet } = createHooks("&:active");
@@ -61,9 +67,11 @@ export const { on, styleSheet } = createHooks("&:active");
 
 ## 5. Render the generated stylesheet
 
-Render `styleSheet()` once at the application root. In `src/index.tsx`:
+Render `styleSheet()` once at the application root:
 
 ```tsx
+// src/index.tsx
+
 import { render } from "@solidjs/web";
 
 import App from "./App";
@@ -85,6 +93,8 @@ render(
 Use the registered `&:active` hook in a component:
 
 ```tsx
+// src/App.tsx
+
 import { pipe } from "remeda";
 
 import { on } from "./css";

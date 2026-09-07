@@ -46,10 +46,10 @@ work.
 | [ts-functional-pipe](https://biggyspender.github.io/ts-functional-pipe/) | [`pipeInto`](https://biggyspender.github.io/ts-functional-pipe/modules.html#pipeInto)                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | No library                                                               | [`pipe`](https://www.typescriptlang.org/play?#code/C4TwDgpgBACglpAYgVwHYGNhwPaoDwCSqYywANFAPKknAB8UAvFABRzGkBcURtAlEwbVgtANwAocRAAeYbACdgUAGZpMOVFDAIIeAIJ0WANwCGAG2QRuevtYky5ilWqy4tO-RQBCh0xatQehTKqNzwSC4anlA+tjH2sgpKqhiumtqQ0V4UAMKG4lBQfpbWZAUqqACMYTooqVFBMXRlhSEATDUR9bh42VB5ZXE5CY7JkW4Zuo19ORQAIvmFxQFB5SHVsLXj+NPNa6gdm13qPTN7ragAzJ0QdSf4s1ALg9xzI0nO3ek6LOXL3GgANaobAAd1QLSgADoYSl7gBnazyeQmEB4YzmEpQVAQIwQeQCRgMIEg8F0cRxElgzQAb3K8ggwGQ8k0cLS8KhDIAJsh0BAWCwGfDkGZyBVCQwQoKIMLRVATPDsbj8XwKMs+BIAL7iIA) |
 
-## Create the hooks module
+## Create the styling module
 
-Create a module, commonly `src/css.ts`, that exports the hooks used throughout
-your application. Framework integrations export `createHooks` directly:
+Create a module that exports the hooks used throughout your application.
+Framework integrations export `createHooks` directly:
 
 ```typescript
 // src/css.ts

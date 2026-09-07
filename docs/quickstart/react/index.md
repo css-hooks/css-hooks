@@ -16,9 +16,11 @@ npm install @css-hooks/react@next remeda
 
 ## 2. Define a hook
 
-Create `src/css.ts`:
+Create a module for styling utilities:
 
 ```typescript
+// src/css.ts
+
 import { createHooks } from "@css-hooks/react";
 
 export const { on, styleSheet } = createHooks("&:active");
@@ -26,9 +28,11 @@ export const { on, styleSheet } = createHooks("&:active");
 
 ## 3. Render the generated stylesheet
 
-Render `styleSheet()` once at the application root. In `src/main.tsx`:
+Render `styleSheet()` once at the application root:
 
 ```tsx
+// src/main.tsx
+
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
@@ -48,6 +52,8 @@ createRoot(document.getElementById("root")!).render(
 Use the registered `&:active` hook in a component:
 
 ```tsx
+// src/App.tsx
+
 import { pipe } from "remeda";
 
 import { on } from "./css";
