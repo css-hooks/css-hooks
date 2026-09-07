@@ -11,7 +11,7 @@ order: 99
 ```bash
 npm create vite@latest css-hooks-playground -- --template vanilla-ts
 cd css-hooks-playground
-npm install @css-hooks/core remeda
+npm install @css-hooks/core@next remeda
 ```
 
 ## 2. Define a hook
