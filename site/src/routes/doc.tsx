@@ -238,6 +238,17 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6, style: CSSProperties) {
   return component;
 }
 
+const filenameCommentPattern =
+  /^\/\/[ \t]+((?:[\w.-]+\/)*[\w.-]+\.(?:[cm]?[jt]sx?|css|html|json))[ \t]*(?:\r?\n(?:[ \t]*\r?\n)?|$)/;
+
+function extractFilename(code: string) {
+  const match = code.match(filenameCommentPattern);
+  return {
+    code: match ? code.substring(match[0].length) : code,
+    filename: match?.[1],
+  };
+}
+
 export async function loader({ params }: Route.LoaderArgs) {
   const pathname = `/docs/${params["*"]}`;
   const doc = docs.find(
@@ -486,13 +497,58 @@ export async function loader({ params }: Route.LoaderArgs) {
         code: props => {
           const { children, className, node: _node, ref, ...rest } = props;
           const match = /language-(\w+)/.exec(className || "");
-          return match?.[1] ? (
-            <div {...rest} ref={ref as Ref<HTMLDivElement> | undefined}>
-              <SyntaxHighlighter language={match?.[1]}>
-                {String(children).replace(/\n$/, "")}
-              </SyntaxHighlighter>
-            </div>
-          ) : (
+          if (match?.[1]) {
+            const { code, filename } = extractFilename(
+              String(children).replace(/\n$/, ""),
+            );
+            return (
+              <div
+                {...rest}
+                ref={ref as Ref<HTMLDivElement> | undefined}
+                style={
+                  filename
+                    ? {
+                        width: "max-content",
+                        minWidth: "calc(100% + 24px)",
+                      }
+                    : undefined
+                }
+              >
+                {filename ? (
+                  <div
+                    style={pipe(
+                      {
+                        marginBlockStart: -16,
+                        marginInlineStart: -24,
+                        marginBlockEnd: 16,
+                        borderBottomWidth: 1,
+                        borderBottomStyle: "solid",
+                        borderColor: gray(20),
+                        paddingBlock: 8,
+                        paddingInline: 24,
+                        background: gray(10),
+                        color: gray(60),
+                        fontFamily: monospace,
+                        fontSize: "0.875em",
+                        lineHeight: 1.5,
+                      },
+                      on(dark, {
+                        borderColor: gray(70),
+                        background: gray(80),
+                        color: gray(35),
+                      }),
+                    )}
+                  >
+                    {filename}
+                  </div>
+                ) : null}
+                <SyntaxHighlighter language={match[1]}>
+                  {code}
+                </SyntaxHighlighter>
+              </div>
+            );
+          }
+          return (
             <code
               {...rest}
               className={className}

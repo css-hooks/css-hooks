@@ -23,9 +23,11 @@ npm uninstall @builder.io/qwik
 npm install @css-hooks/qwik@next @qwik.dev/core remeda
 ```
 
-Then update `vite.config.ts`:
+Then replace the Qwik 1 optimizer import:
 
 ```diff
+// vite.config.ts
+
 -import { qwikVite } from "@builder.io/qwik/optimizer";
 +import { qwikVite } from "@qwik.dev/core/optimizer";
  import { defineConfig } from "vite";
@@ -39,18 +41,22 @@ Then update `vite.config.ts`:
  });
 ```
 
-And change `jsxImportSource` in `tsconfig.app.json`:
+Point `jsxImportSource` at Qwik 2:
 
 ```diff
+// tsconfig.app.json
+
 -    "jsxImportSource": "@builder.io/qwik",
 +    "jsxImportSource": "@qwik.dev/core",
 ```
 
 ## 3. Define a hook
 
-Create `src/css.ts`:
+Create a module for styling utilities:
 
 ```typescript
+// src/css.ts
+
 import { createHooks } from "@css-hooks/qwik";
 
 export const { on, styleSheet } = createHooks("&:active");
@@ -58,9 +64,11 @@ export const { on, styleSheet } = createHooks("&:active");
 
 ## 4. Render the generated stylesheet
 
-Render `styleSheet()` once at the application root. In `src/main.tsx`:
+Render `styleSheet()` once at the application root:
 
 ```tsx
+// src/main.tsx
+
 import "@qwik.dev/core/qwikloader.js";
 
 import { render } from "@qwik.dev/core";
@@ -82,6 +90,8 @@ render(
 Use the registered `&:active` hook in a component:
 
 ```tsx
+// src/app.tsx
+
 import { component$ } from "@qwik.dev/core";
 import { pipe } from "remeda";
 

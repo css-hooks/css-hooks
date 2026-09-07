@@ -16,9 +16,11 @@ npm install @css-hooks/preact@next remeda
 
 ## 2. Define a hook
 
-Create `src/css.ts`:
+Create a module for styling utilities:
 
 ```typescript
+// src/css.ts
+
 import { createHooks } from "@css-hooks/preact";
 
 export const { on, styleSheet } = createHooks("&:active");
@@ -26,9 +28,11 @@ export const { on, styleSheet } = createHooks("&:active");
 
 ## 3. Render the generated stylesheet
 
-Render `styleSheet()` once at the application root. In `src/main.tsx`:
+Render `styleSheet()` once at the application root:
 
 ```tsx
+// src/main.tsx
+
 import { render } from "preact";
 
 import { App } from "./app";
@@ -48,6 +52,8 @@ render(
 Use the registered `&:active` hook in a component:
 
 ```tsx
+// src/app.tsx
+
 import { pipe } from "remeda";
 
 import { on } from "./css";
