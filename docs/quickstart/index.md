@@ -1,6 +1,6 @@
 ---
 title: Quickstart
-description: Add CSS Hooks to a new project.
+description: Adding CSS Hooks to a new project
 order: 2
 ---
 

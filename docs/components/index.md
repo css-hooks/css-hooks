@@ -1,7 +1,6 @@
 ---
 title: Components
-description:
-  Build reusable components with explicit variants and style escape hatches.
+description: Guidance for building reusable components with CSS Hooks
 order: 6
 ---
 

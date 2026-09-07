@@ -1,6 +1,6 @@
 ---
 title: Preact
-description: Add CSS Hooks to a new Preact project.
+description: Adding CSS Hooks to a new Preact project
 order: 2
 ---
 

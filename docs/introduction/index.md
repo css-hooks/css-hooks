@@ -1,6 +1,6 @@
 ---
 title: Introduction
-description: Use CSS selectors and at-rules with component style props.
+description: How to use CSS selectors and at-rules inside the style prop
 order: 1
 ---
 

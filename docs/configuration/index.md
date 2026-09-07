@@ -1,6 +1,6 @@
 ---
 title: Configuration
-description: Define the selectors and at-rules available to your style props.
+description: Defining the selectors and at-rules available to your style props
 order: 4
 ---
 

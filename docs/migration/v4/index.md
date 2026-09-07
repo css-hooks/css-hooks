@@ -1,6 +1,6 @@
 ---
 title: v4
-description: Upgrade your app from v3 to v4.
+description: Upgrading your app from v3 to v4
 order: 0
 hidden: true
 ---

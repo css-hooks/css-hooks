@@ -1,6 +1,6 @@
 ---
 title: Usage
-description: Apply base styles and override styles with CSS Hooks.
+description: Implementing conditional style declarations with CSS Hooks
 order: 5
 ---
 

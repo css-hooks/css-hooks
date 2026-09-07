@@ -1,6 +1,6 @@
 ---
 title: Setup
-description: Add CSS Hooks to an existing or custom application.
+description: Adding CSS Hooks to an existing or custom application
 order: 3
 ---
 
