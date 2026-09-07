@@ -1,5 +1,12 @@
 import type { ComponentProps, CSSProperties, ReactNode, Ref } from "react";
-import { Children, cloneElement, createElement, isValidElement } from "react";
+import {
+  Children,
+  cloneElement,
+  createElement,
+  isValidElement,
+  useEffect,
+  useRef,
+} from "react";
 import { prerenderToNodeStream } from "react-dom/static";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -8,9 +15,15 @@ import { pipe } from "remeda";
 import slug from "slug";
 
 import { AnchorLink } from "../components/anchor-link.tsx";
-import { EditIcon, ExpandMoreIcon } from "../components/icons.tsx";
+import {
+  CheckIcon,
+  ContentCopyIcon,
+  EditIcon,
+  ExpandMoreIcon,
+} from "../components/icons.tsx";
 import { NavLink } from "../components/nav-link.tsx";
 import { Preformatted } from "../components/preformatted.tsx";
+import { ScreenReaderOnly } from "../components/screen-reader-only.tsx";
 import { SyntaxHighlighter } from "../components/syntax-highlighter.tsx";
 import { and, dark, extractClassName, hover, not, on, or } from "../css.ts";
 import { docs } from "../data/docs.ts";
@@ -247,6 +260,72 @@ function extractFilename(code: string) {
     code: match ? code.substring(match[0].length) : code,
     filename: match?.[1],
   };
+}
+
+function CopyCodeButton({ code }: { code: string }) {
+  return (
+    <button
+      type="button"
+      data-copy-code={code}
+      aria-label="Copy code"
+      title="Copy code"
+      style={pipe(
+        {
+          position: "sticky",
+          right: -16,
+          zIndex: 1,
+          marginLeft: "auto",
+          boxSizing: "border-box",
+          display: "inline-grid",
+          placeItems: "center",
+          width: 28,
+          height: 28,
+          padding: 4,
+          border: 0,
+          borderRadius: 4,
+          background: "transparent",
+          color: gray(60),
+          cursor: "pointer",
+          fontSize: 16,
+          lineHeight: 1,
+          outlineWidth: 0,
+          outlineStyle: "solid",
+          outlineColor: purple(20),
+          outlineOffset: 2,
+        },
+        on(hover, {
+          background: gray(15),
+          color: gray(75),
+        }),
+        on("&:active", {
+          background: gray(20),
+          color: gray(85),
+        }),
+        on(dark, {
+          color: gray(35),
+          outlineColor: purple(50),
+        }),
+        on(and(dark, hover), {
+          background: gray(75),
+          color: gray(15),
+        }),
+        on(and(dark, "&:active"), {
+          background: gray(70),
+          color: white,
+        }),
+        on("&:focus-visible", {
+          outlineWidth: 2,
+        }),
+      )}
+    >
+      <span data-copy-icon style={{ gridArea: "1 / 1" }}>
+        <ContentCopyIcon />
+      </span>
+      <span data-copied-icon hidden style={{ gridArea: "1 / 1" }}>
+        <CheckIcon />
+      </span>
+    </button>
+  );
 }
 
 export async function loader({ params }: Route.LoaderArgs) {
@@ -505,14 +584,10 @@ export async function loader({ params }: Route.LoaderArgs) {
               <div
                 {...rest}
                 ref={ref as Ref<HTMLDivElement> | undefined}
-                style={
-                  filename
-                    ? {
-                        width: "max-content",
-                        minWidth: "calc(100% + 24px)",
-                      }
-                    : undefined
-                }
+                style={{
+                  width: "max-content",
+                  minWidth: "calc(100% + 24px)",
+                }}
               >
                 {filename ? (
                   <div
@@ -525,12 +600,16 @@ export async function loader({ params }: Route.LoaderArgs) {
                         borderBottomStyle: "solid",
                         borderColor: gray(20),
                         paddingBlock: 8,
-                        paddingInline: 24,
+                        paddingInlineStart: 24,
+                        paddingInlineEnd: 8,
                         background: gray(10),
                         color: gray(60),
                         fontFamily: monospace,
                         fontSize: "0.875em",
                         lineHeight: 1.5,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 16,
                       },
                       on(dark, {
                         borderColor: gray(70),
@@ -539,9 +618,22 @@ export async function loader({ params }: Route.LoaderArgs) {
                       }),
                     )}
                   >
-                    {filename}
+                    <span>{filename}</span>
+                    <CopyCodeButton code={code} />
                   </div>
-                ) : null}
+                ) : (
+                  <div
+                    style={{
+                      position: "relative",
+                      zIndex: 1,
+                      display: "flex",
+                      height: 0,
+                      transform: "translateY(-8px)",
+                    }}
+                  >
+                    <CopyCodeButton code={code} />
+                  </div>
+                )}
                 <SyntaxHighlighter language={match[1]}>
                   {code}
                 </SyntaxHighlighter>
@@ -695,6 +787,72 @@ export const meta: Route.MetaFunction = createMetaDescriptors(
 );
 
 export default function Doc({ loaderData: doc }: Route.ComponentProps) {
+  const proseRef = useRef<HTMLDivElement>(null);
+  const copyStatusRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const prose = proseRef.current;
+    if (!prose) return;
+
+    const resetTimers = new Map<HTMLButtonElement, number>();
+    const setButtonCopied = (button: HTMLButtonElement, copied: boolean) => {
+      const copyIcon = button.querySelector<HTMLElement>("[data-copy-icon]");
+      const copiedIcon =
+        button.querySelector<HTMLElement>("[data-copied-icon]");
+      if (copyIcon) copyIcon.hidden = copied;
+      if (copiedIcon) copiedIcon.hidden = !copied;
+    };
+    const resetButton = (button: HTMLButtonElement) => {
+      setButtonCopied(button, false);
+      resetTimers.delete(button);
+    };
+
+    const handleClick = (event: MouseEvent) => {
+      if (!(event.target instanceof Element)) return;
+      const button =
+        event.target.closest<HTMLButtonElement>("[data-copy-code]");
+      if (!button) return;
+
+      const code = button.dataset["copyCode"];
+      if (code === undefined) return;
+      if (copyStatusRef.current) copyStatusRef.current.textContent = "";
+      if (!navigator.clipboard) {
+        if (copyStatusRef.current) {
+          copyStatusRef.current.textContent = "Unable to copy code.";
+        }
+        return;
+      }
+
+      void navigator.clipboard.writeText(code).then(
+        () => {
+          const currentTimer = resetTimers.get(button);
+          if (currentTimer !== undefined) window.clearTimeout(currentTimer);
+
+          setButtonCopied(button, true);
+          if (copyStatusRef.current) {
+            copyStatusRef.current.textContent = "Code copied to clipboard.";
+          }
+
+          resetTimers.set(
+            button,
+            window.setTimeout(() => resetButton(button), 2000),
+          );
+        },
+        () => {
+          if (copyStatusRef.current) {
+            copyStatusRef.current.textContent = "Unable to copy code.";
+          }
+        },
+      );
+    };
+
+    prose.addEventListener("click", handleClick);
+    return () => {
+      prose.removeEventListener("click", handleClick);
+      resetTimers.forEach(timer => window.clearTimeout(timer));
+    };
+  }, []);
+
   return (
     <div
       style={pipe(
@@ -867,9 +1025,13 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
             }}
           >
             <div
+              ref={proseRef}
               className="prose"
               dangerouslySetInnerHTML={{ __html: doc.body }}
             />
+            <ScreenReaderOnly>
+              <span ref={copyStatusRef} aria-live="polite" />
+            </ScreenReaderOnly>
             {doc.attributes.editURL ? (
               <div
                 style={{
