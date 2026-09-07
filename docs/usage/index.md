@@ -72,3 +72,8 @@ equivalents throughout the base style object and overrides.
 Keep frequently used conditions in `css.ts`, where they can be composed and
 exported alongside `on`. See [Configuration](../configuration/index.md) for an
 example using `and` and `or`.
+
+## Advanced usage
+
+Read the [Components](../components/index.md) guide to build reusable components
+with prop-driven styles and expose a public `style` prop as an escape hatch.

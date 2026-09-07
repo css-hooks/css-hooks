@@ -191,6 +191,46 @@ export type CreateHooksFn<
 ) => CreateHooksResult<S, CSSProperties, CSSPropertyConflicts>;
 
 /**
+ * Merges an override style prop into a base style.
+ *
+ * @remarks
+ * Override properties are moved to the end of the resulting object so their
+ * declaration order takes precedence over properties in the base style.
+ *
+ * @typeParam OverrideStyle - The type of the override style prop
+ *
+ * @param overrideStyle - The style whose properties should take precedence
+ *
+ * @returns A curried function that merges `overrideStyle` with a base style
+ *
+ * @public
+ */
+export function mergeStyles<const OverrideStyle extends object>(
+  overrideStyle: OverrideStyle | null | undefined,
+): <Style extends object>(
+  style: Style,
+) => Omit<Style, keyof OverrideStyle> & OverrideStyle {
+  return <Style extends object>(style: Style) => {
+    if (!overrideStyle) {
+      return style as unknown as Omit<Style, keyof OverrideStyle> &
+        OverrideStyle;
+    }
+
+    const result = { ...style };
+    for (const property of Reflect.ownKeys(overrideStyle)) {
+      if (Object.prototype.propertyIsEnumerable.call(overrideStyle, property)) {
+        Reflect.deleteProperty(result, property);
+      }
+    }
+    return Object.assign(result, overrideStyle) as Omit<
+      Style,
+      keyof OverrideStyle
+    > &
+      OverrideStyle;
+  };
+}
+
+/**
  * Creates a flavor of CSS Hooks tailored to a specific app framework.
  *
  * @remarks

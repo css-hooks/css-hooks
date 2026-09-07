@@ -30,6 +30,17 @@ Creates a flavor of CSS Hooks tailored to a specific app framework.
 
 
 </td></tr>
+<tr><td>
+
+[mergeStyles(overrideStyle)](./core.mergestyles.md)
+
+
+</td><td>
+
+Merges an override style prop into a base style.
+
+
+</td></tr>
 </tbody></table>
 
 ## Interfaces

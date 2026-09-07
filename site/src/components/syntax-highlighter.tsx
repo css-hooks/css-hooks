@@ -5,7 +5,7 @@ import { pipe, piped } from "remeda";
 import type { ThemeRegistrationRaw } from "shiki";
 import { codeToHtml } from "shiki";
 
-import { dark, merge, on, parseStyle, stringifyStyle } from "../css.ts";
+import { dark, mergeStyles, on, parseStyle, stringifyStyle } from "../css.ts";
 import {
   blue,
   gray,
@@ -368,7 +368,7 @@ export function SyntaxHighlighter({
             defaultColor: false,
             transformers: [
               {
-                code: mutateStyle(piped(merge({ font: "inherit" }))),
+                code: mutateStyle(piped(mergeStyles({ font: "inherit" }))),
               },
               {
                 pre(el) {
@@ -379,7 +379,7 @@ export function SyntaxHighlighter({
               {
                 span: mutateStyle(
                   piped(
-                    merge({
+                    mergeStyles({
                       color: "var(--shiki-light)",
                     }),
                     on(dark, {

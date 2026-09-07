@@ -11,6 +11,7 @@ import type { CSSProperties } from "@qwik.dev/core";
 import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
 export type * from "@css-hooks/core";
+export { mergeStyles } from "@css-hooks/core";
 export type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
 /** @internal */
