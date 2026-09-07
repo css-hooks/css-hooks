@@ -1,6 +1,6 @@
 ---
 title: React
-description: Add CSS Hooks to a new React project.
+description: Adding CSS Hooks to a new React project
 order: 1
 ---
 

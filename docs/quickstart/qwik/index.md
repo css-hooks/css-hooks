@@ -1,6 +1,6 @@
 ---
 title: Qwik
-description: Add CSS Hooks to a new Qwik project.
+description: Adding CSS Hooks to a new Qwik project
 order: 4
 ---
 

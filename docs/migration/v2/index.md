@@ -1,6 +1,6 @@
 ---
 title: v2
-description: Upgrade your app from v1 to v2.
+description: Upgrading your app from v1 to v2
 order: 2
 hidden: true
 ---

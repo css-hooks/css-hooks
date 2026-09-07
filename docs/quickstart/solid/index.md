@@ -1,6 +1,6 @@
 ---
 title: Solid
-description: Add CSS Hooks to a new Solid project.
+description: Adding CSS Hooks to a new Solid project
 order: 3
 ---
 
