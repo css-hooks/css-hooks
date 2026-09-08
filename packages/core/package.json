@@ -18,8 +18,8 @@
     "!**/*.test.*"
   ],
   "license": "MIT",
-  "main": "cjs",
-  "module": "esm",
+  "main": "./cjs/index.js",
+  "module": "./esm/index.js",
   "type": "module",
   "private": false,
   "repository": {
@@ -40,7 +40,7 @@
       ]
     },
     "build": {
-      "command": "tsc && tsc --project tsconfig.cjs.json"
+      "command": "tsc && tsc --project tsconfig.cjs.json && node -e \"require('node:fs').writeFileSync('cjs/package.json', JSON.stringify({type:'commonjs'}))\""
     },
     "prepublishOnly": {
       "dependencies": [
