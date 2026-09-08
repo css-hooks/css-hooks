@@ -12,16 +12,15 @@ describe("`stringifyValue` function", () => {
     });
   });
 
-  it("returns numbers as direct string equivalents", () => {
-    [
-      "lineHeight",
-      "flexGrow",
-      "zIndex",
-      "width",
-      "marginTop",
-      "fontSize",
-    ].forEach(propertyName => {
+  it("returns unitless numbers as direct string equivalents", () => {
+    ["lineHeight", "flexGrow", "zIndex"].forEach(propertyName => {
       assert.equal(stringifyValue(1.5, propertyName), "1.5");
+    });
+  });
+
+  it("returns non-unitless numbers as px values", () => {
+    ["width", "marginTop", "fontSize"].forEach(propertyName => {
+      assert.equal(stringifyValue(15.5, propertyName), "15.5px");
     });
   });
 });
