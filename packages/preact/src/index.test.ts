@@ -18,6 +18,10 @@ describe("`stringifyValue` function", () => {
     });
   });
 
+  it("assumes numbers assigned to custom properties are unitless values", () => {
+    assert.equal(stringifyValue(7, "--foo"), "7");
+  });
+
   it("returns non-unitless numbers as px values", () => {
     ["width", "marginTop", "fontSize"].forEach(propertyName => {
       assert.equal(stringifyValue(15.5, propertyName), "15.5px");
