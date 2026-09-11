@@ -21,6 +21,7 @@
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
   "type": "module",
+  "sideEffects": false,
   "private": false,
   "repository": {
     "type": "git",

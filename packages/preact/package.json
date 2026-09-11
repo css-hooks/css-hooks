@@ -21,6 +21,7 @@
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
   "type": "module",
+  "sideEffects": false,
   "peerDependencies": {
     "preact": "^10.27.2 || ^11.0.0-0"
   },

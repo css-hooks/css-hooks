@@ -13,7 +13,8 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    if: >
+    if: >-
+      github.event.created == false &&
       !startsWith(github.event.head_commit.message, 'misc: release v') &&
       github.event.head_commit.message != 'misc: readme updates' &&
       github.event.head_commit.message != 'merge latest into next'
