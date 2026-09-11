@@ -21,6 +21,7 @@
   "main": "./cjs/index.js",
   "module": "./esm/index.js",
   "type": "module",
+  "sideEffects": false,
   "peerDependencies": {
     "@qwik.dev/core": ">=2.0.0-beta.30 <3"
   },
