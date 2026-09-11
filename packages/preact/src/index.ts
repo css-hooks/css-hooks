@@ -32,7 +32,7 @@ export function _stringifyValue(value: unknown, propertyName: string) {
     case "string":
       return value;
     case "number":
-      return `${value}${IS_NON_DIMENSIONAL.test(propertyName) ? "" : "px"}`;
+      return `${value}${propertyName.startsWith("--") || IS_NON_DIMENSIONAL.test(propertyName) ? "" : "px"}`;
     default:
       return null;
   }
