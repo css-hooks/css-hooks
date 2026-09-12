@@ -93,5 +93,11 @@ export const _unitlessNumbers = new Set([
 ]);
 
 function isUnitlessNumber(name: string) {
-  return /^--/.test(name) || _unitlessNumbers.has(name);
+  if (name.startsWith("--")) {
+    return true;
+  }
+  const camelCaseName = name
+    .replace(/^-ms-/, "ms-")
+    .replace(/-([a-z])/g, (_, letter: string) => letter.toUpperCase());
+  return _unitlessNumbers.has(camelCaseName);
 }
