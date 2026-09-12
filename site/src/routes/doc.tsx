@@ -1,5 +1,12 @@
 import type { ComponentProps, CSSProperties, ReactNode, Ref } from "react";
-import { Children, cloneElement, createElement, isValidElement } from "react";
+import {
+  Children,
+  cloneElement,
+  createElement,
+  isValidElement,
+  useEffect,
+  useRef,
+} from "react";
 import { prerenderToNodeStream } from "react-dom/static";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -8,9 +15,15 @@ import { pipe } from "remeda";
 import slug from "slug";
 
 import { AnchorLink } from "../components/anchor-link.tsx";
-import { EditIcon, ExpandMoreIcon } from "../components/icons.tsx";
+import {
+  CheckIcon,
+  ContentCopyIcon,
+  EditIcon,
+  ExpandMoreIcon,
+} from "../components/icons.tsx";
 import { NavLink } from "../components/nav-link.tsx";
 import { Preformatted } from "../components/preformatted.tsx";
+import { ScreenReaderOnly } from "../components/screen-reader-only.tsx";
 import { SyntaxHighlighter } from "../components/syntax-highlighter.tsx";
 import { and, dark, extractClassName, hover, not, on, or } from "../css.ts";
 import { docs } from "../data/docs.ts";
@@ -61,11 +74,13 @@ function MenuList({ children }: { children: ReactNode }) {
         {
           listStyleType: "none",
           margin: 0,
-          padding: 0,
+          paddingTop: 0,
+          paddingRight: 0,
+          paddingBottom: 0,
           paddingLeft: 0,
         },
         on(".group &.group", {
-          paddingLeft: "2em",
+          paddingLeft: 32,
         }),
       )}
     >
@@ -81,7 +96,7 @@ function MenuItem({
   level = 0,
 }: MenuItem & { level?: number }) {
   return (
-    <li style={{ marginTop: level === 0 ? "1em" : "0.4em" }}>
+    <li style={{ marginTop: level === 0 ? 16 : 8 }}>
       <NavLink
         to={pathname}
         end
@@ -143,7 +158,7 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6, style: CSSProperties) {
                 }),
               )}
             >
-              <span style={{ fontSize: "0.666em", lineHeight: "1.5em" }}>
+              <span style={{ fontSize: "0.666em", lineHeight: 1.5 }}>
                 {step}
               </span>
             </span>
@@ -176,11 +191,14 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6, style: CSSProperties) {
     return (
       <Tag
         className="group"
-        style={{
-          lineHeight: 1.25,
-          ...style,
-          ...styleProp,
-        }}
+        style={pipe(
+          {
+            lineHeight: 1.25,
+            ...style,
+            ...styleProp,
+          },
+          on("&:first-child", { marginBlockStart: 0 }),
+        )}
         {...restProps}
       >
         <span
@@ -233,6 +251,83 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6, style: CSSProperties) {
   return component;
 }
 
+const filenameCommentPattern =
+  /^\/\/[ \t]+((?:[\w.-]+\/)*[\w.-]+\.(?:[cm]?[jt]sx?|css|html|json))[ \t]*(?:\r?\n(?:[ \t]*\r?\n)?|$)/;
+
+function extractFilename(code: string) {
+  const match = code.match(filenameCommentPattern);
+  return {
+    code: match ? code.substring(match[0].length) : code,
+    filename: match?.[1],
+  };
+}
+
+function CopyCodeButton({ code }: { code: string }) {
+  return (
+    <button
+      type="button"
+      data-copy-code={code}
+      aria-label="Copy code"
+      title="Copy code"
+      style={pipe(
+        {
+          position: "sticky",
+          right: -16,
+          zIndex: 1,
+          marginLeft: "auto",
+          boxSizing: "border-box",
+          display: "inline-grid",
+          placeItems: "center",
+          width: 28,
+          height: 28,
+          padding: 4,
+          border: 0,
+          borderRadius: 4,
+          background: "transparent",
+          color: gray(60),
+          cursor: "pointer",
+          fontSize: 16,
+          lineHeight: 1,
+          outlineWidth: 0,
+          outlineStyle: "solid",
+          outlineColor: purple(20),
+          outlineOffset: 2,
+        },
+        on(hover, {
+          background: gray(15),
+          color: gray(75),
+        }),
+        on("&:active", {
+          background: gray(20),
+          color: gray(85),
+        }),
+        on(dark, {
+          color: gray(35),
+          outlineColor: purple(50),
+        }),
+        on(and(dark, hover), {
+          background: gray(75),
+          color: gray(15),
+        }),
+        on(and(dark, "&:active"), {
+          background: gray(70),
+          color: white,
+        }),
+        on("&:focus-visible", {
+          outlineWidth: 2,
+        }),
+      )}
+    >
+      <span data-copy-icon style={{ gridArea: "1 / 1" }}>
+        <ContentCopyIcon />
+      </span>
+      <span data-copied-icon hidden style={{ gridArea: "1 / 1" }}>
+        <CheckIcon />
+      </span>
+    </button>
+  );
+}
+
 export async function loader({ params }: Route.LoaderArgs) {
   const pathname = `/docs/${params["*"]}`;
   const doc = docs.find(
@@ -274,7 +369,7 @@ export async function loader({ params }: Route.LoaderArgs) {
                   borderWidth: 1,
                   borderColor: "inherit",
                   borderStyle: "solid",
-                  padding: "calc(0.375em - 0.5px) 0.75em",
+                  padding: "calc(6px - 0.5px) 12px",
                 },
                 on(not(or(dark, ".group:nth-child(even) &")), {
                   background: white,
@@ -319,6 +414,9 @@ export async function loader({ params }: Route.LoaderArgs) {
                 ? doc.attributes.pathname
                 : doc.attributes.pathname.replace(/\/[^/]+\/$/, "/"),
             );
+          if (to.endsWith(".csspropertyconflicts/")) {
+            return <>{children}</>;
+          }
           return (
             <AnchorLink
               href={to}
@@ -391,7 +489,7 @@ export async function loader({ params }: Route.LoaderArgs) {
                     {
                       display: "inline-flex",
                       alignItems: "center",
-                      gap: "0.375em",
+                      gap: 8,
                     },
                     on(warning, {
                       color: warningColor(50),
@@ -439,10 +537,11 @@ export async function loader({ params }: Route.LoaderArgs) {
                   borderWidth: 0,
                   borderLeftWidth: "8px",
                   borderStyle: "solid",
-                  padding: "0.1px 1em",
+                  paddingBlock: "0.1px",
+                  paddingInline: 16,
                   marginLeft: 0,
                   marginRight: 0,
-                  marginBlock: "1.5rem",
+                  marginBlock: 24,
                   borderColor: gray(50),
                   color: gray(70),
                   background: white,
@@ -477,13 +576,71 @@ export async function loader({ params }: Route.LoaderArgs) {
         code: props => {
           const { children, className, node: _node, ref, ...rest } = props;
           const match = /language-(\w+)/.exec(className || "");
-          return match?.[1] ? (
-            <div {...rest} ref={ref as Ref<HTMLDivElement> | undefined}>
-              <SyntaxHighlighter language={match?.[1]}>
-                {String(children).replace(/\n$/, "")}
-              </SyntaxHighlighter>
-            </div>
-          ) : (
+          if (match?.[1]) {
+            const { code, filename } = extractFilename(
+              String(children).replace(/\n$/, ""),
+            );
+            return (
+              <div
+                {...rest}
+                ref={ref as Ref<HTMLDivElement> | undefined}
+                style={{
+                  width: "max-content",
+                  minWidth: "calc(100% + 24px)",
+                }}
+              >
+                {filename ? (
+                  <div
+                    style={pipe(
+                      {
+                        marginBlockStart: -16,
+                        marginInlineStart: -24,
+                        marginBlockEnd: 16,
+                        borderBottomWidth: 1,
+                        borderBottomStyle: "solid",
+                        borderColor: gray(20),
+                        paddingBlock: 8,
+                        paddingInlineStart: 24,
+                        paddingInlineEnd: 8,
+                        background: gray(10),
+                        color: gray(60),
+                        fontFamily: monospace,
+                        fontSize: "0.875em",
+                        lineHeight: 1.5,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 16,
+                      },
+                      on(dark, {
+                        borderColor: gray(70),
+                        background: gray(80),
+                        color: gray(35),
+                      }),
+                    )}
+                  >
+                    <span>{filename}</span>
+                    <CopyCodeButton code={code} />
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      position: "relative",
+                      zIndex: 1,
+                      display: "flex",
+                      height: 0,
+                      transform: "translateY(-8px)",
+                    }}
+                  >
+                    <CopyCodeButton code={code} />
+                  </div>
+                )}
+                <SyntaxHighlighter language={match[1]}>
+                  {code}
+                </SyntaxHighlighter>
+              </div>
+            );
+          }
+          return (
             <code
               {...rest}
               className={className}
@@ -501,40 +658,50 @@ export async function loader({ params }: Route.LoaderArgs) {
           );
         },
         h1: createHeading(1, {
-          fontSize: "3rem",
+          fontSize: "3em",
           fontWeight: 400,
-          marginBlock: "1.25rem",
+          marginBlockStart: 48,
+          marginBlockEnd: 16,
         }),
         h2: createHeading(2, {
-          fontSize: "2.2rem",
+          fontSize: "2em",
           fontWeight: 400,
-          marginBlock: "1.75rem",
+          marginBlockStart: 40,
+          marginBlockEnd: 12,
         }),
         h3: createHeading(3, {
-          fontSize: "1.8rem",
+          fontSize: "1.5em",
           fontWeight: 400,
-          marginBlock: "2rem",
+          lineHeight: 4 / 3,
+          marginBlockStart: 32,
+          marginBlockEnd: 8,
         }),
         h4: createHeading(4, {
-          fontSize: "1.4rem",
+          fontSize: "1.25em",
           fontWeight: 400,
-          marginBlock: "2.25rem",
+          lineHeight: 1.4,
+          marginBlockStart: 28,
+          marginBlockEnd: 8,
         }),
         h5: createHeading(5, {
-          fontSize: "1rem",
+          fontSize: "1em",
           fontWeight: 700,
-          marginBlock: "2.5rem",
+          marginBlockStart: 24,
+          marginBlockEnd: 8,
         }),
         h6: createHeading(6, {
-          fontSize: "0.75rem",
+          fontSize: "0.75em",
           fontWeight: 700,
-          marginBlock: "2.625rem",
+          lineHeight: 4 / 3,
+          marginBlockStart: 24,
+          marginBlockEnd: 8,
         }),
         hr: ({ style, ...restProps }) => (
           <hr
             style={pipe(
               {
-                margin: "2rem 0",
+                marginBlock: 32,
+                marginInline: 0,
                 border: 0,
                 width: "100%",
                 height: 1,
@@ -552,11 +719,13 @@ export async function loader({ params }: Route.LoaderArgs) {
           <p
             style={pipe(
               {
-                margin: "1em 0",
+                marginBlock: 16,
+                marginInline: 0,
                 ...style,
               },
               on(or("th > &:only-child", "td > &:only-child"), {
-                margin: 0,
+                marginBlock: 0,
+                marginInline: 0,
               }),
             )}
             {...restProps}
@@ -566,9 +735,10 @@ export async function loader({ params }: Route.LoaderArgs) {
           <pre
             style={pipe(
               {
-                padding: "1rem 1.5rem",
+                paddingBlock: 16,
+                paddingInline: 24,
                 background: white,
-                marginBlock: "1.5rem",
+                marginBlock: 24,
                 overflow: "auto",
                 ...style,
               },
@@ -608,12 +778,81 @@ export async function loader({ params }: Route.LoaderArgs) {
   };
 }
 
-export const meta: Route.MetaFunction = createMetaDescriptors(({ data }) => ({
-  title: data.attributes.title,
-  description: data.attributes.description,
-}));
+export const meta: Route.MetaFunction = createMetaDescriptors(
+  ({ loaderData }) => ({
+    title: loaderData?.attributes.title,
+    description:
+      loaderData?.attributes.description ?? "Documentation for CSS Hooks.",
+  }),
+);
 
 export default function Doc({ loaderData: doc }: Route.ComponentProps) {
+  const proseRef = useRef<HTMLDivElement>(null);
+  const copyStatusRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const prose = proseRef.current;
+    if (!prose) return;
+
+    const resetTimers = new Map<HTMLButtonElement, number>();
+    const setButtonCopied = (button: HTMLButtonElement, copied: boolean) => {
+      const copyIcon = button.querySelector<HTMLElement>("[data-copy-icon]");
+      const copiedIcon =
+        button.querySelector<HTMLElement>("[data-copied-icon]");
+      if (copyIcon) copyIcon.hidden = copied;
+      if (copiedIcon) copiedIcon.hidden = !copied;
+    };
+    const resetButton = (button: HTMLButtonElement) => {
+      setButtonCopied(button, false);
+      resetTimers.delete(button);
+    };
+
+    const handleClick = (event: MouseEvent) => {
+      if (!(event.target instanceof Element)) return;
+      const button =
+        event.target.closest<HTMLButtonElement>("[data-copy-code]");
+      if (!button) return;
+
+      const code = button.dataset["copyCode"];
+      if (code === undefined) return;
+      if (copyStatusRef.current) copyStatusRef.current.textContent = "";
+      if (!navigator.clipboard) {
+        if (copyStatusRef.current) {
+          copyStatusRef.current.textContent = "Unable to copy code.";
+        }
+        return;
+      }
+
+      void navigator.clipboard.writeText(code).then(
+        () => {
+          const currentTimer = resetTimers.get(button);
+          if (currentTimer !== undefined) window.clearTimeout(currentTimer);
+
+          setButtonCopied(button, true);
+          if (copyStatusRef.current) {
+            copyStatusRef.current.textContent = "Code copied to clipboard.";
+          }
+
+          resetTimers.set(
+            button,
+            window.setTimeout(() => resetButton(button), 2000),
+          );
+        },
+        () => {
+          if (copyStatusRef.current) {
+            copyStatusRef.current.textContent = "Unable to copy code.";
+          }
+        },
+      );
+    };
+
+    prose.addEventListener("click", handleClick);
+    return () => {
+      prose.removeEventListener("click", handleClick);
+      resetTimers.forEach(timer => window.clearTimeout(timer));
+    };
+  }, []);
+
   return (
     <div
       style={pipe(
@@ -653,9 +892,11 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
             {
               display: "flex",
               alignItems: "center",
-              padding: "1rem 1.25rem",
-              gap: "0.25rem",
-              fontSize: "1.25rem",
+              paddingBlock: 16,
+              paddingInline: 20,
+              gap: 4,
+              fontSize: "1.25em",
+              lineHeight: 1.2,
               background: gray(12),
               color: gray(55),
               outlineWidth: 0,
@@ -719,29 +960,31 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
         <div
           style={pipe(
             {
-              marginTop: "0.5em",
+              marginTop: 8,
               paddingTop: 0,
-              paddingRight: "1.75rem",
-              paddingBottom: "1.75rem",
-              paddingLeft: "1.75rem",
+              paddingRight: 28,
+              paddingBottom: 28,
+              paddingLeft: 28,
             },
             on(not(or(":has(:checked) + &", "@media (width >= 44em)")), {
               display: "none",
             }),
             on("@media (width >= 44em)", {
               position: "fixed",
-              marginTop: "-0.5em",
-              paddingTop: "2rem",
-              paddingRight: "2rem",
-              paddingBottom: "2rem",
-              paddingLeft: "2rem",
+              marginTop: -8,
+              paddingTop: 32,
+              paddingRight: 32,
+              paddingBottom: 32,
+              paddingLeft: 32,
             }),
           )}
         >
           <MenuList>
             {menu(
               doc.attributes.pathname,
-              docs.filter(({ attributes: { order } }) => order >= 0),
+              docs.filter(
+                ({ attributes: { order, hidden } }) => order >= 0 && !hidden,
+              ),
             )
               .sort((a, b) =>
                 a.order < b.order ? -1 : a.order > b.order ? 1 : 0,
@@ -763,13 +1006,14 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
         <div
           style={pipe(
             {
-              width: "calc(100% - 4rem)",
+              width: "calc(100% - 64px)",
               maxWidth: "88ch",
               margin: "auto",
-              padding: "1rem 0",
+              paddingBlock: 16,
+              paddingInline: 0,
             },
             on("@media (width >= 69em)", {
-              width: "calc(100% - 8rem)",
+              width: "calc(100% - 128px)",
             }),
           )}
         >
@@ -777,20 +1021,24 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: "2rem",
+              gap: 32,
             }}
           >
             <div
+              ref={proseRef}
               className="prose"
               dangerouslySetInnerHTML={{ __html: doc.body }}
             />
+            <ScreenReaderOnly>
+              <span ref={copyStatusRef} aria-live="polite" />
+            </ScreenReaderOnly>
             {doc.attributes.editURL ? (
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "flex-start",
-                  gap: "1rem",
+                  gap: 16,
                 }}
               >
                 <hr
@@ -827,7 +1075,7 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
             )}
           </div>
         </div>
-        <div style={{ height: "2rem" }} />
+        <div style={{ height: 32 }} />
       </main>
     </div>
   );

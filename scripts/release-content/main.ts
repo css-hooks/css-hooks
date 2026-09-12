@@ -7,10 +7,13 @@ import { promisify } from "node:util";
 import { pipe } from "remeda";
 import * as v from "valibot";
 
+import { normalizeInstallCommands } from "./normalize-install-commands.ts";
+
 const exec = promisify(execCb);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const rootDir = resolve(__dirname, "../../");
 const rootReadmePath = resolve(rootDir, "README.md");
+const docsDir = resolve(rootDir, "docs");
 
 async function main() {
   const ref = process.argv.find((_, i, argv) => argv[i - 1] === "--ref");
@@ -20,10 +23,11 @@ async function main() {
     throw new Error("Please provide a ref using --ref <name>");
   }
 
-  const siteUrl =
-    ref === "latest" || /^v[0-9]+\.[0-9]+\.[0-9]+$/.test(ref)
-      ? "https://css-hooks.com"
-      : "https://next.css-hooks.com";
+  const stable = ref === "latest" || /^v[0-9]+\.[0-9]+\.[0-9]+$/.test(ref);
+  const siteUrl = stable
+    ? "https://css-hooks.com"
+    : "https://next.css-hooks.com";
+  const channel = stable ? "latest" : "next";
 
   const { stdout } = await exec("npm query .workspace", { cwd: rootDir });
   const workspaceData = v.parse(
@@ -146,6 +150,16 @@ async function main() {
       "utf-8",
     );
     console.log("🏠 Updated root README.md");
+
+    for await (const relativePath of fs.glob("**/*.md", { cwd: docsDir })) {
+      const path = resolve(docsDir, relativePath);
+      const content = await fs.readFile(path, "utf-8");
+      const normalizedContent = normalizeInstallCommands(content, channel);
+      if (normalizedContent !== content) {
+        await fs.writeFile(path, normalizedContent, "utf-8");
+      }
+    }
+    console.log(`Updated documentation install commands for ${channel}`);
   }
 }
 

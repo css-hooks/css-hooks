@@ -1,118 +1,77 @@
 ---
 title: React
-description: Get up and running with React in a few simple steps.
+description: Adding CSS Hooks to a new React project
 order: 1
 ---
 
 # Quickstart: React
 
-## 1. Initialize project
+## 1. Create the project
 
 ```bash
 npm create vite@latest css-hooks-playground -- --template react-ts
 cd css-hooks-playground
-npm install @css-hooks/react remeda
+npm install @css-hooks/react@next remeda
 ```
 
-## 2. Start dev server
+## 2. Define a hook
 
-```bash
-npm run dev
-```
-
-Visit http://localhost:5173 to view changes in real time.
-
-## 3. Set up CSS Hooks
-
-Create a `src/css.ts` module with the following contents:
+Create a module for styling utilities:
 
 ```typescript
+// src/css.ts
+
 import { createHooks } from "@css-hooks/react";
 
-export const { styleSheet, on } = createHooks("&:active");
+export const { on, styleSheet } = createHooks("&:active");
 ```
 
-## 4. Add style sheet
+## 3. Render the generated stylesheet
 
-Modify `src/main.tsx` to add the style sheet to the document:
+Render `styleSheet()` once at the application root:
 
-<!-- prettier-ignore-start -->
+```tsx
+// src/main.tsx
 
-```diff
- import React from 'react'
- import ReactDOM from 'react-dom/client'
- import App from './App.tsx'
- import './index.css'
-+import { styleSheet } from './css.ts'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 
- ReactDOM.createRoot(document.getElementById('root')!).render(
-   <React.StrictMode>
-+    <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-     <App />
-   </React.StrictMode>,
- )
+import App from "./App";
+import { styleSheet } from "./css";
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
+    <App />
+  </StrictMode>,
+);
 ```
 
-<!-- prettier-ignore-end -->
+## 4. Apply an override style
 
-## 5. Add conditional style
+Use the registered `&:active` hook in a component:
 
-Use the configured `&:active` hook to implement an effect when the counter
-button is pressed:
+```tsx
+// src/App.tsx
 
-<!-- prettier-ignore-start -->
+import { pipe } from "remeda";
 
-```diff
- // src/App.tsx
+import { on } from "./css";
 
- import { useState } from 'react'
- import reactLogo from './assets/react.svg'
- import viteLogo from '/vite.svg'
- import './App.css'
-+import { on } from './css.ts'
-+import { pipe } from 'remeda'
-
- function App() {
-   const [count, setCount] = useState(0)
-
-   return (
-     <>
-       <div>
-         <a href="https://vitejs.dev" target="_blank">
-           <img src={viteLogo} className="logo" alt="Vite logo" />
-         </a>
-         <a href="https://react.dev" target="_blank">
-           <img src={reactLogo} className="logo react" alt="React logo" />
-         </a>
-       </div>
-       <h1>Vite + React</h1>
-       <div className="card">
--        <button onClick={() => setCount((count) => count + 1)}>
-+        <button
-+          onClick={() => setCount((count) => count + 1)}
-+          style={pipe(
-+            {
-+              transition: "transform 75ms",
-+            },
-+            on("&:active", {
-+              transform: "scale(0.9)"
-+            })
-+          )}
-+        >
-           count is {count}
-         </button>
-         <p>
-           Edit <code>src/App.tsx</code> and save to test HMR
-         </p>
-       </div>
-       <p className="read-the-docs">
-         Click on the Vite and React logos to learn more
-       </p>
-     </>
-   )
- }
-
- export default App
+export default function App() {
+  return (
+    <button
+      style={pipe(
+        { transition: "transform 75ms" },
+        on("&:active", { transform: "scale(0.9)" }),
+      )}
+    >
+      Press me
+    </button>
+  );
+}
 ```
 
-<!-- prettier-ignore-end -->
+Run `npm run dev` to try it. Continue to
+[Configuration](../../configuration/index.md) to define more hooks, then see
+[Usage](../../usage/index.md) for composition patterns.

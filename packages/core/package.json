@@ -1,7 +1,7 @@
 {
   "name": "@css-hooks/core",
   "description": "CSS Hooks core library",
-  "version": "3.1.2",
+  "version": "4.0.0-next.35",
   "author": "Nick Saunders",
   "devDependencies": {
     "color": "^5.0.3",
@@ -18,9 +18,10 @@
     "!**/*.test.*"
   ],
   "license": "MIT",
-  "main": "cjs",
-  "module": "esm",
+  "main": "./cjs/index.js",
+  "module": "./esm/index.js",
   "type": "module",
+  "sideEffects": false,
   "private": false,
   "repository": {
     "type": "git",
@@ -40,7 +41,7 @@
       ]
     },
     "build": {
-      "command": "tsc && tsc --project tsconfig.cjs.json"
+      "command": "tsc && tsc --project tsconfig.cjs.json && node -e \"require('node:fs').writeFileSync('cjs/package.json', JSON.stringify({type:'commonjs'}))\""
     },
     "prepublishOnly": {
       "dependencies": [

@@ -1,117 +1,114 @@
 ---
 title: Qwik
-description: Get up and running with Qwik in a few simple steps.
+description: Adding CSS Hooks to a new Qwik project
 order: 4
 ---
 
 # Quickstart: Qwik
 
-## 1. Initialize project
+## 1. Create the project
 
 ```bash
 npm create vite@latest css-hooks-playground -- --template qwik-ts
 cd css-hooks-playground
-npm install @css-hooks/qwik remeda
 ```
 
-## 2. Start dev server
+## 2. Upgrade to Qwik v2
+
+The Vite `qwik-ts` template ships Qwik v1, which does not support Vite 8.
+Replace it with Qwik v2 and install CSS Hooks:
 
 ```bash
-npm run dev
+npm uninstall @builder.io/qwik
+npm install @css-hooks/qwik@next @qwik.dev/core remeda
 ```
 
-Visit http://localhost:5173 to view changes in real time.
+Then replace the Qwik v1 optimizer import:
 
-## 3. Set up CSS Hooks
+```diff
+// vite.config.ts
 
-Create a `src/css.ts` module with the following contents:
+-import { qwikVite } from "@builder.io/qwik/optimizer";
++import { qwikVite } from "@qwik.dev/core/optimizer";
+ import { defineConfig } from "vite";
+
+ export default defineConfig({
+   plugins: [
+     qwikVite({
+       csr: true,
+     }),
+   ],
+ });
+```
+
+Point `jsxImportSource` at Qwik v2:
+
+```diff
+// tsconfig.app.json
+
+-    "jsxImportSource": "@builder.io/qwik",
++    "jsxImportSource": "@qwik.dev/core",
+```
+
+## 3. Define a hook
+
+Create a module for styling utilities:
 
 ```typescript
+// src/css.ts
+
 import { createHooks } from "@css-hooks/qwik";
 
-export const { styleSheet, on } = createHooks("&:active");
+export const { on, styleSheet } = createHooks("&:active");
 ```
 
-## 4. Add style sheet
+## 4. Render the generated stylesheet
 
-Modify `src/main.tsx` to add the style sheet to the document:
+Render `styleSheet()` once at the application root:
 
-<!-- prettier-ignore-start -->
+```tsx
+// src/main.tsx
 
-```diff
- import '@builder.io/qwik/qwikloader.js'
+import "@qwik.dev/core/qwikloader.js";
 
- import { render } from '@builder.io/qwik'
- import { App } from './app.tsx'
- import './index.css'
-+import { styleSheet } from './css.ts'
+import { render } from "@qwik.dev/core";
 
--render(document.getElementById('app') as HTMLElement, <App />)
-+render(
-+  document.getElementById('app') as HTMLElement,
-+  <>
-+    <style dangerouslySetInnerHTML={styleSheet()} />
-+    <App />
-+  </>
-+)
+import { App } from "./app";
+import { styleSheet } from "./css";
+
+render(
+  document.getElementById("app")!,
+  <>
+    <style dangerouslySetInnerHTML={styleSheet()} />
+    <App />
+  </>,
+);
 ```
 
-<!-- prettier-ignore-end -->
+## 5. Apply an override style
 
-## 5. Add conditional style
+Use the registered `&:active` hook in a component:
 
-Use the configured `&:active` hook to implement an effect when the counter
-button is pressed:
+```tsx
+// src/app.tsx
 
-<!-- prettier-ignore-start -->
+import { component$ } from "@qwik.dev/core";
+import { pipe } from "remeda";
 
-```diff
- // src/app.tsx
+import { on } from "./css";
 
- import { component$, useSignal } from '@builder.io/qwik'
-
- import qwikLogo from './assets/qwik.svg'
- import viteLogo from '/vite.svg'
- import './app.css'
-+import { on } from './css.ts'
-+import { pipe } from 'remeda'
-
- export const App = component$(() => {
-   const count = useSignal(0)
-
-   return (
-     <>
-       <div>
-         <a href="https://vitejs.dev" target="_blank">
-           <img src={viteLogo} className="logo" alt="Vite logo" />
-         </a>
-         <a href="https://qwik.builder.io" target="_blank">
-           <img src={qwikLogo} className="logo qwik" alt="Qwik logo" />
-         </a>
-       </div>
-       <h1>Vite + Qwik</h1>
-       <div className="card">
--        <button onClick$={() => count.value++}>count is {count.value}</button>
-+        <button
-+          onClick$={() => count.value++}
-+          style={pipe(
-+            {
-+              transition: "transform 75ms",
-+            },
-+            on("&:active", {
-+              transform: "scale(0.9)"
-+            })
-+          )}
-+        >
-           count is {count}
-         </button>
-       </div>
-       <p className="read-the-docs">
-         Click on the Vite and Qwik logos to learn more
-       </p>
-     </>
-   )
- })
+export const App = component$(() => (
+  <button
+    style={pipe(
+      { transition: "transform 75ms" },
+      on("&:active", { transform: "scale(0.9)" }),
+    )}
+  >
+    Press me
+  </button>
+));
 ```
 
-<!-- prettier-ignore-end -->
+Run `npm run dev` to try it. Continue to
+[Configuration](../../configuration/index.md) to define more hooks, then see
+[Usage](../../usage/index.md) for composition patterns.

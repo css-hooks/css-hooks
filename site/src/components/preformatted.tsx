@@ -16,7 +16,7 @@ export function Preformatted({
       dangerouslySetInnerHTML={dangerouslySetInnerHTML}
       style={{
         fontFamily: monospace,
-        fontSize: "1rem",
+        fontSize: "inherit",
         marginBlock: 0,
       }}
     >

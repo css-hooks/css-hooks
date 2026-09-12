@@ -1,6 +1,7 @@
-import { createHooks } from "@css-hooks/react";
+import { createHooks, mergeStyles } from "@css-hooks/react";
 import type { CSSProperties } from "react";
 
+export { mergeStyles };
 export const { styleSheet, on, and, or, not } = createHooks(
   "@supports (height: 100dvh)",
 
@@ -20,6 +21,7 @@ export const { styleSheet, on, and, or, not } = createHooks(
 
   "&:active",
   "&:focus-visible",
+  "&:first-child",
   "&:has(*)",
   "&:has(:focus)",
   "&:has(:focus-visible)",
@@ -87,21 +89,6 @@ export function parseStyle(cssText: string): CSSProperties {
     style[camel] = value;
   }
   return style as CSSProperties;
-}
-
-export function merge(b: CSSProperties | undefined) {
-  return (a: CSSProperties) => {
-    if (!b) {
-      return a;
-    }
-    const style = JSON.parse(JSON.stringify(a)) as CSSProperties;
-    for (const key in b) {
-      const property = key as keyof CSSProperties;
-      delete style[property];
-      Object.assign(style, { [property]: b[property] });
-    }
-    return style;
-  };
 }
 
 type ExtractClassName<Selector extends string> =

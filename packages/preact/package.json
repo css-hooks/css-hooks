@@ -1,13 +1,14 @@
 {
   "name": "@css-hooks/preact",
   "description": "CSS Hooks for Preact",
-  "version": "3.1.2",
+  "version": "4.0.0-next.35",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "3.1.2"
+    "@css-hooks/core": "4.0.0-next.35"
   },
   "devDependencies": {
-    "preact": ">=10.0.0 <11.0.0"
+    "preact": "^11.0.0-0",
+    "remeda": "^2.45.0"
   },
   "files": [
     "cjs",
@@ -17,11 +18,12 @@
     "!**/*.test.*"
   ],
   "license": "MIT",
-  "main": "cjs",
-  "module": "esm",
+  "main": "./cjs/index.js",
+  "module": "./esm/index.js",
   "type": "module",
+  "sideEffects": false,
   "peerDependencies": {
-    "preact": ">=10.0.0 <11.0.0"
+    "preact": "^10.27.2 || ^11.0.0-0"
   },
   "peerDependenciesMeta": {
     "preact": {
@@ -36,6 +38,7 @@
   },
   "scripts": {
     "build": "wireit",
+    "codegen": "npm run --silent start -w @scripts/css-property-conflicts -- --casing camel > src/css-property-conflicts.ts",
     "prepublishOnly": "wireit",
     "test": "node --conditions @css-hooks/source --test src/index.test.ts"
   },
@@ -47,7 +50,7 @@
       ]
     },
     "build": {
-      "command": "tsc && tsc --project tsconfig.cjs.json",
+      "command": "tsc && tsc --project tsconfig.cjs.json && node -e \"require('node:fs').writeFileSync('cjs/package.json', JSON.stringify({type:'commonjs'}))\"",
       "dependencies": [
         "../core:build"
       ]

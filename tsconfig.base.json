@@ -20,6 +20,7 @@
     "target": "ES2019",
     "module": "ES2015",
     "moduleResolution": "bundler",
+    "types": ["node"],
     "declaration": true,
     "customConditions": ["@css-hooks/source"]
   }

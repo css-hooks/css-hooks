@@ -4,6 +4,7 @@
     "outDir": "cjs",
     "module": "CommonJS",
     "moduleResolution": "Node",
+    "ignoreDeprecations": "6.0",
     "declaration": false,
     "customConditions": null
   }
