@@ -13,10 +13,11 @@ npm create vite@latest css-hooks-playground -- --template solid-ts
 cd css-hooks-playground
 ```
 
-## 2. Upgrade to Solid 2
+## 2. Upgrade to Solid v2
 
-The Vite `solid-ts` template targets Solid 1, but `@css-hooks/solid` v4 targets
-Solid 2. Replace the Solid 1 plugin and packages with their Solid 2 equivalents:
+The Vite `solid-ts` template targets Solid v1, but `@css-hooks/solid` v4 targets
+Solid v2. Replace the Solid v1 plugin and packages with their Solid v2
+equivalents:
 
 ```bash
 npm uninstall vite-plugin-solid
@@ -24,7 +25,7 @@ npm install solid-js@next @solidjs/web@next
 npm install -D @solidjs/vite-plugin
 ```
 
-Then replace the Solid 1 Vite plugin:
+Then replace the Solid v1 Vite plugin:
 
 ```diff
 // vite.config.ts
@@ -38,7 +39,7 @@ Then replace the Solid 1 Vite plugin:
  });
 ```
 
-Point `jsxImportSource` at Solid 2:
+Point `jsxImportSource` at Solid v2:
 
 ```diff
 // tsconfig.app.json
