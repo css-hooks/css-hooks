@@ -7,8 +7,32 @@ hidden: true
 
 # Migrating to v4
 
-v4 makes no breaking changes to the existing public runtime API, so most apps
-can upgrade without changing any code.
+v4 makes no breaking changes to the existing public runtime API. Apps using
+`@css-hooks/core` or `@css-hooks/react` can upgrade without changing their CSS
+Hooks code, but the other framework integrations have updated compatibility
+requirements.
+
+## Framework compatibility
+
+### Preact
+
+`@css-hooks/preact` now supports Preact v11 and requires Preact v10.27.2 or
+later. Upgrade Preact before upgrading CSS Hooks if your app uses an earlier
+Preact v10 release.
+
+### Solid
+
+`@css-hooks/solid` now targets Solid v2 through `@solidjs/web` instead of Solid
+v1 through `solid-js`. Migrate your app to Solid v2 before upgrading CSS Hooks.
+See the [Solid quickstart](../../quickstart/solid/index.md) for the package,
+Vite plugin, and TypeScript configuration changes.
+
+### Qwik
+
+`@css-hooks/qwik` now targets Qwik v2 through `@qwik.dev/core` instead of Qwik
+v1 through `@builder.io/qwik`. Migrate your app to Qwik v2 before upgrading CSS
+Hooks. See the [Qwik quickstart](../../quickstart/qwik/index.md) for the
+package, optimizer import, and TypeScript configuration changes.
 
 ## Property conflict protection
 
