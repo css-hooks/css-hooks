@@ -8,5 +8,5 @@
     "customConditions": null,
     "types": ["node"]
   },
-  "include": ["main.ts"]
+  "include": ["*.ts"]
 }

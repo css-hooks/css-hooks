@@ -16,7 +16,7 @@ Install the integration package for your framework. For example, a React
 application needs:
 
 ```bash
-npm install @css-hooks/react remeda # remeda optional; see below
+npm install @css-hooks/react@next remeda # remeda optional; see below
 ```
 
 The available integration packages are:
@@ -30,7 +30,7 @@ For another framework, install `@css-hooks/core` and provide the conversion from
 a style object to the format expected by your renderer.
 
 ```bash
-npm install @css-hooks/core remeda # remeda optional; see below
+npm install @css-hooks/core@next remeda # remeda optional; see below
 ```
 
 ## Choose a pipeline utility
