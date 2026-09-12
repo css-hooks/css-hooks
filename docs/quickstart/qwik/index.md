@@ -13,17 +13,17 @@ npm create vite@latest css-hooks-playground -- --template qwik-ts
 cd css-hooks-playground
 ```
 
-## 2. Upgrade to Qwik 2
+## 2. Upgrade to Qwik v2
 
-The Vite `qwik-ts` template ships Qwik 1, which does not support Vite 8. Replace
-it with Qwik 2 and install CSS Hooks:
+The Vite `qwik-ts` template ships Qwik v1, which does not support Vite 8.
+Replace it with Qwik v2 and install CSS Hooks:
 
 ```bash
 npm uninstall @builder.io/qwik
 npm install @css-hooks/qwik@next @qwik.dev/core remeda
 ```
 
-Then replace the Qwik 1 optimizer import:
+Then replace the Qwik v1 optimizer import:
 
 ```diff
 // vite.config.ts
@@ -41,7 +41,7 @@ Then replace the Qwik 1 optimizer import:
  });
 ```
 
-Point `jsxImportSource` at Qwik 2:
+Point `jsxImportSource` at Qwik v2:
 
 ```diff
 // tsconfig.app.json
