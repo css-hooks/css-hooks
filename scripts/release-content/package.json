@@ -1,10 +1,11 @@
 {
-  "name": "@scripts/readme",
+  "name": "@scripts/release-content",
   "version": "4.0.0-next.31",
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node main.ts"
+    "start": "node main.ts",
+    "test": "node --test"
   },
   "dependencies": {
     "remeda": "^2.33.4",
