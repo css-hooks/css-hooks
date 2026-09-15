@@ -31,6 +31,7 @@
     }
   },
   "private": false,
+  "homepage": "https://next.css-hooks.com",
   "repository": {
     "type": "git",
     "url": "https://github.com/css-hooks/css-hooks.git",

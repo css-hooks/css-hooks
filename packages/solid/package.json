@@ -25,6 +25,7 @@
     "@solidjs/web": "^2.0.0-beta.0"
   },
   "private": false,
+  "homepage": "https://next.css-hooks.com",
   "repository": {
     "type": "git",
     "url": "https://github.com/css-hooks/css-hooks.git",

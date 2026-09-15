@@ -41,6 +41,19 @@ async function main() {
 
   const packages = workspaceData.filter(w => w.name.startsWith("@css-hooks/"));
 
+  for (const pkg of packages) {
+    const packageJsonPath = resolve(rootDir, pkg.location, "package.json");
+    const packageJson = JSON.parse(
+      await fs.readFile(packageJsonPath, "utf-8"),
+    ) as Record<string, unknown>;
+    packageJson["homepage"] = siteUrl;
+    await fs.writeFile(
+      packageJsonPath,
+      `${JSON.stringify(packageJson, null, 2)}\n`,
+      "utf-8",
+    );
+  }
+
   const rootReadmeContent = await fs.readFile(rootReadmePath, "utf-8");
 
   const readmeContent = (packageName: string) => {
