@@ -1,6 +1,6 @@
 {
   "name": "@scripts/release-content",
-  "version": "4.0.0-next.37",
+  "version": "4.0.0-next.38",
   "private": true,
   "type": "module",
   "scripts": {
