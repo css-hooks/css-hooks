@@ -11,7 +11,7 @@ Creates a flavor of CSS Hooks tailored to a specific app framework.
 ```typescript
 export declare function buildHooksSystem<CSSProperties extends {
     [P: string]: any;
-} = Record<string, unknown>>(stringify?: StringifyFn): CreateHooksFn<CSSProperties>;
+} = Record<string, unknown>, CSSPropertyConflicts extends object = object>(stringify?: StringifyFn): CreateHooksFn<CSSProperties, CSSPropertyConflicts>;
 ```
 
 ## Parameters
@@ -44,7 +44,7 @@ stringify
 
 </td><td>
 
-_(Optional)_ The function used to stringify values when merging conditional styles.
+_(Optional)_ The function used to stringify values when merging override styles
 
 
 </td></tr>
@@ -52,11 +52,11 @@ _(Optional)_ The function used to stringify values when merging conditional styl
 
 **Returns:**
 
-[CreateHooksFn](./core.createhooksfn.md)<!-- -->&lt;CSSProperties&gt;
+[CreateHooksFn](./core.createhooksfn.md)<!-- -->&lt;CSSProperties, CSSPropertyConflicts&gt;
 
-The `createHooks` function used to bootstrap CSS Hooks within an app or component library.
+The `createHooks` function used to bootstrap CSS Hooks within an app or component library
 
 ## Remarks
 
-Primarily for internal use, advanced use cases, or when an appropriate framework integration is not provided.
+Primarily for internal use, advanced use cases, or when an appropriate framework integration is not provided
 

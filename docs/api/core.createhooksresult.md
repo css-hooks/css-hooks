@@ -4,12 +4,12 @@
 
 ## CreateHooksResult interface
 
-An object containing the functions needed to support and use the configured hooks.
+An object containing the functions needed to support and use the configured hooks
 
 **Signature:**
 
 ```typescript
-export interface CreateHooksResult<S, CSSProperties> 
+export interface CreateHooksResult<S, CSSProperties, CSSPropertyConflicts extends object> 
 ```
 
 ## Properties
@@ -83,12 +83,12 @@ Negates a condition.
 
 </td><td>
 
-(condition: [Condition](./core.condition.md)<!-- -->&lt;S&gt;, style: CSSProperties) =&gt; [EnhanceStyleFn](./core.enhancestylefn.md)<!-- -->&lt;CSSProperties&gt;
+&lt;OverrideCSSProperties extends CSSProperties, BaseCSSProperties extends CSSProperties&gt;(condition: [Condition](./core.condition.md)<!-- -->&lt;S&gt;, overrideStyle: OverrideCSSProperties) =&gt; (style: CSSProperties &amp; CSSPropertiesWithoutConflicts&lt;BaseCSSProperties, CSSPropertyConflicts, OverrideCSSProperties&gt;) =&gt; Omit&lt;BaseCSSProperties, keyof OverrideCSSProperties&gt; &amp; OverrideCSSProperties
 
 
 </td><td>
 
-Enhances a style object with conditional styles.
+Creates a function that enhances a style object with conditional override styles.
 
 
 </td></tr>
@@ -126,7 +126,7 @@ Combines a list of conditions into a single condition which is true when any of 
 
 </td><td>
 
-The style sheet required to support the configured hooks.
+Returns the style sheet required to support the configured hooks.
 
 
 </td></tr>

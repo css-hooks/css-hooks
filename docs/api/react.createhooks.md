@@ -4,10 +4,10 @@
 
 ## createHooks variable
 
-A [CreateHooksFn](./core.createhooksfn.md) configured to use React's `CSSProperties` type and logic for converting CSS values into strings.
+A [CreateHooksFn](./core.createhooksfn.md) configured to use React's `CSSProperties` type and logic for converting CSS values into strings
 
 **Signature:**
 
 ```typescript
-createHooks: import("@css-hooks/core").CreateHooksFn<CSSProperties>
+createHooks: CreateHooksFn<CSSProperties, CSSPropertyConflicts>
 ```
