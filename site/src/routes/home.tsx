@@ -890,7 +890,7 @@ export default function Home({
 
 function InstallCommand({ framework }: { framework: string }) {
   const [copied, setCopied] = useState(false);
-  const command = `npm i @css-hooks/${framework.toLowerCase()}`;
+  const command = `npm i @css-hooks/${framework.toLowerCase()}${version.includes("-next.") ? "@next" : ""}`;
   return (
     <div
       style={pipe(
