@@ -9,12 +9,12 @@ Represents the selector logic used to create a hook.
 **Signature:**
 
 ```typescript
-export type Selector = `${string}&${string}` | `@${"media" | "container" | "supports"} ${string}` | "@starting-style";
+export type Selector = `${string}&${string}` | `@${"media" | "container" | "supports"} ${string}` | `@scope (${string})` | "@starting-style";
 ```
 
 ## Remarks
 
 Three forms are supported:
 
-1. A basic selector, where `&` is used as a placeholder for the element to which the condition applies. The `&` character must appear somewhere. 2. `@media`<!-- -->, `@container`<!-- -->, and `@supports` at-rules. Each value must begin with its keyword, followed by a space. 3. `@starting-style` with no additional parameters
+1. A basic selector, where `&` is used as a placeholder for the element to which the condition applies. The `&` character must appear somewhere. 2. `@media`<!-- -->, `@container`<!-- -->, `@supports`<!-- -->, and `@scope` at-rules. Each value must begin with its keyword, followed by a space. `@scope` requires an explicit scope root. 3. `@starting-style` with no additional parameters
 

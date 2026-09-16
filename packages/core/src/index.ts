@@ -41,8 +41,9 @@ export type StringifyFn = (
  *
  * 1. A basic selector, where `&` is used as a placeholder for the element to which
  *    the condition applies. The `&` character must appear somewhere.
- * 2. `@media`, `@container`, and `@supports` at-rules. Each value must begin with
- *    its keyword, followed by a space.
+ * 2. `@media`, `@container`, `@supports`, and `@scope` at-rules. Each value must
+ *    begin with its keyword, followed by a space. `@scope` requires an explicit
+ *    scope root.
  * 3. `@starting-style` with no additional parameters
  *
  * @public
@@ -50,6 +51,7 @@ export type StringifyFn = (
 export type Selector =
   | `${string}&${string}`
   | `@${"media" | "container" | "supports"} ${string}`
+  | `@scope (${string})`
   | "@starting-style";
 
 /**
@@ -285,9 +287,12 @@ export function buildHooksSystem<
           .join(newline)}${newline}}${newline}${selectors
           .flatMap(def => {
             if (def.startsWith("@")) {
+              const target = def.startsWith("@scope ")
+                ? `:where(:scope),${space}*`
+                : "*";
               return [
                 `${def} {`,
-                `${indent}* {`,
+                `${indent}${target} {`,
                 `${indent}${indent}--${selectorHashes.get(def)}0:${space};`,
                 `${indent}${indent}--${selectorHashes.get(def)}1:${space}initial;`,
                 `${indent}}`,

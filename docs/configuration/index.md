@@ -22,6 +22,7 @@ export const { on, and, or, not, styleSheet } = createHooks(
   "@media (hover: hover)",
   "@container (min-width: 320px)",
   "@supports (height: 100dvh)",
+  "@scope ([data-theme='dark']) to ([data-theme])",
 );
 ```
 
@@ -41,16 +42,21 @@ describes the element's own state or its surrounding context.
 
 ## At-rules
 
-Hooks support `@media`, `@container`, `@supports`, and `@starting-style`.
+Hooks support `@media`, `@container`, `@supports`, `@scope`, and
+`@starting-style`.
 
 <!--prettier-ignore-start-->
 ```typescript
 "@media (min-width: 600px)"
 "@container (min-width: 320px)"
 "@supports (height: 100dvh)"
+"@scope ([data-theme='dark']) to ([data-theme])"
 "@starting-style"
 ```
 <!--prettier-ignore-end-->
+
+`@scope` hooks require an explicit scope root. They apply to the root and its
+scoped descendants, excluding any scope limit and its descendants.
 
 ## Compose reusable conditions
 
