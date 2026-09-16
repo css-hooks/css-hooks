@@ -1,80 +1,66 @@
 # Contributing
 
-Welcome, and thanks for your interest in CSS Hooks. Whether you're new to web
-development or are here to teach us new tricks, we're glad to have you and look
-forward to your contributions. Listed below are a few ways you can help.
+## Questions
 
-## Asking questions
+[Open an issue](https://github.com/css-hooks/css-hooks/issues/new?labels=question)
+for questions about CSS Hooks.
 
-If you have a question, please
-[open an issue](https://github.com/css-hooks/css-hooks/issues/new?labels=question)
-to discuss it. This might help us to find a defect; reveal an opportunity to
-improve the documentation or developer experience; or help someone facing a
-similar issue in the future.
+## Defects
 
-## Reporting defects
+[Open an issue](https://github.com/css-hooks/css-hooks/issues/new?labels=defect)
+with enough detail to reproduce the defect. Include a link to a reproduction
+when possible.
 
-Please
-[open an issue](https://github.com/css-hooks/css-hooks/issues/new?labels=defect)
-to discuss any defects you find. Include as much detail as you can, and if
-possible provide a link to a repository or demo environment where the issue can
-be reproduced.
+## Documentation
 
-## Improving documentation
+Propose documentation changes in a
+[pull request](https://github.com/css-hooks/css-hooks/compare) or
+[open an issue](https://github.com/css-hooks/css-hooks/issues/new?labels=documentation).
 
-Please share any suggestions for improving or adding to the documentation by
-[submitting a pull request](https://github.com/css-hooks/css-hooks/compare) or
-[opening an issue](https://github.com/css-hooks/css-hooks/issues/new?labels=documentation).
+## Resources
 
-## Sharing resources
+Share tutorials, libraries, examples, and other CSS Hooks resources on
+[X](https://x.com/csshooks) or wherever you discuss web development.
 
-If you have created a tutorial, auxiliary library, interesting code example, or
-other resource related to CSS Hooks, please share it with the community on
-[Twitter](https://twitter.com/csshooks),
-[Facebook](https://facebook.com/csshooks), or anywhere you discuss web
-development topics. Increasing awareness will bring more users (and potential
-contributors) to the project.
+## Code
 
-## Submitting code
+[Open an issue](https://github.com/css-hooks/css-hooks/issues/new) before
+investing significant time in a code change.
 
-Pull requests are welcome, but we ask that you
-[open an issue](https://github.com/css-hooks/css-hooks/issues/new) to discuss
-your plans before making any significant investment of your valuable time.
+The commit and pull request guidelines below apply to human contributors and
+coding agents.
 
 ### Development environment
 
-The only strict requirements for developing CSS Hooks are:
+Development requires [Node.js](https://nodejs.org). See [.nvmrc](.nvmrc) for the
+required version.
 
-1. [Node.js](https://nodejs.org): See [.nvmrc](.nvmrc) for the required version.
-1. [PNPM](https://pnpm.io): See
-   [package.json](https://github.com/search?q=repo%3Acss-hooks%2Fcss-hooks++path%3Apackage.json+packageManager&type=code)
-   for the required version.
-
-If you are a [VS Code](https://code.visualstudio.com) user, please consider
-installing the [recommended extensions](.vscode/extensions.json) for CSS Hooks
-contributors.
+VS Code users can install the project's
+[recommended extensions](.vscode/extensions.json).
 
 ### Commit messages
 
-CSS Hooks uses [Conventional Commits](https://conventionalcommits.org) with
-Angular's
-[commit types](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#type).
+Use [Conventional Commits](https://conventionalcommits.org) with this header
+format:
 
-### Preparing your submission
+```text
+<type>: brief description of change
+```
 
-Please verify your changes before submitting a pull request using the following
-commands:
+Use one of these types:
 
-1. `pnpm check`
-1. `pnpm -r test`
+- `breaking`: a backward-incompatible package change
+- `feat`: a backward-compatible package feature
+- `fix`: a defect fix
+- `misc`: any change outside `packages/`, or any other change not covered above
 
-### Submitting a pull request
+Write the description in lowercase without ending punctuation.
 
-When you are ready to
-[submit a pull request](https://github.com/css-hooks/css-hooks/compare), please
-make sure to include:
+Briefly explain the change in the commit body. Use complete sentences and
+bullets when useful. Omit verification steps unless they differ from the checks
+in [next.yml](.github/workflows/next.yml).
 
-1. a brief description of the change;
-1. a link to the related issue, if applicable;
-1. any design considerations you feel are important; and
-1. any ideas you may have to improve upon your submission in the future.
+### Pull requests
+
+Match the pull request title to the commit header and the pull request
+description to the commit body.
