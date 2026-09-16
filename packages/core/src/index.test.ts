@@ -115,15 +115,17 @@ describe(`in ${selectedBrowser}`, () => {
   function createStyledElement(
     tag: keyof HTMLElementTagNameMap,
     style: CSS.Properties,
+    parentSelector = "body",
   ) {
     return page.evaluate(
-      ({ tag, style }) => {
+      ({ tag, style, parentSelector }) => {
         const el = document.createElement(tag);
         el.setAttribute("style", style);
-        document.body.appendChild(el);
+        document.querySelector(parentSelector)?.appendChild(el);
       },
       {
         tag,
+        parentSelector,
         style: Object.entries(style)
           .map(
             ([property, value]) =>
@@ -256,6 +258,38 @@ describe(`in ${selectedBrowser}`, () => {
       );
 
       assert.strictEqual(actualMobilePadding, expectedMobilePadding);
+    });
+
+    it("supports @scope hooks", async () => {
+      const scope = "@scope (section) to (aside)";
+      const { styleSheet, on } = createHooks(scope);
+
+      await page.addStyleTag({ content: styleSheet() });
+
+      const expectedDefaultColor = Color("gray"),
+        expectedScopedColor = Color("blue");
+      const style = pipe(
+        { color: expectedDefaultColor.string() },
+        on(scope, { color: expectedScopedColor.string() }),
+      );
+
+      await createStyledElement("section", style);
+      await createStyledElement("p", style, "section");
+      await createStyledElement("aside", style, "section");
+      await createStyledElement("strong", style, "aside");
+
+      for (const selector of ["section", "p"]) {
+        assert.deepStrictEqual(
+          Color(await getComputedPropertyValue(selector, "color")),
+          expectedScopedColor,
+        );
+      }
+      for (const selector of ["aside", "strong"]) {
+        assert.deepStrictEqual(
+          Color(await getComputedPropertyValue(selector, "color")),
+          expectedDefaultColor,
+        );
+      }
     });
 
     it("supports combinational logic", async () => {
@@ -535,6 +569,19 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 });
 
 // type-level tests
+
+// @scope hooks require an explicit root
+{
+  const createHooks = buildHooksSystem();
+
+  createHooks("@scope (.theme)");
+  createHooks("@scope (.theme) to (.nested-theme)");
+
+  // @ts-expect-error implicit scope root
+  createHooks("@scope");
+  // @ts-expect-error implicit scope root
+  createHooks("@scope to (.nested-theme)");
+}
 
 // conflict protection
 {

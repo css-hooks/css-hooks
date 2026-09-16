@@ -33,7 +33,7 @@ The conditions in this example are ordinary CSS:
 
 - Pseudo-classes such as `&:hover`, `&:focus-visible`, and `&:active`
 - Stateful and contextual selectors such as `:checked + &` and `.group:hover &`
-- At-rules such as `@media`, `@container`, and `@supports`
+- At-rules such as `@media`, `@container`, `@supports`, and `@scope`
 
 ## The purpose of CSS Hooks
 
