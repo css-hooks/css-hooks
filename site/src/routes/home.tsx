@@ -741,7 +741,7 @@ export default function Home({
                   </h1>
                   <div style={{ order: 99 }}>
                     <CtaButton
-                      to={`/docs/quickstart/${framework.toLowerCase()}`}
+                      to={`/docs/quickstart/${framework.toLowerCase()}/`}
                       theme="subtle"
                     >
                       Quickstart
