@@ -4,10 +4,10 @@
 
 ## CreateHooksResult.on property
 
-Enhances a style object with conditional styles.
+Creates a function that enhances a style object with conditional override styles.
 
 **Signature:**
 
 ```typescript
-on: (condition: Condition<S>, style: CSSProperties) => EnhanceStyleFn<CSSProperties>;
+on: <OverrideCSSProperties extends CSSProperties, BaseCSSProperties extends CSSProperties>(condition: Condition<S>, overrideStyle: OverrideCSSProperties) => (style: CSSProperties & CSSPropertiesWithoutConflicts<BaseCSSProperties, CSSPropertyConflicts, OverrideCSSProperties>) => Omit<BaseCSSProperties, keyof OverrideCSSProperties> & OverrideCSSProperties;
 ```

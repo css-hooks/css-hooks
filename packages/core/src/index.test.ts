@@ -9,7 +9,7 @@ import type { Browser, Page } from "playwright";
 import { chromium, firefox, webkit } from "playwright";
 import { pipe } from "remeda";
 
-import { buildHooksSystem } from "./index.ts";
+import { buildHooksSystem, mergeStyles } from "./index.ts";
 
 events.setMaxListeners(50);
 
@@ -40,6 +40,54 @@ function withMode<T>(mode: Parameters<typeof useMode>[0], f: () => T): T {
   }
 }
 
+describe("`mergeStyles` function", () => {
+  it("merges an override style without modifying either input", () => {
+    const baseStyle = { color: "red", display: "block" };
+    const overrideStyle = { color: "blue", opacity: 0.5 };
+
+    const style = pipe(baseStyle, mergeStyles(overrideStyle));
+
+    assert.deepEqual(style, {
+      display: "block",
+      color: "blue",
+      opacity: 0.5,
+    });
+    assert.notStrictEqual(style, baseStyle);
+    assert.deepEqual(baseStyle, { color: "red", display: "block" });
+    assert.deepEqual(overrideStyle, { color: "blue", opacity: 0.5 });
+  });
+
+  it("moves override properties after base properties", () => {
+    const style = pipe(
+      { marginTop: 8, margin: 0 },
+      mergeStyles({ marginTop: 16 }),
+    );
+
+    assert.deepEqual(Object.keys(style), ["margin", "marginTop"]);
+  });
+
+  it("returns the base style when the override style is absent", () => {
+    const baseStyle = { color: "red" };
+    const style = pipe(baseStyle, mergeStyles(undefined));
+
+    assert.strictEqual(style, baseStyle);
+    style satisfies typeof baseStyle;
+  });
+
+  it("preserves exact style types", () => {
+    const style = pipe(
+      { color: "red", display: "block" } as const,
+      mergeStyles({ color: "blue", opacity: 0.5 }),
+    );
+
+    style satisfies {
+      color: "blue";
+      display: "block";
+      opacity: 0.5;
+    };
+  });
+});
+
 describe(`in ${selectedBrowser}`, () => {
   const createHooks = buildHooksSystem<CSS.Properties>();
 
@@ -67,15 +115,17 @@ describe(`in ${selectedBrowser}`, () => {
   function createStyledElement(
     tag: keyof HTMLElementTagNameMap,
     style: CSS.Properties,
+    parentSelector = "body",
   ) {
     return page.evaluate(
-      ({ tag, style }) => {
+      ({ tag, style, parentSelector }) => {
         const el = document.createElement(tag);
         el.setAttribute("style", style);
-        document.body.appendChild(el);
+        document.querySelector(parentSelector)?.appendChild(el);
       },
       {
         tag,
+        parentSelector,
         style: Object.entries(style)
           .map(
             ([property, value]) =>
@@ -208,6 +258,38 @@ describe(`in ${selectedBrowser}`, () => {
       );
 
       assert.strictEqual(actualMobilePadding, expectedMobilePadding);
+    });
+
+    it("supports @scope hooks", async () => {
+      const scope = "@scope (section) to (aside)";
+      const { styleSheet, on } = createHooks(scope);
+
+      await page.addStyleTag({ content: styleSheet() });
+
+      const expectedDefaultColor = Color("gray"),
+        expectedScopedColor = Color("blue");
+      const style = pipe(
+        { color: expectedDefaultColor.string() },
+        on(scope, { color: expectedScopedColor.string() }),
+      );
+
+      await createStyledElement("section", style);
+      await createStyledElement("p", style, "section");
+      await createStyledElement("aside", style, "section");
+      await createStyledElement("strong", style, "aside");
+
+      for (const selector of ["section", "p"]) {
+        assert.deepStrictEqual(
+          Color(await getComputedPropertyValue(selector, "color")),
+          expectedScopedColor,
+        );
+      }
+      for (const selector of ["aside", "strong"]) {
+        assert.deepStrictEqual(
+          Color(await getComputedPropertyValue(selector, "color")),
+          expectedDefaultColor,
+        );
+      }
     });
 
     it("supports combinational logic", async () => {
@@ -348,6 +430,22 @@ it("uses the specified stringify function when merging values", () => {
   assert.match(fontSize.toString(), /fontSize__24px/);
 });
 
+it("uses fixed-width hashes without known polynomial collisions", () => {
+  const createHooks = buildHooksSystem();
+  const { styleSheet } = createHooks("&.Aa", "&.BB");
+  const propertyNames = [...styleSheet().matchAll(/--([^:]+):/g)].map(match => {
+    const propertyName = match[1];
+    assert(propertyName);
+    return propertyName;
+  });
+
+  assert(propertyNames.every(name => /^[a-z0-9_-]{7}[01]$/.test(name)));
+  assert.strictEqual(
+    new Set(propertyNames.map(name => name.slice(0, -1))).size,
+    2,
+  );
+});
+
 describe("in production mode (vs. debug)", () => {
   const createHooks = buildHooksSystem<CSS.Properties>();
 
@@ -464,8 +562,133 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
   );
   const { on } = createHooks("&:hover");
   const { width } = pipe({ width: 100 }, on("&:hover", { width: "200px" }));
-  assert.strictEqual(
+  assert.match(
     width,
-    "var(--mbscpo-1,200px)var(--mbscpo-0,revert-layer)",
+    /var\(--[a-z0-9_-]+1,200px\)var\(--[a-z0-9_-]+0,revert-layer\)/,
   );
 });
+
+// type-level tests
+
+// @scope hooks require an explicit root
+{
+  const createHooks = buildHooksSystem();
+
+  createHooks("@scope (.theme)");
+  createHooks("@scope (.theme) to (.nested-theme)");
+
+  // @ts-expect-error implicit scope root
+  createHooks("@scope");
+  // @ts-expect-error implicit scope root
+  createHooks("@scope to (.nested-theme)");
+}
+
+// conflict protection
+{
+  const createHooks = buildHooksSystem<
+    CSS.Properties<number>,
+    { margin: "marginTop"; padding: "paddingTop" }
+  >();
+
+  const { on } = createHooks("&");
+
+  // defined in conflict map
+  pipe(
+    {
+      color: "red",
+      // @ts-expect-error shorthand/longhand conflict
+      marginTop: 0,
+    },
+    on("&", {
+      margin: 1,
+    }),
+  );
+
+  // both properties defined in conflict map but don't conflict with each other
+  pipe(
+    {
+      margin: 0,
+    },
+    on("&", {
+      padding: 1,
+    }),
+  );
+
+  // property not defined in conflict map - no conflict
+  pipe(
+    {
+      color: "red",
+    },
+    on("&", {
+      margin: 0,
+    }),
+  );
+
+  pipe(
+    {
+      paddingTop: 0,
+    },
+    // @ts-expect-error conflicts detected across transforms
+    on("&", {
+      margin: 0,
+    }),
+    on("&", {
+      padding: 0,
+    }),
+  );
+
+  pipe(
+    {
+      // @ts-expect-error a later generic merge does not mask internal conflicts
+      marginTop: 0,
+    },
+    on("&", {
+      margin: 1,
+    }),
+    mergeStyles({} as CSS.Properties<number>),
+  );
+}
+
+// exact style inference across transforms
+{
+  const createHooks = buildHooksSystem<
+    {
+      color?: string;
+      textDecoration?: string;
+      textDecorationColor?: string;
+    },
+    { textDecoration: "textDecorationColor" }
+  >();
+  const { on } = createHooks("&");
+
+  const style = pipe(
+    { color: "red", textDecoration: "none" },
+    on("&", { color: "green" as const }),
+    on("&", { color: "blue" as const }),
+    on("&", { textDecoration: "underline" as const }),
+  );
+
+  style satisfies { color: "blue"; textDecoration: "underline" };
+}
+
+// optional conflicts in a contextually inferred style
+{
+  type CSSProperties = {
+    background?: string;
+    backgroundAttachment?: string;
+    flexDirection?: "row" | "column";
+    minHeight?: string;
+  };
+
+  const createHooks = buildHooksSystem<
+    CSSProperties,
+    { background: "backgroundAttachment" }
+  >();
+  const { on } = createHooks("&");
+
+  pipe(
+    { flexDirection: "column" },
+    on("&", { minHeight: "100dvh" }),
+    on("&", { background: "black" }),
+  );
+}
