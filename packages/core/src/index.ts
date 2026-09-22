@@ -278,35 +278,58 @@ export function buildHooksSystem<
 
     return {
       styleSheet() {
-        const indent = Array(2).fill(space).join("");
-        return `*${space}{${newline}${selectors
-          .flatMap(selector => [
-            `${indent}--${selectorHashes.get(selector)}0:${space}initial;`,
-            `${indent}--${selectorHashes.get(selector)}1:${space};`,
-          ])
-          .join(newline)}${newline}}${newline}${selectors
+        type Ruleset = [string[], { [P: string]: string } | Ruleset];
+        return selectors
           .flatMap(def => {
+            const selectorHash = selectorHashes.get(def);
+            const offVariable = `--${selectorHash}0`;
+            const onVariable = `--${selectorHash}1`;
+            const offDeclarations = {
+              [offVariable]: "initial",
+              [onVariable]: space,
+            };
+            const onDeclarations = {
+              [offVariable]: space,
+              [onVariable]: "initial",
+            };
+            const rulesets: Ruleset[] = [[["*"], offDeclarations]];
             if (def.startsWith("@")) {
-              const target = def.startsWith("@scope ")
-                ? `:where(:scope),${space}*`
-                : "*";
-              return [
-                `${def} {`,
-                `${indent}${target} {`,
-                `${indent}${indent}--${selectorHashes.get(def)}0:${space};`,
-                `${indent}${indent}--${selectorHashes.get(def)}1:${space}initial;`,
-                `${indent}}`,
-                "}",
-              ];
+              const target = ["*"];
+              if (def.startsWith("@scope")) {
+                target.push(":scope");
+              }
+              rulesets.push([[def], [target, onDeclarations]]);
+            } else {
+              rulesets.push([
+                [`:where(${def.replace(/&/g, "*")})`],
+                onDeclarations,
+              ]);
             }
-            return [
-              `${def.replace(/&/g, "*")}${space}{`,
-              `${indent}--${selectorHashes.get(def)}0:${space};`,
-              `${indent}--${selectorHashes.get(def)}1:${space}initial;`,
-              "}",
-            ];
+            return rulesets;
           })
-          .join(newline)}`;
+          .map(
+            unary(function render(ruleset: Ruleset, level: number = 0): string {
+              const [selectors, declarations] = ruleset;
+              const indent = Array(level * 2)
+                .fill(space)
+                .join("");
+              if (Array.isArray(declarations)) {
+                return `${indent}${selectors.join(`,${space}`)}${space}{${newline}${render(
+                  declarations,
+                  level + 1,
+                )}${newline}${indent}}`;
+              }
+              return `${indent}${selectors.join(`,${space}`)}${space}{${newline}${Object.entries(
+                declarations,
+              )
+                .map(
+                  ([property, value]) =>
+                    `${indent}${space}${property}:${space}${value};`,
+                )
+                .join(newline)}${newline}${indent}}`;
+            }),
+          )
+          .join(newline);
       },
       and: (...and) => ({ and }),
       or: (...or) => ({ or }),
@@ -429,4 +452,9 @@ function createHash(value: string) {
   }
 
   return encoded;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function unary<A, B>(fn: (a: A, ...rest: any) => B): (a: A) => B {
+  return (a: A) => fn(a);
 }
