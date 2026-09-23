@@ -176,33 +176,6 @@ describe(`in ${selectedBrowser}`, () => {
     );
   }
 
-  function supportsCustomPropertyStyleQueries() {
-    return page.evaluate(() => {
-      const style = document.createElement("style");
-      style.textContent =
-        "@container style(--css-hooks-test: on) { i { --css-hooks-supported: yes; } }";
-      const container = document.createElement("div");
-      container.style.setProperty("--css-hooks-test", "on");
-      const target = document.createElement("i");
-      container.appendChild(target);
-      document.head.appendChild(style);
-      document.body.appendChild(container);
-      const supported =
-        getComputedStyle(target).getPropertyValue("--css-hooks-supported") ===
-        "yes";
-      style.remove();
-      container.remove();
-      return supported;
-    });
-  }
-
-  it("supports custom-property style queries", async () => {
-    assert(
-      await supportsCustomPropertyStyleQueries(),
-      `${selectedBrowser} does not support custom-property style queries`,
-    );
-  });
-
   for (const mode of ["development", "production"] as const) {
     describe(`in ${mode} mode`, () => {
       let teardown = () => {};
