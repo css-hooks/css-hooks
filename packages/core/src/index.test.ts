@@ -9,7 +9,7 @@ import type { Browser, Page } from "playwright";
 import { chromium, firefox, webkit } from "playwright";
 import { pipe } from "remeda";
 
-import type { Hook } from "./index.ts";
+import type { Selector } from "./index.ts";
 import { buildHooksSystem, mergeStyles } from "./index.ts";
 
 events.setMaxListeners(50);
@@ -563,7 +563,7 @@ describe("flag controls", () => {
   it("omits controls when no flags are registered", () => {
     const hooks = createHooks("&:hover");
     const emptyHooks = createHooks();
-    const widenedHooks: Hook[] = ["&:hover"];
+    const widenedHooks: Array<Selector | `flag:${string}`> = ["&:hover"];
     const hooksFromWidenedList = createHooks(...widenedHooks);
     const maybeFlagHooks: Array<"flag:dark" | "&:hover"> = ["&:hover"];
     const hooksFromMaybeFlagList = createHooks(...maybeFlagHooks);

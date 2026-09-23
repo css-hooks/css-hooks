@@ -54,26 +54,11 @@ export type Selector =
   | `@scope (${string})`
   | "@starting-style";
 
-/**
- * Named boolean state inherited by an element's descendants.
- *
- * @remarks
- * Register a flag using `flag:name`, then pass the full hook to `on()`. When
- * any flags are registered, the result of {@link CreateHooksFn} also includes
- * `enable(name)` and `disable(name)` setters. Setters affect descendants, not
- * the element carrying their declarations. Registered flags are disabled by
- * default.
- *
- * @public
- */
-export type Flag = `flag:${string}`;
+/** Named boolean state inherited by an element's descendants. */
+type Flag = `flag:${string}`;
 
-/**
- * Selector logic or a named boolean flag used to create a hook.
- *
- * @public
- */
-export type Hook = Selector | Flag;
+/** Selector logic or a named boolean flag used to create a hook. */
+type Hook = Selector | Flag;
 
 /** Whether a type contains more than one possible member. */
 type IsUnion<T, Whole = T> = T extends Whole
@@ -82,12 +67,8 @@ type IsUnion<T, Whole = T> = T extends Whole
     : true
   : never;
 
-/**
- * Extracts the short names guaranteed to be flags in a hook tuple.
- *
- * @public
- */
-export type FlagName<Hooks extends readonly Hook[]> =
+/** Extracts the short names guaranteed to be flags in a hook tuple. */
+type FlagName<Hooks extends readonly Hook[]> =
   true extends IsUnion<Hooks>
     ? never
     : Hooks extends readonly [
@@ -103,21 +84,13 @@ export type FlagName<Hooks extends readonly Hook[]> =
           : FlagName<Tail>
       : never;
 
-/**
- * Style declarations that set an inherited flag for descendants.
- *
- * @public
- */
-export type FlagStyle = { [P in `--${string}`]: string };
+/** Style declarations that set an inherited flag for descendants. */
+type FlagStyle = { [P in `--${string}`]: string };
 
-/**
- * Functions returned when a literal hook list includes at least one flag.
- *
- * @public
- */
-export type FlagControls<Hooks extends readonly Hook[]> = [
-  FlagName<Hooks>,
-] extends [never]
+/** Functions returned when a literal hook list includes at least one flag. */
+type FlagControls<Hooks extends readonly Hook[]> = [FlagName<Hooks>] extends [
+  never,
+]
   ? unknown
   : {
       /** Returns style declarations that enable a flag for descendants. */
@@ -246,7 +219,7 @@ export interface CreateHooksResult<
  * Represents the function used to define hooks and related configuration.
  *
  * @remarks
- * When the registered hooks include one or more {@link Flag} values, the
+ * When the registered hooks include one or more `flag:<name>` values, the
  * returned object also contains `enable()` and `disable()` functions restricted
  * to their short names. The functions are omitted when no flags are
  * configured.
