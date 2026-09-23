@@ -9,6 +9,7 @@ import type { Browser, Page } from "playwright";
 import { chromium, firefox, webkit } from "playwright";
 import { pipe } from "remeda";
 
+import type { Hook } from "./index.ts";
 import { buildHooksSystem, mergeStyles } from "./index.ts";
 
 events.setMaxListeners(50);
@@ -120,22 +121,20 @@ describe(`in ${selectedBrowser}`, () => {
     return page.evaluate(
       ({ tag, style, parentSelector }) => {
         const el = document.createElement(tag);
-        el.setAttribute("style", style);
+        for (const [property, value] of Object.entries(style)) {
+          el.style.setProperty(
+            property.startsWith("--")
+              ? property
+              : property.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`),
+            String(value),
+          );
+        }
         document.querySelector(parentSelector)?.appendChild(el);
       },
       {
         tag,
         parentSelector,
-        style: Object.entries(style)
-          .map(
-            ([property, value]) =>
-              `${
-                property.startsWith("--")
-                  ? property
-                  : property.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`)
-              }:${value}`,
-          )
-          .join(";"),
+        style,
       },
     );
   }
@@ -220,6 +219,72 @@ describe(`in ${selectedBrowser}`, () => {
         );
 
         assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
+      });
+
+      it("supports inherited boolean flags", async () => {
+        const { styleSheet, on, enable, disable } = createHooks("flag:dark");
+
+        await page.addStyleTag({ content: styleSheet() });
+
+        const expectedDefaultColor = Color("gray"),
+          expectedEnabledColor = Color("blue");
+        const consumerStyle = pipe(
+          { color: expectedDefaultColor.string() },
+          on("flag:dark", { color: expectedEnabledColor.string() }),
+        );
+
+        await createStyledElement("p", consumerStyle);
+        await createStyledElement("main", {
+          ...enable("dark"),
+          ...consumerStyle,
+        });
+        await createStyledElement("span", consumerStyle, "main");
+        await createStyledElement("section", disable("dark"), "main");
+        await createStyledElement("i", consumerStyle, "section");
+        await createStyledElement("article", enable("dark"), "section");
+        await createStyledElement("strong", consumerStyle, "article");
+
+        for (const selector of ["p", "i"]) {
+          assert.deepStrictEqual(
+            Color(await getComputedPropertyValue(selector, "color")),
+            expectedDefaultColor,
+          );
+        }
+        for (const selector of ["main", "span", "strong"]) {
+          assert.deepStrictEqual(
+            Color(await getComputedPropertyValue(selector, "color")),
+            expectedEnabledColor,
+          );
+        }
+      });
+
+      it("composes flags with selector hooks", async () => {
+        const { styleSheet, on, and, enable } = createHooks(
+          "flag:dark",
+          "&.active",
+        );
+
+        await page.addStyleTag({ content: styleSheet() });
+
+        await createStyledElement("main", enable("dark"));
+        await createStyledElement(
+          "button",
+          pipe(
+            { color: "gray" },
+            on(and("flag:dark", "&.active"), { color: "blue" }),
+          ),
+          "main",
+        );
+
+        assert.deepStrictEqual(
+          Color(await getComputedPropertyValue("button", "color")),
+          Color("gray"),
+        );
+        await queryAndSetClassName("button", "active");
+        assert.deepStrictEqual(
+          Color(await getComputedPropertyValue("button", "color")),
+          Color("blue"),
+        );
       });
     });
 
@@ -408,6 +473,83 @@ describe(`in ${selectedBrowser}`, () => {
       assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
     });
   }
+});
+
+describe("flag controls", () => {
+  const createHooks = buildHooksSystem<CSS.Properties>();
+
+  it("omits controls when no flags are registered", () => {
+    const hooks = createHooks("&:hover");
+    const emptyHooks = createHooks();
+    const widenedHooks: Hook[] = ["&:hover"];
+    const hooksFromWidenedList = createHooks(...widenedHooks);
+    const maybeFlagHooks: Array<"flag:dark" | "&:hover"> = ["&:hover"];
+    const hooksFromMaybeFlagList = createHooks(...maybeFlagHooks);
+
+    assert(!("enable" in hooks));
+    assert(!("disable" in hooks));
+    assert(!("enable" in emptyHooks));
+    assert(!("disable" in emptyHooks));
+    assert(!("enable" in hooksFromWidenedList));
+    assert(!("enable" in hooksFromMaybeFlagList));
+    assert.strictEqual(
+      // @ts-expect-error no registered flags
+      hooks.enable,
+      undefined,
+    );
+    assert.strictEqual(
+      // @ts-expect-error no registered flags
+      hooks.disable,
+      undefined,
+    );
+    assert.strictEqual(
+      // @ts-expect-error no registered hooks
+      emptyHooks.enable,
+      undefined,
+    );
+    assert.strictEqual(
+      // @ts-expect-error a widened hook list cannot guarantee flag controls
+      hooksFromWidenedList.enable,
+      undefined,
+    );
+    assert.strictEqual(
+      // @ts-expect-error a widened hook list cannot guarantee flag controls
+      hooksFromMaybeFlagList.enable,
+      undefined,
+    );
+
+    const checkTupleUnion = (hookTuple: ["flag:dark"] | ["&:hover"]) => {
+      const uncertainHooks = createHooks(...hookTuple);
+      // @ts-expect-error a tuple union cannot guarantee flag controls
+      return uncertainHooks.enable;
+    };
+    assert.strictEqual(typeof checkTupleUnion, "function");
+  });
+
+  it("only accepts the short names of registered flags", () => {
+    const hooks = createHooks("flag:dark", "flag:compact", "&:hover");
+
+    hooks.enable("dark") satisfies CSS.Properties;
+    hooks.disable("compact") satisfies CSS.Properties;
+    const invalidCalls = () => {
+      // @ts-expect-error prefixes are omitted when setting flags
+      hooks.enable("flag:dark");
+      // @ts-expect-error ordinary hooks cannot be set as flags
+      hooks.disable("&:hover");
+      // @ts-expect-error the flag was not registered
+      hooks.enable("missing");
+    };
+    assert.strictEqual(typeof invalidCalls, "function");
+  });
+
+  it("rejects unknown flag names at runtime", () => {
+    const { enable } = createHooks("flag:dark");
+
+    assert.throws(
+      () => enable("missing" as "dark"),
+      new RangeError("Unknown flag: missing"),
+    );
+  });
 });
 
 it("uses the specified stringify function when merging values", () => {

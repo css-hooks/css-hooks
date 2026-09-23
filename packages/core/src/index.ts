@@ -55,6 +55,71 @@ export type Selector =
   | "@starting-style";
 
 /**
+ * Named boolean state inherited by an element's descendants.
+ *
+ * @remarks
+ * Register a flag using `flag:name`, then pass the full hook to `on()`. When
+ * any flags are registered, the result of {@link CreateHooksFn} also includes
+ * `enable(name)` and `disable(name)` setters. Registered flags are disabled by
+ * default.
+ *
+ * @public
+ */
+export type Flag = `flag:${string}`;
+
+/**
+ * Selector logic or a named boolean flag used to create a hook.
+ *
+ * @public
+ */
+export type Hook = Selector | Flag;
+
+/** Whether a type contains more than one possible member. */
+type IsUnion<T, Whole = T> = T extends Whole
+  ? [Whole] extends [T]
+    ? false
+    : true
+  : never;
+
+/**
+ * Extracts the short names guaranteed to be flags in a hook tuple.
+ *
+ * @public
+ */
+export type FlagName<Hooks extends readonly Hook[]> =
+  true extends IsUnion<Hooks>
+    ? never
+    : Hooks extends readonly [
+          infer Head extends Hook,
+          ...infer Tail extends Hook[],
+        ]
+      ? true extends IsUnion<Head>
+        ? FlagName<Tail>
+        : [Head] extends [Flag]
+          ? Head extends `flag:${infer Name}`
+            ? Name | FlagName<Tail>
+            : never
+          : FlagName<Tail>
+      : never;
+
+/**
+ * Functions returned when a literal hook list includes at least one flag.
+ *
+ * @public
+ */
+export type FlagControls<Hooks extends readonly Hook[], CSSProperties> = [
+  FlagName<Hooks>,
+] extends [never]
+  ? unknown
+  : {
+      /** Returns style declarations that enable an inherited flag. */
+      enable: (flag: FlagName<Hooks>) => CSSProperties;
+
+      /** Returns style declarations that disable an inherited flag. */
+      disable: (flag: FlagName<Hooks>) => CSSProperties;
+    };
+
+/**
  * Resolves the CSS property names that conflict with an override style.
  *
  * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
@@ -172,13 +237,19 @@ export interface CreateHooksResult<
 /**
  * Represents the function used to define hooks and related configuration.
  *
+ * @remarks
+ * When the registered hooks include one or more {@link Flag} values, the
+ * returned object also contains `enable()` and `disable()` functions restricted
+ * to their short names. The functions are omitted when no flags are
+ * configured.
+ *
  * @typeParam CSSProperties - The type of a style object, typically defined by
  *   an app framework (e.g., React's `CSSProperties` type)
  * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
  *   with which they conflict
- * @typeParam S - The type of selectors for which to create hooks
+ * @typeParam Hooks - The tuple of hooks to create
  *
- * @param selectors - The selectors for which to create hooks
+ * @param hooks - The selectors and flags for which to create hooks
  *
  * @returns An object containing the functions needed to support and use the
  *   configured hooks
@@ -188,9 +259,10 @@ export interface CreateHooksResult<
 export type CreateHooksFn<
   CSSProperties,
   CSSPropertyConflicts extends object = object,
-> = <S extends Selector>(
-  ...selectors: S[]
-) => CreateHooksResult<S, CSSProperties, CSSPropertyConflicts>;
+> = <const Hooks extends Hook[]>(
+  ...hooks: Hooks
+) => CreateHooksResult<Hooks[number], CSSProperties, CSSPropertyConflicts> &
+  FlagControls<Hooks, CSSProperties>;
 
 /**
  * Merges an override style prop into a base style.
@@ -259,7 +331,8 @@ export function buildHooksSystem<
 >(
   stringify: StringifyFn = String,
 ): CreateHooksFn<CSSProperties, CSSPropertyConflicts> {
-  return (...selectors: string[]) => {
+  return <const Hooks extends Hook[]>(...hooks: Hooks) => {
+    type H = Hooks[number];
     let space = "";
     let newline = "";
     try {
@@ -272,22 +345,46 @@ export function buildHooksSystem<
       // `process.env.NODE_ENV` is absent in unbundled browser environments
     }
 
-    const selectorHashes = new Map(
-      selectors.map(selector => [selector, createHash(selector)]),
+    const hookHashes = new Map(hooks.map(hook => [hook, createHash(hook)]));
+    const flags = new Map(
+      hooks.flatMap(hook =>
+        hook.startsWith("flag:") ? [[hook.slice(5), hook] as const] : [],
+      ),
     );
 
+    const flagDeclarations = (flag: string, enabled: boolean) => {
+      const hook = flags.get(flag);
+      if (!hook) {
+        throw new RangeError(`Unknown flag: ${flag}`);
+      }
+      const hash = hookHashes.get(hook);
+      return {
+        [`--${hash}0`]: enabled ? " " : "initial",
+        [`--${hash}1`]: enabled ? "initial" : " ",
+      } as CSSProperties;
+    };
+
     return {
+      ...(flags.size > 0
+        ? {
+            enable: (flag: string) => flagDeclarations(flag, true),
+            disable: (flag: string) => flagDeclarations(flag, false),
+          }
+        : {}),
       styleSheet() {
         type Ruleset = [string[], { [P: string]: string } | Ruleset];
-        return selectors
+        return hooks
           .flatMap(def => {
-            const selectorHash = selectorHashes.get(def);
-            const offVariable = `--${selectorHash}0`;
-            const onVariable = `--${selectorHash}1`;
+            const hookHash = hookHashes.get(def);
+            const offVariable = `--${hookHash}0`;
+            const onVariable = `--${hookHash}1`;
             const offDeclarations = {
               [offVariable]: "initial",
               [onVariable]: space,
             };
+            if (def.startsWith("flag:")) {
+              return [[[":root"], offDeclarations] satisfies Ruleset];
+            }
             const onDeclarations = {
               [offVariable]: space,
               [onVariable]: "initial",
@@ -378,10 +475,10 @@ export function buildHooksSystem<
                 extraDecls[`--${hash}`] = valFalse;
                 valFalse = `var(--${hash})`;
               }
-              const selectorHash =
-                selectorHashes.get(condition) || createHash(condition);
+              const hookHash =
+                hookHashes.get(condition as H) || createHash(condition);
               return [
-                `var(--${selectorHash}1,${space}${valTrue})${space}var(--${selectorHash}0,${space}${valFalse})`,
+                `var(--${hookHash}1,${space}${valTrue})${space}var(--${hookHash}0,${space}${valFalse})`,
                 extraDecls,
               ];
             }
@@ -419,7 +516,8 @@ export function buildHooksSystem<
           }
         };
       },
-    };
+    } as CreateHooksResult<H, CSSProperties, CSSPropertyConflicts> &
+      FlagControls<Hooks, CSSProperties>;
   };
 }
 

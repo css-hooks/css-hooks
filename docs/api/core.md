@@ -106,6 +106,50 @@ Represents the function used to define hooks and related configuration.
 </td></tr>
 <tr><td>
 
+[Flag](./core.flag.md)
+
+
+</td><td>
+
+Named boolean state inherited by an element's descendants.
+
+
+</td></tr>
+<tr><td>
+
+[FlagControls](./core.flagcontrols.md)
+
+
+</td><td>
+
+Functions returned when a literal hook list includes at least one flag.
+
+
+</td></tr>
+<tr><td>
+
+[FlagName](./core.flagname.md)
+
+
+</td><td>
+
+Extracts the short names guaranteed to be flags in a hook tuple.
+
+
+</td></tr>
+<tr><td>
+
+[Hook](./core.hook.md)
+
+
+</td><td>
+
+Selector logic or a named boolean flag used to create a hook.
+
+
+</td></tr>
+<tr><td>
+
 [Selector](./core.selector.md)
 
 
