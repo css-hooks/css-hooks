@@ -196,6 +196,13 @@ describe(`in ${selectedBrowser}`, () => {
     });
   }
 
+  it("supports custom-property style queries", async () => {
+    assert(
+      await supportsCustomPropertyStyleQueries(),
+      `${selectedBrowser} does not support custom-property style queries`,
+    );
+  });
+
   for (const mode of ["development", "production"] as const) {
     describe(`in ${mode} mode`, () => {
       let teardown = () => {};
@@ -241,12 +248,7 @@ describe(`in ${selectedBrowser}`, () => {
         assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
       });
 
-      it("applies boolean flags to descendants", async t => {
-        if (!(await supportsCustomPropertyStyleQueries())) {
-          t.skip("Custom property style queries are unsupported");
-          return;
-        }
-
+      it("applies boolean flags to descendants", async () => {
         const { styleSheet, on, enable, disable } = createHooks("flag:dark");
 
         await page.addStyleTag({ content: styleSheet() });
@@ -291,12 +293,7 @@ describe(`in ${selectedBrowser}`, () => {
         }
       });
 
-      it("composes flags with selector hooks", async t => {
-        if (!(await supportsCustomPropertyStyleQueries())) {
-          t.skip("Custom property style queries are unsupported");
-          return;
-        }
-
+      it("composes flags with selector hooks", async () => {
         const { styleSheet, on, and, enable } = createHooks(
           "flag:dark",
           "&.active",
@@ -325,12 +322,7 @@ describe(`in ${selectedBrowser}`, () => {
         );
       });
 
-      it("conditionally inverts flags for descendants", async t => {
-        if (!(await supportsCustomPropertyStyleQueries())) {
-          t.skip("Custom property style queries are unsupported");
-          return;
-        }
-
+      it("conditionally inverts flags for descendants", async () => {
         const { styleSheet, on, enable, disable } = createHooks("flag:dark");
         const consumerStyle = pipe(
           { color: "gray" },
