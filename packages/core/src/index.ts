@@ -426,15 +426,22 @@ export function buildHooksSystem<
       not: not => ({ not }),
       consume: consume => ({ consume }),
       provide: condition => {
+        const invalidVariable = `--ctx-invalid-${conditionHash(condition)}`;
+        const invalidValue = `var(${invalidVariable})`;
         const [offValue, offDecls] = buildExpression(
           condition,
           space,
-          "initial",
+          invalidValue,
         );
-        const [onValue, onDecls] = buildExpression(condition, "initial", space);
+        const [onValue, onDecls] = buildExpression(
+          condition,
+          invalidValue,
+          space,
+        );
         return {
           ...offDecls,
           ...onDecls,
+          [invalidVariable]: "initial",
           ...toggleDeclarations(condition, offValue, onValue, {
             namespace: "ctx",
           }),
