@@ -95,6 +95,17 @@ Boolean condition expression composed from registered hooks
 </td></tr>
 <tr><td>
 
+[ContextSlot](./core.contextslot.md)
+
+
+</td><td>
+
+Slot used to persist an invertible provided condition through the DOM.
+
+
+</td></tr>
+<tr><td>
+
 [CreateHooksFn](./core.createhooksfn.md)
 
 

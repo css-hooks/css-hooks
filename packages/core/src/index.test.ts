@@ -177,6 +177,24 @@ describe(`in ${selectedBrowser}`, () => {
     );
   }
 
+  function supportsCustomPropertyStyleQueries() {
+    return page.evaluate(() => {
+      const style = document.createElement("style");
+      style.textContent =
+        "@container style(--css-hooks-test: supported){i{color:rgb(0, 0, 255)}}";
+      const container = document.createElement("b"),
+        target = document.createElement("i");
+      container.style.setProperty("--css-hooks-test", "supported");
+      container.appendChild(target);
+      document.head.appendChild(style);
+      document.body.appendChild(container);
+      const supported = getComputedStyle(target).color === "rgb(0, 0, 255)";
+      container.remove();
+      style.remove();
+      return supported;
+    });
+  }
+
   for (const mode of ["development", "production"] as const) {
     describe(`in ${mode} mode`, () => {
       let teardown = () => {};
@@ -491,6 +509,136 @@ describe(`in ${selectedBrowser}`, () => {
       );
     });
 
+    it("persistently inverts provided conditions", async t => {
+      if (!(await supportsCustomPropertyStyleQueries())) {
+        t.skip("Custom property style queries are unsupported");
+        return;
+      }
+
+      const { styleSheet, on, and, consume, provide, invert } = createHooks(
+        "&.a",
+        "&.b",
+      );
+      const condition = and("&.a", "&.b");
+      const consumerStyle = pipe(
+        { color: "gray" },
+        on(consume(condition), { color: "blue" }),
+      );
+
+      await page.addStyleTag({ content: styleSheet() });
+      await createStyledElement("main", provide(4, condition));
+      await createStyledElement("b", consumerStyle, "main");
+      await createStyledElement("section", invert(4, condition), "main");
+      await createStyledElement("i", consumerStyle, "section");
+      await createStyledElement("div", {}, "section");
+      await createStyledElement("article", invert(4, condition), "div");
+      await createStyledElement("strong", consumerStyle, "article");
+      await createStyledElement("aside", {}, "article");
+      await createStyledElement("nav", invert(4, condition), "aside");
+      await createStyledElement("em", consumerStyle, "nav");
+
+      for (const [className, expectedColors] of [
+        ["", ["gray", "blue", "gray", "blue"]],
+        ["a b", ["blue", "gray", "blue", "gray"]],
+      ] as const) {
+        await queryAndSetClassName("main", className);
+        for (const [selector, expectedColor] of [
+          ["b", expectedColors[0]],
+          ["i", expectedColors[1]],
+          ["strong", expectedColors[2]],
+          ["em", expectedColors[3]],
+        ] as const) {
+          assert.deepStrictEqual(
+            Color(await getComputedPropertyValue(selector, "color")),
+            Color(expectedColor),
+          );
+        }
+      }
+    });
+
+    it("keeps inversion slots isolated", async t => {
+      if (!(await supportsCustomPropertyStyleQueries())) {
+        t.skip("Custom property style queries are unsupported");
+        return;
+      }
+
+      const conditionA = "&.a",
+        conditionB = "&.b";
+      const { styleSheet, on, consume, provide, invert } = createHooks(
+        conditionA,
+        conditionB,
+      );
+
+      await page.addStyleTag({ content: styleSheet() });
+      await createStyledElement("main", {
+        ...provide(0, conditionA),
+        ...provide(1, conditionB),
+      });
+      await createStyledElement("section", invert(0, conditionA), "main");
+      await createStyledElement(
+        "span",
+        pipe(
+          { color: "gray", backgroundColor: "gray" },
+          on(consume(conditionA), { color: "blue" }),
+          on(consume(conditionB), { backgroundColor: "blue" }),
+        ),
+        "section",
+      );
+
+      await queryAndSetClassName("main", "a b");
+      assert.deepStrictEqual(
+        Color(await getComputedPropertyValue("span", "color")),
+        Color("gray"),
+      );
+      assert.deepStrictEqual(
+        Color(await getComputedPropertyValue("span", "backgroundColor")),
+        Color("blue"),
+      );
+    });
+
+    it("lets nested providers reset an inverted condition", async t => {
+      if (!(await supportsCustomPropertyStyleQueries())) {
+        t.skip("Custom property style queries are unsupported");
+        return;
+      }
+
+      const condition = "&.active";
+      const { styleSheet, on, consume, provide, invert } =
+        createHooks(condition);
+      const consumerStyle = pipe(
+        { color: "gray" },
+        on(consume(condition), { color: "blue" }),
+      );
+
+      await page.addStyleTag({ content: styleSheet() });
+      await createStyledElement("main", provide(2, condition));
+      await createStyledElement("section", invert(2, condition), "main");
+      await createStyledElement("article", provide(2, condition), "section");
+      await createStyledElement("span", consumerStyle, "article");
+      await createStyledElement("nav", invert(2, condition), "article");
+      await createStyledElement("em", consumerStyle, "nav");
+
+      await queryAndSetClassName("main", "active");
+      assert.deepStrictEqual(
+        Color(await getComputedPropertyValue("span", "color")),
+        Color("gray"),
+      );
+      assert.deepStrictEqual(
+        Color(await getComputedPropertyValue("em", "color")),
+        Color("blue"),
+      );
+
+      await queryAndSetClassName("article", "active");
+      assert.deepStrictEqual(
+        Color(await getComputedPropertyValue("span", "color")),
+        Color("blue"),
+      );
+      assert.deepStrictEqual(
+        Color(await getComputedPropertyValue("em", "color")),
+        Color("gray"),
+      );
+    });
+
     it("supports @starting-style hooks", async () => {
       const { styleSheet, on } = createHooks("@starting-style");
 
@@ -578,6 +726,22 @@ it("uses the specified stringify function when merging values", () => {
   assert.match(fontSize.toString(), /fontSize__24px/);
 });
 
+it("rejects invalid inversion slots at runtime", () => {
+  const createHooks = buildHooksSystem();
+  const { invert, provide } = createHooks("&");
+  const provideUnchecked = provide as unknown as (
+    slot: number,
+    condition: "&",
+  ) => object;
+  const invertUnchecked = invert as unknown as (
+    slot: number,
+    condition: "&",
+  ) => object;
+
+  assert.throws(() => provideUnchecked(5, "&"), RangeError);
+  assert.throws(() => invertUnchecked(-1, "&"), RangeError);
+});
+
 it("uses fixed-width hashes without known polynomial collisions", () => {
   const createHooks = buildHooksSystem();
   const { styleSheet } = createHooks("&.Aa", "&.BB");
@@ -586,10 +750,12 @@ it("uses fixed-width hashes without known polynomial collisions", () => {
     assert(propertyName);
     return propertyName;
   });
+  const hookPropertyNames = propertyNames.filter(name =>
+    /^[a-z0-9_-]{7}[01]$/.test(name),
+  );
 
-  assert(propertyNames.every(name => /^[a-z0-9_-]{7}[01]$/.test(name)));
   assert.strictEqual(
-    new Set(propertyNames.map(name => name.slice(0, -1))).size,
+    new Set(hookPropertyNames.map(name => name.slice(0, -1))).size,
     2,
   );
 });
@@ -717,6 +883,25 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 });
 
 // type-level tests
+
+// inversion slots
+{
+  const createHooks = buildHooksSystem();
+  const { invert, provide } = createHooks("&");
+
+  provide("&");
+  provide(0, "&");
+  provide(4, "&");
+  invert(0, "&");
+  invert(4, "&");
+
+  void (() => {
+    // @ts-expect-error only slots 0 through 4 are supported
+    provide(5, "&");
+    // @ts-expect-error only slots 0 through 4 are supported
+    invert(-1, "&");
+  });
+}
 
 // @scope hooks require an explicit root
 {

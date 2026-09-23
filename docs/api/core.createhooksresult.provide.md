@@ -9,12 +9,17 @@ Creates style declarations that expose a condition's state to descendants.
 **Signature:**
 
 ```typescript
-provide: (condition: Condition<H>) => {
-        [P in `--${string}`]: string;
+provide: {
+        (condition: Condition<H>): {
+            [P in `--${string}`]: string;
+        };
+        (slot: ContextSlot, condition: Condition<H>): {
+            [P in `--${string}`]: string;
+        };
     };
 ```
 
 ## Remarks
 
-Apply the returned declarations to an element's style. The condition is evaluated against that element and can be read by descendant styles using [CreateHooksResult.consume](./core.createhooksresult.consume.md)<!-- -->. A nested provider for the same condition overrides the state inherited from an outer provider.
+Apply the returned declarations to an element's style. The condition is evaluated against that element and can be read by descendant styles using [CreateHooksResult.consume](./core.createhooksresult.consume.md)<!-- -->. A nested provider for the same condition overrides the state inherited from an outer provider. Pass a slot to make the provided state available to [CreateHooksResult.invert](./core.createhooksresult.invert.md)<!-- -->. A slot-backed provider must not be applied to the document element because container style queries only apply styles to descendants.
 

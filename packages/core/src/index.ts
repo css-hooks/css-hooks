@@ -59,6 +59,13 @@ export type Hook =
   | "@starting-style";
 
 /**
+ * Slot used to persist an invertible provided condition through the DOM.
+ *
+ * @public
+ */
+export type ContextSlot = 0 | 1 | 2 | 3 | 4;
+
+/**
  * Resolves the CSS property names that conflict with an override style.
  *
  * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
@@ -194,13 +201,46 @@ export interface CreateHooksResult<
    * Apply the returned declarations to an element's style. The condition is
    * evaluated against that element and can be read by descendant styles using
    * {@link CreateHooksResult.consume}. A nested provider for the same condition
-   * overrides the state inherited from an outer provider.
+   * overrides the state inherited from an outer provider. Pass a slot to make
+   * the provided state available to {@link CreateHooksResult.invert}. A
+   * slot-backed provider must not be applied to the document element because
+   * container style queries only apply styles to descendants.
    *
    * @param condition - The condition whose state is exposed to descendants
+   * @param slot - The slot through which the condition can be inverted
    *
    * @returns Style declarations to apply to the provider element
    */
-  provide: (condition: Condition<H>) => { [P in `--${string}`]: string };
+  provide: {
+    (condition: Condition<H>): { [P in `--${string}`]: string };
+    (
+      slot: ContextSlot,
+      condition: Condition<H>,
+    ): {
+      [P in `--${string}`]: string;
+    };
+  };
+
+  /**
+   * Creates style declarations that invert a provided condition for
+   * descendants.
+   *
+   * @remarks
+   * The provider and inverter must use the same slot. Each nested inversion
+   * reverses the polarity inherited from the previous provider or inverter.
+   * Slots may be reused in separate DOM branches, but independent contexts on
+   * the same ancestry path must use different slots. Slot ownership is shared
+   * by hook systems configured with the same hooks.
+   *
+   * @param slot - The slot used by the provider being inverted
+   * @param condition - The provided condition whose state is inverted
+   *
+   * @returns Style declarations to apply to the inversion element
+   */
+  invert: (
+    slot: ContextSlot,
+    condition: Condition<H>,
+  ) => { [P in `--${string}`]: string };
 
   /** Returns the style sheet required to support the configured hooks. */
   styleSheet: () => string;
@@ -317,6 +357,28 @@ export function buildHooksSystem<
       (typeof condition === "string" ? hookHash(condition) : undefined) ||
       createHash(condition);
 
+    const contextNamespace = createHash(hooks);
+    const alternateVariable = `--${contextNamespace}a`;
+    const contextSlots: ContextSlot[] = [0, 1, 2, 3, 4];
+
+    const validateContextSlot = (slot: ContextSlot) => {
+      if (!contextSlots.includes(slot)) {
+        throw new RangeError(`Invalid context slot: ${slot}`);
+      }
+    };
+
+    const slotVariable = (slot: ContextSlot, state: 0 | 1) =>
+      `--${contextNamespace}s${slot}${state}`;
+
+    const slotStorageVariable = (
+      slot: ContextSlot,
+      state: 0 | 1,
+      parity: "odd" | "even",
+    ) => `--${contextNamespace}${parity.charAt(0)}${slot}${state}`;
+
+    const inheritedSlotVariable = (slot: ContextSlot, state: 0 | 1) =>
+      `--${contextNamespace}i${slot}${state}`;
+
     type VariableOptions = { namespace?: string };
 
     const conditionVariable = (
@@ -402,30 +464,114 @@ export function buildHooksSystem<
       throw new Error(`Invalid condition: ${JSON.stringify(condition)}`);
     }
 
+    const provideCondition = (condition: Condition<string>) => {
+      const invalidVariable = `--ctx-invalid-${conditionHash(condition)}`;
+      const invalidValue = `var(${invalidVariable})`;
+      const [offValue, offDecls] = buildExpression(
+        condition,
+        space,
+        invalidValue,
+      );
+      const [onValue, onDecls] = buildExpression(
+        condition,
+        invalidValue,
+        space,
+      );
+      return {
+        ...offDecls,
+        ...onDecls,
+        [invalidVariable]: "initial",
+        ...toggleDeclarations(condition, offValue, onValue, {
+          namespace: "ctx",
+        }),
+      };
+    };
+
+    function provide(condition: Condition<string>): Record<string, string>;
+    function provide(
+      slot: ContextSlot,
+      condition: Condition<string>,
+    ): Record<string, string>;
+    function provide(
+      slotOrCondition: ContextSlot | Condition<string>,
+      providedCondition?: Condition<string>,
+    ) {
+      const hasSlot = typeof slotOrCondition === "number";
+      const condition = hasSlot ? providedCondition : slotOrCondition;
+      if (!condition) {
+        throw new Error("A condition is required");
+      }
+
+      const declarations = provideCondition(condition);
+      if (!hasSlot) {
+        return declarations;
+      }
+      validateContextSlot(slotOrCondition);
+
+      return {
+        ...declarations,
+        [slotVariable(slotOrCondition, 0)]:
+          `var(${conditionVariable(condition, 0, { namespace: "ctx" })})`,
+        [slotVariable(slotOrCondition, 1)]:
+          `var(${conditionVariable(condition, 1, { namespace: "ctx" })})`,
+      };
+    }
+
     return {
       styleSheet() {
         type Ruleset = [string[], { [P: string]: string } | Ruleset];
-        return hooks
-          .flatMap(hook => {
-            const rulesets: Ruleset[] = [
-              [["*"], toggleDeclarations(hook, "initial", space)],
-            ];
+        const rulesets: Ruleset[] = hooks.flatMap(hook => {
+          const rulesets: Ruleset[] = [
+            [["*"], toggleDeclarations(hook, "initial", space)],
+          ];
 
-            const onDeclarations = toggleDeclarations(hook, space, "initial");
-            if (hook.startsWith("@")) {
-              const target = ["*"];
-              if (hook.startsWith("@scope")) {
-                target.push(":scope");
-              }
-              rulesets.push([[hook], [target, onDeclarations]]);
-            } else {
-              rulesets.push([
-                [`:where(${hook.replace(/&/g, "*")})`],
-                onDeclarations,
-              ]);
+          const onDeclarations = toggleDeclarations(hook, space, "initial");
+          if (hook.startsWith("@")) {
+            const target = ["*"];
+            if (hook.startsWith("@scope")) {
+              target.push(":scope");
             }
-            return rulesets;
-          })
+            rulesets.push([[hook], [target, onDeclarations]]);
+          } else {
+            rulesets.push([
+              [`:where(${hook.replace(/&/g, "*")})`],
+              onDeclarations,
+            ]);
+          }
+          return rulesets;
+        });
+
+        const alternatingDeclarations = (
+          parity: "odd" | "even",
+          inheritedParity: "odd" | "even",
+          alternateValue: string,
+        ) => {
+          const declarations: Record<string, string> = {
+            [alternateVariable]: alternateValue,
+          };
+          for (const slot of contextSlots) {
+            for (const state of [0, 1] as const) {
+              declarations[slotStorageVariable(slot, state, parity)] =
+                `var(${slotVariable(slot, state)})`;
+              declarations[inheritedSlotVariable(slot, state)] =
+                `var(${slotStorageVariable(slot, state, inheritedParity)})`;
+            }
+          }
+          return declarations;
+        };
+
+        rulesets.push(
+          [
+            [`@container not style(${alternateVariable}:${space})`],
+            [["*"], alternatingDeclarations("even", "odd", space)],
+          ],
+          [
+            [`@container style(${alternateVariable}:${space})`],
+            [["*"], alternatingDeclarations("odd", "even", "initial")],
+          ],
+        );
+
+        return rulesets
           .map(
             unary(function render(ruleset: Ruleset, level: number = 0): string {
               const [selectors, declarations] = ruleset;
@@ -454,26 +600,16 @@ export function buildHooksSystem<
       or: (...or) => ({ or }),
       not: not => ({ not }),
       consume: consume => ({ consume }),
-      provide: condition => {
-        const invalidVariable = `--ctx-invalid-${conditionHash(condition)}`;
-        const invalidValue = `var(${invalidVariable})`;
-        const [offValue, offDecls] = buildExpression(
-          condition,
-          space,
-          invalidValue,
-        );
-        const [onValue, onDecls] = buildExpression(
-          condition,
-          invalidValue,
-          space,
-        );
+      provide,
+      invert(slot, condition) {
+        validateContextSlot(slot);
+        const contextVariable = (state: 0 | 1) =>
+          conditionVariable(condition, state, { namespace: "ctx" });
         return {
-          ...offDecls,
-          ...onDecls,
-          [invalidVariable]: "initial",
-          ...toggleDeclarations(condition, offValue, onValue, {
-            namespace: "ctx",
-          }),
+          [contextVariable(0)]: `var(${inheritedSlotVariable(slot, 1)})`,
+          [contextVariable(1)]: `var(${inheritedSlotVariable(slot, 0)})`,
+          [slotVariable(slot, 0)]: `var(${contextVariable(0)})`,
+          [slotVariable(slot, 1)]: `var(${contextVariable(1)})`,
         };
       },
       on(condition, overrideStyle) {

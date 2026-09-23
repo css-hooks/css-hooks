@@ -75,6 +75,25 @@ Creates a condition that reads the state exposed by a provider.
 </td></tr>
 <tr><td>
 
+[invert](./core.createhooksresult.invert.md)
+
+
+</td><td>
+
+
+</td><td>
+
+(slot: [ContextSlot](./core.contextslot.md)<!-- -->, condition: [Condition](./core.condition.md)<!-- -->&lt;H&gt;) =&gt; { \[P in \`--${string}\`\]: string; }
+
+
+</td><td>
+
+Creates style declarations that invert a provided condition for descendants.
+
+
+</td></tr>
+<tr><td>
+
 [not](./core.createhooksresult.not.md)
 
 
@@ -140,7 +159,7 @@ Combines a list of conditions into a single condition which is true when any of 
 
 </td><td>
 
-(condition: [Condition](./core.condition.md)<!-- -->&lt;H&gt;) =&gt; { \[P in \`--${string}\`\]: string; }
+{ (condition: [Condition](./core.condition.md)<!-- -->&lt;H&gt;): { \[P in \`--${string}\`\]: string; }; (slot: [ContextSlot](./core.contextslot.md)<!-- -->, condition: [Condition](./core.condition.md)<!-- -->&lt;H&gt;): { \[P in \`--${string}\`\]: string; }; }
 
 
 </td><td>
