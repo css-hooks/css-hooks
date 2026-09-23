@@ -64,7 +64,7 @@ scoped descendants, excluding any scope limit and its descendants.
 
 Register a `flag:<name>` hook to condition styles on inherited boolean state.
 Registered flags are disabled by default. Use `enable()` or `disable()` with the
-short flag name to set the state for an element and its descendants:
+short flag name to set the state for an element's descendants:
 
 ```tsx
 const darkStyle = enable("dark");
@@ -82,6 +82,21 @@ A nested setter overrides the inherited state for its subtree:
   <section style={disable("dark")}>{/* Light subtree */}</section>
 </main>
 ```
+
+The element carrying `enable()` or `disable()` still observes the state from its
+nearest ancestor. Only its descendants observe the newly assigned state. This
+also makes it possible to invert a flag without creating a custom-property
+cycle:
+
+```typescript
+const invertDark = pipe(enable("dark"), on("flag:dark", disable("dark")));
+```
+
+Flags use custom-property container style queries. They require Chrome and Edge
+111+, Safari 18+, Firefox 151+, Opera 98+, or Samsung Internet 22+. A
+`container-type` declaration is not required. For Safari 18 compatibility, apply
+setters below the document element, such as on the application's root element
+rather than `<html>`.
 
 `createHooks()` only returns `enable()` and `disable()` when at least one flag
 is registered. Their arguments are restricted to the short names of the flags

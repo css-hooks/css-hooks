@@ -60,7 +60,8 @@ export type Selector =
  * @remarks
  * Register a flag using `flag:name`, then pass the full hook to `on()`. When
  * any flags are registered, the result of {@link CreateHooksFn} also includes
- * `enable(name)` and `disable(name)` setters. Registered flags are disabled by
+ * `enable(name)` and `disable(name)` setters. Setters affect descendants, not
+ * the element carrying their declarations. Registered flags are disabled by
  * default.
  *
  * @public
@@ -112,10 +113,10 @@ export type FlagControls<Hooks extends readonly Hook[], CSSProperties> = [
 ] extends [never]
   ? unknown
   : {
-      /** Returns style declarations that enable an inherited flag. */
+      /** Returns style declarations that enable a flag for descendants. */
       enable: (flag: FlagName<Hooks>) => CSSProperties;
 
-      /** Returns style declarations that disable an inherited flag. */
+      /** Returns style declarations that disable a flag for descendants. */
       disable: (flag: FlagName<Hooks>) => CSSProperties;
     };
 
@@ -359,8 +360,7 @@ export function buildHooksSystem<
       }
       const hash = hookHashes.get(hook);
       return {
-        [`--${hash}0`]: enabled ? " " : "initial",
-        [`--${hash}1`]: enabled ? "initial" : " ",
+        [`--${hash}f`]: enabled ? "on" : "off",
       } as CSSProperties;
     };
 
@@ -382,13 +382,29 @@ export function buildHooksSystem<
               [offVariable]: "initial",
               [onVariable]: space,
             };
-            if (def.startsWith("flag:")) {
-              return [[[":root"], offDeclarations] satisfies Ruleset];
-            }
             const onDeclarations = {
               [offVariable]: space,
               [onVariable]: "initial",
             };
+            if (def.startsWith("flag:")) {
+              const flagVariable = `--${hookHash}f`;
+              return [
+                [
+                  [`@property ${flagVariable}`],
+                  {
+                    syntax: '"<custom-ident>"',
+                    inherits: "true",
+                    "initial-value": "off",
+                  },
+                ] satisfies Ruleset,
+                [[":root"], { [flagVariable]: "off" }] satisfies Ruleset,
+                [["*"], offDeclarations] satisfies Ruleset,
+                [
+                  [`@container style(${flagVariable}:${space}on)`],
+                  [["*"], onDeclarations],
+                ] satisfies Ruleset,
+              ];
+            }
             const rulesets: Ruleset[] = [[["*"], offDeclarations]];
             if (def.startsWith("@")) {
               const target = ["*"];

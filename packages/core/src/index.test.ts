@@ -176,6 +176,26 @@ describe(`in ${selectedBrowser}`, () => {
     );
   }
 
+  function supportsCustomPropertyStyleQueries() {
+    return page.evaluate(() => {
+      const style = document.createElement("style");
+      style.textContent =
+        "@container style(--css-hooks-test: on) { i { --css-hooks-supported: yes; } }";
+      const container = document.createElement("div");
+      container.style.setProperty("--css-hooks-test", "on");
+      const target = document.createElement("i");
+      container.appendChild(target);
+      document.head.appendChild(style);
+      document.body.appendChild(container);
+      const supported =
+        getComputedStyle(target).getPropertyValue("--css-hooks-supported") ===
+        "yes";
+      style.remove();
+      container.remove();
+      return supported;
+    });
+  }
+
   for (const mode of ["development", "production"] as const) {
     describe(`in ${mode} mode`, () => {
       let teardown = () => {};
@@ -221,7 +241,12 @@ describe(`in ${selectedBrowser}`, () => {
         assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
       });
 
-      it("supports inherited boolean flags", async () => {
+      it("applies boolean flags to descendants", async t => {
+        if (!(await supportsCustomPropertyStyleQueries())) {
+          t.skip("Custom property style queries are unsupported");
+          return;
+        }
+
         const { styleSheet, on, enable, disable } = createHooks("flag:dark");
 
         await page.addStyleTag({ content: styleSheet() });
@@ -239,18 +264,26 @@ describe(`in ${selectedBrowser}`, () => {
           ...consumerStyle,
         });
         await createStyledElement("span", consumerStyle, "main");
-        await createStyledElement("section", disable("dark"), "main");
+        await createStyledElement(
+          "section",
+          { ...disable("dark"), ...consumerStyle },
+          "main",
+        );
         await createStyledElement("i", consumerStyle, "section");
-        await createStyledElement("article", enable("dark"), "section");
+        await createStyledElement(
+          "article",
+          { ...enable("dark"), ...consumerStyle },
+          "section",
+        );
         await createStyledElement("strong", consumerStyle, "article");
 
-        for (const selector of ["p", "i"]) {
+        for (const selector of ["p", "main", "i", "article"]) {
           assert.deepStrictEqual(
             Color(await getComputedPropertyValue(selector, "color")),
             expectedDefaultColor,
           );
         }
-        for (const selector of ["main", "span", "strong"]) {
+        for (const selector of ["span", "section", "strong"]) {
           assert.deepStrictEqual(
             Color(await getComputedPropertyValue(selector, "color")),
             expectedEnabledColor,
@@ -258,7 +291,12 @@ describe(`in ${selectedBrowser}`, () => {
         }
       });
 
-      it("composes flags with selector hooks", async () => {
+      it("composes flags with selector hooks", async t => {
+        if (!(await supportsCustomPropertyStyleQueries())) {
+          t.skip("Custom property style queries are unsupported");
+          return;
+        }
+
         const { styleSheet, on, and, enable } = createHooks(
           "flag:dark",
           "&.active",
@@ -285,6 +323,50 @@ describe(`in ${selectedBrowser}`, () => {
           Color(await getComputedPropertyValue("button", "color")),
           Color("blue"),
         );
+      });
+
+      it("conditionally inverts flags for descendants", async t => {
+        if (!(await supportsCustomPropertyStyleQueries())) {
+          t.skip("Custom property style queries are unsupported");
+          return;
+        }
+
+        const { styleSheet, on, enable, disable } = createHooks("flag:dark");
+        const consumerStyle = pipe(
+          { color: "gray" },
+          on("flag:dark", { color: "blue" }),
+        );
+        const invertedStyle = pipe(
+          enable("dark"),
+          on("flag:dark", disable("dark")),
+        );
+
+        await page.addStyleTag({ content: styleSheet() });
+        await createStyledElement("main", enable("dark"));
+        await createStyledElement(
+          "section",
+          { ...invertedStyle, ...consumerStyle },
+          "main",
+        );
+        await createStyledElement("span", consumerStyle, "section");
+        await createStyledElement(
+          "article",
+          { ...invertedStyle, ...consumerStyle },
+          "section",
+        );
+        await createStyledElement("strong", consumerStyle, "article");
+
+        for (const [selector, expectedColor] of [
+          ["section", "blue"],
+          ["span", "gray"],
+          ["article", "gray"],
+          ["strong", "blue"],
+        ] as const) {
+          assert.deepStrictEqual(
+            Color(await getComputedPropertyValue(selector, "color")),
+            Color(expectedColor),
+          );
+        }
       });
     });
 
@@ -549,6 +631,31 @@ describe("flag controls", () => {
       () => enable("missing" as "dark"),
       new RangeError("Unknown flag: missing"),
     );
+  });
+
+  it("generates registered descendant state rules", () => {
+    for (const mode of ["development", "production"] as const) {
+      const { styleSheet, enable, disable } = withMode(mode, () =>
+        createHooks("flag:dark"),
+      );
+      const enabled = enable("dark"),
+        disabled = disable("dark"),
+        [flagVariable] = Object.keys(enabled);
+
+      assert(flagVariable);
+      assert.deepStrictEqual(enabled, { [flagVariable]: "on" });
+      assert.deepStrictEqual(disabled, { [flagVariable]: "off" });
+
+      const css = styleSheet();
+      assert(css.includes(`@property ${flagVariable}`));
+      assert.match(css, /syntax:\s*"<custom-ident>"/);
+      assert.match(css, /inherits:\s*true/);
+      assert.match(css, /initial-value:\s*off/);
+      assert.match(
+        css,
+        new RegExp(`@container\\s+style\\(${flagVariable}:\\s*on\\)`),
+      );
+    }
   });
 });
 

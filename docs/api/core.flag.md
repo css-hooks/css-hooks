@@ -14,5 +14,5 @@ export type Flag = `flag:${string}`;
 
 ## Remarks
 
-Register a flag using `flag:name`<!-- -->, then pass the full hook to `on()`<!-- -->. When any flags are registered, the result of [CreateHooksFn](./core.createhooksfn.md) also includes `enable(name)` and `disable(name)` setters. Registered flags are disabled by default.
+Register a flag using `flag:name`<!-- -->, then pass the full hook to `on()`<!-- -->. When any flags are registered, the result of [CreateHooksFn](./core.createhooksfn.md) also includes `enable(name)` and `disable(name)` setters. Setters affect descendants, not the element carrying their declarations. Registered flags are disabled by default.
 
