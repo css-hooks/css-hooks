@@ -9,7 +9,7 @@ An object containing the functions needed to support and use the configured hook
 **Signature:**
 
 ```typescript
-export interface CreateHooksResult<S, CSSProperties, CSSPropertyConflicts extends object> 
+export interface CreateHooksResult<H, CSSProperties, CSSPropertyConflicts extends object> 
 ```
 
 ## Properties
@@ -45,12 +45,29 @@ Description
 
 </td><td>
 
-&lt;C extends [Condition](./core.condition.md)<!-- -->&lt;S&gt;\[\]&gt;(...conditions: C) =&gt; { and: C; }
+&lt;C extends [Condition](./core.condition.md)<!-- -->&lt;H&gt;\[\]&gt;(...conditions: C) =&gt; { and: C; }
 
 
 </td><td>
 
 Combines a list of conditions into a single condition which is true when all of the specified conditions are true.
+
+
+</td></tr>
+<tr><td>
+
+[consume](./core.createhooksresult.consume.md)
+
+
+</td><td>
+
+
+</td><td>
+
+&lt;C extends [Condition](./core.condition.md)<!-- -->&lt;H&gt;&gt;(condition: C) =&gt; { consume: C; }
+
+
+</td><td>
 
 
 </td></tr>
@@ -64,7 +81,7 @@ Combines a list of conditions into a single condition which is true when all of 
 
 </td><td>
 
-&lt;C extends [Condition](./core.condition.md)<!-- -->&lt;S&gt;&gt;(condition: C) =&gt; { not: C; }
+&lt;C extends [Condition](./core.condition.md)<!-- -->&lt;H&gt;&gt;(condition: C) =&gt; { not: C; }
 
 
 </td><td>
@@ -83,7 +100,7 @@ Negates a condition.
 
 </td><td>
 
-&lt;OverrideCSSProperties extends CSSProperties, BaseCSSProperties extends CSSProperties&gt;(condition: [Condition](./core.condition.md)<!-- -->&lt;S&gt;, overrideStyle: OverrideCSSProperties) =&gt; (style: CSSProperties &amp; CSSPropertiesWithoutConflicts&lt;BaseCSSProperties, CSSPropertyConflicts, OverrideCSSProperties&gt;) =&gt; Omit&lt;BaseCSSProperties, keyof OverrideCSSProperties&gt; &amp; OverrideCSSProperties
+&lt;OverrideCSSProperties extends CSSProperties, BaseCSSProperties extends CSSProperties&gt;(condition: [Condition](./core.condition.md)<!-- -->&lt;H&gt;, overrideStyle: OverrideCSSProperties) =&gt; (style: CSSProperties &amp; CSSPropertiesWithoutConflicts&lt;BaseCSSProperties, CSSPropertyConflicts, OverrideCSSProperties&gt;) =&gt; Omit&lt;BaseCSSProperties, keyof OverrideCSSProperties&gt; &amp; OverrideCSSProperties
 
 
 </td><td>
@@ -102,12 +119,29 @@ Creates a function that enhances a style object with conditional override styles
 
 </td><td>
 
-&lt;C extends [Condition](./core.condition.md)<!-- -->&lt;S&gt;\[\]&gt;(...conditions: C) =&gt; { or: C; }
+&lt;C extends [Condition](./core.condition.md)<!-- -->&lt;H&gt;\[\]&gt;(...conditions: C) =&gt; { or: C; }
 
 
 </td><td>
 
 Combines a list of conditions into a single condition which is true when any of the specified conditions are true.
+
+
+</td></tr>
+<tr><td>
+
+[provide](./core.createhooksresult.provide.md)
+
+
+</td><td>
+
+
+</td><td>
+
+(condition: [Condition](./core.condition.md)<!-- -->&lt;H&gt;) =&gt; { \[P in \`--${string}\`\]: string; }
+
+
+</td><td>
 
 
 </td></tr>

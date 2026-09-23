@@ -343,6 +343,154 @@ describe(`in ${selectedBrowser}`, () => {
       }
     });
 
+    it("provides conditions to descendants", async () => {
+      const condition = "&.active";
+      const { styleSheet, on, consume, provide } = createHooks(condition);
+
+      await page.addStyleTag({ content: styleSheet() });
+
+      const expectedDefaultColor = Color("gray"),
+        expectedConditionMetColor = Color("blue");
+
+      await createStyledElement("div", provide(condition));
+      await createStyledElement(
+        "span",
+        pipe(
+          { color: expectedDefaultColor.string() },
+          on(consume(condition), {
+            color: expectedConditionMetColor.string(),
+          }),
+        ),
+        "div",
+      );
+
+      assert.deepStrictEqual(
+        Color(await getComputedPropertyValue("span", "color")),
+        expectedDefaultColor,
+      );
+
+      await queryAndSetClassName("div", "active");
+      assert.deepStrictEqual(
+        Color(await getComputedPropertyValue("span", "color")),
+        expectedConditionMetColor,
+      );
+    });
+
+    it("lets nested providers override inherited conditions", async () => {
+      const condition = "&.active";
+      const { styleSheet, on, consume, provide } = createHooks(condition);
+
+      await page.addStyleTag({ content: styleSheet() });
+
+      const expectedDefaultColor = Color("gray"),
+        expectedConditionMetColor = Color("blue");
+      const consumerStyle = pipe(
+        { color: expectedDefaultColor.string() },
+        on(consume(condition), {
+          color: expectedConditionMetColor.string(),
+        }),
+      );
+
+      await createStyledElement("section", provide(condition));
+      await createStyledElement("div", provide(condition), "section");
+      await createStyledElement("span", consumerStyle, "div");
+
+      await queryAndSetClassName("section", "active");
+      assert.deepStrictEqual(
+        Color(await getComputedPropertyValue("span", "color")),
+        expectedDefaultColor,
+      );
+
+      await queryAndSetClassName("div", "active");
+      assert.deepStrictEqual(
+        Color(await getComputedPropertyValue("span", "color")),
+        expectedConditionMetColor,
+      );
+    });
+
+    it("combines consumed and local conditions", async () => {
+      const parentCondition = "&.parent-active",
+        localCondition = "&.local-active";
+      const { styleSheet, on, and, consume, provide } = createHooks(
+        parentCondition,
+        localCondition,
+      );
+
+      await page.addStyleTag({ content: styleSheet() });
+
+      const expectedDefaultColor = Color("gray"),
+        expectedConditionMetColor = Color("blue");
+
+      await createStyledElement("div", provide(parentCondition));
+      await createStyledElement(
+        "span",
+        pipe(
+          { color: expectedDefaultColor.string() },
+          on(and(consume(parentCondition), localCondition), {
+            color: expectedConditionMetColor.string(),
+          }),
+        ),
+        "div",
+      );
+
+      await queryAndSetClassName("div", "parent-active");
+      assert.deepStrictEqual(
+        Color(await getComputedPropertyValue("span", "color")),
+        expectedDefaultColor,
+      );
+
+      await queryAndSetClassName("span", "local-active");
+      assert.deepStrictEqual(
+        Color(await getComputedPropertyValue("span", "color")),
+        expectedConditionMetColor,
+      );
+
+      await queryAndSetClassName("div", "");
+      assert.deepStrictEqual(
+        Color(await getComputedPropertyValue("span", "color")),
+        expectedDefaultColor,
+      );
+    });
+
+    it("provides composed conditions to descendants", async () => {
+      const { styleSheet, on, and, consume, provide } = createHooks(
+        "&.a",
+        "&.b",
+      );
+      const condition = and("&.a", "&.b");
+
+      await page.addStyleTag({ content: styleSheet() });
+
+      const expectedDefaultColor = Color("gray"),
+        expectedConditionMetColor = Color("blue");
+
+      await createStyledElement("div", provide(condition));
+      await createStyledElement(
+        "span",
+        pipe(
+          { color: expectedDefaultColor.string() },
+          on(consume(condition), {
+            color: expectedConditionMetColor.string(),
+          }),
+        ),
+        "div",
+      );
+
+      for (const className of ["", "a", "b"]) {
+        await queryAndSetClassName("div", className);
+        assert.deepStrictEqual(
+          Color(await getComputedPropertyValue("span", "color")),
+          expectedDefaultColor,
+        );
+      }
+
+      await queryAndSetClassName("div", "a b");
+      assert.deepStrictEqual(
+        Color(await getComputedPropertyValue("span", "color")),
+        expectedConditionMetColor,
+      );
+    });
+
     it("supports @starting-style hooks", async () => {
       const { styleSheet, on } = createHooks("@starting-style");
 
@@ -564,7 +712,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
   const { width } = pipe({ width: 100 }, on("&:hover", { width: "200px" }));
   assert.match(
     width,
-    /var\(--[a-z0-9_-]+1,200px\)var\(--[a-z0-9_-]+0,revert-layer\)/,
+    /var\(--[a-z0-9_-]+0,revert-layer\)var\(--[a-z0-9_-]+1,200px\)/,
   );
 });
 
@@ -590,7 +738,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
     { margin: "marginTop"; padding: "paddingTop" }
   >();
 
-  const { on } = createHooks("&");
+  const { on, provide } = createHooks("&");
 
   // defined in conflict map
   pipe(
@@ -646,6 +794,17 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
       margin: 1,
     }),
     mergeStyles({} as CSS.Properties<number>),
+  );
+
+  pipe(
+    {
+      marginTop: 0,
+    },
+    // @ts-expect-error provider declarations do not mask conflicts
+    mergeStyles(provide("&")),
+    on("&", {
+      margin: 1,
+    }),
   );
 }
 

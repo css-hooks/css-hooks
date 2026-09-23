@@ -6,9 +6,9 @@ order: 4
 
 # Configuration
 
-Register each selector and at-rule that your components will use with `on()`.
-The generated stylesheet evaluates these conditions, while the component's style
-object supplies the declarations.
+Register each selector and at-rule as a hook that your components can use with
+`on()`. The generated stylesheet evaluates these hooks, while the component's
+style object supplies the declarations.
 
 ```typescript
 // src/css.ts
@@ -60,7 +60,7 @@ scoped descendants, excluding any scope limit and its descendants.
 
 ## Compose reusable conditions
 
-Use `and`, `or`, and `not` to create conditions from other conditions/hooks.
+Use `and`, `or`, and `not` to create conditions from hooks or other conditions.
 
 ```typescript
 export const hoverOnly = and("@media (hover: hover)", "&:hover");

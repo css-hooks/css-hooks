@@ -5,14 +5,18 @@
  */
 
 /**
- * Represents the conditions under which a given hook or declaration applies.
+ * Boolean condition expression composed from registered hooks
  *
- * @typeParam S - The basic type of condition to enhance with boolean operations
+ * @typeParam H - The type of registered hook from which to build conditions
  *
  * @public
  */
-export type Condition<S> =
-  S | { and: Condition<S>[] } | { or: Condition<S>[] } | { not: Condition<S> };
+export type Condition<H> =
+  | H
+  | { and: Condition<H>[] }
+  | { or: Condition<H>[] }
+  | { not: Condition<H> }
+  | { consume: Condition<H> };
 
 /**
  * Function to convert a value into a string
@@ -34,7 +38,7 @@ export type StringifyFn = (
 ) => string | null;
 
 /**
- * Represents the selector logic used to create a hook.
+ * Atomic selector or at-rule registered as a CSS hook
  *
  * @remarks
  * Three forms are supported:
@@ -48,7 +52,7 @@ export type StringifyFn = (
  *
  * @public
  */
-export type Selector =
+export type Hook =
   | `${string}&${string}`
   | `@${"media" | "container" | "supports"} ${string}`
   | `@scope (${string})`
@@ -89,7 +93,7 @@ type CSSPropertiesWithoutConflicts<
  * An object containing the functions needed to support and use the configured
  * hooks
  *
- * @typeParam S - The type of the selector logic for which to generate hooks
+ * @typeParam H - The type of the configured hooks
  * @typeParam CSSProperties - The type of a style object, typically defined by
  *   an app framework (e.g., React's `CSSProperties` type)
  * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
@@ -98,7 +102,7 @@ type CSSPropertiesWithoutConflicts<
  * @public
  */
 export interface CreateHooksResult<
-  S,
+  H,
   CSSProperties,
   CSSPropertyConflicts extends object,
 > {
@@ -110,7 +114,7 @@ export interface CreateHooksResult<
     OverrideCSSProperties extends CSSProperties,
     BaseCSSProperties extends CSSProperties,
   >(
-    condition: Condition<S>,
+    condition: Condition<H>,
     overrideStyle: OverrideCSSProperties,
   ) => (
     style: CSSProperties &
@@ -135,7 +139,7 @@ export interface CreateHooksResult<
    * @returns A condition that is true when all of the specified conditions are
    *   true
    */
-  and: <C extends Condition<S>[]>(...conditions: C) => { and: C };
+  and: <C extends Condition<H>[]>(...conditions: C) => { and: C };
 
   /**
    * Combines a list of conditions into a single condition which is true when
@@ -150,7 +154,7 @@ export interface CreateHooksResult<
    * @returns A condition that is true when any of the specified conditions are
    *   true
    */
-  or: <C extends Condition<S>[]>(...conditions: C) => { or: C };
+  or: <C extends Condition<H>[]>(...conditions: C) => { or: C };
 
   /**
    * Negates a condition.
@@ -163,7 +167,11 @@ export interface CreateHooksResult<
    *
    * @returns A condition that is true when the specified condition is false.
    */
-  not: <C extends Condition<S>>(condition: C) => { not: C };
+  not: <C extends Condition<H>>(condition: C) => { not: C };
+
+  consume: <C extends Condition<H>>(condition: C) => { consume: C };
+
+  provide: (condition: Condition<H>) => { [P in `--${string}`]: string };
 
   /** Returns the style sheet required to support the configured hooks. */
   styleSheet: () => string;
@@ -176,9 +184,9 @@ export interface CreateHooksResult<
  *   an app framework (e.g., React's `CSSProperties` type)
  * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
  *   with which they conflict
- * @typeParam S - The type of selectors for which to create hooks
+ * @typeParam H - The type of hooks to create
  *
- * @param selectors - The selectors for which to create hooks
+ * @param hooks - The hooks to create
  *
  * @returns An object containing the functions needed to support and use the
  *   configured hooks
@@ -188,9 +196,9 @@ export interface CreateHooksResult<
 export type CreateHooksFn<
   CSSProperties,
   CSSPropertyConflicts extends object = object,
-> = <S extends Selector>(
-  ...selectors: S[]
-) => CreateHooksResult<S, CSSProperties, CSSPropertyConflicts>;
+> = <H extends Hook>(
+  ...hooks: H[]
+) => CreateHooksResult<H, CSSProperties, CSSPropertyConflicts>;
 
 /**
  * Merges an override style prop into a base style.
@@ -259,7 +267,7 @@ export function buildHooksSystem<
 >(
   stringify: StringifyFn = String,
 ): CreateHooksFn<CSSProperties, CSSPropertyConflicts> {
-  return (...selectors: string[]) => {
+  return (...hooks: string[]) => {
     let space = "";
     let newline = "";
     try {
@@ -272,36 +280,118 @@ export function buildHooksSystem<
       // `process.env.NODE_ENV` is absent in unbundled browser environments
     }
 
-    const selectorHashes = new Map(
-      selectors.map(selector => [selector, createHash(selector)]),
-    );
+    const hookHashes = new Map(hooks.map(hook => [hook, createHash(hook)]));
+
+    const hookHash = (hook: string) => hookHashes.get(hook) || createHash(hook);
+
+    const conditionHash = (condition: Condition<string>) =>
+      (typeof condition === "string" ? hookHash(condition) : undefined) ||
+      createHash(condition);
+
+    type VariableOptions = { namespace?: string };
+
+    const conditionVariable = (
+      condition: Condition<string>,
+      state: 0 | 1,
+      { namespace = "" }: VariableOptions = {},
+    ) =>
+      `--${namespace}${namespace ? "-" : ""}${conditionHash(condition)}${state}`;
+
+    const toggleExpression = (
+      condition: Condition<string>,
+      valueIfFalse: string,
+      valueIfTrue: string,
+      options?: VariableOptions,
+    ) =>
+      `var(${conditionVariable(condition, 0, options)},${space}${valueIfFalse})${space}var(${conditionVariable(condition, 1, options)},${space}${valueIfTrue})`;
+
+    const toggleDeclarations = (
+      condition: Condition<string>,
+      falseState: string,
+      trueState: string,
+      options?: VariableOptions,
+    ) => ({
+      [conditionVariable(condition, 0, options)]: falseState,
+      [conditionVariable(condition, 1, options)]: trueState,
+    });
+
+    function buildExpression(
+      condition: Condition<string>,
+      valueIfTrue: string,
+      valueIfFalse: string,
+    ): [string, Record<string, string>] {
+      if (typeof condition === "string") {
+        let valTrue = valueIfTrue,
+          valFalse = valueIfFalse;
+        const extraDecls: Record<string, string> = {};
+        if (valTrue.length > 32) {
+          const hash = createHash(valTrue);
+          extraDecls[`--${hash}`] = valTrue;
+          valTrue = `var(--${hash})`;
+        }
+        if (valFalse.length > 32) {
+          const hash = createHash(valFalse);
+          extraDecls[`--${hash}`] = valFalse;
+          valFalse = `var(--${hash})`;
+        }
+        return [toggleExpression(condition, valFalse, valTrue), extraDecls];
+      }
+      if ("and" in condition) {
+        const [head, ...tail] = condition.and;
+        if (!head) {
+          return [valueIfTrue, {}];
+        }
+        if (tail.length === 0) {
+          return buildExpression(head, valueIfTrue, valueIfFalse);
+        }
+        const [tailExpr, tailDecls] = buildExpression(
+          { and: tail },
+          valueIfTrue,
+          valueIfFalse,
+        );
+        const [expr, decls] = buildExpression(head, tailExpr, valueIfFalse);
+        return [expr, { ...decls, ...tailDecls }];
+      }
+      if ("or" in condition) {
+        return buildExpression(
+          { and: condition.or.map(not => ({ not })) },
+          valueIfFalse,
+          valueIfTrue,
+        );
+      }
+      if ("not" in condition) {
+        return buildExpression(condition.not, valueIfFalse, valueIfTrue);
+      }
+      if ("consume" in condition) {
+        return [
+          toggleExpression(condition.consume, valueIfFalse, valueIfTrue, {
+            namespace: "ctx",
+          }),
+          {},
+        ];
+      }
+      throw new Error(`Invalid condition: ${JSON.stringify(condition)}`);
+    }
 
     return {
       styleSheet() {
         type Ruleset = [string[], { [P: string]: string } | Ruleset];
-        return selectors
-          .flatMap(def => {
-            const selectorHash = selectorHashes.get(def);
-            const offVariable = `--${selectorHash}0`;
-            const onVariable = `--${selectorHash}1`;
-            const offDeclarations = {
-              [offVariable]: "initial",
-              [onVariable]: space,
-            };
-            const onDeclarations = {
-              [offVariable]: space,
-              [onVariable]: "initial",
-            };
-            const rulesets: Ruleset[] = [[["*"], offDeclarations]];
-            if (def.startsWith("@")) {
+        return hooks
+          .flatMap(hook => {
+            const rulesets: Ruleset[] = [
+              [["*"], toggleDeclarations(hook, "initial", space)],
+            ];
+
+            const onDeclarations = toggleDeclarations(hook, space, "initial");
+            if (hook.startsWith("@")) {
               const target = ["*"];
-              if (def.startsWith("@scope")) {
+              if (hook.startsWith("@scope")) {
                 target.push(":scope");
               }
-              rulesets.push([[def], [target, onDeclarations]]);
+              rulesets.push([[hook], [target, onDeclarations]]);
             } else {
               rulesets.push([
-                [`:where(${def.replace(/&/g, "*")})`],
+                [`:where(${hook.replace(/&/g, "*")})`],
                 onDeclarations,
               ]);
             }
@@ -334,6 +424,22 @@ export function buildHooksSystem<
       and: (...and) => ({ and }),
       or: (...or) => ({ or }),
       not: not => ({ not }),
+      consume: consume => ({ consume }),
+      provide: condition => {
+        const [offValue, offDecls] = buildExpression(
+          condition,
+          space,
+          "initial",
+        );
+        const [onValue, onDecls] = buildExpression(condition, "initial", space);
+        return {
+          ...offDecls,
+          ...onDecls,
+          ...toggleDeclarations(condition, offValue, onValue, {
+            namespace: "ctx",
+          }),
+        };
+      },
       on(condition, overrideStyle) {
         return <ActualBaseCSSProperties extends CSSProperties>(
           fallbackStyle: ActualBaseCSSProperties,
@@ -359,64 +465,6 @@ export function buildHooksSystem<
             Object.assign(style, { [property]: value }, extraDecls);
           }
           return style as typeof style & typeof overrideStyle;
-          function buildExpression(
-            condition: string | Condition<string>,
-            valueIfTrue: string,
-            valueIfFalse: string,
-          ): [string, Record<string, string>] {
-            if (typeof condition === "string") {
-              let valTrue = valueIfTrue,
-                valFalse = valueIfFalse;
-              const extraDecls: Record<string, string> = {};
-              if (valTrue.length > 32) {
-                const hash = createHash(valTrue);
-                extraDecls[`--${hash}`] = valTrue;
-                valTrue = `var(--${hash})`;
-              }
-              if (valFalse.length > 32) {
-                const hash = createHash(valFalse);
-                extraDecls[`--${hash}`] = valFalse;
-                valFalse = `var(--${hash})`;
-              }
-              const selectorHash =
-                selectorHashes.get(condition) || createHash(condition);
-              return [
-                `var(--${selectorHash}1,${space}${valTrue})${space}var(--${selectorHash}0,${space}${valFalse})`,
-                extraDecls,
-              ];
-            }
-            if ("and" in condition) {
-              const [head, ...tail] = condition.and;
-              if (!head) {
-                return [valueIfTrue, {}];
-              }
-              if (tail.length === 0) {
-                return buildExpression(head, valueIfTrue, valueIfFalse);
-              }
-              const [tailExpr, tailDecls] = buildExpression(
-                { and: tail },
-                valueIfTrue,
-                valueIfFalse,
-              );
-              const [expr, decls] = buildExpression(
-                head,
-                tailExpr,
-                valueIfFalse,
-              );
-              return [expr, { ...decls, ...tailDecls }];
-            }
-            if ("or" in condition) {
-              return buildExpression(
-                { and: condition.or.map(not => ({ not })) },
-                valueIfFalse,
-                valueIfTrue,
-              );
-            }
-            if (condition.not) {
-              return buildExpression(condition.not, valueIfFalse, valueIfTrue);
-            }
-            throw new Error(`Invalid condition: ${JSON.stringify(condition)}`);
-          }
         };
       },
     };
@@ -426,12 +474,14 @@ export function buildHooksSystem<
 const hashAlphabet = "abcdefghijklmnopqrstuvwxyz0123456789-_";
 const hashAlphabetLength = hashAlphabet.length;
 
-function createHash(value: string) {
+function createHash(value: string | object) {
+  const strValue = typeof value === "string" ? value : JSON.stringify(value);
+
   let h1 = 0xdeadbeef;
   let h2 = 0x41c6ce57;
 
-  for (let i = 0; i < value.length; i++) {
-    const code = value.charCodeAt(i);
+  for (let i = 0; i < strValue.length; i++) {
+    const code = strValue.charCodeAt(i);
     h1 = Math.imul(h1 ^ code, 0x9e3779b1);
     h2 = Math.imul(h2 ^ code, 0x5f356495);
   }

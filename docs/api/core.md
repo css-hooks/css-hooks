@@ -89,7 +89,7 @@ Description
 
 </td><td>
 
-Represents the conditions under which a given hook or declaration applies.
+Boolean condition expression composed from registered hooks
 
 
 </td></tr>
@@ -106,12 +106,12 @@ Represents the function used to define hooks and related configuration.
 </td></tr>
 <tr><td>
 
-[Selector](./core.selector.md)
+[Hook](./core.hook.md)
 
 
 </td><td>
 
-Represents the selector logic used to create a hook.
+Atomic selector or at-rule registered as a CSS hook
 
 
 </td></tr>

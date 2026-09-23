@@ -4,17 +4,19 @@
 
 ## Condition type
 
-Represents the conditions under which a given hook or declaration applies.
+Boolean condition expression composed from registered hooks
 
 **Signature:**
 
 ```typescript
-export type Condition<S> = S | {
-    and: Condition<S>[];
+export type Condition<H> = H | {
+    and: Condition<H>[];
 } | {
-    or: Condition<S>[];
+    or: Condition<H>[];
 } | {
-    not: Condition<S>;
+    not: Condition<H>;
+} | {
+    consume: Condition<H>;
 };
 ```
 **References:** [Condition](./core.condition.md)
