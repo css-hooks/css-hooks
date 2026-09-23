@@ -4,6 +4,8 @@
 
 ## CreateHooksResult.provide property
 
+Creates style declarations that expose a condition's state to descendants.
+
 **Signature:**
 
 ```typescript
@@ -11,3 +13,8 @@ provide: (condition: Condition<H>) => {
         [P in `--${string}`]: string;
     };
 ```
+
+## Remarks
+
+Apply the returned declarations to an element's style. The condition is evaluated against that element and can be read by descendant styles using [CreateHooksResult.consume](./core.createhooksresult.consume.md)<!-- -->. A nested provider for the same condition overrides the state inherited from an outer provider.
+

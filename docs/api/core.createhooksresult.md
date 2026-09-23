@@ -69,6 +69,8 @@ Combines a list of conditions into a single condition which is true when all of 
 
 </td><td>
 
+Creates a condition that reads the state exposed by a provider.
+
 
 </td></tr>
 <tr><td>
@@ -142,6 +144,8 @@ Combines a list of conditions into a single condition which is true when any of 
 
 
 </td><td>
+
+Creates style declarations that expose a condition's state to descendants.
 
 
 </td></tr>

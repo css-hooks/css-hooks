@@ -4,6 +4,8 @@
 
 ## CreateHooksResult.consume property
 
+Creates a condition that reads the state exposed by a provider.
+
 **Signature:**
 
 ```typescript
@@ -11,3 +13,8 @@ consume: <C extends Condition<H>>(condition: C) => {
         consume: C;
     };
 ```
+
+## Remarks
+
+The returned condition reads the state of `condition` from the nearest ancestor whose style includes the declarations returned by [CreateHooksResult.provide](./core.createhooksresult.provide.md)<!-- -->. It does not evaluate `condition` against the consuming element.
+

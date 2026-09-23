@@ -169,8 +169,37 @@ export interface CreateHooksResult<
    */
   not: <C extends Condition<H>>(condition: C) => { not: C };
 
+  /**
+   * Creates a condition that reads the state exposed by a provider.
+   *
+   * @remarks
+   * The returned condition reads the state of `condition` from the nearest
+   * ancestor whose style includes the declarations returned by
+   * {@link CreateHooksResult.provide}. It does not evaluate `condition` against
+   * the consuming element.
+   *
+   * @typeParam C - The type of the condition whose provided state is consumed
+   *
+   * @param condition - The condition whose provided state is consumed
+   *
+   * @returns A condition that reflects the state exposed by the nearest
+   *   provider
+   */
   consume: <C extends Condition<H>>(condition: C) => { consume: C };
 
+  /**
+   * Creates style declarations that expose a condition's state to descendants.
+   *
+   * @remarks
+   * Apply the returned declarations to an element's style. The condition is
+   * evaluated against that element and can be read by descendant styles using
+   * {@link CreateHooksResult.consume}. A nested provider for the same condition
+   * overrides the state inherited from an outer provider.
+   *
+   * @param condition - The condition whose state is exposed to descendants
+   *
+   * @returns Style declarations to apply to the provider element
+   */
   provide: (condition: Condition<H>) => { [P in `--${string}`]: string };
 
   /** Returns the style sheet required to support the configured hooks. */
