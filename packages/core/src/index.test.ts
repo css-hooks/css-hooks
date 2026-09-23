@@ -839,7 +839,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
     { margin: "marginTop"; padding: "paddingTop" }
   >();
 
-  const { on } = createHooks("&");
+  const { on, disable } = createHooks("&", "flag:dark");
 
   // defined in conflict map
   pipe(
@@ -895,6 +895,32 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
       margin: 1,
     }),
     mergeStyles({} as CSS.Properties<number>),
+  );
+
+  const styleWithDisabledFlag = pipe(
+    { paddingTop: 0 as const },
+    mergeStyles(disable("dark")),
+  );
+  styleWithDisabledFlag satisfies { paddingTop: 0 };
+
+  const styleWithDisabledFlagAndOverride = pipe(
+    { color: "red" as const },
+    mergeStyles({ ...disable("dark"), color: "blue" as const }),
+  );
+  styleWithDisabledFlagAndOverride satisfies { color: "blue" };
+
+  pipe(
+    {
+      paddingTop: 0,
+    },
+    on("&", {
+      margin: 0,
+    }),
+    // @ts-expect-error flag declarations do not mask earlier conflicts
+    mergeStyles(disable("dark")),
+    on("&", {
+      padding: 0,
+    }),
   );
 }
 

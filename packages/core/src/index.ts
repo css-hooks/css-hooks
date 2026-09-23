@@ -104,20 +104,27 @@ export type FlagName<Hooks extends readonly Hook[]> =
       : never;
 
 /**
+ * Style declarations that set an inherited flag for descendants.
+ *
+ * @public
+ */
+export type FlagStyle = { [P in `--${string}`]: string };
+
+/**
  * Functions returned when a literal hook list includes at least one flag.
  *
  * @public
  */
-export type FlagControls<Hooks extends readonly Hook[], CSSProperties> = [
+export type FlagControls<Hooks extends readonly Hook[]> = [
   FlagName<Hooks>,
 ] extends [never]
   ? unknown
   : {
       /** Returns style declarations that enable a flag for descendants. */
-      enable: (flag: FlagName<Hooks>) => CSSProperties;
+      enable: (flag: FlagName<Hooks>) => FlagStyle;
 
       /** Returns style declarations that disable a flag for descendants. */
-      disable: (flag: FlagName<Hooks>) => CSSProperties;
+      disable: (flag: FlagName<Hooks>) => FlagStyle;
     };
 
 /**
@@ -263,7 +270,7 @@ export type CreateHooksFn<
 > = <const Hooks extends Hook[]>(
   ...hooks: Hooks
 ) => CreateHooksResult<Hooks[number], CSSProperties, CSSPropertyConflicts> &
-  FlagControls<Hooks, CSSProperties>;
+  FlagControls<Hooks>;
 
 /**
  * Merges an override style prop into a base style.
@@ -361,7 +368,7 @@ export function buildHooksSystem<
       const hash = hookHashes.get(hook);
       return {
         [`--${hash}f`]: enabled ? "on" : "off",
-      } as CSSProperties;
+      } as FlagStyle;
     };
 
     return {
@@ -533,7 +540,7 @@ export function buildHooksSystem<
         };
       },
     } as CreateHooksResult<H, CSSProperties, CSSPropertyConflicts> &
-      FlagControls<Hooks, CSSProperties>;
+      FlagControls<Hooks>;
   };
 }
 

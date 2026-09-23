@@ -9,12 +9,12 @@ Functions returned when a literal hook list includes at least one flag.
 **Signature:**
 
 ```typescript
-export type FlagControls<Hooks extends readonly Hook[], CSSProperties> = [
+export type FlagControls<Hooks extends readonly Hook[]> = [
     FlagName<Hooks>
 ] extends [never] ? unknown : {
-    enable: (flag: FlagName<Hooks>) => CSSProperties;
-    disable: (flag: FlagName<Hooks>) => CSSProperties;
+    enable: (flag: FlagName<Hooks>) => FlagStyle;
+    disable: (flag: FlagName<Hooks>) => FlagStyle;
 };
 ```
-**References:** [Hook](./core.hook.md)<!-- -->, [FlagName](./core.flagname.md)
+**References:** [Hook](./core.hook.md)<!-- -->, [FlagName](./core.flagname.md)<!-- -->, [FlagStyle](./core.flagstyle.md)
 

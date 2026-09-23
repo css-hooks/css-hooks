@@ -139,6 +139,17 @@ Extracts the short names guaranteed to be flags in a hook tuple.
 </td></tr>
 <tr><td>
 
+[FlagStyle](./core.flagstyle.md)
+
+
+</td><td>
+
+Style declarations that set an inherited flag for descendants.
+
+
+</td></tr>
+<tr><td>
+
 [Hook](./core.hook.md)
 
 
