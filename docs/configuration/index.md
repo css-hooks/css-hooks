@@ -92,12 +92,6 @@ cycle:
 const invertDark = pipe(enable("dark"), on("flag:dark", disable("dark")));
 ```
 
-Flags use custom-property container style queries. They require Chrome and Edge
-111+, Safari 18+, Firefox 151+, Opera 98+, or Samsung Internet 22+. A
-`container-type` declaration is not required. For Safari 18 compatibility, apply
-setters below the document element, such as on the application's root element
-rather than `<html>`.
-
 `createHooks()` only returns `enable()` and `disable()` when at least one flag
 is registered. Their arguments are restricted to the short names of the flags
 from that call.
