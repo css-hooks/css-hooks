@@ -9,7 +9,7 @@ Negates a condition.
 **Signature:**
 
 ```typescript
-not: <C extends Condition<S>>(condition: C) => {
+not: <C extends Condition<H>>(condition: C) => {
         not: C;
     };
 ```

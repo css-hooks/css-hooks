@@ -9,6 +9,7 @@ import type { Browser, Page } from "playwright";
 import { chromium, firefox, webkit } from "playwright";
 import { pipe } from "remeda";
 
+import type { Hook } from "./index.ts";
 import { buildHooksSystem, mergeStyles } from "./index.ts";
 
 events.setMaxListeners(50);
@@ -734,6 +735,22 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 });
 
 // type-level tests
+
+// public hook type
+{
+  "&:hover" satisfies Hook;
+  "@media (width < 600px)" satisfies Hook;
+  "@container (width > 300px)" satisfies Hook;
+  "@supports (display: grid)" satisfies Hook;
+  "@scope (.theme)" satisfies Hook;
+  "@starting-style" satisfies Hook;
+  "flag:dark" satisfies Hook;
+
+  // @ts-expect-error selectors require an ampersand placeholder
+  ".active" satisfies Hook;
+  // @ts-expect-error unsupported at-rule
+  "@layer theme" satisfies Hook;
+}
 
 // @scope hooks require an explicit root
 {

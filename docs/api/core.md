@@ -106,12 +106,12 @@ Represents the function used to define hooks and related configuration.
 </td></tr>
 <tr><td>
 
-[Selector](./core.selector.md)
+[Hook](./core.hook.md)
 
 
 </td><td>
 
-Represents the selector logic used to create a hook.
+Represents a hook registered with `createHooks`<!-- -->.
 
 
 </td></tr>

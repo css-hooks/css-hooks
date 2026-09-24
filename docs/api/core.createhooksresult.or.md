@@ -9,7 +9,7 @@ Combines a list of conditions into a single condition which is true when any of 
 **Signature:**
 
 ```typescript
-or: <C extends Condition<S>[]>(...conditions: C) => {
+or: <C extends Condition<H>[]>(...conditions: C) => {
         or: C;
     };
 ```

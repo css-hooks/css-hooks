@@ -11,9 +11,9 @@ Represents the function used to define hooks and related configuration.
 ```typescript
 export type CreateHooksFn<CSSProperties, CSSPropertyConflicts extends object = object> = <const Hooks extends Hook[]>(...hooks: Hooks) => CreateHooksResult<Hooks[number], CSSProperties, CSSPropertyConflicts> & FlagControls<Hooks>;
 ```
-**References:** [CreateHooksResult](./core.createhooksresult.md)
+**References:** [Hook](./core.hook.md)<!-- -->, [CreateHooksResult](./core.createhooksresult.md)
 
 ## Remarks
 
-When the registered hooks include one or more `flag:<name>` values, the returned object also contains `enable()` and `disable()` functions restricted to their short names. The functions are omitted when no flags are configured.
+When the registered hooks are known to include one or more `flag:<name>` values, the return type also exposes `enable()` and `disable()` functions restricted to their short names.
 

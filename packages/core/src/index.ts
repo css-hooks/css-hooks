@@ -7,12 +7,12 @@
 /**
  * Represents the conditions under which a given hook or declaration applies.
  *
- * @typeParam S - The basic type of condition to enhance with boolean operations
+ * @typeParam H - The basic hook type to enhance with boolean operations
  *
  * @public
  */
-export type Condition<S> =
-  S | { and: Condition<S>[] } | { or: Condition<S>[] } | { not: Condition<S> };
+export type Condition<H> =
+  H | { and: Condition<H>[] } | { or: Condition<H>[] } | { not: Condition<H> };
 
 /**
  * Function to convert a value into a string
@@ -34,31 +34,29 @@ export type StringifyFn = (
 ) => string | null;
 
 /**
- * Represents the selector logic used to create a hook.
+ * Represents a hook registered with `createHooks`.
  *
  * @remarks
- * Three forms are supported:
+ * Four forms are supported:
  *
- * 1. A basic selector, where `&` is used as a placeholder for the element to which
+ * 1. A selector hook, where `&` is used as a placeholder for the element to which
  *    the condition applies. The `&` character must appear somewhere.
- * 2. `@media`, `@container`, `@supports`, and `@scope` at-rules. Each value must
- *    begin with its keyword, followed by a space. `@scope` requires an explicit
- *    scope root.
- * 3. `@starting-style` with no additional parameters
+ * 2. An at-rule hook beginning with `@media`, `@container`, `@supports`, or
+ *    `@scope`, followed by a space. `@scope` requires an explicit scope root.
+ * 3. The `@starting-style` at-rule hook with no additional parameters.
+ * 4. A named boolean flag hook beginning with `flag:`.
  *
  * @public
  */
-export type Selector =
+export type Hook =
   | `${string}&${string}`
   | `@${"media" | "container" | "supports"} ${string}`
   | `@scope (${string})`
-  | "@starting-style";
+  | "@starting-style"
+  | `flag:${string}`;
 
 /** Named boolean state inherited by an element's descendants. */
-type Flag = `flag:${string}`;
-
-/** Selector logic or a named boolean flag used to create a hook. */
-type Hook = Selector | Flag;
+type Flag = Extract<Hook, `flag:${string}`>;
 
 /** Whether a type contains more than one possible member. */
 type IsUnion<T, Whole = T> = T extends Whole
@@ -135,7 +133,7 @@ type CSSPropertiesWithoutConflicts<
  * An object containing the functions needed to support and use the configured
  * hooks
  *
- * @typeParam S - The type of the selector logic for which to generate hooks
+ * @typeParam H - The type of the configured hooks
  * @typeParam CSSProperties - The type of a style object, typically defined by
  *   an app framework (e.g., React's `CSSProperties` type)
  * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
@@ -144,7 +142,7 @@ type CSSPropertiesWithoutConflicts<
  * @public
  */
 export interface CreateHooksResult<
-  S,
+  H,
   CSSProperties,
   CSSPropertyConflicts extends object,
 > {
@@ -156,7 +154,7 @@ export interface CreateHooksResult<
     OverrideCSSProperties extends CSSProperties,
     BaseCSSProperties extends CSSProperties,
   >(
-    condition: Condition<S>,
+    condition: Condition<H>,
     overrideStyle: OverrideCSSProperties,
   ) => (
     style: CSSProperties &
@@ -181,7 +179,7 @@ export interface CreateHooksResult<
    * @returns A condition that is true when all of the specified conditions are
    *   true
    */
-  and: <C extends Condition<S>[]>(...conditions: C) => { and: C };
+  and: <C extends Condition<H>[]>(...conditions: C) => { and: C };
 
   /**
    * Combines a list of conditions into a single condition which is true when
@@ -196,7 +194,7 @@ export interface CreateHooksResult<
    * @returns A condition that is true when any of the specified conditions are
    *   true
    */
-  or: <C extends Condition<S>[]>(...conditions: C) => { or: C };
+  or: <C extends Condition<H>[]>(...conditions: C) => { or: C };
 
   /**
    * Negates a condition.
@@ -209,7 +207,7 @@ export interface CreateHooksResult<
    *
    * @returns A condition that is true when the specified condition is false.
    */
-  not: <C extends Condition<S>>(condition: C) => { not: C };
+  not: <C extends Condition<H>>(condition: C) => { not: C };
 
   /** Returns the style sheet required to support the configured hooks. */
   styleSheet: () => string;
@@ -229,7 +227,7 @@ export interface CreateHooksResult<
  *   with which they conflict
  * @typeParam Hooks - The tuple of hooks to create
  *
- * @param hooks - The selectors and flags for which to create hooks
+ * @param hooks - The hooks to create
  *
  * @returns An object containing the functions needed to support and use the
  *   configured hooks
@@ -349,8 +347,8 @@ export function buildHooksSystem<
       styleSheet() {
         type Ruleset = [string[], { [P: string]: string } | Ruleset];
         return hooks
-          .flatMap(def => {
-            const hookHash = hookHashes.get(def);
+          .flatMap(hook => {
+            const hookHash = hookHashes.get(hook);
             const offVariable = `--${hookHash}0`;
             const onVariable = `--${hookHash}1`;
             const offDeclarations = {
@@ -361,7 +359,7 @@ export function buildHooksSystem<
               [offVariable]: space,
               [onVariable]: "initial",
             };
-            if (def.startsWith("flag:")) {
+            if (hook.startsWith("flag:")) {
               const flagVariable = `--${hookHash}f`;
               return [
                 [
@@ -381,15 +379,15 @@ export function buildHooksSystem<
               ];
             }
             const rulesets: Ruleset[] = [[["*"], offDeclarations]];
-            if (def.startsWith("@")) {
+            if (hook.startsWith("@")) {
               const target = ["*"];
-              if (def.startsWith("@scope")) {
+              if (hook.startsWith("@scope")) {
                 target.push(":scope");
               }
-              rulesets.push([[def], [target, onDeclarations]]);
+              rulesets.push([[hook], [target, onDeclarations]]);
             } else {
               rulesets.push([
-                [`:where(${def.replace(/&/g, "*")})`],
+                [`:where(${hook.replace(/&/g, "*")})`],
                 onDeclarations,
               ]);
             }
@@ -397,17 +395,17 @@ export function buildHooksSystem<
           })
           .map(
             unary(function render(ruleset: Ruleset, level: number = 0): string {
-              const [selectors, declarations] = ruleset;
+              const [headers, declarations] = ruleset;
               const indent = Array(level * 2)
                 .fill(space)
                 .join("");
               if (Array.isArray(declarations)) {
-                return `${indent}${selectors.join(`,${space}`)}${space}{${newline}${render(
+                return `${indent}${headers.join(`,${space}`)}${space}{${newline}${render(
                   declarations,
                   level + 1,
                 )}${newline}${indent}}`;
               }
-              return `${indent}${selectors.join(`,${space}`)}${space}{${newline}${Object.entries(
+              return `${indent}${headers.join(`,${space}`)}${space}{${newline}${Object.entries(
                 declarations,
               )
                 .map(
