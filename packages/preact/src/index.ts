@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import { buildHooksSystem } from "@css-hooks/core";
+import { createHooksSystem } from "@css-hooks/core";
 import type { CSSProperties } from "preact";
 
 import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
@@ -15,7 +15,7 @@ export type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 const IS_NON_DIMENSIONAL =
   /acit|ex(?:s|g|n|p|$)|rph|grid|ows|mnc|ntw|ine[ch]|zoo|^ord|itera/i;
 
-const hooksSystem = buildHooksSystem<CSSProperties, CSSPropertyConflicts>(
+const hooksSystem = createHooksSystem<CSSProperties, CSSPropertyConflicts>(
   _stringifyValue,
 );
 

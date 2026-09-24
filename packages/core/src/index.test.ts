@@ -10,7 +10,7 @@ import { chromium, firefox, webkit } from "playwright";
 import { pipe } from "remeda";
 
 import type { Hook } from "./index.ts";
-import { buildHooksSystem } from "./index.ts";
+import { createHooksSystem } from "./index.ts";
 
 events.setMaxListeners(50);
 
@@ -42,7 +42,7 @@ function withMode<T>(mode: Parameters<typeof useMode>[0], f: () => T): T {
 }
 
 describe("`mergeStyles` function", () => {
-  const { mergeStyles } = buildHooksSystem();
+  const { mergeStyles } = createHooksSystem();
 
   it("merges an override style without modifying either input", () => {
     const baseStyle = { color: "red", display: "block" };
@@ -79,7 +79,7 @@ describe("`mergeStyles` function", () => {
 });
 
 describe(`in ${selectedBrowser}`, () => {
-  const { createHooks } = buildHooksSystem<CSS.Properties>();
+  const { createHooks } = createHooksSystem<CSS.Properties>();
 
   let browser: Browser, page: Page;
 
@@ -512,7 +512,7 @@ describe(`in ${selectedBrowser}`, () => {
 });
 
 it("generates flag state rules", () => {
-  const { createHooks } = buildHooksSystem<CSS.Properties>();
+  const { createHooks } = createHooksSystem<CSS.Properties>();
 
   const { styleSheet, enable, disable } = createHooks("flag:dark");
 
@@ -536,7 +536,7 @@ it("generates flag state rules", () => {
 });
 
 it("uses the specified stringify function when merging values", () => {
-  const { createHooks } = buildHooksSystem<CSS.Properties>(
+  const { createHooks } = createHooksSystem<CSS.Properties>(
     (value, propertyName) =>
       `${propertyName}__${
         typeof value === "string" || typeof value === "number" ? value : ""
@@ -556,7 +556,7 @@ it("uses the specified stringify function when merging values", () => {
 });
 
 it("uses fixed-width hashes without known polynomial collisions", () => {
-  const { createHooks } = buildHooksSystem();
+  const { createHooks } = createHooksSystem();
   const { styleSheet } = createHooks("&.Aa", "&.BB");
   const propertyNames = [...styleSheet().matchAll(/--([^:]+):/g)].map(match => {
     const propertyName = match[1];
@@ -572,7 +572,7 @@ it("uses fixed-width hashes without known polynomial collisions", () => {
 });
 
 describe("in production mode (vs. debug)", () => {
-  const { createHooks } = buildHooksSystem<CSS.Properties>();
+  const { createHooks } = createHooksSystem<CSS.Properties>();
 
   const { styleSheet, on, and, or, not } = createHooks(
     "&:hover",
@@ -643,7 +643,7 @@ describe("in production mode (vs. debug)", () => {
 
 it("produces the same result twice given the same style object reference", () => {
   // This is to avoid issues in React Strict Mode. See #167.
-  const { createHooks } = buildHooksSystem<CSS.Properties>();
+  const { createHooks } = createHooksSystem<CSS.Properties>();
 
   const { on } = createHooks("&:hover");
 
@@ -669,7 +669,7 @@ it("produces the same result twice given the same style object reference", () =>
 });
 
 it("skips a conditional value that can't be stringified", () => {
-  const { createHooks } = buildHooksSystem<CSS.Properties<string | number>>(
+  const { createHooks } = createHooksSystem<CSS.Properties<string | number>>(
     value => (typeof value === "string" ? value : null),
   );
   const { on } = createHooks("&:hover");
@@ -682,7 +682,7 @@ it("skips a conditional value that can't be stringified", () => {
 });
 
 it('uses "revert-layer" in place of a fallback value that can\'t be stringified', () => {
-  const { createHooks } = buildHooksSystem<CSS.Properties<string | number>>(
+  const { createHooks } = createHooksSystem<CSS.Properties<string | number>>(
     value => (typeof value === "string" ? value : null),
   );
   const { on } = createHooks("&:hover");
@@ -713,7 +713,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 
 // @scope hooks require an explicit root
 {
-  const { createHooks } = buildHooksSystem();
+  const { createHooks } = createHooksSystem();
 
   createHooks("@scope (.theme)");
   createHooks("@scope (.theme) to (.nested-theme)");
@@ -726,7 +726,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 
 // conflict protection
 {
-  const { createHooks, mergeStyles } = buildHooksSystem<
+  const { createHooks, mergeStyles } = createHooksSystem<
     CSS.Properties<number>,
     { margin: "marginTop"; padding: "paddingTop" }
   >();
@@ -815,7 +815,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 
 // flag controls are only exposed in types when flags are registered
 {
-  const { createHooks } = buildHooksSystem<CSS.Properties>();
+  const { createHooks } = createHooksSystem<CSS.Properties>();
   const hooks = createHooks("&:hover");
 
   // @ts-expect-error no flag hooks registered
@@ -826,7 +826,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 
 // flag controls only accept the short names of registered flags
 {
-  const { createHooks } = buildHooksSystem<CSS.Properties>();
+  const { createHooks } = createHooksSystem<CSS.Properties>();
 
   const hooks = createHooks("flag:dark", "flag:compact", "&:hover");
 
@@ -843,7 +843,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 
 // exact style inference across transforms
 {
-  const { createHooks } = buildHooksSystem<
+  const { createHooks } = createHooksSystem<
     {
       color?: string;
       textDecoration?: string;
@@ -872,7 +872,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
     minHeight?: string;
   };
 
-  const { createHooks } = buildHooksSystem<
+  const { createHooks } = createHooksSystem<
     CSSProperties,
     { background: "backgroundAttachment" }
   >();
@@ -888,7 +888,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 // bound style merging preserves contextual style inference in a pipe
 {
   const { createHooks, mergeStyles } =
-    buildHooksSystem<CSS.Properties<number>>();
+    createHooksSystem<CSS.Properties<number>>();
 
   const hooks = createHooks("flag:dark");
   const { on, enable, disable } = hooks;
@@ -912,7 +912,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 
 // mergeStyles preserves exact style types
 {
-  const { mergeStyles } = buildHooksSystem<CSS.Properties>();
+  const { mergeStyles } = createHooksSystem<CSS.Properties>();
 
   pipe(
     {

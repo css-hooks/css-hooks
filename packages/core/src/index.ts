@@ -231,7 +231,7 @@ export type CreateHooksFn<
 ) => Hooks<ConfiguredHooks, CSSProperties, CSSPropertyConflicts>;
 
 /**
- * The functions configured by `buildHooksSystem` for a specific app framework
+ * The functions configured by `createHooksSystem` for a specific app framework
  *
  * @typeParam CSSProperties - The type of a style object, typically defined by
  *   an app framework (e.g., React's `CSSProperties` type)
@@ -308,7 +308,7 @@ function mergeStyles<const OverrideStyle extends object>(
  *
  * @public
  */
-export function buildHooksSystem<
+export function createHooksSystem<
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   CSSProperties extends { [P: string]: any } = Record<string, unknown>,
   CSSPropertyConflicts extends object = object,

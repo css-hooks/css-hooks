@@ -13,9 +13,10 @@ integrations have updated compatibility requirements.
 
 ## Core setup
 
-`buildHooksSystem` now returns an object containing `createHooks` and
-`mergeStyles`, rather than returning `createHooks` directly. Destructure the
-functions your integration needs from the result:
+`buildHooksSystem` has been renamed to `createHooksSystem`. It now returns an
+object containing `createHooks` and `mergeStyles`, rather than returning
+`createHooks` directly. Destructure the functions your integration needs from
+the result:
 
 ```typescript
 // v3
@@ -24,9 +25,10 @@ import { buildHooksSystem } from "@css-hooks/core";
 const createHooks = buildHooksSystem<CSSProperties>(stringify);
 
 // v4
-import { buildHooksSystem } from "@css-hooks/core";
+import { createHooksSystem } from "@css-hooks/core";
 
-const { createHooks, mergeStyles } = buildHooksSystem<CSSProperties>(stringify);
+const { createHooks, mergeStyles } =
+  createHooksSystem<CSSProperties>(stringify);
 ```
 
 The new `mergeStyles` function is bound to the same CSS properties type as
