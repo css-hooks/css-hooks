@@ -219,10 +219,9 @@ export interface CreateHooksResult<
  * Represents the function used to define hooks and related configuration.
  *
  * @remarks
- * When the registered hooks include one or more `flag:<name>` values, the
- * returned object also contains `enable()` and `disable()` functions restricted
- * to their short names. The functions are omitted when no flags are
- * configured.
+ * When the registered hooks are known to include one or more `flag:<name>`
+ * values, the return type also exposes `enable()` and `disable()` functions
+ * restricted to their short names.
  *
  * @typeParam CSSProperties - The type of a style object, typically defined by
  *   an app framework (e.g., React's `CSSProperties` type)
@@ -345,12 +344,8 @@ export function buildHooksSystem<
     };
 
     return {
-      ...(flags.size > 0
-        ? {
-            enable: (flag: string) => flagDeclarations(flag, true),
-            disable: (flag: string) => flagDeclarations(flag, false),
-          }
-        : {}),
+      enable: (flag: string) => flagDeclarations(flag, true),
+      disable: (flag: string) => flagDeclarations(flag, false),
       styleSheet() {
         type Ruleset = [string[], { [P: string]: string } | Ruleset];
         return hooks

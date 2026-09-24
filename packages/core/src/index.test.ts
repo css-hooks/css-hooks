@@ -9,7 +9,6 @@ import type { Browser, Page } from "playwright";
 import { chromium, firefox, webkit } from "playwright";
 import { pipe } from "remeda";
 
-import type { Selector } from "./index.ts";
 import { buildHooksSystem, mergeStyles } from "./index.ts";
 
 events.setMaxListeners(50);
@@ -525,54 +524,6 @@ describe(`in ${selectedBrowser}`, () => {
 describe("flag controls", () => {
   const createHooks = buildHooksSystem<CSS.Properties>();
 
-  it("omits controls when no flags are registered", () => {
-    const hooks = createHooks("&:hover");
-    const emptyHooks = createHooks();
-    const widenedHooks: Array<Selector | `flag:${string}`> = ["&:hover"];
-    const hooksFromWidenedList = createHooks(...widenedHooks);
-    const maybeFlagHooks: Array<"flag:dark" | "&:hover"> = ["&:hover"];
-    const hooksFromMaybeFlagList = createHooks(...maybeFlagHooks);
-
-    assert(!("enable" in hooks));
-    assert(!("disable" in hooks));
-    assert(!("enable" in emptyHooks));
-    assert(!("disable" in emptyHooks));
-    assert(!("enable" in hooksFromWidenedList));
-    assert(!("enable" in hooksFromMaybeFlagList));
-    assert.strictEqual(
-      // @ts-expect-error no registered flags
-      hooks.enable,
-      undefined,
-    );
-    assert.strictEqual(
-      // @ts-expect-error no registered flags
-      hooks.disable,
-      undefined,
-    );
-    assert.strictEqual(
-      // @ts-expect-error no registered hooks
-      emptyHooks.enable,
-      undefined,
-    );
-    assert.strictEqual(
-      // @ts-expect-error a widened hook list cannot guarantee flag controls
-      hooksFromWidenedList.enable,
-      undefined,
-    );
-    assert.strictEqual(
-      // @ts-expect-error a widened hook list cannot guarantee flag controls
-      hooksFromMaybeFlagList.enable,
-      undefined,
-    );
-
-    const checkTupleUnion = (hookTuple: ["flag:dark"] | ["&:hover"]) => {
-      const uncertainHooks = createHooks(...hookTuple);
-      // @ts-expect-error a tuple union cannot guarantee flag controls
-      return uncertainHooks.enable;
-    };
-    assert.strictEqual(typeof checkTupleUnion, "function");
-  });
-
   it("only accepts the short names of registered flags", () => {
     const hooks = createHooks("flag:dark", "flag:compact", "&:hover");
 
@@ -887,6 +838,17 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
       padding: 0,
     }),
   );
+}
+
+// flag controls are only exposed in types when flags are registered
+{
+  const createHooks = buildHooksSystem<CSS.Properties>();
+  const hooks = createHooks("&:hover");
+
+  // @ts-expect-error no flag hooks registered
+  void hooks.enable;
+  // @ts-expect-error no flag hooks registered
+  void hooks.disable;
 }
 
 // exact style inference across transforms
