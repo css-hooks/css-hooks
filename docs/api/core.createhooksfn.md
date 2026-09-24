@@ -9,9 +9,9 @@ Represents the function used to define hooks and related configuration.
 **Signature:**
 
 ```typescript
-export type CreateHooksFn<CSSProperties, CSSPropertyConflicts extends object = object> = <const Hooks extends Hook[]>(...hooks: Hooks) => CreateHooksResult<Hooks, CSSProperties, CSSPropertyConflicts>;
+export type CreateHooksFn<CSSProperties, CSSPropertyConflicts extends object = object> = <const ConfiguredHooks extends Hook[]>(...hooks: ConfiguredHooks) => Hooks<ConfiguredHooks, CSSProperties, CSSPropertyConflicts>;
 ```
-**References:** [Hook](./core.hook.md)<!-- -->, [CreateHooksResult](./core.createhooksresult.md)
+**References:** [Hook](./core.hook.md)<!-- -->, [Hooks](./core.hooks.md)
 
 ## Remarks
 

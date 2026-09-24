@@ -4,10 +4,10 @@
 
 ## createHooks variable
 
-A [CreateHooksFn](./core.createhooksfn.md) configured to use Solid's `JSX.CSSProperties` type and logic for converting CSS values into strings
+A hook factory configured to use Solid's `JSX.CSSProperties` type and logic for converting CSS values into strings
 
 **Signature:**
 
 ```typescript
-createHooks: CreateHooksFn<JSX.CSSProperties, CSSPropertyConflicts>
+createHooks: import("@css-hooks/core").CreateHooksFn<JSX.CSSProperties, CSSPropertyConflicts>
 ```

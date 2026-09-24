@@ -120,7 +120,7 @@ type CSSPropertiesWithoutConflicts<
  * An object containing the functions needed to support and use the configured
  * hooks
  *
- * @typeParam Hooks - The tuple of configured hooks
+ * @typeParam ConfiguredHooks - The tuple of configured hooks
  * @typeParam CSSProperties - The type of a style object, typically defined by
  *   an app framework (e.g., React's `CSSProperties` type)
  * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
@@ -128,8 +128,8 @@ type CSSPropertiesWithoutConflicts<
  *
  * @public
  */
-export type CreateHooksResult<
-  Hooks extends readonly Hook[],
+export type Hooks<
+  ConfiguredHooks extends readonly Hook[],
   CSSProperties,
   CSSPropertyConflicts extends object,
 > = {
@@ -141,7 +141,7 @@ export type CreateHooksResult<
     OverrideCSSProperties extends CSSProperties,
     BaseCSSProperties extends CSSProperties,
   >(
-    condition: Condition<Hooks[number]>,
+    condition: Condition<ConfiguredHooks[number]>,
     overrideStyle: OverrideCSSProperties,
   ) => (
     style: CSSProperties &
@@ -166,7 +166,11 @@ export type CreateHooksResult<
    * @returns A condition that is true when all of the specified conditions are
    *   true
    */
-  and: <C extends Condition<Hooks[number]>[]>(...conditions: C) => { and: C };
+  and: <C extends Condition<ConfiguredHooks[number]>[]>(
+    ...conditions: C
+  ) => {
+    and: C;
+  };
 
   /**
    * Combines a list of conditions into a single condition which is true when
@@ -181,7 +185,11 @@ export type CreateHooksResult<
    * @returns A condition that is true when any of the specified conditions are
    *   true
    */
-  or: <C extends Condition<Hooks[number]>[]>(...conditions: C) => { or: C };
+  or: <C extends Condition<ConfiguredHooks[number]>[]>(
+    ...conditions: C
+  ) => {
+    or: C;
+  };
 
   /**
    * Negates a condition.
@@ -194,18 +202,22 @@ export type CreateHooksResult<
    *
    * @returns A condition that is true when the specified condition is false.
    */
-  not: <C extends Condition<Hooks[number]>>(condition: C) => { not: C };
+  not: <C extends Condition<ConfiguredHooks[number]>>(
+    condition: C,
+  ) => {
+    not: C;
+  };
 
   /** Returns the style sheet required to support the configured hooks. */
   styleSheet: () => string;
-} & ([FlagName<Hooks>] extends [never]
+} & ([FlagName<ConfiguredHooks>] extends [never]
   ? unknown
   : {
       /** Returns style declarations that enable a flag for descendants. */
-      enable: (flag: FlagName<Hooks>) => FlagStyle;
+      enable: (flag: FlagName<ConfiguredHooks>) => FlagStyle;
 
       /** Returns style declarations that disable a flag for descendants. */
-      disable: (flag: FlagName<Hooks>) => FlagStyle;
+      disable: (flag: FlagName<ConfiguredHooks>) => FlagStyle;
     });
 
 /**
@@ -220,7 +232,7 @@ export type CreateHooksResult<
  *   an app framework (e.g., React's `CSSProperties` type)
  * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
  *   with which they conflict
- * @typeParam Hooks - The tuple of hooks to create
+ * @typeParam ConfiguredHooks - The tuple of hooks to create
  *
  * @param hooks - The hooks to create
  *
@@ -232,26 +244,44 @@ export type CreateHooksResult<
 export type CreateHooksFn<
   CSSProperties,
   CSSPropertyConflicts extends object = object,
-> = <const Hooks extends Hook[]>(
-  ...hooks: Hooks
-) => CreateHooksResult<Hooks, CSSProperties, CSSPropertyConflicts>;
+> = <const ConfiguredHooks extends Hook[]>(
+  ...hooks: ConfiguredHooks
+) => Hooks<ConfiguredHooks, CSSProperties, CSSPropertyConflicts>;
 
 /**
- * Merges an override style prop into a base style.
+ * The functions configured by `buildHooksSystem` for a specific app framework
  *
- * @remarks
- * Override properties are moved to the end of the resulting object so their
- * declaration order takes precedence over properties in the base style.
- *
- * @typeParam OverrideStyle - The type of the override style prop
- *
- * @param overrideStyle - The style whose properties should take precedence
- *
- * @returns A curried function that merges `overrideStyle` with a base style
+ * @typeParam CSSProperties - The type of a style object, typically defined by
+ *   an app framework (e.g., React's `CSSProperties` type)
+ * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
+ *   with which they conflict
  *
  * @public
  */
-export function mergeStyles<const OverrideStyle extends object>(
+export type HooksSystem<
+  CSSProperties,
+  CSSPropertyConflicts extends object = object,
+> = {
+  /** Creates functions for the configured hooks. */
+  createHooks: CreateHooksFn<CSSProperties, CSSPropertyConflicts>;
+
+  /** Merges an override style using the configured style type. */
+  mergeStyles: <
+    const OverrideStyle extends CSSProperties,
+    Style extends CSSProperties,
+  >(
+    overrideStyle: OverrideStyle | null | undefined,
+  ) => {
+    <ActualStyle extends CSSProperties>(
+      style: ActualStyle,
+    ): Omit<ActualStyle, keyof OverrideStyle> & OverrideStyle;
+    (
+      style: CSSProperties & Style,
+    ): Omit<Style, keyof OverrideStyle> & OverrideStyle;
+  };
+};
+
+function mergeStyles<const OverrideStyle extends object>(
   overrideStyle: OverrideStyle | null | undefined,
 ): <Style extends object>(
   style: Style,
@@ -291,8 +321,8 @@ export function mergeStyles<const OverrideStyle extends object>(
  * @param stringify - The function used to stringify values when merging
  *   override styles
  *
- * @returns The `createHooks` function used to bootstrap CSS Hooks within an app
- *   or component library
+ * @returns The functions used to bootstrap CSS Hooks within an app or component
+ *   library
  *
  * @public
  */
@@ -302,8 +332,12 @@ export function buildHooksSystem<
   CSSPropertyConflicts extends object = object,
 >(
   stringify: StringifyFn = String,
-): CreateHooksFn<CSSProperties, CSSPropertyConflicts> {
-  return <const Hooks extends Hook[]>(...hooks: Hooks) => {
+): HooksSystem<CSSProperties, CSSPropertyConflicts> {
+  const createHooks: CreateHooksFn<CSSProperties, CSSPropertyConflicts> = <
+    const Hooks extends Hook[],
+  >(
+    ...hooks: Hooks
+  ) => {
     type H = Hooks[number];
     let space = "";
     let newline = "";
@@ -500,6 +534,14 @@ export function buildHooksSystem<
         };
       },
     };
+  };
+
+  return {
+    createHooks,
+    mergeStyles: mergeStyles as HooksSystem<
+      CSSProperties,
+      CSSPropertyConflicts
+    >["mergeStyles"],
   };
 }
 

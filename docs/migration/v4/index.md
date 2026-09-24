@@ -7,10 +7,31 @@ hidden: true
 
 # Migrating to v4
 
-v4 makes no breaking changes to the existing public runtime API. Apps using
-`@css-hooks/core` or `@css-hooks/react` can upgrade without changing their CSS
-Hooks code, but the other framework integrations have updated compatibility
-requirements.
+Apps using a framework integration can upgrade without changing their CSS Hooks
+code, but `@css-hooks/core` has an updated setup API and some framework
+integrations have updated compatibility requirements.
+
+## Core setup
+
+`buildHooksSystem` now returns an object containing `createHooks` and
+`mergeStyles`, rather than returning `createHooks` directly. Destructure the
+functions your integration needs from the result:
+
+```typescript
+// v3
+import { buildHooksSystem } from "@css-hooks/core";
+
+const createHooks = buildHooksSystem<CSSProperties>(stringify);
+
+// v4
+import { buildHooksSystem } from "@css-hooks/core";
+
+const { createHooks, mergeStyles } = buildHooksSystem<CSSProperties>(stringify);
+```
+
+The new `mergeStyles` function is bound to the same CSS properties type as
+`createHooks` and preserves contextual style inference when it is used in a
+pipeline.
 
 ## Framework compatibility
 

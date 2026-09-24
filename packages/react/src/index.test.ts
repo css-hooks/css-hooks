@@ -8,6 +8,7 @@ import {
   _stringifyValue as stringifyValue,
   _unitlessNumbers as unitlessNumbers,
   createHooks,
+  mergeStyles,
 } from "./index.ts";
 
 describe("`stringifyValue` function", () => {
@@ -89,4 +90,22 @@ describe("`stringifyValue` function", () => {
     on("&", { animationName: "dialogOut" }),
     on("&", { animationName: "dialogIn" }),
   ) satisfies CSSProperties;
+}
+
+// flag declarations can be included in conditional override styles
+{
+  const { on, enable } = createHooks("&", "flag:dark");
+
+  pipe(
+    {},
+    on(
+      "&",
+      pipe(
+        {
+          boxShadow: "0 0 0 1px red",
+        },
+        mergeStyles(enable("dark")),
+      ),
+    ),
+  );
 }
