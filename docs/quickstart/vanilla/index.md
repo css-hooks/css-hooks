@@ -23,7 +23,7 @@ Create a module for styling utilities:
 
 import { buildHooksSystem } from "@css-hooks/core";
 
-const createHooks = buildHooksSystem();
+const { createHooks } = buildHooksSystem();
 
 export const { on, styleSheet } = createHooks("&:active");
 ```

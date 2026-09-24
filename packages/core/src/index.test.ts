@@ -9,7 +9,8 @@ import type { Browser, Page } from "playwright";
 import { chromium, firefox, webkit } from "playwright";
 import { pipe } from "remeda";
 
-import { buildHooksSystem, mergeStyles } from "./index.ts";
+import type { Hook } from "./index.ts";
+import { buildHooksSystem } from "./index.ts";
 
 events.setMaxListeners(50);
 
@@ -41,6 +42,8 @@ function withMode<T>(mode: Parameters<typeof useMode>[0], f: () => T): T {
 }
 
 describe("`mergeStyles` function", () => {
+  const { mergeStyles } = buildHooksSystem();
+
   it("merges an override style without modifying either input", () => {
     const baseStyle = { color: "red", display: "block" };
     const overrideStyle = { color: "blue", opacity: 0.5 };
@@ -73,23 +76,10 @@ describe("`mergeStyles` function", () => {
     assert.strictEqual(style, baseStyle);
     style satisfies typeof baseStyle;
   });
-
-  it("preserves exact style types", () => {
-    const style = pipe(
-      { color: "red", display: "block" } as const,
-      mergeStyles({ color: "blue", opacity: 0.5 }),
-    );
-
-    style satisfies {
-      color: "blue";
-      display: "block";
-      opacity: 0.5;
-    };
-  });
 });
 
 describe(`in ${selectedBrowser}`, () => {
-  const createHooks = buildHooksSystem<CSS.Properties>();
+  const { createHooks } = buildHooksSystem<CSS.Properties>();
 
   let browser: Browser, page: Page;
 
@@ -120,22 +110,20 @@ describe(`in ${selectedBrowser}`, () => {
     return page.evaluate(
       ({ tag, style, parentSelector }) => {
         const el = document.createElement(tag);
-        el.setAttribute("style", style);
+        for (const [property, value] of Object.entries(style)) {
+          el.style.setProperty(
+            property.startsWith("--")
+              ? property
+              : property.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`),
+            String(value),
+          );
+        }
         document.querySelector(parentSelector)?.appendChild(el);
       },
       {
         tag,
         parentSelector,
-        style: Object.entries(style)
-          .map(
-            ([property, value]) =>
-              `${
-                property.startsWith("--")
-                  ? property
-                  : property.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`)
-              }:${value}`,
-          )
-          .join(";"),
+        style,
       },
     );
   }
@@ -220,6 +208,119 @@ describe(`in ${selectedBrowser}`, () => {
         );
 
         assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
+      });
+
+      it("applies boolean flags to descendants", async () => {
+        const { styleSheet, on, enable, disable } = createHooks("flag:dark");
+
+        await page.addStyleTag({ content: styleSheet() });
+
+        const expectedDefaultColor = Color("gray"),
+          expectedEnabledColor = Color("blue");
+        const consumerStyle = pipe(
+          { color: expectedDefaultColor.string() },
+          on("flag:dark", { color: expectedEnabledColor.string() }),
+        );
+
+        await createStyledElement("p", consumerStyle);
+        await createStyledElement("main", {
+          ...enable("dark"),
+          ...consumerStyle,
+        });
+        await createStyledElement("span", consumerStyle, "main");
+        await createStyledElement(
+          "section",
+          { ...disable("dark"), ...consumerStyle },
+          "main",
+        );
+        await createStyledElement("i", consumerStyle, "section");
+        await createStyledElement(
+          "article",
+          { ...enable("dark"), ...consumerStyle },
+          "section",
+        );
+        await createStyledElement("strong", consumerStyle, "article");
+
+        for (const selector of ["p", "main", "i", "article"]) {
+          assert.deepStrictEqual(
+            Color(await getComputedPropertyValue(selector, "color")),
+            expectedDefaultColor,
+          );
+        }
+        for (const selector of ["span", "section", "strong"]) {
+          assert.deepStrictEqual(
+            Color(await getComputedPropertyValue(selector, "color")),
+            expectedEnabledColor,
+          );
+        }
+      });
+
+      it("composes flags with selector hooks", async () => {
+        const { styleSheet, on, and, enable } = createHooks(
+          "flag:dark",
+          "&.active",
+        );
+
+        await page.addStyleTag({ content: styleSheet() });
+
+        await createStyledElement("main", enable("dark"));
+        await createStyledElement(
+          "button",
+          pipe(
+            { color: "gray" },
+            on(and("flag:dark", "&.active"), { color: "blue" }),
+          ),
+          "main",
+        );
+
+        assert.deepStrictEqual(
+          Color(await getComputedPropertyValue("button", "color")),
+          Color("gray"),
+        );
+        await queryAndSetClassName("button", "active");
+        assert.deepStrictEqual(
+          Color(await getComputedPropertyValue("button", "color")),
+          Color("blue"),
+        );
+      });
+
+      it("conditionally inverts flags for descendants", async () => {
+        const { styleSheet, on, enable, disable } = createHooks("flag:dark");
+        const consumerStyle = pipe(
+          { color: "gray" },
+          on("flag:dark", { color: "blue" }),
+        );
+        const invertedStyle = pipe(
+          enable("dark"),
+          on("flag:dark", disable("dark")),
+        );
+
+        await page.addStyleTag({ content: styleSheet() });
+        await createStyledElement("main", enable("dark"));
+        await createStyledElement(
+          "section",
+          { ...invertedStyle, ...consumerStyle },
+          "main",
+        );
+        await createStyledElement("span", consumerStyle, "section");
+        await createStyledElement(
+          "article",
+          { ...invertedStyle, ...consumerStyle },
+          "section",
+        );
+        await createStyledElement("strong", consumerStyle, "article");
+
+        for (const [selector, expectedColor] of [
+          ["section", "blue"],
+          ["span", "gray"],
+          ["article", "gray"],
+          ["strong", "blue"],
+        ] as const) {
+          assert.deepStrictEqual(
+            Color(await getComputedPropertyValue(selector, "color")),
+            Color(expectedColor),
+          );
+        }
       });
     });
 
@@ -410,8 +511,32 @@ describe(`in ${selectedBrowser}`, () => {
   }
 });
 
+it("generates flag state rules", () => {
+  const { createHooks } = buildHooksSystem<CSS.Properties>();
+
+  const { styleSheet, enable, disable } = createHooks("flag:dark");
+
+  const enabled = enable("dark"),
+    disabled = disable("dark"),
+    [flagVariable] = Object.keys(enabled);
+
+  assert(flagVariable);
+  assert.deepStrictEqual(enabled, { [flagVariable]: "on" });
+  assert.deepStrictEqual(disabled, { [flagVariable]: "off" });
+
+  const css = styleSheet();
+  assert(css.includes(`@property ${flagVariable}`));
+  assert.match(css, /syntax:\s*"<custom-ident>"/);
+  assert.match(css, /inherits:\s*true/);
+  assert.match(css, /initial-value:\s*off/);
+  assert.match(
+    css,
+    new RegExp(`@container\\s+style\\(${flagVariable}:\\s*on\\)`),
+  );
+});
+
 it("uses the specified stringify function when merging values", () => {
-  const createHooks = buildHooksSystem<CSS.Properties>(
+  const { createHooks } = buildHooksSystem<CSS.Properties>(
     (value, propertyName) =>
       `${propertyName}__${
         typeof value === "string" || typeof value === "number" ? value : ""
@@ -431,7 +556,7 @@ it("uses the specified stringify function when merging values", () => {
 });
 
 it("uses fixed-width hashes without known polynomial collisions", () => {
-  const createHooks = buildHooksSystem();
+  const { createHooks } = buildHooksSystem();
   const { styleSheet } = createHooks("&.Aa", "&.BB");
   const propertyNames = [...styleSheet().matchAll(/--([^:]+):/g)].map(match => {
     const propertyName = match[1];
@@ -447,7 +572,7 @@ it("uses fixed-width hashes without known polynomial collisions", () => {
 });
 
 describe("in production mode (vs. debug)", () => {
-  const createHooks = buildHooksSystem<CSS.Properties>();
+  const { createHooks } = buildHooksSystem<CSS.Properties>();
 
   const { styleSheet, on, and, or, not } = createHooks(
     "&:hover",
@@ -518,7 +643,7 @@ describe("in production mode (vs. debug)", () => {
 
 it("produces the same result twice given the same style object reference", () => {
   // This is to avoid issues in React Strict Mode. See #167.
-  const createHooks = buildHooksSystem<CSS.Properties>();
+  const { createHooks } = buildHooksSystem<CSS.Properties>();
 
   const { on } = createHooks("&:hover");
 
@@ -544,7 +669,7 @@ it("produces the same result twice given the same style object reference", () =>
 });
 
 it("skips a conditional value that can't be stringified", () => {
-  const createHooks = buildHooksSystem<CSS.Properties<string | number>>(
+  const { createHooks } = buildHooksSystem<CSS.Properties<string | number>>(
     value => (typeof value === "string" ? value : null),
   );
   const { on } = createHooks("&:hover");
@@ -557,7 +682,7 @@ it("skips a conditional value that can't be stringified", () => {
 });
 
 it('uses "revert-layer" in place of a fallback value that can\'t be stringified', () => {
-  const createHooks = buildHooksSystem<CSS.Properties<string | number>>(
+  const { createHooks } = buildHooksSystem<CSS.Properties<string | number>>(
     value => (typeof value === "string" ? value : null),
   );
   const { on } = createHooks("&:hover");
@@ -570,9 +695,25 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 
 // type-level tests
 
+// public hook type
+{
+  "&:hover" satisfies Hook;
+  "@media (width < 600px)" satisfies Hook;
+  "@container (width > 300px)" satisfies Hook;
+  "@supports (display: grid)" satisfies Hook;
+  "@scope (.theme)" satisfies Hook;
+  "@starting-style" satisfies Hook;
+  "flag:dark" satisfies Hook;
+
+  // @ts-expect-error selectors require an ampersand placeholder
+  ".active" satisfies Hook;
+  // @ts-expect-error unsupported at-rule
+  "@layer theme" satisfies Hook;
+}
+
 // @scope hooks require an explicit root
 {
-  const createHooks = buildHooksSystem();
+  const { createHooks } = buildHooksSystem();
 
   createHooks("@scope (.theme)");
   createHooks("@scope (.theme) to (.nested-theme)");
@@ -585,12 +726,12 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 
 // conflict protection
 {
-  const createHooks = buildHooksSystem<
+  const { createHooks, mergeStyles } = buildHooksSystem<
     CSS.Properties<number>,
     { margin: "marginTop"; padding: "paddingTop" }
   >();
 
-  const { on } = createHooks("&");
+  const { on, disable } = createHooks("&", "flag:dark");
 
   // defined in conflict map
   pipe(
@@ -647,11 +788,62 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
     }),
     mergeStyles({} as CSS.Properties<number>),
   );
+
+  pipe(
+    { paddingTop: 0 as const },
+    mergeStyles(disable("dark")),
+  ) satisfies CSS.Properties<number>;
+
+  pipe(
+    { color: "red" },
+    mergeStyles({ ...disable("dark"), color: "blue" }),
+  ) satisfies { color: "blue" };
+
+  pipe(
+    // @ts-expect-error flag declarations do not mask earlier conflicts
+    pipe(
+      {
+        paddingTop: 0,
+      },
+      mergeStyles(disable("dark")),
+    ),
+    on("&", {
+      padding: 0,
+    }),
+  );
+}
+
+// flag controls are only exposed in types when flags are registered
+{
+  const { createHooks } = buildHooksSystem<CSS.Properties>();
+  const hooks = createHooks("&:hover");
+
+  // @ts-expect-error no flag hooks registered
+  void hooks.enable;
+  // @ts-expect-error no flag hooks registered
+  void hooks.disable;
+}
+
+// flag controls only accept the short names of registered flags
+{
+  const { createHooks } = buildHooksSystem<CSS.Properties>();
+
+  const hooks = createHooks("flag:dark", "flag:compact", "&:hover");
+
+  hooks.enable("dark") satisfies CSS.Properties;
+  hooks.disable("compact") satisfies CSS.Properties;
+
+  // @ts-expect-error prefixes are omitted when setting flags
+  "flag:dark" satisfies Parameters<typeof hooks.enable>[0];
+  // @ts-expect-error ordinary hooks cannot be set as flags
+  "&:hover" satisfies Parameters<typeof hooks.disable>[0];
+  // @ts-expect-error the flag was not registered
+  "missing" satisfies Parameters<typeof hooks.enable>[0];
 }
 
 // exact style inference across transforms
 {
-  const createHooks = buildHooksSystem<
+  const { createHooks } = buildHooksSystem<
     {
       color?: string;
       textDecoration?: string;
@@ -663,7 +855,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 
   const style = pipe(
     { color: "red", textDecoration: "none" },
-    on("&", { color: "green" as const }),
+    on("&", { color: "green" }),
     on("&", { color: "blue" as const }),
     on("&", { textDecoration: "underline" as const }),
   );
@@ -680,7 +872,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
     minHeight?: string;
   };
 
-  const createHooks = buildHooksSystem<
+  const { createHooks } = buildHooksSystem<
     CSSProperties,
     { background: "backgroundAttachment" }
   >();
@@ -691,4 +883,46 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
     on("&", { minHeight: "100dvh" }),
     on("&", { background: "black" }),
   );
+}
+
+// bound style merging preserves contextual style inference in a pipe
+{
+  const { createHooks, mergeStyles } =
+    buildHooksSystem<CSS.Properties<number>>();
+
+  const hooks = createHooks("flag:dark");
+  const { on, enable, disable } = hooks;
+
+  pipe(
+    {
+      flexDirection: "column",
+    },
+    mergeStyles(enable("dark")),
+    on("flag:dark", disable("dark")),
+  ) satisfies CSS.Properties<number>;
+
+  pipe(
+    {
+      // @ts-expect-error the base style is contextually typed
+      flexDirection: "invalid",
+    },
+    mergeStyles(enable("dark")),
+  );
+}
+
+// mergeStyles preserves exact style types
+{
+  const { mergeStyles } = buildHooksSystem<CSS.Properties>();
+
+  pipe(
+    {
+      color: "red",
+      display: "block" as const,
+    },
+    mergeStyles({ color: "blue", opacity: 0.5 }),
+  ) satisfies {
+    color: "blue";
+    display: "block";
+    opacity: 0.5;
+  };
 }

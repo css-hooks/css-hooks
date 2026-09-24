@@ -30,43 +30,6 @@ Creates a flavor of CSS Hooks tailored to a specific app framework.
 
 
 </td></tr>
-<tr><td>
-
-[mergeStyles(overrideStyle)](./core.mergestyles.md)
-
-
-</td><td>
-
-Merges an override style prop into a base style.
-
-
-</td></tr>
-</tbody></table>
-
-## Interfaces
-
-<table><thead><tr><th>
-
-Interface
-
-
-</th><th>
-
-Description
-
-
-</th></tr></thead>
-<tbody><tr><td>
-
-[CreateHooksResult](./core.createhooksresult.md)
-
-
-</td><td>
-
-An object containing the functions needed to support and use the configured hooks
-
-
-</td></tr>
 </tbody></table>
 
 ## Type Aliases
@@ -106,12 +69,34 @@ Represents the function used to define hooks and related configuration.
 </td></tr>
 <tr><td>
 
-[Selector](./core.selector.md)
+[Hook](./core.hook.md)
 
 
 </td><td>
 
-Represents the selector logic used to create a hook.
+Represents a hook registered with `createHooks`<!-- -->.
+
+
+</td></tr>
+<tr><td>
+
+[Hooks](./core.hooks.md)
+
+
+</td><td>
+
+An object containing the functions needed to support and use the configured hooks
+
+
+</td></tr>
+<tr><td>
+
+[HooksSystem](./core.hookssystem.md)
+
+
+</td><td>
+
+The functions configured by `buildHooksSystem` for a specific app framework
 
 
 </td></tr>

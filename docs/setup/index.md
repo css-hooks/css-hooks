@@ -66,7 +66,7 @@ When using the core package, create the `createHooks` function first:
 
 import { buildHooksSystem } from "@css-hooks/core";
 
-const createHooks = buildHooksSystem();
+const { createHooks } = buildHooksSystem();
 
 export const { on, styleSheet } = createHooks("&:hover");
 ```

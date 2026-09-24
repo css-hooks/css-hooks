@@ -1,21 +1,22 @@
 ---
 title: Configuration
-description: Defining the selectors and at-rules available to your style props
+description:
+  Defining the selectors, at-rules, and flags available to your style props
 order: 4
 ---
 
 # Configuration
 
-Register each selector and at-rule that your components will use with `on()`.
-The generated stylesheet evaluates these conditions, while the component's style
-object supplies the declarations.
+Register each selector, at-rule, and flag that your components will use by
+passing it to `createHooks()`. The generated stylesheet evaluates these
+conditions, while the component's style object supplies the declarations.
 
 ```typescript
 // src/css.ts
 
 import { createHooks } from "@css-hooks/react";
 
-export const { on, and, or, not, styleSheet } = createHooks(
+export const { on, and, or, not, enable, disable, styleSheet } = createHooks(
   "&:hover",
   "&:focus-visible",
   "&:active",
@@ -23,6 +24,7 @@ export const { on, and, or, not, styleSheet } = createHooks(
   "@container (min-width: 320px)",
   "@supports (height: 100dvh)",
   "@scope ([data-theme='dark']) to ([data-theme])",
+  "flag:dark",
 );
 ```
 
@@ -57,6 +59,42 @@ Hooks support `@media`, `@container`, `@supports`, `@scope`, and
 
 `@scope` hooks require an explicit scope root. They apply to the root and its
 scoped descendants, excluding any scope limit and its descendants.
+
+## Flags
+
+Register a `flag:<name>` hook to condition styles on inherited boolean state.
+Registered flags are disabled by default. Use `enable()` or `disable()` with the
+short flag name to set the state for an element's descendants:
+
+```tsx
+const darkStyle = enable("dark");
+
+const panelStyle = pipe(
+  { background: "#fff", color: "#000" },
+  on("flag:dark", { background: "#000", color: "#fff" }),
+);
+```
+
+A nested setter overrides the inherited state for its subtree:
+
+```tsx
+<main style={enable("dark")}>
+  <section style={disable("dark")}>{/* Light subtree */}</section>
+</main>
+```
+
+The element carrying `enable()` or `disable()` still observes the state from its
+nearest ancestor. Only its descendants observe the newly assigned state. This
+also makes it possible to invert a flag without creating a custom-property
+cycle:
+
+```typescript
+const invertDark = pipe(enable("dark"), on("flag:dark", disable("dark")));
+```
+
+`createHooks()` only returns `enable()` and `disable()` when at least one flag
+is registered. Their arguments are restricted to the short names of the flags
+from that call.
 
 ## Compose reusable conditions
 

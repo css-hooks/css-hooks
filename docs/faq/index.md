@@ -8,9 +8,9 @@ order: 7
 
 ## How does CSS Hooks work?
 
-CSS Hooks generates a small stylesheet that tracks the registered selectors and
-at-rules with custom properties. The declarations themselves remain in each
-element's style object. This is why conditions such as `&:hover` and
+CSS Hooks generates a small stylesheet that tracks the registered selectors,
+at-rules, and flags with custom properties. The declarations themselves remain
+in each element's style object. This is why conditions such as `&:hover` and
 `@container` can control override styles without creating a new stylesheet for
 each component.
 
@@ -51,12 +51,11 @@ the pseudo-element rule in a stylesheet.
 
 ## Is CSS Hooks widely supported in browsers?
 
-CSS Hooks requires support for the `revert-layer` keyword, which is available in
-all modern browsers:
+CSS Hooks supports the following browser versions:
 
 | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/chrome/chrome_24x24.png" alt="Chrome" /><br/>Chrome | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/edge/edge_24x24.png" alt="Edge" /><br/>Edge | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/safari/safari_24x24.png" alt="Safari" /><br/>Safari | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/firefox/firefox_24x24.png" alt="Firefox" /><br/>Firefox | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/opera/opera_24x24.png" alt="Opera" /><br/>Opera |
 | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| <div align="center">99+</div>                                                                                             | <div align="center">99+</div>                                                                                     | <div align="center">15.4+</div>                                                                                           | <div align="center">97+</div>                                                                                                 | <div align="center">85+</div>                                                                                         |
+| <div align="center">111+</div>                                                                                            | <div align="center">111+</div>                                                                                    | <div align="center">18+</div>                                                                                             | <div align="center">151+</div>                                                                                                | <div align="center">98+</div>                                                                                         |
 
 ## Do inline styles negatively impact performance?
 

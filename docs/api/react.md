@@ -6,6 +6,32 @@
 
 CSS Hooks for [React](https://react.dev)
 
+## Functions
+
+<table><thead><tr><th>
+
+Function
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[mergeStyles(overrideStyle)](./react.mergestyles.md)
+
+
+</td><td>
+
+A style merger configured to use React's `CSSProperties` type.
+
+
+</td></tr>
+</tbody></table>
+
 ## Variables
 
 <table><thead><tr><th>
@@ -26,7 +52,7 @@ Description
 
 </td><td>
 
-A [CreateHooksFn](./core.createhooksfn.md) configured to use React's `CSSProperties` type and logic for converting CSS values into strings
+A hook factory configured to use React's `CSSProperties` type and logic for converting CSS values into strings
 
 
 </td></tr>

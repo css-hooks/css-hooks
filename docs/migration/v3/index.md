@@ -42,7 +42,7 @@ along with several options. The `on` function in v3 is smaller in scope than the
 
 Key changes:
 
-- Hooks are now identified by their selector logic, no longer using aliases.
+- Hooks are now identified by their string values, no longer using aliases.
 - Complex conditions are defined using the `and`, `or`, and `not` functions
   instead of configuring them globally.
 

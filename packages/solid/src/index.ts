@@ -4,23 +4,23 @@
  * @packageDocumentation
  */
 
-import type { CreateHooksFn } from "@css-hooks/core";
 import { buildHooksSystem } from "@css-hooks/core";
 import type { JSX } from "@solidjs/web";
 
 import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
 export type * from "@css-hooks/core";
-export { mergeStyles } from "@css-hooks/core";
 export type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
+const hooksSystem = buildHooksSystem<JSX.CSSProperties, CSSPropertyConflicts>();
+
 /**
- * A {@link @css-hooks/core#CreateHooksFn} configured to use Solid's
- * `JSX.CSSProperties` type and logic for converting CSS values into strings
+ * A hook factory configured to use Solid's `JSX.CSSProperties` type and logic
+ * for converting CSS values into strings
  *
  * @public
  */
-export const createHooks: CreateHooksFn<
-  JSX.CSSProperties,
-  CSSPropertyConflicts
-> = buildHooksSystem<JSX.CSSProperties, CSSPropertyConflicts>();
+export const createHooks = hooksSystem.createHooks;
+
+/** A style merger configured to use Solid's `JSX.CSSProperties` type. @public */
+export const mergeStyles = hooksSystem.mergeStyles;
