@@ -869,8 +869,8 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
   styleWithDisabledFlag satisfies { paddingTop: 0 };
 
   const styleWithDisabledFlagAndOverride = pipe(
-    { color: "red" as const },
-    mergeStyles({ ...disable("dark"), color: "blue" as const }),
+    { color: "red" },
+    mergeStyles({ ...disable("dark"), color: "blue" }),
   );
   styleWithDisabledFlagAndOverride satisfies { color: "blue" };
 
@@ -903,7 +903,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 
   const style = pipe(
     { color: "red", textDecoration: "none" },
-    on("&", { color: "green" as const }),
+    on("&", { color: "green" }),
     on("&", { color: "blue" as const }),
     on("&", { textDecoration: "underline" as const }),
   );
