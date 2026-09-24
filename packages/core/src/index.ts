@@ -82,7 +82,7 @@ type FlagName<Hooks extends readonly Hook[]> =
           : FlagName<Tail>
       : never;
 
-/** Style declarations that set an inherited flag for descendants. */
+/** Style declarations that set an inherited flag for descendants */
 type FlagStyle = { [P in `--${string}`]: string };
 
 /**
@@ -499,7 +499,7 @@ export function buildHooksSystem<
           }
         };
       },
-    } as CreateHooksResult<Hooks, CSSProperties, CSSPropertyConflicts>;
+    };
   };
 }
 
