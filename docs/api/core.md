@@ -43,32 +43,6 @@ Merges an override style prop into a base style.
 </td></tr>
 </tbody></table>
 
-## Interfaces
-
-<table><thead><tr><th>
-
-Interface
-
-
-</th><th>
-
-Description
-
-
-</th></tr></thead>
-<tbody><tr><td>
-
-[CreateHooksResult](./core.createhooksresult.md)
-
-
-</td><td>
-
-An object containing the functions needed to support and use the configured hooks
-
-
-</td></tr>
-</tbody></table>
-
 ## Type Aliases
 
 <table><thead><tr><th>
@@ -101,6 +75,17 @@ Represents the conditions under which a given hook or declaration applies.
 </td><td>
 
 Represents the function used to define hooks and related configuration.
+
+
+</td></tr>
+<tr><td>
+
+[CreateHooksResult](./core.createhooksresult.md)
+
+
+</td><td>
+
+An object containing the functions needed to support and use the configured hooks
 
 
 </td></tr>

@@ -2,133 +2,29 @@
 
 [Home](./index.md) &gt; [@css-hooks/core](./core.md) &gt; [CreateHooksResult](./core.createhooksresult.md)
 
-## CreateHooksResult interface
+## CreateHooksResult type
 
 An object containing the functions needed to support and use the configured hooks
 
 **Signature:**
 
 ```typescript
-export interface CreateHooksResult<H, CSSProperties, CSSPropertyConflicts extends object> 
+export type CreateHooksResult<Hooks extends readonly Hook[], CSSProperties, CSSPropertyConflicts extends object> = {
+    on: <OverrideCSSProperties extends CSSProperties, BaseCSSProperties extends CSSProperties>(condition: Condition<Hooks[number]>, overrideStyle: OverrideCSSProperties) => (style: CSSProperties & CSSPropertiesWithoutConflicts<BaseCSSProperties, CSSPropertyConflicts, OverrideCSSProperties>) => Omit<BaseCSSProperties, keyof OverrideCSSProperties> & OverrideCSSProperties;
+    and: <C extends Condition<Hooks[number]>[]>(...conditions: C) => {
+        and: C;
+    };
+    or: <C extends Condition<Hooks[number]>[]>(...conditions: C) => {
+        or: C;
+    };
+    not: <C extends Condition<Hooks[number]>>(condition: C) => {
+        not: C;
+    };
+    styleSheet: () => string;
+} & ([FlagName<Hooks>] extends [never] ? unknown : {
+    enable: (flag: FlagName<Hooks>) => FlagStyle;
+    disable: (flag: FlagName<Hooks>) => FlagStyle;
+});
 ```
-
-## Properties
-
-<table><thead><tr><th>
-
-Property
-
-
-</th><th>
-
-Modifiers
-
-
-</th><th>
-
-Type
-
-
-</th><th>
-
-Description
-
-
-</th></tr></thead>
-<tbody><tr><td>
-
-[and](./core.createhooksresult.and.md)
-
-
-</td><td>
-
-
-</td><td>
-
-&lt;C extends [Condition](./core.condition.md)<!-- -->&lt;H&gt;\[\]&gt;(...conditions: C) =&gt; { and: C; }
-
-
-</td><td>
-
-Combines a list of conditions into a single condition which is true when all of the specified conditions are true.
-
-
-</td></tr>
-<tr><td>
-
-[not](./core.createhooksresult.not.md)
-
-
-</td><td>
-
-
-</td><td>
-
-&lt;C extends [Condition](./core.condition.md)<!-- -->&lt;H&gt;&gt;(condition: C) =&gt; { not: C; }
-
-
-</td><td>
-
-Negates a condition.
-
-
-</td></tr>
-<tr><td>
-
-[on](./core.createhooksresult.on.md)
-
-
-</td><td>
-
-
-</td><td>
-
-&lt;OverrideCSSProperties extends CSSProperties, BaseCSSProperties extends CSSProperties&gt;(condition: [Condition](./core.condition.md)<!-- -->&lt;H&gt;, overrideStyle: OverrideCSSProperties) =&gt; (style: CSSProperties &amp; CSSPropertiesWithoutConflicts&lt;BaseCSSProperties, CSSPropertyConflicts, OverrideCSSProperties&gt;) =&gt; Omit&lt;BaseCSSProperties, keyof OverrideCSSProperties&gt; &amp; OverrideCSSProperties
-
-
-</td><td>
-
-Creates a function that enhances a style object with conditional override styles.
-
-
-</td></tr>
-<tr><td>
-
-[or](./core.createhooksresult.or.md)
-
-
-</td><td>
-
-
-</td><td>
-
-&lt;C extends [Condition](./core.condition.md)<!-- -->&lt;H&gt;\[\]&gt;(...conditions: C) =&gt; { or: C; }
-
-
-</td><td>
-
-Combines a list of conditions into a single condition which is true when any of the specified conditions are true.
-
-
-</td></tr>
-<tr><td>
-
-[styleSheet](./core.createhooksresult.stylesheet.md)
-
-
-</td><td>
-
-
-</td><td>
-
-() =&gt; string
-
-
-</td><td>
-
-Returns the style sheet required to support the configured hooks.
-
-
-</td></tr>
-</tbody></table>
+**References:** [Hook](./core.hook.md)<!-- -->, [Condition](./core.condition.md)
 

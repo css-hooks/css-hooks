@@ -85,19 +85,6 @@ type FlagName<Hooks extends readonly Hook[]> =
 /** Style declarations that set an inherited flag for descendants. */
 type FlagStyle = { [P in `--${string}`]: string };
 
-/** Functions returned when a literal hook list includes at least one flag. */
-type FlagControls<Hooks extends readonly Hook[]> = [FlagName<Hooks>] extends [
-  never,
-]
-  ? unknown
-  : {
-      /** Returns style declarations that enable a flag for descendants. */
-      enable: (flag: FlagName<Hooks>) => FlagStyle;
-
-      /** Returns style declarations that disable a flag for descendants. */
-      disable: (flag: FlagName<Hooks>) => FlagStyle;
-    };
-
 /**
  * Resolves the CSS property names that conflict with an override style.
  *
@@ -133,7 +120,7 @@ type CSSPropertiesWithoutConflicts<
  * An object containing the functions needed to support and use the configured
  * hooks
  *
- * @typeParam H - The type of the configured hooks
+ * @typeParam Hooks - The tuple of configured hooks
  * @typeParam CSSProperties - The type of a style object, typically defined by
  *   an app framework (e.g., React's `CSSProperties` type)
  * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
@@ -141,11 +128,11 @@ type CSSPropertiesWithoutConflicts<
  *
  * @public
  */
-export interface CreateHooksResult<
-  H,
+export type CreateHooksResult<
+  Hooks extends readonly Hook[],
   CSSProperties,
   CSSPropertyConflicts extends object,
-> {
+> = {
   /**
    * Creates a function that enhances a style object with conditional override
    * styles.
@@ -154,7 +141,7 @@ export interface CreateHooksResult<
     OverrideCSSProperties extends CSSProperties,
     BaseCSSProperties extends CSSProperties,
   >(
-    condition: Condition<H>,
+    condition: Condition<Hooks[number]>,
     overrideStyle: OverrideCSSProperties,
   ) => (
     style: CSSProperties &
@@ -179,7 +166,7 @@ export interface CreateHooksResult<
    * @returns A condition that is true when all of the specified conditions are
    *   true
    */
-  and: <C extends Condition<H>[]>(...conditions: C) => { and: C };
+  and: <C extends Condition<Hooks[number]>[]>(...conditions: C) => { and: C };
 
   /**
    * Combines a list of conditions into a single condition which is true when
@@ -194,7 +181,7 @@ export interface CreateHooksResult<
    * @returns A condition that is true when any of the specified conditions are
    *   true
    */
-  or: <C extends Condition<H>[]>(...conditions: C) => { or: C };
+  or: <C extends Condition<Hooks[number]>[]>(...conditions: C) => { or: C };
 
   /**
    * Negates a condition.
@@ -207,11 +194,19 @@ export interface CreateHooksResult<
    *
    * @returns A condition that is true when the specified condition is false.
    */
-  not: <C extends Condition<H>>(condition: C) => { not: C };
+  not: <C extends Condition<Hooks[number]>>(condition: C) => { not: C };
 
   /** Returns the style sheet required to support the configured hooks. */
   styleSheet: () => string;
-}
+} & ([FlagName<Hooks>] extends [never]
+  ? unknown
+  : {
+      /** Returns style declarations that enable a flag for descendants. */
+      enable: (flag: FlagName<Hooks>) => FlagStyle;
+
+      /** Returns style declarations that disable a flag for descendants. */
+      disable: (flag: FlagName<Hooks>) => FlagStyle;
+    });
 
 /**
  * Represents the function used to define hooks and related configuration.
@@ -239,8 +234,7 @@ export type CreateHooksFn<
   CSSPropertyConflicts extends object = object,
 > = <const Hooks extends Hook[]>(
   ...hooks: Hooks
-) => CreateHooksResult<Hooks[number], CSSProperties, CSSPropertyConflicts> &
-  FlagControls<Hooks>;
+) => CreateHooksResult<Hooks, CSSProperties, CSSPropertyConflicts>;
 
 /**
  * Merges an override style prop into a base style.
@@ -505,8 +499,7 @@ export function buildHooksSystem<
           }
         };
       },
-    } as CreateHooksResult<H, CSSProperties, CSSPropertyConflicts> &
-      FlagControls<Hooks>;
+    } as CreateHooksResult<Hooks, CSSProperties, CSSPropertyConflicts>;
   };
 }
 
