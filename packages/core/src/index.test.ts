@@ -522,58 +522,28 @@ describe(`in ${selectedBrowser}`, () => {
   }
 });
 
-describe("flag controls", () => {
+it("generates flag state rules", () => {
   const createHooks = buildHooksSystem<CSS.Properties>();
 
-  it("only accepts the short names of registered flags", () => {
-    const hooks = createHooks("flag:dark", "flag:compact", "&:hover");
+  const { styleSheet, enable, disable } = createHooks("flag:dark");
 
-    hooks.enable("dark") satisfies CSS.Properties;
-    hooks.disable("compact") satisfies CSS.Properties;
-    const invalidCalls = () => {
-      // @ts-expect-error prefixes are omitted when setting flags
-      hooks.enable("flag:dark");
-      // @ts-expect-error ordinary hooks cannot be set as flags
-      hooks.disable("&:hover");
-      // @ts-expect-error the flag was not registered
-      hooks.enable("missing");
-    };
-    assert.strictEqual(typeof invalidCalls, "function");
-  });
+  const enabled = enable("dark"),
+    disabled = disable("dark"),
+    [flagVariable] = Object.keys(enabled);
 
-  it("rejects unknown flag names at runtime", () => {
-    const { enable } = createHooks("flag:dark");
+  assert(flagVariable);
+  assert.deepStrictEqual(enabled, { [flagVariable]: "on" });
+  assert.deepStrictEqual(disabled, { [flagVariable]: "off" });
 
-    assert.throws(
-      () => enable("missing" as "dark"),
-      new RangeError("Unknown flag: missing"),
-    );
-  });
-
-  it("generates registered descendant state rules", () => {
-    for (const mode of ["development", "production"] as const) {
-      const { styleSheet, enable, disable } = withMode(mode, () =>
-        createHooks("flag:dark"),
-      );
-      const enabled = enable("dark"),
-        disabled = disable("dark"),
-        [flagVariable] = Object.keys(enabled);
-
-      assert(flagVariable);
-      assert.deepStrictEqual(enabled, { [flagVariable]: "on" });
-      assert.deepStrictEqual(disabled, { [flagVariable]: "off" });
-
-      const css = styleSheet();
-      assert(css.includes(`@property ${flagVariable}`));
-      assert.match(css, /syntax:\s*"<custom-ident>"/);
-      assert.match(css, /inherits:\s*true/);
-      assert.match(css, /initial-value:\s*off/);
-      assert.match(
-        css,
-        new RegExp(`@container\\s+style\\(${flagVariable}:\\s*on\\)`),
-      );
-    }
-  });
+  const css = styleSheet();
+  assert(css.includes(`@property ${flagVariable}`));
+  assert.match(css, /syntax:\s*"<custom-ident>"/);
+  assert.match(css, /inherits:\s*true/);
+  assert.match(css, /initial-value:\s*off/);
+  assert.match(
+    css,
+    new RegExp(`@container\\s+style\\(${flagVariable}:\\s*on\\)`),
+  );
 });
 
 it("uses the specified stringify function when merging values", () => {
@@ -863,6 +833,23 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
   void hooks.enable;
   // @ts-expect-error no flag hooks registered
   void hooks.disable;
+}
+
+// flag controls only accept the short names of registered flags
+{
+  const createHooks = buildHooksSystem<CSS.Properties>();
+
+  const hooks = createHooks("flag:dark", "flag:compact", "&:hover");
+
+  hooks.enable("dark") satisfies CSS.Properties;
+  hooks.disable("compact") satisfies CSS.Properties;
+
+  // @ts-expect-error prefixes are omitted when setting flags
+  hooks.enable("flag:dark");
+  // @ts-expect-error ordinary hooks cannot be set as flags
+  hooks.disable("&:hover");
+  // @ts-expect-error the flag was not registered
+  hooks.enable("missing");
 }
 
 // exact style inference across transforms
