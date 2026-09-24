@@ -813,17 +813,14 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
     mergeStyles({} as CSS.Properties<number>),
   );
 
-  const styleWithDisabledFlag = pipe(
-    { paddingTop: 0 as const },
-    mergeStyles(disable("dark")),
-  );
-  styleWithDisabledFlag satisfies { paddingTop: 0 };
+  pipe({ paddingTop: 0 as const }, mergeStyles(disable("dark"))) satisfies {
+    paddingTop: 0;
+  };
 
-  const styleWithDisabledFlagAndOverride = pipe(
+  pipe(
     { color: "red" },
     mergeStyles({ ...disable("dark"), color: "blue" }),
-  );
-  styleWithDisabledFlagAndOverride satisfies { color: "blue" };
+  ) satisfies { color: "blue" };
 
   pipe(
     {
