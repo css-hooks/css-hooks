@@ -55,32 +55,14 @@ export type Hook =
   | "@starting-style"
   | `flag:${string}`;
 
-/** Named boolean state inherited by an element's descendants. */
-type Flag = Extract<Hook, `flag:${string}`>;
-
-/** Whether a type contains more than one possible member. */
-type IsUnion<T, Whole = T> = T extends Whole
-  ? [Whole] extends [T]
-    ? false
-    : true
-  : never;
-
 /** Extracts the short names guaranteed to be flags in a hook tuple. */
-type FlagName<Hooks extends readonly Hook[]> =
-  true extends IsUnion<Hooks>
-    ? never
-    : Hooks extends readonly [
-          infer Head extends Hook,
-          ...infer Tail extends Hook[],
-        ]
-      ? true extends IsUnion<Head>
-        ? FlagName<Tail>
-        : [Head] extends [Flag]
-          ? Head extends `flag:${infer Name}`
-            ? Name | FlagName<Tail>
-            : never
-          : FlagName<Tail>
-      : never;
+type FlagName<Hooks extends readonly Hook[]> = keyof {
+  [
+    H in Extract<Hooks[number], `flag:${string}`> extends `flag:${infer Name}`
+      ? Name
+      : never
+  ]: unknown;
+};
 
 /** Style declarations that set an inherited flag for descendants */
 type FlagStyle = { [P in `--${string}`]: string };
@@ -210,7 +192,7 @@ export type Hooks<
 
   /** Returns the style sheet required to support the configured hooks. */
   styleSheet: () => string;
-} & ([FlagName<ConfiguredHooks>] extends [never]
+} & (string extends FlagName<ConfiguredHooks>
   ? unknown
   : {
       /** Returns style declarations that enable a flag for descendants. */
