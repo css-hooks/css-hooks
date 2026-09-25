@@ -21,7 +21,7 @@ Description
 </th></tr></thead>
 <tbody><tr><td>
 
-[buildHooksSystem(stringify)](./core.buildhookssystem.md)
+[createHooksSystem(stringify)](./core.createhookssystem.md)
 
 
 </td><td>
@@ -96,7 +96,7 @@ An object containing the functions needed to support and use the configured hook
 
 </td><td>
 
-The functions configured by `buildHooksSystem` for a specific app framework
+The functions configured by `createHooksSystem` for a specific app framework
 
 
 </td></tr>

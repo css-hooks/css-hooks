@@ -4,7 +4,7 @@
 
 ## HooksSystem type
 
-The functions configured by `buildHooksSystem` for a specific app framework
+The functions configured by `createHooksSystem` for a specific app framework
 
 **Signature:**
 

@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import { buildHooksSystem } from "@css-hooks/core";
+import { createHooksSystem } from "@css-hooks/core";
 import type { CSSProperties } from "@qwik.dev/core";
 
 import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
@@ -24,7 +24,7 @@ export function _stringifyValue(value: unknown, propertyName: string) {
   }
 }
 
-const hooksSystem = buildHooksSystem<CSSProperties, CSSPropertyConflicts>(
+const hooksSystem = createHooksSystem<CSSProperties, CSSPropertyConflicts>(
   _stringifyValue,
 );
 

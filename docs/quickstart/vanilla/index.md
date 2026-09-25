@@ -21,9 +21,9 @@ Create a module for styling utilities:
 ```typescript
 // src/css.ts
 
-import { buildHooksSystem } from "@css-hooks/core";
+import { createHooksSystem } from "@css-hooks/core";
 
-const { createHooks } = buildHooksSystem();
+const { createHooks } = createHooksSystem();
 
 export const { on, styleSheet } = createHooks("&:active");
 ```

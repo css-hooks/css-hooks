@@ -4,7 +4,7 @@
  * @packageDocumentation
  */
 
-import { buildHooksSystem } from "@css-hooks/core";
+import { createHooksSystem } from "@css-hooks/core";
 import type { JSX } from "@solidjs/web";
 
 import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
@@ -12,7 +12,10 @@ import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 export type * from "@css-hooks/core";
 export type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
-const hooksSystem = buildHooksSystem<JSX.CSSProperties, CSSPropertyConflicts>();
+const hooksSystem = createHooksSystem<
+  JSX.CSSProperties,
+  CSSPropertyConflicts
+>();
 
 /**
  * A hook factory configured to use Solid's `JSX.CSSProperties` type and logic
