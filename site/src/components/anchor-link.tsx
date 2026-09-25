@@ -1,7 +1,7 @@
 import type { ComponentProps } from "react";
 import { pipe } from "remeda";
 
-import { and, dark, intent, merge, on } from "../css.ts";
+import { and, dark, intent, mergeStyles, on } from "../css.ts";
 import { purple } from "../design/colors.ts";
 
 export const anchorLinkStyle = pipe(
@@ -43,5 +43,5 @@ export const anchorLinkStyle = pipe(
 );
 
 export function AnchorLink({ style, ...restProps }: ComponentProps<"a">) {
-  return <a style={pipe(anchorLinkStyle, merge(style))} {...restProps} />;
+  return <a style={pipe(anchorLinkStyle, mergeStyles(style))} {...restProps} />;
 }

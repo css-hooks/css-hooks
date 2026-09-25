@@ -19,6 +19,7 @@ jobs:
       - run: npm run build -w site
       - uses: cloudflare/wrangler-action@v3
         with:
+          wranglerVersion: 4.124.0
           apiToken: ${{ secrets.CF_TOKEN }}
           accountId: ${{ vars.CF_ACCOUNT_ID }}
           command: >-

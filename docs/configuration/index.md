@@ -1,84 +1,115 @@
 ---
 title: Configuration
-description: Define your hooks and configuration options.
+description:
+  Defining the selectors, at-rules, and flags available to your style props
 order: 4
 ---
 
 # Configuration
 
-Set up your hooks using the `createHooks` function introduced in the
-[Setup](../setup) guide. This function allows you to define various hooks that
-can be used throughout your application.
-
-## Basic hook setup
-
-To set up your hooks, use the `createHooks` function as follows:
+Register each selector, at-rule, and flag that your components will use by
+passing it to `createHooks()`. The generated stylesheet evaluates these
+conditions, while the component's style object supplies the declarations.
 
 ```typescript
 // src/css.ts
 
 import { createHooks } from "@css-hooks/react";
 
-export const { on, and, or, not, styleSheet } = createHooks(
+export const { on, and, or, not, enable, disable, styleSheet } = createHooks(
+  "&:hover",
+  "&:focus-visible",
+  "&:active",
   "@media (hover: hover)",
   "@container (min-width: 320px)",
   "@supports (height: 100dvh)",
-  "&:hover",
-  // Add more hooks as needed.
+  "@scope ([data-theme='dark']) to ([data-theme])",
+  "flag:dark",
 );
 ```
 
-## Selector syntax
+## CSS selectors
 
-Hooks are defined using a selector syntax based on CSS rulesets. There are two
-types:
-
-### Element selectors
-
-Use `&` as a placeholder for the element to which the condition applies. The `&`
-character must appear somewhere in the selector, e.g.
+Use `&` as a placeholder for the current element, i.e. the element whose style
+object the hook filters. A selector must target that element, whether it
+describes the element's own state or its surrounding context.
 
 <!--prettier-ignore-start-->
 ```typescript
-"&:hover"
+"&:hover" // The element is hovered.
+".group:hover &" // The element is inside a hovered .group.
+":checked + &" // The element follows a checked input.
 ```
 <!--prettier-ignore-end-->
 
-### At-rule selectors
+## At-rules
 
-At-rule selectors start with `@media`, `@container`, or `@supports`, followed by
-a space, e.g.
+Hooks support `@media`, `@container`, `@supports`, `@scope`, and
+`@starting-style`.
 
 <!--prettier-ignore-start-->
 ```typescript
 "@media (min-width: 600px)"
-```
-<!--prettier-ignore-end-->
-
-`@starting-style` is also supported as a standalone at-rule (with no additional
-parameters), e.g.
-
-<!--prettier-ignore-start-->
-```typescript
+"@container (min-width: 320px)"
+"@supports (height: 100dvh)"
+"@scope ([data-theme='dark']) to ([data-theme])"
 "@starting-style"
 ```
 <!--prettier-ignore-end-->
 
-## Reusable conditions
+`@scope` hooks require an explicit scope root. They apply to the root and its
+scoped descendants, excluding any scope limit and its descendants.
 
-If you find yourself using specific combinations of hooks frequently, you can
-create reusable conditions using the `and`, `or`, and `not` functions and export
-them from your `css.ts` module:
+## Flags
 
-```typescript
-// src/css.ts
+Register a `flag:<name>` hook to condition styles on inherited boolean state.
+Registered flags are disabled by default. Use `enable()` or `disable()` with the
+short flag name to set the state for an element's descendants:
 
-// Combining hooks for reusable conditions
-export const hoverOnly = and("@media (hover: hover)", "&:hover");
+```tsx
+const darkStyle = enable("dark");
+
+const panelStyle = pipe(
+  { background: "#fff", color: "#000" },
+  on("flag:dark", { background: "#000", color: "#fff" }),
+);
 ```
 
-## Using the hooks
+A nested setter overrides the inherited state for its subtree:
 
-Now that you know how to define hooks, complete the [Setup](../setup) guide if
-you haven't already, or proceed to the [Usage](../usage/index.md) guide to learn
-how to use your hooks.
+```tsx
+<main style={enable("dark")}>
+  <section style={disable("dark")}>{/* Light subtree */}</section>
+</main>
+```
+
+The element carrying `enable()` or `disable()` still observes the state from its
+nearest ancestor. Only its descendants observe the newly assigned state. This
+also makes it possible to invert a flag without creating a custom-property
+cycle:
+
+```typescript
+const invertDark = pipe(enable("dark"), on("flag:dark", disable("dark")));
+```
+
+`createHooks()` only returns `enable()` and `disable()` when at least one flag
+is registered. Their arguments are restricted to the short names of the flags
+from that call.
+
+## Compose reusable conditions
+
+Use `and`, `or`, and `not` to create conditions from other conditions/hooks.
+
+```typescript
+export const hoverOnly = and("@media (hover: hover)", "&:hover");
+export const intent = or(hoverOnly, "&:focus-visible");
+```
+
+For best results, create generic atomic hooks. A hook such as `&:hover` works on
+its own and, through `and`, `or`, and `not`, combines with hooks such as
+`&:focus` and `&:enabled` to express more specific conditions. The combinators
+build on existing hooks, which promotes reuse and keeps the generated stylesheet
+small.
+
+Continue to [Usage](../usage/index.md) to apply these conditions with override
+styles.

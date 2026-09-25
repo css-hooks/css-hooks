@@ -1,17 +1,17 @@
 <div align="center">
-  <a id="logomark" href="https://css-hooks.com"><img alt="CSS Hooks" src=".github/logomark.svg" height="128" /></a><br/><br/>
+  <a id="logomark" href="https://next.css-hooks.com"><img alt="CSS Hooks" src=".github/logomark.svg" height="128" /></a><br/><br/>
   <div id="wordmark">
-    <a href="https://css-hooks.com#gh-light-mode-only"><img alt="CSS Hooks" src=".github/wordmark-dark.svg" width="256"></a>
-    <a href="https://css-hooks.com#gh-dark-mode-only"><img alt="CSS Hooks" src=".github/wordmark-light.svg" width="256"></a>
+    <a href="https://next.css-hooks.com#gh-light-mode-only"><img alt="CSS Hooks" src=".github/wordmark-dark.svg" width="256"></a>
+    <a href="https://next.css-hooks.com#gh-dark-mode-only"><img alt="CSS Hooks" src=".github/wordmark-light.svg" width="256"></a>
   </div>
 </div>
 
 <br/>
 
 <div align="center" id="badges">
-  <a href="https://github.com/css-hooks/css-hooks/tree/v3.1.2"><img src="https://img.shields.io/badge/tag-v3.1.2-663399" alt="tag v3.1.2"></a>
-  <a href="https://www.npmjs.com/package/@css-hooks/core/v/3.1.2"><img src="https://img.shields.io/badge/npm-v3.1.2-663399" alt="npm version"></a>
-  <a href="https://github.com/css-hooks/css-hooks/blob/v3.1.2/LICENSE"><img src="https://img.shields.io/badge/license-MIT-663399" alt="license"></a>
+  <a href="https://github.com/css-hooks/css-hooks/tree/v4.0.0-next.45"><img src="https://img.shields.io/badge/tag-v4.0.0--next.45-ffd700" alt="tag v4.0.0-next.45"></a>
+  <a href="https://www.npmjs.com/package/@css-hooks/core/v/4.0.0-next.45"><img src="https://img.shields.io/badge/npm-v4.0.0--next.45-ffd700" alt="npm version"></a>
+  <a href="https://github.com/css-hooks/css-hooks/blob/v4.0.0-next.45/LICENSE"><img src="https://img.shields.io/badge/license-MIT-ffd700" alt="license"></a>
 </div>
 
 ---
@@ -102,9 +102,9 @@ experience without runtime style injection or build steps.
 
 ### Browser support
 
-| <img src="https://dl.svgcdn.com/svg/logos/chrome.svg" alt="Chrome" width="24" height="24" /><br/>Chrome | <img src="https://dl.svgcdn.com/svg/logos/microsoft-edge.svg" alt="Edge" width="24" height="24" /><br/>Edge | <img src="https://dl.svgcdn.com/svg/logos/safari.svg" alt="Safari" width="24" height="24" /><br/>Safari | <img src="https://dl.svgcdn.com/svg/logos/firefox.svg" alt="Firefox" width="24" height="24" /><br/>Firefox | <img src="https://dl.svgcdn.com/svg/logos/opera.svg" alt="Opera" width="24" height="24" /><br/>Opera |
-| :-----------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------: |
-|                                                   99+                                                   |                                                     99+                                                     |                                                  15.4+                                                  |                                                    97+                                                     |                                                 85+                                                  |
+| <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/chrome/chrome_24x24.png" alt="Chrome" /><br/>Chrome | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/edge/edge_24x24.png" alt="Edge" /><br/>Edge | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/safari/safari_24x24.png" alt="Safari" /><br/>Safari | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/firefox/firefox_24x24.png" alt="Firefox" /><br/>Firefox | <img src="https://cdnjs.cloudflare.com/ajax/libs/browser-logos/74.1.0/opera/opera_24x24.png" alt="Opera" /><br/>Opera |
+| ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| <div align="center">111+</div>                                                                                            | <div align="center">111+</div>                                                                                    | <div align="center">18+</div>                                                                                             | <div align="center">151+</div>                                                                                                | <div align="center">98+</div>                                                                                         |
 
 ## Documentation
 

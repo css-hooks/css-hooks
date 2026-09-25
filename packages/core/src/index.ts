@@ -7,30 +7,24 @@
 /**
  * Represents the conditions under which a given hook or declaration applies.
  *
- * @typeParam S - The basic type of condition to enhance with boolean
- * operations.
+ * @typeParam H - The basic hook type to enhance with boolean operations
  *
  * @public
  */
-export type Condition<S> =
-  | S
-  | { and: Condition<S>[] }
-  | { or: Condition<S>[] }
-  | { not: Condition<S> };
+export type Condition<H> =
+  H | { and: Condition<H>[] } | { or: Condition<H>[] } | { not: Condition<H> };
 
 /**
- * Function to convert a value into a string.
- *
- * @param value - The value to stringify
- *
- * @param propertyName - The property name corresponding to the value being
- * stringified
+ * Function to convert a value into a string
  *
  * @remarks
- * Used for merging a conditional property value with the fallback value.
+ * Used for merging a conditional property value with the fallback value
  *
- * @returns The stringified value, or `undefined` if the value cannot be
- * stringified
+ * @param value - The value to stringify
+ * @param propertyName - The property name corresponding to the value being
+ *   stringified
+ *
+ * @returns The stringified value, or `null` if the value cannot be stringified
  *
  * @public
  */
@@ -40,193 +34,410 @@ export type StringifyFn = (
 ) => string | null;
 
 /**
- * Represents the selector logic used to create a hook.
+ * Represents a hook registered with `createHooks`.
  *
  * @remarks
- * Two types are supported:
- * 1. A basic selector, where `&` is used as a placeholder for the element to
- *    which the condition applies. The `&` character must appear somewhere.
- * 2. A `@media`, `@container`, or `@supports` at-rule. The value must begin
- *    with one of these keywords, followed by a space.
- * 3. The `@starting-style` at-rule (exactly, with no additional parameters).
+ * Four forms are supported:
+ *
+ * 1. A selector hook, where `&` is used as a placeholder for the element to which
+ *    the condition applies. The `&` character must appear somewhere.
+ * 2. An at-rule hook beginning with `@media`, `@container`, `@supports`, or
+ *    `@scope`, followed by a space. `@scope` requires an explicit scope root.
+ * 3. The `@starting-style` at-rule hook with no additional parameters.
+ * 4. A named boolean flag hook beginning with `flag:`.
  *
  * @public
  */
-export type Selector =
+export type Hook =
   | `${string}&${string}`
   | `@${"media" | "container" | "supports"} ${string}`
-  | "@starting-style";
+  | `@scope (${string})`
+  | "@starting-style"
+  | `flag:${string}`;
+
+/** Extracts the short names guaranteed to be flags in a hook tuple. */
+type FlagName<Hooks extends readonly Hook[]> = keyof {
+  [
+    H in Extract<Hooks[number], `flag:${string}`> extends `flag:${infer Name}`
+      ? Name
+      : never
+  ]: unknown;
+};
+
+/** Style declarations that set an inherited flag for descendants */
+type FlagStyle = { [P in `--${string}`]: string };
 
 /**
- * Enhances a style object by merging in conditional declarations.
+ * Resolves the CSS property names that conflict with an override style.
  *
- * @typeParam CSSProperties - The type of a standard (flat) style object,
- * typically defined by an app framework (e.g., React's `CSSProperties` type).
- *
- * @param style - The original style object containing default/fallback values
- *
- * @returns An enhanced style object with conditional styles applied
- *
- * @public
+ * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
+ *   they conflict with
+ * @typeParam OverrideCSSProperties - The conditional declarations for which
+ *   conflicting properties are resolved
  */
-export type EnhanceStyleFn<CSSProperties> = (
-  style: CSSProperties,
-) => CSSProperties;
+type CSSPropertyConflictKeys<
+  CSSPropertyConflicts extends object,
+  OverrideCSSProperties,
+> = CSSPropertyConflicts[keyof OverrideCSSProperties &
+  keyof CSSPropertyConflicts] &
+  PropertyKey;
+
+/** Preserves a style's shape while rejecting known-present conflicts. */
+type CSSPropertiesWithoutConflicts<
+  CSSProperties,
+  CSSPropertyConflicts extends object,
+  OverrideCSSProperties,
+> = {
+  [P in keyof CSSProperties]: P extends CSSPropertyConflictKeys<
+    CSSPropertyConflicts,
+    OverrideCSSProperties
+  >
+    ? Pick<CSSProperties, P> extends Required<Pick<CSSProperties, P>>
+      ? never
+      : CSSProperties[P]
+    : CSSProperties[P];
+};
 
 /**
  * An object containing the functions needed to support and use the configured
- * hooks.
+ * hooks
  *
- * @typeParam S - The type of the selector logic for which to generate hooks
- *
- * @typeParam CSSProperties - The type of a standard (flat) style object,
- * typically defined by an app framework (e.g., React's `CSSProperties` type).
+ * @typeParam ConfiguredHooks - The tuple of configured hooks
+ * @typeParam CSSProperties - The type of a style object, typically defined by
+ *   an app framework (e.g., React's `CSSProperties` type)
+ * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
+ *   with which they conflict
  *
  * @public
  */
-export interface CreateHooksResult<S, CSSProperties> {
+export type Hooks<
+  ConfiguredHooks extends readonly Hook[],
+  CSSProperties,
+  CSSPropertyConflicts extends object,
+> = {
   /**
-   * Enhances a style object with conditional styles.
+   * Creates a function that enhances a style object with conditional override
+   * styles.
    */
-  on: (
-    condition: Condition<S>,
-    style: CSSProperties,
-  ) => EnhanceStyleFn<CSSProperties>;
+  on: <
+    OverrideCSSProperties extends CSSProperties,
+    BaseCSSProperties extends CSSProperties,
+  >(
+    condition: Condition<ConfiguredHooks[number]>,
+    overrideStyle: OverrideCSSProperties,
+  ) => (
+    style: CSSProperties &
+      CSSPropertiesWithoutConflicts<
+        BaseCSSProperties,
+        CSSPropertyConflicts,
+        OverrideCSSProperties
+      >,
+  ) => Omit<BaseCSSProperties, keyof OverrideCSSProperties> &
+    OverrideCSSProperties;
 
   /**
    * Combines a list of conditions into a single condition which is true when
    * all of the specified conditions are true.
    *
    * @typeParam C - The type of the conditions which must all be true in order
-   * for the condition to be true.
+   *   for the condition to be true
    *
    * @param conditions - The conditions which must all be true in order for the
-   * condition to be true.
+   *   condition to be true
    *
    * @returns A condition that is true when all of the specified conditions are
-   * true.
+   *   true
    */
-  and: <C extends Condition<S>[]>(...conditions: C) => { and: C };
+  and: <C extends Condition<ConfiguredHooks[number]>[]>(
+    ...conditions: C
+  ) => {
+    and: C;
+  };
 
   /**
    * Combines a list of conditions into a single condition which is true when
    * any of the specified conditions are true.
    *
    * @typeParam C - The type of the conditions any one of which must be true in
-   * order for the condition to be true.
+   *   order for the condition to be true
    *
    * @param conditions - The conditions any one of which must be true in order
-   * for the condition to be true.
+   *   for the condition to be true
    *
    * @returns A condition that is true when any of the specified conditions are
-   * true.
+   *   true
    */
-  or: <C extends Condition<S>[]>(...conditions: C) => { or: C };
+  or: <C extends Condition<ConfiguredHooks[number]>[]>(
+    ...conditions: C
+  ) => {
+    or: C;
+  };
 
   /**
    * Negates a condition.
    *
-   * @typeParam condition - The type of the condition which must be false in
-   * order for the resulting condition to be true.
+   * @typeParam C - The type of the condition which must be false in order for
+   *   the resulting condition to be true
    *
    * @param condition - The condition which must be false in order for the
-   * resulting condition to be true.
+   *   resulting condition to be true
    *
    * @returns A condition that is true when the specified condition is false.
    */
-  not: <C extends Condition<S>>(condition: C) => { not: C };
+  not: <C extends Condition<ConfiguredHooks[number]>>(
+    condition: C,
+  ) => {
+    not: C;
+  };
 
-  /**
-   * The style sheet required to support the configured hooks.
-   */
+  /** Returns the style sheet required to support the configured hooks. */
   styleSheet: () => string;
-}
+} & (string extends FlagName<ConfiguredHooks>
+  ? unknown
+  : {
+      /** Returns style declarations that enable a flag for descendants. */
+      enable: (flag: FlagName<ConfiguredHooks>) => FlagStyle;
+
+      /** Returns style declarations that disable a flag for descendants. */
+      disable: (flag: FlagName<ConfiguredHooks>) => FlagStyle;
+    });
 
 /**
  * Represents the function used to define hooks and related configuration.
  *
- * @typeParam CSSProperties - The type of a standard (flat) style object,
- * typically defined by an app framework (e.g., React's `CSSProperties` type).
+ * @remarks
+ * When the registered hooks are known to include one or more `flag:<name>`
+ * values, the return type also exposes `enable()` and `disable()` functions
+ * restricted to their short names.
  *
- * @typeParam S - The type of selectors for which to create hooks.
+ * @typeParam CSSProperties - The type of a style object, typically defined by
+ *   an app framework (e.g., React's `CSSProperties` type)
+ * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
+ *   with which they conflict
+ * @typeParam ConfiguredHooks - The tuple of hooks to create
  *
- * @param selectors - The selectors for which to create hooks.
+ * @param hooks - The hooks to create
  *
  * @returns An object containing the functions needed to support and use the
- * configured hooks.
+ *   configured hooks
  *
  * @public
  */
-export type CreateHooksFn<CSSProperties> = <S extends Selector>(
-  ...selectors: S[]
-) => CreateHooksResult<S, CSSProperties>;
+export type CreateHooksFn<
+  CSSProperties,
+  CSSPropertyConflicts extends object = object,
+> = <const ConfiguredHooks extends Hook[]>(
+  ...hooks: ConfiguredHooks
+) => Hooks<ConfiguredHooks, CSSProperties, CSSPropertyConflicts>;
+
+/**
+ * The functions configured by `createHooksSystem` for a specific app framework
+ *
+ * @typeParam CSSProperties - The type of a style object, typically defined by
+ *   an app framework (e.g., React's `CSSProperties` type)
+ * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
+ *   with which they conflict
+ *
+ * @public
+ */
+export type HooksSystem<
+  CSSProperties,
+  CSSPropertyConflicts extends object = object,
+> = {
+  /** Creates functions for the configured hooks. */
+  createHooks: CreateHooksFn<CSSProperties, CSSPropertyConflicts>;
+
+  /** Merges an override style using the configured style type. */
+  mergeStyles: <
+    const OverrideStyle extends CSSProperties,
+    Style extends CSSProperties,
+  >(
+    overrideStyle: OverrideStyle | null | undefined,
+  ) => {
+    <ActualStyle extends CSSProperties>(
+      style: ActualStyle,
+    ): Omit<ActualStyle, keyof OverrideStyle> & OverrideStyle;
+    (
+      style: CSSProperties & Style,
+    ): Omit<Style, keyof OverrideStyle> & OverrideStyle;
+  };
+};
+
+function mergeStyles<const OverrideStyle extends object>(
+  overrideStyle: OverrideStyle | null | undefined,
+): <Style extends object>(
+  style: Style,
+) => Omit<Style, keyof OverrideStyle> & OverrideStyle {
+  return <Style extends object>(style: Style) => {
+    if (!overrideStyle) {
+      return style as unknown as Omit<Style, keyof OverrideStyle> &
+        OverrideStyle;
+    }
+
+    const result = { ...style };
+    for (const property of Reflect.ownKeys(overrideStyle)) {
+      if (Object.prototype.propertyIsEnumerable.call(overrideStyle, property)) {
+        Reflect.deleteProperty(result, property);
+      }
+    }
+    return Object.assign(result, overrideStyle) as Omit<
+      Style,
+      keyof OverrideStyle
+    > &
+      OverrideStyle;
+  };
+}
 
 /**
  * Creates a flavor of CSS Hooks tailored to a specific app framework.
  *
- * @param stringify - The function used to stringify values when merging
- * conditional styles.
- *
- * @returns The `createHooks` function used to bootstrap CSS Hooks within an app
- * or component library.
- *
  * @remarks
  * Primarily for internal use, advanced use cases, or when an appropriate
- * framework integration is not provided.
+ * framework integration is not provided
+ *
+ * @typeParam CSSProperties - The type of a style object, typically defined by
+ *   an app framework (e.g., React's `CSSProperties` type)
+ * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
+ *   with which they conflict
+ *
+ * @param stringify - The function used to stringify values when merging
+ *   override styles
+ *
+ * @returns The functions used to bootstrap CSS Hooks within an app or component
+ *   library
  *
  * @public
- *
  */
-export function buildHooksSystem<
+export function createHooksSystem<
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   CSSProperties extends { [P: string]: any } = Record<string, unknown>,
->(stringify: StringifyFn = String): CreateHooksFn<CSSProperties> {
-  return (...selectors: string[]) => {
-    const [space, newline] =
+  CSSPropertyConflicts extends object = object,
+>(
+  stringify: StringifyFn = String,
+): HooksSystem<CSSProperties, CSSPropertyConflicts> {
+  const createHooks: CreateHooksFn<CSSProperties, CSSPropertyConflicts> = <
+    const Hooks extends Hook[],
+  >(
+    ...hooks: Hooks
+  ) => {
+    type H = Hooks[number];
+    let space = "";
+    let newline = "";
+    try {
       // @ts-expect-error bundler expected to replace `process.env.NODE_ENV` expression
-      process.env.NODE_ENV === "development" ? [" ", "\n"] : ["", ""];
+      if (process.env.NODE_ENV === "development") {
+        space = " ";
+        newline = "\n";
+      }
+    } catch {
+      // `process.env.NODE_ENV` is absent in unbundled browser environments
+    }
+
+    const hookHashes = new Map(hooks.map(hook => [hook, createHash(hook)]));
+    const flags = new Map(
+      hooks.flatMap(hook =>
+        hook.startsWith("flag:") ? [[hook.slice(5), hook] as const] : [],
+      ),
+    );
+
+    const flagDeclarations = (flag: string, enabled: boolean) => {
+      const hook = flags.get(flag);
+      if (!hook) {
+        throw new RangeError(`Unknown flag: ${flag}`);
+      }
+      const hash = hookHashes.get(hook);
+      return {
+        [`--${hash}f`]: enabled ? "on" : "off",
+      } as FlagStyle;
+    };
 
     return {
+      enable: (flag: string) => flagDeclarations(flag, true),
+      disable: (flag: string) => flagDeclarations(flag, false),
       styleSheet() {
-        const indent = Array(2).fill(space).join("");
-        return `*${space}{${newline}${selectors
-          .flatMap(selector => [
-            `${indent}--${createHash(selector)}-0:${space}initial;`,
-            `${indent}--${createHash(selector)}-1:${space};`,
-          ])
-          .join(newline)}${newline}}${newline}${selectors
-          .flatMap(def => {
-            if (def.startsWith("@")) {
+        type Ruleset = [string[], { [P: string]: string } | Ruleset];
+        return hooks
+          .flatMap(hook => {
+            const hookHash = hookHashes.get(hook);
+            const offVariable = `--${hookHash}0`;
+            const onVariable = `--${hookHash}1`;
+            const offDeclarations = {
+              [offVariable]: "initial",
+              [onVariable]: space,
+            };
+            const onDeclarations = {
+              [offVariable]: space,
+              [onVariable]: "initial",
+            };
+            if (hook.startsWith("flag:")) {
+              const flagVariable = `--${hookHash}f`;
               return [
-                `${def} {`,
-                `${indent}* {`,
-                `${indent}${indent}--${createHash(def)}-0:${space};`,
-                `${indent}${indent}--${createHash(def)}-1:${space}initial;`,
-                `${indent}}`,
-                "}",
+                [
+                  [`@property ${flagVariable}`],
+                  {
+                    syntax: '"<custom-ident>"',
+                    inherits: "true",
+                    "initial-value": "off",
+                  },
+                ] satisfies Ruleset,
+                [[":root"], { [flagVariable]: "off" }] satisfies Ruleset,
+                [["*"], offDeclarations] satisfies Ruleset,
+                [
+                  [`@container style(${flagVariable}:${space}on)`],
+                  [["*"], onDeclarations],
+                ] satisfies Ruleset,
               ];
             }
-            return [
-              `${def.replace(/&/g, "*")}${space}{`,
-              `${indent}--${createHash(def)}-0:${space};`,
-              `${indent}--${createHash(def)}-1:${space}initial;`,
-              "}",
-            ];
+            const rulesets: Ruleset[] = [[["*"], offDeclarations]];
+            if (hook.startsWith("@")) {
+              const target = ["*"];
+              if (hook.startsWith("@scope")) {
+                target.push(":scope");
+              }
+              rulesets.push([[hook], [target, onDeclarations]]);
+            } else {
+              rulesets.push([
+                [`:where(${hook.replace(/&/g, "*")})`],
+                onDeclarations,
+              ]);
+            }
+            return rulesets;
           })
-          .join(newline)}`;
+          .map(
+            unary(function render(ruleset: Ruleset, level: number = 0): string {
+              const [headers, declarations] = ruleset;
+              const indent = Array(level * 2)
+                .fill(space)
+                .join("");
+              if (Array.isArray(declarations)) {
+                return `${indent}${headers.join(`,${space}`)}${space}{${newline}${render(
+                  declarations,
+                  level + 1,
+                )}${newline}${indent}}`;
+              }
+              return `${indent}${headers.join(`,${space}`)}${space}{${newline}${Object.entries(
+                declarations,
+              )
+                .map(
+                  ([property, value]) =>
+                    `${indent}${space}${property}:${space}${value};`,
+                )
+                .join(newline)}${newline}${indent}}`;
+            }),
+          )
+          .join(newline);
       },
       and: (...and) => ({ and }),
       or: (...or) => ({ or }),
       not: not => ({ not }),
-      on(condition, conditionalStyle) {
-        return fallbackStyle => {
+      on(condition, overrideStyle) {
+        return <ActualBaseCSSProperties extends CSSProperties>(
+          fallbackStyle: ActualBaseCSSProperties,
+        ) => {
           const style = { ...fallbackStyle };
-          for (const property in conditionalStyle) {
-            const conditionalValue = stringify(
-              conditionalStyle[property],
-              property,
-            );
-            if (conditionalValue === null) {
+          for (const property in overrideStyle) {
+            const overrideValue = stringify(overrideStyle[property], property);
+            if (overrideValue === null) {
               continue;
             }
             let fallbackValue = "revert-layer";
@@ -238,12 +449,12 @@ export function buildHooksSystem<
             }
             const [value, extraDecls] = buildExpression(
               condition,
-              conditionalValue,
+              overrideValue,
               fallbackValue,
             );
             Object.assign(style, { [property]: value }, extraDecls);
           }
-          return style;
+          return style as typeof style & typeof overrideStyle;
           function buildExpression(
             condition: string | Condition<string>,
             valueIfTrue: string,
@@ -263,10 +474,10 @@ export function buildHooksSystem<
                 extraDecls[`--${hash}`] = valFalse;
                 valFalse = `var(--${hash})`;
               }
+              const hookHash =
+                hookHashes.get(condition as H) || createHash(condition);
               return [
-                `var(--${createHash(condition)}-1,${space}${valTrue})${space}var(--${createHash(
-                  condition,
-                )}-0,${space}${valFalse})`,
+                `var(--${hookHash}1,${space}${valTrue})${space}var(--${hookHash}0,${space}${valFalse})`,
                 extraDecls,
               ];
             }
@@ -306,20 +517,48 @@ export function buildHooksSystem<
       },
     };
   };
+
+  return {
+    createHooks,
+    mergeStyles: mergeStyles as HooksSystem<
+      CSSProperties,
+      CSSPropertyConflicts
+    >["mergeStyles"],
+  };
 }
 
-function createHash(obj: unknown) {
-  const jsonString = JSON.stringify(obj);
+const hashAlphabet = "abcdefghijklmnopqrstuvwxyz0123456789-_";
+const hashAlphabetLength = hashAlphabet.length;
 
-  let hashValue = 0;
+function createHash(value: string) {
+  let h1 = 0xdeadbeef;
+  let h2 = 0x41c6ce57;
 
-  for (let i = 0; i < jsonString.length; i++) {
-    const charCode = jsonString.charCodeAt(i);
-    hashValue = (hashValue << 5) - hashValue + charCode;
-    hashValue &= 0x7fffffff;
+  for (let i = 0; i < value.length; i++) {
+    const code = value.charCodeAt(i);
+    h1 = Math.imul(h1 ^ code, 0x9e3779b1);
+    h2 = Math.imul(h2 ^ code, 0x5f356495);
   }
 
-  const str = hashValue.toString(36);
+  h1 =
+    Math.imul(h1 ^ (h1 >>> 16), 0x85ebca6b) ^
+    Math.imul(h2 ^ (h2 >>> 13), 0xc2b2ae35);
+  h2 =
+    Math.imul(h2 ^ (h2 >>> 16), 0x85ebca6b) ^
+    Math.imul(h1 ^ (h1 >>> 13), 0xc2b2ae35);
 
-  return /^[0-9]/.test(str) ? `a${str}` : str;
+  let hash = (h1 >>> 0) + 0x100000000 * (h2 & 0xf);
+  let encoded = "";
+
+  for (let i = 0; i < 7; i++) {
+    encoded = hashAlphabet.charAt(hash % hashAlphabetLength) + encoded;
+    hash = Math.floor(hash / hashAlphabetLength);
+  }
+
+  return encoded;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function unary<A, B>(fn: (a: A, ...rest: any) => B): (a: A) => B {
+  return (a: A) => fn(a);
 }

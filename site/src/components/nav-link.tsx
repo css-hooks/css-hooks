@@ -1,29 +1,29 @@
-import type { ComponentProps } from "react";
+import type { ComponentProps, CSSProperties } from "react";
 import * as ReactRouter from "react-router";
 import { pipe } from "remeda";
 
-import { merge, on } from "../css.ts";
+import { mergeStyles, on } from "../css.ts";
 import { anchorLinkStyle } from "./anchor-link.tsx";
 
 export function NavLink({
   className,
   style,
   ...restProps
-}: ComponentProps<typeof ReactRouter.NavLink>) {
+}: Omit<ComponentProps<typeof ReactRouter.NavLink>, "style"> & {
+  style?: CSSProperties;
+}) {
   const selectedClass = "a";
   const selected = `&.${selectedClass}`;
   return (
     <ReactRouter.NavLink
-      style={props =>
-        pipe(
-          anchorLinkStyle,
-          on(selected, {
-            color: "inherit",
-            textDecorationColor: "transparent",
-          }),
-          merge(typeof style === "function" ? style(props) : style),
-        )
-      }
+      style={pipe(
+        anchorLinkStyle,
+        on(selected, {
+          color: "inherit",
+          textDecorationColor: "transparent",
+        }),
+        mergeStyles(style),
+      )}
       className={classNameProps =>
         `${classNameProps.isActive ? selectedClass : ""}${className ? ` ${typeof className === "string" ? className : className(classNameProps)}` : ""}`
       }

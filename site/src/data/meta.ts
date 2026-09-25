@@ -1,4 +1,4 @@
-import type { MetaDescriptors } from "react-router/route-module";
+import type { MetaDescriptor } from "react-router";
 
 const baseURL = "https://css-hooks.com";
 
@@ -16,9 +16,8 @@ type CreateMetaDescriptorArgs = {
 export const createMetaDescriptors =
   <Args extends { location: { pathname: string } }>(
     argsIn:
-      | CreateMetaDescriptorArgs
-      | ((args: Args) => CreateMetaDescriptorArgs),
-  ): ((args: Args) => MetaDescriptors) =>
+      CreateMetaDescriptorArgs | ((args: Args) => CreateMetaDescriptorArgs),
+  ): ((args: Args) => MetaDescriptor[]) =>
   (args: Args) => {
     const defaultImage = "/opengraph.png";
     const {
@@ -28,7 +27,7 @@ export const createMetaDescriptors =
       title,
       description,
       image,
-    }: CreateMetaDescriptorArgs): MetaDescriptors => [
+    }: CreateMetaDescriptorArgs): MetaDescriptor[] => [
       { title: `${title ? `${title} — ` : ""}CSS Hooks` },
       { property: "og:title", content: title || "CSS Hooks" },
       { property: "og:image", content: url(image || defaultImage) },
