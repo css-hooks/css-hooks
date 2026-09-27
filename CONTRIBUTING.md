@@ -17,6 +17,24 @@ Propose documentation changes in a
 [pull request](https://github.com/css-hooks/css-hooks/compare) or
 [open an issue](https://github.com/css-hooks/css-hooks/issues/new?labels=documentation).
 
+### Recipes
+
+Add recipes under `docs/recipes/<name>/index.md` and link them from
+`docs/recipes/index.md`. Set `hidden: true` in each recipe's frontmatter so only
+the index appears in the documentation sidebar.
+
+Use adjacent top-level `tsx sandpack` or `typescript sandpack` fenced code
+blocks, each beginning with a filename comment such as `// App.tsx`. The website
+groups these blocks into one tabbed Sandpack; GitHub displays each file as
+source code. Only whitespace may separate files in the same playground.
+
+Keep the example in `App.tsx` (the initially selected tab), hook registration in
+`css.ts`, and `createRoot(...).render(...)` in `main.tsx`. The bootstrap should
+render `<style dangerouslySetInnerHTML={{ __html: styleSheet() }} />` alongside
+`<App />`. Sandpack runs `main.tsx` and supplies the HTML mount point
+(`<div id="root"></div>`), React, `@css-hooks/react`, and Remeda. Ordinary code
+fences still use Shiki.
+
 ## Resources
 
 Share tutorials, libraries, examples, and other CSS Hooks resources on

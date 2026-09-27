@@ -10,5 +10,13 @@
   "proseWrap": "always",
   "plugins": ["prettier-plugin-jsdoc"],
   "tsdoc": true,
-  "jsdocSeparateTagGroups": true
+  "jsdocSeparateTagGroups": true,
+  "overrides": [
+    {
+      "files": ["docs/recipes/**/*.md"],
+      "options": {
+        "printWidth": 60
+      }
+    }
+  ]
 }

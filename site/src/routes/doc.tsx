@@ -4,6 +4,8 @@ import {
   cloneElement,
   createElement,
   isValidElement,
+  lazy,
+  Suspense,
   useEffect,
   useRef,
 } from "react";
@@ -30,8 +32,15 @@ import { docs } from "../data/docs.ts";
 import { createMetaDescriptors } from "../data/meta.ts";
 import { blue, gray, orange, purple, teal, white } from "../design/colors.ts";
 import { monospace } from "../design/typography.ts";
-import { rehypeClassName, rehypeStyle } from "../rehype.ts";
+import {
+  extractFilename,
+  rehypeClassName,
+  rehypeSandpack,
+  rehypeStyle,
+} from "../rehype.ts";
 import type { Route } from "./+types/doc.ts";
+
+const RecipeSandbox = lazy(() => import("../components/recipe-sandbox.tsx"));
 
 type MenuItem = {
   pathname: string;
@@ -80,7 +89,7 @@ function MenuList({ children }: { children: ReactNode }) {
           paddingLeft: 0,
         },
         on(".group &.group", {
-          paddingLeft: 32,
+          paddingLeft: 16,
         }),
       )}
     >
@@ -251,17 +260,6 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6, style: CSSProperties) {
   return component;
 }
 
-const filenameCommentPattern =
-  /^\/\/[ \t]+((?:[\w.-]+\/)*[\w.-]+\.(?:[cm]?[jt]sx?|css|html|json))[ \t]*(?:\r?\n(?:[ \t]*\r?\n)?|$)/;
-
-function extractFilename(code: string) {
-  const match = code.match(filenameCommentPattern);
-  return {
-    code: match ? code.substring(match[0].length) : code,
-    filename: match?.[1],
-  };
-}
-
 function CopyCodeButton({ code }: { code: string }) {
   return (
     <button
@@ -343,9 +341,11 @@ export async function loader({ params }: Route.LoaderArgs) {
     });
   }
 
+  const sandpacks: Record<string, string>[] = [];
   const { prelude: stream } = await prerenderToNodeStream(
     <Markdown
       rehypePlugins={[
+        [rehypeSandpack, sandpacks],
         rehypeRaw,
         [rehypeClassName, { tr: "group" }],
         [
@@ -775,6 +775,7 @@ export async function loader({ params }: Route.LoaderArgs) {
   return {
     ...doc,
     body,
+    sandpacks,
   };
 }
 
@@ -1007,7 +1008,7 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
           style={pipe(
             {
               width: "calc(100% - 64px)",
-              maxWidth: "88ch",
+              maxWidth: doc.sandpacks.length ? "132ch" : "88ch",
               margin: "auto",
               paddingBlock: 16,
               paddingInline: 0,
@@ -1024,11 +1025,35 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
               gap: 32,
             }}
           >
-            <div
-              ref={proseRef}
-              className="prose"
-              dangerouslySetInnerHTML={{ __html: doc.body }}
-            />
+            <div ref={proseRef}>
+              {doc.body
+                .split(/<div data-sandpack="(\d+)"><\/div>/)
+                .map((part, index) =>
+                  index % 2 === 0 ? (
+                    <div
+                      key={index}
+                      className="prose"
+                      style={{ maxWidth: "88ch", marginInline: "auto" }}
+                      dangerouslySetInnerHTML={{ __html: part }}
+                    />
+                  ) : (
+                    <div
+                      key={`${doc.attributes.pathname}-${index}`}
+                      style={{
+                        width: "100%",
+                        maxWidth: "132ch",
+                        marginBlock: 24,
+                      }}
+                    >
+                      <Suspense fallback={<p>Loading code playground…</p>}>
+                        <RecipeSandbox
+                          files={doc.sandpacks[Number(part)] ?? {}}
+                        />
+                      </Suspense>
+                    </div>
+                  ),
+                )}
+            </div>
             <ScreenReaderOnly>
               <span ref={copyStatusRef} aria-live="polite" />
             </ScreenReaderOnly>
@@ -1039,6 +1064,9 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
                   flexDirection: "column",
                   alignItems: "flex-start",
                   gap: 16,
+                  width: "100%",
+                  maxWidth: "88ch",
+                  marginInline: "auto",
                 }}
               >
                 <hr
