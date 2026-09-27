@@ -40,7 +40,7 @@ export function Button() {
 ```
 
 This example assumes the hooks in the [Configuration](../configuration/index.md)
-guide: `intent` combines `@media (hover: hover)`, `&:hover`, and
+guide: The `intent` hook combines `@media (hover: hover)`, `&:hover`, and
 `&:focus-visible`; `&:active` is registered separately.
 
 ## Override order

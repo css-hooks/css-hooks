@@ -1,7 +1,7 @@
 ---
 title: FAQ
 description: Answers to common questions about CSS Hooks
-order: 7
+order: 8
 ---
 
 # FAQ

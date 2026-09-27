@@ -24,6 +24,7 @@
     "isbot": "^5"
   },
   "devDependencies": {
+    "@codesandbox/sandpack-react": "^2.20.0",
     "@css-hooks/react": "4.0.0-next.45",
     "@react-router/dev": "^8.0.0",
     "@total-typescript/ts-reset": "^0.6.1",
