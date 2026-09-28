@@ -25,11 +25,10 @@ You may also need a stylesheet for markup that you cannot style directly, such
 as third-party components. The remaining stylesheet is usually small and has a
 clear purpose.
 
-## Why can't a parent's hooks affect descendant elements?
+## How can a parent's hooks affect descendant elements?
 
-A hook filters the style object on the element it matches. A parent's override
-styles cannot assign declarations to its children. Put the child's styles on the
-child, then use a contextual selector that targets that child:
+A hook filters the style object on the element it matches. For simple ancestor
+conditions, put the styles on the child and use a contextual selector:
 
 <!--prettier-ignore-start-->
 ```tsx
@@ -40,14 +39,19 @@ on(".group:hover &", {
 ```
 <!--prettier-ignore-end-->
 
-If you cannot control the child markup, a traditional stylesheet selector may be
-the appropriate tool.
+For more advanced use cases, [flags](../configuration/#flags) share state with
+descendants. Rather than mutating a descendant's presentational CSS properties,
+the ancestor provides state that the descendant inherits, styling itself
+accordingly.
+
+If you cannot control the child markup, a traditional stylesheet may be the
+appropriate tool.
 
 ## Why don't hooks support pseudo-elements?
 
 Pseudo-elements target virtual elements rather than the existing element that
-owns a style object. Use a physical element when that suits the markup, or keep
-the pseudo-element rule in a stylesheet.
+owns a style object. Use a physical element when possible, or keep the
+pseudo-element rule in a stylesheet.
 
 ## Is CSS Hooks widely supported in browsers?
 
