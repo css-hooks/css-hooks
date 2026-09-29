@@ -46,7 +46,7 @@ export const { styleSheet, on, and, or, not, enable } = createHooks(
   "td > &:only-child",
   "th > &:only-child",
 
-  "flag:active",
+  "%active",
 );
 
 export const dark = or(

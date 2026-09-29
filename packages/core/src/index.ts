@@ -44,7 +44,7 @@ export type StringifyFn = (
  * 2. An at-rule hook beginning with `@media`, `@container`, `@supports`, or
  *    `@scope`, followed by a space. `@scope` requires an explicit scope root.
  * 3. The `@starting-style` at-rule hook with no additional parameters.
- * 4. A named boolean flag hook beginning with `flag:`.
+ * 4. A named boolean flag hook beginning with `%`.
  *
  * @public
  */
@@ -53,16 +53,10 @@ export type Hook =
   | `@${"media" | "container" | "supports"} ${string}`
   | `@scope (${string})`
   | "@starting-style"
-  | `flag:${string}`;
+  | `%${string}`;
 
-/** Extracts the short names guaranteed to be flags in a hook tuple. */
-type FlagName<Hooks extends readonly Hook[]> = keyof {
-  [
-    H in Extract<Hooks[number], `flag:${string}`> extends `flag:${infer Name}`
-      ? Name
-      : never
-  ]: unknown;
-};
+/** Extracts the flags in a hook tuple. */
+type Flag<Hooks extends readonly Hook[]> = Extract<Hooks[number], `%${string}`>;
 
 /** Style declarations that set an inherited flag for descendants */
 type FlagStyle = { [P in `--${string}`]: string };
@@ -192,23 +186,25 @@ export type Hooks<
 
   /** Returns the style sheet required to support the configured hooks. */
   styleSheet: () => string;
-} & (string extends FlagName<ConfiguredHooks>
+} & (`%${string}` extends Flag<ConfiguredHooks>
   ? unknown
-  : {
-      /** Returns style declarations that enable a flag for descendants. */
-      enable: (flag: FlagName<ConfiguredHooks>) => FlagStyle;
+  : [Flag<ConfiguredHooks>] extends [never]
+    ? unknown
+    : {
+        /** Returns style declarations that enable a flag for descendants. */
+        enable: (flag: Flag<ConfiguredHooks>) => FlagStyle;
 
-      /** Returns style declarations that disable a flag for descendants. */
-      disable: (flag: FlagName<ConfiguredHooks>) => FlagStyle;
-    });
+        /** Returns style declarations that disable a flag for descendants. */
+        disable: (flag: Flag<ConfiguredHooks>) => FlagStyle;
+      });
 
 /**
  * Represents the function used to define hooks and related configuration.
  *
  * @remarks
- * When the registered hooks are known to include one or more `flag:<name>`
- * values, the return type also exposes `enable()` and `disable()` functions
- * restricted to their short names.
+ * When the registered hooks are known to include one or more `%<name>` values,
+ * the return type also exposes `enable()` and `disable()` functions restricted
+ * to those flags.
  *
  * @typeParam CSSProperties - The type of a style object, typically defined by
  *   an app framework (e.g., React's `CSSProperties` type)
@@ -320,7 +316,6 @@ export function createHooksSystem<
   >(
     ...hooks: Hooks
   ) => {
-    type H = Hooks[number];
     let space = "";
     let newline = "";
     try {
@@ -333,19 +328,14 @@ export function createHooksSystem<
       // `process.env.NODE_ENV` is absent in unbundled browser environments
     }
 
-    const hookHashes = new Map(hooks.map(hook => [hook, createHash(hook)]));
-    const flags = new Map(
-      hooks.flatMap(hook =>
-        hook.startsWith("flag:") ? [[hook.slice(5), hook] as const] : [],
-      ),
+    const hookHashes = new Map<string, string>(
+      hooks.map(hook => [hook, createHash(hook)]),
     );
-
     const flagDeclarations = (flag: string, enabled: boolean) => {
-      const hook = flags.get(flag);
-      if (!hook) {
+      const hash = hookHashes.get(flag);
+      if (!flag.startsWith("%") || !hash) {
         throw new RangeError(`Unknown flag: ${flag}`);
       }
-      const hash = hookHashes.get(hook);
       return {
         [`--${hash}f`]: enabled ? "on" : "off",
       } as FlagStyle;
@@ -369,7 +359,7 @@ export function createHooksSystem<
               [offVariable]: space,
               [onVariable]: "initial",
             };
-            if (hook.startsWith("flag:")) {
+            if (hook.startsWith("%")) {
               const flagVariable = `--${hookHash}f`;
               return [
                 [
@@ -475,7 +465,7 @@ export function createHooksSystem<
                 valFalse = `var(--${hash})`;
               }
               const hookHash =
-                hookHashes.get(condition as H) || createHash(condition);
+                hookHashes.get(condition) || createHash(condition);
               return [
                 `var(--${hookHash}1,${space}${valTrue})${space}var(--${hookHash}0,${space}${valFalse})`,
                 extraDecls,

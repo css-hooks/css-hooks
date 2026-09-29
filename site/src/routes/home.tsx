@@ -1402,14 +1402,14 @@ function InheritedStateDemoSource() {
     <SyntaxHighlighter language="tsx">{`<div
   style={pipe(
     { padding: 24 },
-    on("&:hover", enable("active"))
+    on("&:hover", enable("%active"))
   )}
 >
   Hover parent
   <span
     style={pipe(
       { color: "gray" },
-      on("flag:active", { color: "purple" })
+      on("%active", { color: "purple" })
     )}
   >
     Child responds
@@ -1440,7 +1440,7 @@ function InheritedStateDemoPreview() {
           background: gray(85),
           color: gray(30),
         }),
-        on("&:hover", enable("active")),
+        on("&:hover", enable("%active")),
       )}
     >
       <span style={{ fontSize: "0.75em" }}>Hover parent</span>
@@ -1459,7 +1459,7 @@ function InheritedStateDemoPreview() {
             color: gray(30),
             boxShadow: `inset 0 0 0 1px ${gray(70)}`,
           }),
-          on("flag:active", {
+          on("%active", {
             background: purple(60),
             color: white,
             boxShadow: "none",

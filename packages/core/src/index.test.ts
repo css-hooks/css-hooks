@@ -211,7 +211,7 @@ describe(`in ${selectedBrowser}`, () => {
       });
 
       it("applies boolean flags to descendants", async () => {
-        const { styleSheet, on, enable, disable } = createHooks("flag:dark");
+        const { styleSheet, on, enable, disable } = createHooks("%dark");
 
         await page.addStyleTag({ content: styleSheet() });
 
@@ -219,24 +219,24 @@ describe(`in ${selectedBrowser}`, () => {
           expectedEnabledColor = Color("blue");
         const consumerStyle = pipe(
           { color: expectedDefaultColor.string() },
-          on("flag:dark", { color: expectedEnabledColor.string() }),
+          on("%dark", { color: expectedEnabledColor.string() }),
         );
 
         await createStyledElement("p", consumerStyle);
         await createStyledElement("main", {
-          ...enable("dark"),
+          ...enable("%dark"),
           ...consumerStyle,
         });
         await createStyledElement("span", consumerStyle, "main");
         await createStyledElement(
           "section",
-          { ...disable("dark"), ...consumerStyle },
+          { ...disable("%dark"), ...consumerStyle },
           "main",
         );
         await createStyledElement("i", consumerStyle, "section");
         await createStyledElement(
           "article",
-          { ...enable("dark"), ...consumerStyle },
+          { ...enable("%dark"), ...consumerStyle },
           "section",
         );
         await createStyledElement("strong", consumerStyle, "article");
@@ -257,18 +257,18 @@ describe(`in ${selectedBrowser}`, () => {
 
       it("composes flags with selector hooks", async () => {
         const { styleSheet, on, and, enable } = createHooks(
-          "flag:dark",
+          "%dark",
           "&.active",
         );
 
         await page.addStyleTag({ content: styleSheet() });
 
-        await createStyledElement("main", enable("dark"));
+        await createStyledElement("main", enable("%dark"));
         await createStyledElement(
           "button",
           pipe(
             { color: "gray" },
-            on(and("flag:dark", "&.active"), { color: "blue" }),
+            on(and("%dark", "&.active"), { color: "blue" }),
           ),
           "main",
         );
@@ -285,18 +285,18 @@ describe(`in ${selectedBrowser}`, () => {
       });
 
       it("conditionally inverts flags for descendants", async () => {
-        const { styleSheet, on, enable, disable } = createHooks("flag:dark");
+        const { styleSheet, on, enable, disable } = createHooks("%dark");
         const consumerStyle = pipe(
           { color: "gray" },
-          on("flag:dark", { color: "blue" }),
+          on("%dark", { color: "blue" }),
         );
         const invertedStyle = pipe(
-          enable("dark"),
-          on("flag:dark", disable("dark")),
+          enable("%dark"),
+          on("%dark", disable("%dark")),
         );
 
         await page.addStyleTag({ content: styleSheet() });
-        await createStyledElement("main", enable("dark"));
+        await createStyledElement("main", enable("%dark"));
         await createStyledElement(
           "section",
           { ...invertedStyle, ...consumerStyle },
@@ -514,10 +514,10 @@ describe(`in ${selectedBrowser}`, () => {
 it("generates flag state rules", () => {
   const { createHooks } = createHooksSystem<CSS.Properties>();
 
-  const { styleSheet, enable, disable } = createHooks("flag:dark");
+  const { styleSheet, enable, disable } = createHooks("%dark");
 
-  const enabled = enable("dark"),
-    disabled = disable("dark"),
+  const enabled = enable("%dark"),
+    disabled = disable("%dark"),
     [flagVariable] = Object.keys(enabled);
 
   assert(flagVariable);
@@ -703,10 +703,12 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
   "@supports (display: grid)" satisfies Hook;
   "@scope (.theme)" satisfies Hook;
   "@starting-style" satisfies Hook;
-  "flag:dark" satisfies Hook;
+  "%dark" satisfies Hook;
 
   // @ts-expect-error selectors require an ampersand placeholder
   ".active" satisfies Hook;
+  // @ts-expect-error flags require the percent prefix
+  "flag:dark" satisfies Hook;
   // @ts-expect-error unsupported at-rule
   "@layer theme" satisfies Hook;
 }
@@ -731,7 +733,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
     { margin: "marginTop"; padding: "paddingTop" }
   >();
 
-  const { on, disable } = createHooks("&", "flag:dark");
+  const { on, disable } = createHooks("&", "%dark");
 
   // defined in conflict map
   pipe(
@@ -791,12 +793,12 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 
   pipe(
     { paddingTop: 0 as const },
-    mergeStyles(disable("dark")),
+    mergeStyles(disable("%dark")),
   ) satisfies CSS.Properties<number>;
 
   pipe(
     { color: "red" },
-    mergeStyles({ ...disable("dark"), color: "blue" }),
+    mergeStyles({ ...disable("%dark"), color: "blue" }),
   ) satisfies { color: "blue" };
 
   pipe(
@@ -805,7 +807,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
       {
         paddingTop: 0,
       },
-      mergeStyles(disable("dark")),
+      mergeStyles(disable("%dark")),
     ),
     on("&", {
       padding: 0,
@@ -824,17 +826,17 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
   void hooks.disable;
 }
 
-// flag controls only accept the short names of registered flags
+// flag controls only accept registered flags
 {
   const { createHooks } = createHooksSystem<CSS.Properties>();
 
-  const hooks = createHooks("flag:dark", "flag:compact", "&:hover");
+  const hooks = createHooks("%dark", "%compact", "&:hover");
 
-  hooks.enable("dark") satisfies CSS.Properties;
-  hooks.disable("compact") satisfies CSS.Properties;
+  hooks.enable("%dark") satisfies CSS.Properties;
+  hooks.disable("%compact") satisfies CSS.Properties;
 
-  // @ts-expect-error prefixes are omitted when setting flags
-  "flag:dark" satisfies Parameters<typeof hooks.enable>[0];
+  // @ts-expect-error the flag prefix is required
+  "dark" satisfies Parameters<typeof hooks.enable>[0];
   // @ts-expect-error ordinary hooks cannot be set as flags
   "&:hover" satisfies Parameters<typeof hooks.disable>[0];
   // @ts-expect-error the flag was not registered
@@ -890,15 +892,15 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
   const { createHooks, mergeStyles } =
     createHooksSystem<CSS.Properties<number>>();
 
-  const hooks = createHooks("flag:dark");
+  const hooks = createHooks("%dark");
   const { on, enable, disable } = hooks;
 
   pipe(
     {
       flexDirection: "column",
     },
-    mergeStyles(enable("dark")),
-    on("flag:dark", disable("dark")),
+    mergeStyles(enable("%dark")),
+    on("%dark", disable("%dark")),
   ) satisfies CSS.Properties<number>;
 
   pipe(
@@ -906,7 +908,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
       // @ts-expect-error the base style is contextually typed
       flexDirection: "invalid",
     },
-    mergeStyles(enable("dark")),
+    mergeStyles(enable("%dark")),
   );
 }
 

@@ -21,9 +21,9 @@ export type Hooks<ConfiguredHooks extends readonly Hook[], CSSProperties, CSSPro
         not: C;
     };
     styleSheet: () => string;
-} & (string extends FlagName<ConfiguredHooks> ? unknown : {
-    enable: (flag: FlagName<ConfiguredHooks>) => FlagStyle;
-    disable: (flag: FlagName<ConfiguredHooks>) => FlagStyle;
+} & (`%${string}` extends Flag<ConfiguredHooks> ? unknown : [Flag<ConfiguredHooks>] extends [never] ? unknown : {
+    enable: (flag: Flag<ConfiguredHooks>) => FlagStyle;
+    disable: (flag: Flag<ConfiguredHooks>) => FlagStyle;
 });
 ```
 **References:** [Hook](./core.hook.md)<!-- -->, [Condition](./core.condition.md)
