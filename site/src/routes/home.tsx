@@ -83,7 +83,7 @@ export default function Home({
               position: "relative",
               overflow: "hidden",
               paddingTop: 140,
-              paddingBottom: 128,
+              paddingBottom: 64,
             },
             on(not(dark), {
               background: [
@@ -91,6 +91,9 @@ export default function Home({
                 "radial-gradient(60% 40% at 50% 80%, rgba(124, 58, 237, 0.12), rgba(124, 58, 237, 0.04) 40%, transparent 70%)",
                 "linear-gradient(to bottom, #ffffff, #f7f7fb)",
               ].join(", "),
+            }),
+            on(dark, {
+              background: `linear-gradient(to bottom, ${gray(95)}, ${purple(90)} 55%)`,
             }),
           )}
         >
@@ -103,13 +106,12 @@ export default function Home({
                 position: "absolute",
                 pointerEvents: "none",
                 left: "50%",
-                top: "40%",
+                top: "50%",
                 width: "130%",
                 height: "100%",
                 transform: "translate(-50%, -50%)",
                 background:
                   "radial-gradient( ellipse at bottom, rgba(100, 70, 255, 0.65) 0%, rgba(70, 40, 220, 0.45) 40%, rgba(40, 20, 140, 0.25) 65%, rgba(0, 0, 0, 0) 100%)",
-                filter: "blur(40px)",
               }),
             )}
           />
@@ -225,102 +227,14 @@ export default function Home({
             </div>
           </Block>
         </div>
-        {/* Zone B: stripe anchor + below-stripe space */}{" "}
-        <div
-          style={{
-            position: "relative",
-            marginTop: -64,
-            paddingBottom: 64,
-          }}
-        >
-          {(
-            [
-              {
-                left: "50%",
-                top: 0,
-                width: "180%",
-                height: "80px",
-                transform: "translate(-50%, -50%)",
-                background: `radial-gradient(ellipse at center, ${withAlpha(purple(50), 0.15)} 0%, transparent 70%)`,
-                filter: "blur(40px)",
-              },
-              {
-                left: "50%",
-                top: 0,
-                width: "150%",
-                height: 80,
-                transform: "translate(-50%, -50%)",
-                background: `radial-gradient(ellipse at center, ${withAlpha(purple(30), 0.55)} 0%, ${withAlpha(purple(45), 0.35)} 30%, ${withAlpha(purple(60), 0.15)} 55%, transparent 75%)`,
-                filter: "blur(12px)",
-              },
-              {
-                left: "50%",
-                top: 16,
-                width: "70%",
-                height: 80,
-                transform: "translate(-50%, -50%)",
-                background: `radial-gradient(ellipse at center, ${withAlpha(blue(40), 0.35)} 0%, ${withAlpha(blue(55), 0.15)} 35%, transparent 70%)`,
-                filter: "blur(16px)",
-              },
-              {
-                left: "50%",
-                top: 0,
-                width: "28%",
-                height: 128,
-                transform: "translate(-50%, -50%)",
-                background: `radial-gradient(ellipse at center, ${white} 0%, ${withAlpha(purple(10), 0.95)} 10%, ${withAlpha(purple(20), 0.75)} 22%, ${withAlpha(purple(40), 0.45)} 40%, ${withAlpha(purple(60), 0.15)} 60%, transparent 75%)`,
-                filter: "blur(14px)",
-              },
-              {
-                left: "50%",
-                top: 0,
-                width: "55%",
-                height: 48,
-                transform: "translate(-50%, -50%)",
-                background: `radial-gradient(ellipse at center, ${white} 0%, ${withAlpha(purple(20), 0.7)} 25%, transparent 65%)`,
-                filter: "blur(8px)",
-              },
-              {
-                left: "50%",
-                top: 0,
-                width: "120%",
-                height: "6px",
-                transform: "translate(-50%, -50%)",
-                background: `linear-gradient(to right, transparent 0%, ${withAlpha(purple(30), 0.9)} 20%, ${white} 50%, ${withAlpha(purple(30), 0.9)} 80%, transparent 100%)`,
-                filter: "blur(3px)",
-              },
-              {
-                left: "50%",
-                top: 0,
-                width: "100%",
-                height: "1px",
-                transform: "translate(-50%, -50%)",
-                background: `linear-gradient(to right, transparent 0%, ${withAlpha(white, 0.8)} 50%, transparent 100%)`,
-                opacity: 0.8,
-              },
-            ] satisfies CSSProperties[]
-          ).map((style, key) => (
-            <div
-              key={key}
-              role="presentation"
-              style={pipe(
-                {},
-                on(dark, style),
-                mergeStyles({
-                  position: "absolute",
-                  pointerEvents: "none",
-                }),
-              )}
-            />
-          ))}
-        </div>
       </section>
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           gap: 48,
-          marginBlock: 96,
+          marginTop: 64,
+          marginBottom: 96,
         }}
       >
         <Demo
