@@ -9,7 +9,7 @@ import type { Browser, Page } from "playwright";
 import { chromium, firefox, webkit } from "playwright";
 import { pipe } from "remeda";
 
-import type { Hook } from "./index.ts";
+import type { Hook, Hooks } from "./index.ts";
 import { createHooksSystem } from "./index.ts";
 
 events.setMaxListeners(50);
@@ -825,6 +825,14 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
   // @ts-expect-error no flag hooks registered
   void hooks.disable;
 }
+
+// flag controls are only exposed when flag names are statically known
+declare const genericHooks: Hooks<Hook[], CSS.Properties, object>;
+
+// @ts-expect-error flag names are not statically known
+void genericHooks.enable;
+// @ts-expect-error flag names are not statically known
+void genericHooks.disable;
 
 // flag controls only accept registered flags
 {
