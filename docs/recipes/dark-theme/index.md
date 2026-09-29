@@ -30,8 +30,8 @@ import { pipe } from "remeda";
 import { disable, enable, mergeStyles, on } from "./css";
 
 const invertDark = pipe(
-  enable("dark"),
-  on("flag:dark", disable("dark")),
+  enable("%dark"),
+  on("%dark", disable("%dark")),
 );
 
 function ContrastPanel({
@@ -49,7 +49,7 @@ function ContrastPanel({
           background: "#fff",
           color: "#3b0764",
         },
-        on("flag:dark", {
+        on("%dark", {
           borderColor: "#7c3aed",
           background: "#35204f",
           color: "#f3e8ff",
@@ -79,14 +79,14 @@ export default function App() {
       style={
         {
           system: pipe(
-            disable("dark"),
+            disable("%dark"),
             on(
               "@media (prefers-color-scheme: dark)",
-              enable("dark"),
+              enable("%dark"),
             ),
           ),
-          light: disable("dark"),
-          dark: enable("dark"),
+          light: disable("%dark"),
+          dark: enable("%dark"),
         }[theme]
       }
     >
@@ -102,7 +102,7 @@ export default function App() {
             fontFamily: "system-ui, sans-serif",
             lineHeight: 1.5,
           },
-          on("flag:dark", {
+          on("%dark", {
             background: "#1e102f",
             color: "#f3e8ff",
             colorScheme: "dark",
@@ -149,7 +149,7 @@ export { mergeStyles } from "@css-hooks/react";
 export const { styleSheet, on, enable, disable } =
   createHooks(
     "@media (prefers-color-scheme: dark)",
-    "flag:dark",
+    "%dark",
   );
 ```
 
@@ -176,11 +176,10 @@ createRoot(document.getElementById("root")!).render(
 
 ## Theme inheritance
 
-The `"flag:dark"` hook carries the theme as inherited
-boolean state. `enable("dark")` and `disable("dark")` set
-that state for an element's descendants, and
-`on("flag:dark", …)` applies style overrides when the flag
-is enabled.
+The `"%dark"` hook carries the theme as inherited boolean
+state. `enable("%dark")` and `disable("%dark")` set that
+state for an element's descendants, and `on("%dark", …)`
+applies style overrides when the flag is enabled.
 
 Notice that the `ContrastPanel` component doesn't expose a
 `theme` prop or consume React Context. These aren't needed
@@ -194,8 +193,8 @@ user selection and is then passed down through a
 
 ```typescript
 const invertDark = pipe(
-  enable("dark"),
-  on("flag:dark", disable("dark")),
+  enable("%dark"),
+  on("%dark", disable("%dark")),
 );
 ```
 

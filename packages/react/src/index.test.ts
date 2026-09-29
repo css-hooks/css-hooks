@@ -94,7 +94,7 @@ describe("`stringifyValue` function", () => {
 
 // flag declarations can be included in conditional override styles
 {
-  const { on, enable } = createHooks("&", "flag:dark");
+  const { on, enable } = createHooks("&", "%dark");
 
   pipe(
     {},
@@ -104,7 +104,7 @@ describe("`stringifyValue` function", () => {
         {
           boxShadow: "0 0 0 1px red",
         },
-        mergeStyles(enable("dark")),
+        mergeStyles(enable("%dark")),
       ),
     ),
   );

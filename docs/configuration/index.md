@@ -24,7 +24,7 @@ export const { on, and, or, not, enable, disable, styleSheet } = createHooks(
   "@container (min-width: 320px)",
   "@supports (height: 100dvh)",
   "@scope ([data-theme='dark']) to ([data-theme])",
-  "flag:dark",
+  "%dark",
 );
 ```
 
@@ -62,24 +62,24 @@ scoped descendants, excluding any scope limit and its descendants.
 
 ## Flags
 
-Register a `flag:<name>` hook to condition styles on inherited boolean state.
+Register a `%<name>` hook to condition styles on inherited boolean state.
 Registered flags are disabled by default. Use `enable()` or `disable()` with the
-short flag name to set the state for an element's descendants:
+flag to set the state for an element's descendants:
 
 ```tsx
-const darkStyle = enable("dark");
+const darkStyle = enable("%dark");
 
 const panelStyle = pipe(
   { background: "#fff", color: "#000" },
-  on("flag:dark", { background: "#000", color: "#fff" }),
+  on("%dark", { background: "#000", color: "#fff" }),
 );
 ```
 
 A nested setter overrides the inherited state for its subtree:
 
 ```tsx
-<main style={enable("dark")}>
-  <section style={disable("dark")}>{/* Light subtree */}</section>
+<main style={enable("%dark")}>
+  <section style={disable("%dark")}>{/* Light subtree */}</section>
 </main>
 ```
 
@@ -89,12 +89,11 @@ also makes it possible to invert a flag without creating a custom-property
 cycle:
 
 ```typescript
-const invertDark = pipe(enable("dark"), on("flag:dark", disable("dark")));
+const invertDark = pipe(enable("%dark"), on("%dark", disable("%dark")));
 ```
 
 `createHooks()` only returns `enable()` and `disable()` when at least one flag
-is registered. Their arguments are restricted to the short names of the flags
-from that call.
+is registered. Their arguments are restricted to the flags from that call.
 
 ## Compose reusable conditions
 

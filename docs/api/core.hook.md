@@ -9,12 +9,12 @@ Represents a hook registered with `createHooks`<!-- -->.
 **Signature:**
 
 ```typescript
-export type Hook = `${string}&${string}` | `@${"media" | "container" | "supports"} ${string}` | `@scope (${string})` | "@starting-style" | `flag:${string}`;
+export type Hook = `${string}&${string}` | `@${"media" | "container" | "supports"} ${string}` | `@scope (${string})` | "@starting-style" | `%${string}`;
 ```
 
 ## Remarks
 
 Four forms are supported:
 
-1. A selector hook, where `&` is used as a placeholder for the element to which the condition applies. The `&` character must appear somewhere. 2. An at-rule hook beginning with `@media`<!-- -->, `@container`<!-- -->, `@supports`<!-- -->, or `@scope`<!-- -->, followed by a space. `@scope` requires an explicit scope root. 3. The `@starting-style` at-rule hook with no additional parameters. 4. A named boolean flag hook beginning with `flag:`<!-- -->.
+1. A selector hook, where `&` is used as a placeholder for the element to which the condition applies. The `&` character must appear somewhere. 2. An at-rule hook beginning with `@media`<!-- -->, `@container`<!-- -->, `@supports`<!-- -->, or `@scope`<!-- -->, followed by a space. `@scope` requires an explicit scope root. 3. The `@starting-style` at-rule hook with no additional parameters. 4. A named boolean flag hook beginning with `%`<!-- -->.
 
