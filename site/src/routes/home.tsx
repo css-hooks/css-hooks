@@ -14,6 +14,7 @@ import { SyntaxHighlighter } from "../components/syntax-highlighter.tsx";
 import {
   and,
   dark,
+  enable,
   extractClassName,
   intent,
   intentAdjacentSibling,
@@ -39,11 +40,11 @@ import { monospace } from "../design/typography.ts";
 import type { Route } from "./+types/home.ts";
 
 export async function loader() {
-  const [pseudoClasses, selectors, responsive] = await Promise.all(
+  const [userInteraction, responsive, inheritedState] = await Promise.all(
     [
-      <PseudoClassesDemoSource key="pseudo-classes" />,
-      <SelectorsDemoSource key="selectors" />,
+      <UserInteractionDemoSource key="user-interaction" />,
       <ResponsiveDemoSource key="responsive" />,
+      <InheritedStateDemoSource key="inherited-state" />,
     ].map(async jsx => {
       const { prelude: stream } = await prerenderToNodeStream(jsx);
       return await new Promise<string>((resolve, reject) => {
@@ -54,13 +55,13 @@ export async function loader() {
       });
     }),
   );
-  if (!pseudoClasses || !selectors || !responsive) {
+  if (!userInteraction || !responsive || !inheritedState) {
     throw new Response("A demo source was unexpectedly empty.", {
       status: 500,
       statusText: "Internal Server Error",
     });
   }
-  return { demoSource: { pseudoClasses, selectors, responsive } };
+  return { demoSource: { userInteraction, responsive, inheritedState } };
 }
 
 export default function Home({
@@ -166,6 +167,7 @@ export default function Home({
                   {
                     fontSize: "1.5em",
                     lineHeight: 4 / 3,
+                    maxWidth: 720,
                     textWrap: "balance",
                     color: gray(60),
                   },
@@ -177,8 +179,9 @@ export default function Home({
                   }),
                 )}
               >
-                The styling system that supercharges native inline styles with
-                pseudo-classes, responsive queries, and advanced selector logic.
+                Respond to user interaction, layout context, and inherited
+                state. All CSS-driven. All without leaving the{" "}
+                <Code>style</Code> prop.
               </p>
               <div
                 style={{
@@ -238,22 +241,22 @@ export default function Home({
         }}
       >
         <Demo
-          icon={<PseudoClassesIcon />}
-          title="Pseudo-classes"
-          source={demoSource.pseudoClasses}
-          preview={<PseudoClassesDemoPreview />}
-        />
-        <Demo
-          icon={<SelectorsIcon />}
-          title="Selectors"
-          source={demoSource.selectors}
-          preview={<SelectorsDemoPreview />}
+          icon={<UserInteractionIcon />}
+          title="User interaction"
+          source={demoSource.userInteraction}
+          preview={<UserInteractionDemoPreview />}
         />
         <Demo
           icon={<ResponsiveIcon />}
           title="Responsive design"
           source={demoSource.responsive}
           preview={<ResponsiveDemoPreview />}
+        />
+        <Demo
+          icon={<InheritedStateIcon />}
+          title="Inherited state"
+          source={demoSource.inheritedState}
+          preview={<InheritedStateDemoPreview />}
         />
         <section>
           <ScreenReaderOnly>
@@ -1237,7 +1240,7 @@ function Demo({
   );
 }
 
-function PseudoClassesDemoSource() {
+function UserInteractionDemoSource() {
   return (
     <SyntaxHighlighter language="tsx">{`<button
   style={pipe(
@@ -1258,7 +1261,7 @@ function PseudoClassesDemoSource() {
   );
 }
 
-function PseudoClassesDemoPreview() {
+function UserInteractionDemoPreview() {
   return (
     <button
       style={pipe(
@@ -1287,56 +1290,15 @@ function PseudoClassesDemoPreview() {
   );
 }
 
-function SelectorsDemoSource() {
-  return (
-    <SyntaxHighlighter language="tsx">{`<label>
-  <input type="checkbox" checked />
-  <span
-    style={pipe(
-      {},
-      on(":checked + &", {
-        textDecoration: "line-through"
-      })
-    )}
-  >
-    Simplify CSS architecture
-  </span>
-</label>`}</SyntaxHighlighter>
-  );
-}
-
-function SelectorsDemoPreview() {
-  return (
-    <label
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "0.25em",
-        fontFamily: "sans-serif",
-        fontWeight: 700,
-      }}
-    >
-      <input type="checkbox" defaultChecked />
-      <span
-        style={pipe(
-          {},
-          on(":checked + &", {
-            textDecoration: "line-through",
-          }),
-        )}
-      >
-        Simplify CSS architecture
-      </span>
-    </label>
-  );
-}
-
 function ResponsiveDemoSource() {
   return (
     <SyntaxHighlighter language="tsx">{`<span
   style={pipe(
-    {},
-    on(or("@container (width < 50px)", "@container (width >= 100px)"), {
+    { display: "none" },
+    on("@container (width >= 50px)", {
+      display: "revert-layer"
+    }),
+    on("@container (width >= 100px)", {
       display: "none"
     })
   )}
@@ -1345,9 +1307,9 @@ function ResponsiveDemoSource() {
 </span>
 <span
   style={pipe(
-    {},
-    on("@container (width < 100px)", {
-      display: "none"
+    { display: "none" },
+    on("@container (width >= 100px)", {
+      display: "revert-layer"
     })
   )}
 >
@@ -1394,10 +1356,14 @@ function ResponsiveDemoPreview() {
         <span
           style={pipe(
             {
+              display: "none",
               fontSize: "0.5em",
               lineHeight: 4 / 3,
             },
-            on(or("@container (width < 50px)", "@container (width >= 100px)"), {
+            on("@container (width >= 50px)", {
+              display: "revert-layer",
+            }),
+            on("@container (width >= 100px)", {
               display: "none",
             }),
           )}
@@ -1406,9 +1372,9 @@ function ResponsiveDemoPreview() {
         </span>
         <span
           style={pipe(
-            {},
-            on("@container (width < 100px)", {
-              display: "none",
+            { display: "none" },
+            on("@container (width >= 100px)", {
+              display: "revert-layer",
             }),
           )}
         >
@@ -1427,6 +1393,81 @@ function ResponsiveDemoPreview() {
           }}
         />
       </label>
+    </div>
+  );
+}
+
+function InheritedStateDemoSource() {
+  return (
+    <SyntaxHighlighter language="tsx">{`<div
+  style={pipe(
+    { padding: 24 },
+    on("&:hover", enable("active"))
+  )}
+>
+  Hover parent
+  <span
+    style={pipe(
+      { color: "gray" },
+      on("flag:active", { color: "purple" })
+    )}
+  >
+    Child responds
+  </span>
+</div>`}</SyntaxHighlighter>
+  );
+}
+
+function InheritedStateDemoPreview() {
+  return (
+    <div
+      style={pipe(
+        {
+          display: "flex",
+          flexDirection: "column",
+          gap: 12,
+          minWidth: 160,
+          padding: 20,
+          borderRadius: 8,
+          border: `1px solid ${gray(20)}`,
+          background: gray(10),
+          color: gray(60),
+          fontFamily: "sans-serif",
+          fontWeight: 700,
+        },
+        on(dark, {
+          borderColor: gray(70),
+          background: gray(85),
+          color: gray(30),
+        }),
+        on("&:hover", enable("active")),
+      )}
+    >
+      <span style={{ fontSize: "0.75em" }}>Hover parent</span>
+      <span
+        style={pipe(
+          {
+            padding: 12,
+            borderRadius: 6,
+            background: white,
+            color: gray(60),
+            textAlign: "center",
+            boxShadow: `inset 0 0 0 1px ${gray(20)}`,
+          },
+          on(dark, {
+            background: gray(90),
+            color: gray(30),
+            boxShadow: `inset 0 0 0 1px ${gray(70)}`,
+          }),
+          on("flag:active", {
+            background: purple(60),
+            color: white,
+            boxShadow: "none",
+          }),
+        )}
+      >
+        Child responds
+      </span>
     </div>
   );
 }
@@ -1548,7 +1589,7 @@ function DemoIconSvg({ children }: { children: ReactElement }) {
   );
 }
 
-function PseudoClassesIcon() {
+function UserInteractionIcon() {
   return (
     <DemoIconSvg>
       <path
@@ -1559,11 +1600,11 @@ function PseudoClassesIcon() {
   );
 }
 
-function SelectorsIcon() {
+function InheritedStateIcon() {
   return (
     <DemoIconSvg>
       <path
-        d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"
+        d="M4 3h8v6H9v2h7v3h4v7h-8v-7h3v-1H8v1H4v7H0v-7h4v-3h3V9H4V3Zm2 2v2h4V5H6Zm8 11v3h4v-3h-4ZM2 16v3h4v-3H2Z"
         fill="currentColor"
       />
     </DemoIconSvg>
@@ -1582,5 +1623,14 @@ function ResponsiveIcon() {
 }
 
 function Code({ children }: { children?: ReactNode }) {
-  return <code style={{ fontFamily: monospace }}>{children}</code>;
+  return (
+    <code
+      style={pipe(
+        { color: teal(60), fontFamily: monospace },
+        on(dark, { color: teal(30) }),
+      )}
+    >
+      {children}
+    </code>
+  );
 }

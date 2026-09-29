@@ -2,7 +2,7 @@ import { createHooks, mergeStyles } from "@css-hooks/react";
 import type { CSSProperties } from "react";
 
 export { mergeStyles };
-export const { styleSheet, on, and, or, not } = createHooks(
+export const { styleSheet, on, and, or, not, enable } = createHooks(
   "@supports (height: 100dvh)",
 
   "@media (width >= 44em)",
@@ -13,8 +13,7 @@ export const { styleSheet, on, and, or, not } = createHooks(
   "[data-theme='auto'] &",
   "[data-theme='dark'] &",
 
-  "@container (width < 50px)",
-  "@container (width < 100px)",
+  "@container (width >= 50px)",
   "@container (width >= 64ch)",
   "@container (width >= 112ch)",
   "@container (width >= 100px)",
@@ -46,6 +45,8 @@ export const { styleSheet, on, and, or, not } = createHooks(
   ":has(:checked) + &",
   "td > &:only-child",
   "th > &:only-child",
+
+  "flag:active",
 );
 
 export const dark = or(
