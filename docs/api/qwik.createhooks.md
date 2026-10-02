@@ -9,5 +9,5 @@ A hook factory configured to use Qwik's `CSSProperties` type and logic for conve
 **Signature:**
 
 ```typescript
-createHooks: import("@css-hooks/core").CreateHooksFn<CSSProperties, CSSPropertyConflicts>
+createHooks: import("@css-hooks/core").CreateHooksFn<CSSProperties>
 ```

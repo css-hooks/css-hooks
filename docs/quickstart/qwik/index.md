@@ -20,7 +20,7 @@ Replace it with Qwik v2 and install CSS Hooks:
 
 ```bash
 npm uninstall @builder.io/qwik
-npm install @css-hooks/qwik@next @qwik.dev/core remeda
+npm install @css-hooks/qwik@next @qwik.dev/core
 ```
 
 Then replace the Qwik v1 optimizer import:
@@ -57,8 +57,9 @@ Create a module for styling utilities:
 ```typescript
 // src/css.ts
 
-import { createHooks } from "@css-hooks/qwik";
+import { createHooks, mergeStyles } from "@css-hooks/qwik";
 
+export { mergeStyles };
 export const { on, styleSheet } = createHooks("&:active");
 ```
 
@@ -93,13 +94,12 @@ Use the registered `&:active` hook in a component:
 // src/app.tsx
 
 import { component$ } from "@qwik.dev/core";
-import { pipe } from "remeda";
 
-import { on } from "./css";
+import { mergeStyles, on } from "./css";
 
 export const App = component$(() => (
   <button
-    style={pipe(
+    style={mergeStyles(
       { transition: "transform 75ms" },
       on("&:active", { transform: "scale(0.9)" }),
     )}

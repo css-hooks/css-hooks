@@ -25,11 +25,10 @@ contrasts with the outer panel.
 
 import type { ReactNode } from "react";
 import { useState } from "react";
-import { pipe } from "remeda";
 
 import { disable, enable, mergeStyles, on } from "./css";
 
-const invertDark = pipe(
+const invertDark = mergeStyles(
   enable("%dark"),
   on("%dark", disable("%dark")),
 );
@@ -41,7 +40,7 @@ function ContrastPanel({
 }) {
   return (
     <section
-      style={pipe(
+      style={mergeStyles(
         {
           padding: 20,
           borderRadius: 12,
@@ -54,7 +53,7 @@ function ContrastPanel({
           background: "#35204f",
           color: "#f3e8ff",
         }),
-        mergeStyles(invertDark),
+        invertDark,
       )}
     >
       <h2 style={{ margin: "0 0 8px", fontSize: 20 }}>
@@ -78,7 +77,7 @@ export default function App() {
     <div
       style={
         {
-          system: pipe(
+          system: mergeStyles(
             disable("%dark"),
             on(
               "@media (prefers-color-scheme: dark)",
@@ -91,7 +90,7 @@ export default function App() {
       }
     >
       <main
-        style={pipe(
+        style={mergeStyles(
           {
             background: "#faf5ff",
             color: "#3b0764",
@@ -107,7 +106,7 @@ export default function App() {
             color: "#f3e8ff",
             colorScheme: "dark",
           }),
-          mergeStyles(invertDark),
+          invertDark,
         )}
       >
         <label>
@@ -192,7 +191,7 @@ user selection and is then passed down through a
 ## Inversion boundary
 
 ```typescript
-const invertDark = pipe(
+const invertDark = mergeStyles(
   enable("%dark"),
   on("%dark", disable("%dark")),
 );
@@ -203,7 +202,7 @@ at each nesting level. When the boundary inherits an enabled
 dark-mode flag, it disables the flag for its descendants.
 Otherwise, it enables the flag for them.
 
-`mergeStyles(invertDark)` adds the boundary to a style
-pipeline. The `App` component applies it once on the `main`
+Passing `invertDark` to `mergeStyles` adds the boundary to a
+style. The `App` component applies it once on the `main`
 element for an initial inversion; then, each `ContrastPanel`
 applies it again to invert its own children.

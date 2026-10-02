@@ -1,12 +1,10 @@
-import { pipe } from "remeda";
-
-import { dark, on, withAlpha } from "../css.ts";
+import { dark, mergeStyles, on, withAlpha } from "../css.ts";
 import { gray } from "../design/colors.ts";
 
 export function Hr() {
   return (
     <hr
-      style={pipe(
+      style={mergeStyles(
         {
           margin: 0,
           borderWidth: 0,

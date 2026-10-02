@@ -9,12 +9,9 @@ The functions configured by `createHooksSystem` for a specific app framework
 **Signature:**
 
 ```typescript
-export type HooksSystem<CSSProperties, CSSPropertyConflicts extends object = object> = {
-    createHooks: CreateHooksFn<CSSProperties, CSSPropertyConflicts>;
-    mergeStyles: <const OverrideStyle extends CSSProperties, Style extends CSSProperties>(overrideStyle: OverrideStyle | null | undefined) => {
-        <ActualStyle extends CSSProperties>(style: ActualStyle): Omit<ActualStyle, keyof OverrideStyle> & OverrideStyle;
-        (style: CSSProperties & Style): Omit<Style, keyof OverrideStyle> & OverrideStyle;
-    };
+export type HooksSystem<CSSProperties extends object, CSSPropertyConflicts extends object = object> = {
+    createHooks: CreateHooksFn<CSSProperties>;
+    mergeStyles: MergeStylesFn<CSSProperties, CSSPropertyConflicts>;
 };
 ```
 **References:** [CreateHooksFn](./core.createhooksfn.md)

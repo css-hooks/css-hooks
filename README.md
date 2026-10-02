@@ -30,7 +30,7 @@ experience without runtime style injection or build steps.
 
 ```jsx
 <button
-  style={pipe(
+  style={mergeStyles(
     {
       background: "#004982",
       color: "#eeeff0",
@@ -53,7 +53,7 @@ experience without runtime style injection or build steps.
 <label>
   <input type="checkbox" checked />
   <span
-    style={pipe(
+    style={mergeStyles(
       {},
       on(":checked + &", {
         textDecoration: "line-through",
@@ -70,7 +70,7 @@ experience without runtime style injection or build steps.
 ```jsx
 <>
   <span
-    style={pipe(
+    style={mergeStyles(
       {},
       on(not("@container (width < 400px)"), {
         display: "none",
@@ -80,7 +80,7 @@ experience without runtime style injection or build steps.
     sm
   </span>
   <span
-    style={pipe(
+    style={mergeStyles(
       {},
       on("@container (width < 400px)", {
         display: "none",
@@ -94,7 +94,7 @@ experience without runtime style injection or build steps.
 
 ## Compatibility
 
-### Framework integrations
+### Frameworks
 
 | <img src="https://dl.svgcdn.com/svg/logos/react.svg" alt="React" width="24" height="24" /><br/>React | <img src="https://dl.svgcdn.com/svg/logos/preact.svg" alt="Preact" width="24" height="24" /><br/>Preact | <img src="https://dl.svgcdn.com/svg/logos/solidjs-icon.svg" alt="Solid" width="24" height="24" /><br/>Solid | <img src="https://dl.svgcdn.com/svg/logos/qwik-icon.svg" alt="Qwik" width="24" height="24" /><br/>Qwik |
 | :--------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------: |

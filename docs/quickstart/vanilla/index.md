@@ -11,7 +11,7 @@ order: 99
 ```bash
 npm create vite@latest css-hooks-playground -- --template vanilla-ts
 cd css-hooks-playground
-npm install @css-hooks/core@next remeda
+npm install @css-hooks/core@next
 ```
 
 ## 2. Define a hook
@@ -23,8 +23,9 @@ Create a module for styling utilities:
 
 import { createHooksSystem } from "@css-hooks/core";
 
-const { createHooks } = createHooksSystem();
+const { createHooks, mergeStyles } = createHooksSystem();
 
+export { mergeStyles };
 export const { on, styleSheet } = createHooks("&:active");
 ```
 
@@ -52,9 +53,7 @@ below; use a renderer-appropriate serializer in an application.
 ```typescript
 // src/main.ts
 
-import { pipe } from "remeda";
-
-import { on } from "./css";
+import { mergeStyles, on } from "./css";
 
 function styleObjectToString(style: Record<string, string>) {
   return Object.entries(style)
@@ -62,7 +61,7 @@ function styleObjectToString(style: Record<string, string>) {
     .join("; ");
 }
 
-const buttonStyle = pipe(
+const buttonStyle = mergeStyles(
   { transition: "transform 75ms" },
   on("&:active", { transform: "scale(0.9)" }),
 );

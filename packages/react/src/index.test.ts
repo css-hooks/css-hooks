@@ -2,7 +2,6 @@ import assert from "node:assert";
 import { describe, it } from "node:test";
 
 import type { CSSProperties } from "react";
-import { pipe } from "remeda";
 
 import {
   _stringifyValue as stringifyValue,
@@ -37,23 +36,21 @@ describe("`stringifyValue` function", () => {
 
 {
   const { on } = createHooks("&");
-  pipe(
-    {
-      // @ts-expect-error `margin` conflicts with `marginTop`
-      margin: 0,
-    },
+  mergeStyles(
+    { margin: 0 },
+    // @ts-expect-error `margin` conflicts with `marginTop`
     on("&", { marginTop: 1 }),
   );
 
-  pipe(
+  mergeStyles(
     { color: "red", textDecoration: "none" },
     on("&", { color: "green" }),
     on("&", { color: "blue" }),
     on("&", { textDecoration: "underline" }),
   ) satisfies CSSProperties;
 
-  // Keep long pipelines from recursively nesting conflict-validation types.
-  pipe(
+  // Keep long compositions from exceeding TypeScript's instantiation limit.
+  mergeStyles(
     { display: "inline-flex", alignItems: "center" },
     on("&", { fontWeight: 500, color: "red" }),
     on("&", { gap: 8, padding: 6, transitionProperty: "color" }),
@@ -85,7 +82,7 @@ describe("`stringifyValue` function", () => {
   ) satisfies CSSProperties;
 
   // Repeated overrides should remain assignable after type widening.
-  pipe(
+  mergeStyles(
     { animationDuration: "300ms" },
     on("&", { animationName: "dialogOut" }),
     on("&", { animationName: "dialogIn" }),
@@ -96,15 +93,14 @@ describe("`stringifyValue` function", () => {
 {
   const { on, enable } = createHooks("&", "%dark");
 
-  pipe(
-    {},
+  mergeStyles(
     on(
       "&",
-      pipe(
+      mergeStyles(
         {
           boxShadow: "0 0 0 1px red",
         },
-        mergeStyles(enable("%dark")),
+        enable("%dark"),
       ),
     ),
   );

@@ -2,54 +2,12 @@
 
 [Home](./index.md) &gt; [@css-hooks/react](./react.md) &gt; [mergeStyles](./react.mergestyles.md)
 
-## mergeStyles() function
+## mergeStyles variable
 
 A style merger configured to use React's `CSSProperties` type.
 
 **Signature:**
 
 ```typescript
-mergeStyles: <const OverrideStyle extends CSSProperties, Style extends CSSProperties>(overrideStyle: OverrideStyle | null | undefined) => {
-    <ActualStyle extends CSSProperties>(style: ActualStyle): Omit<ActualStyle, keyof OverrideStyle> & OverrideStyle;
-    (style: CSSProperties & Style): Omit<Style, keyof OverrideStyle> & OverrideStyle;
-}
+mergeStyles: HooksSystem<CSSProperties, CSSPropertyConflicts>["mergeStyles"]
 ```
-
-## Parameters
-
-<table><thead><tr><th>
-
-Parameter
-
-
-</th><th>
-
-Type
-
-
-</th><th>
-
-Description
-
-
-</th></tr></thead>
-<tbody><tr><td>
-
-overrideStyle
-
-
-</td><td>
-
-OverrideStyle \| null \| undefined
-
-
-</td><td>
-
-
-</td></tr>
-</tbody></table>
-
-**Returns:**
-
-{ &lt;ActualStyle extends CSSProperties&gt;(style: ActualStyle): Omit&lt;ActualStyle, keyof OverrideStyle&gt; &amp; OverrideStyle; (style: CSSProperties &amp; Style): Omit&lt;Style, keyof OverrideStyle&gt; &amp; OverrideStyle; }
-

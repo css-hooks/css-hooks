@@ -1,7 +1,6 @@
 import { useId } from "react";
-import { pipe } from "remeda";
 
-import { and, dark, not, on } from "./css.ts";
+import { and, dark, mergeStyles, not, on } from "./css.ts";
 
 type Theme = "dark" | "auto" | "light";
 
@@ -199,7 +198,7 @@ interface ThemeSwitcherProps {
 export function ThemeSwitcher({ value, onChange }: ThemeSwitcherProps) {
   return (
     <div
-      style={pipe(
+      style={mergeStyles(
         {
           position: "relative",
           display: "inline-flex",
@@ -222,12 +221,17 @@ export function ThemeSwitcher({ value, onChange }: ThemeSwitcherProps) {
       )}
     >
       {/* Moon — shown in dark mode */}
-      <div style={pipe({ display: "none" }, on(dark, { display: "contents" }))}>
+      <div
+        style={mergeStyles(
+          { display: "none" },
+          on(dark, { display: "contents" }),
+        )}
+      >
         <MoonIcon />
       </div>
       {/* Sun — shown in light mode */}
       <div
-        style={pipe(
+        style={mergeStyles(
           { display: "none" },
           on(not(dark), { display: "contents" }),
         )}

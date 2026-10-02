@@ -28,7 +28,6 @@ Try testing the following states:
 
 import type { ComponentProps } from "react";
 import { useState } from "react";
-import { pipe } from "remeda";
 
 import { and, mergeStyles, on } from "./css";
 
@@ -40,7 +39,7 @@ function Button({
     <button
       type="button"
       {...props}
-      style={pipe(
+      style={mergeStyles(
         {
           border: "2px solid transparent",
           borderRadius: 8,
@@ -77,7 +76,7 @@ function Button({
           cursor: "not-allowed",
           transform: "none",
         }),
-        mergeStyles(style),
+        style,
       )}
     />
   );
@@ -89,7 +88,7 @@ export default function App() {
 
   return (
     <main
-      style={pipe(
+      style={mergeStyles(
         {
           padding: 32,
           background: "#fff",
@@ -222,13 +221,12 @@ lets React render only when application data changes.
 
 ## Style escape hatch
 
-`Button` accepts a `style` prop and appends it to the
-pipeline with `mergeStyles(style)`. `mergeStyles` moves each
-overridden property to the end of the style object, so later
-declarations take precedence and the consumer's values
-replace the component's internal values for those
-properties, including values set by hooks. Treat `style` as
-a predictable escape hatch for layout or one-off
-customization; it also lets callers override declarations
-outside the component's documented API, so expose it only
-when that flexibility is warranted.
+`Button` accepts a `style` prop and passes it last to
+`mergeStyles`. `mergeStyles` moves each overridden property
+to the end of the style object, so later declarations take
+precedence and the consumer's values replace the component's
+internal values for those properties, including values set
+by hooks. Treat `style` as a predictable escape hatch for
+layout or one-off customization; it also lets callers
+override declarations outside the component's documented
+API, so expose it only when that flexibility is warranted.

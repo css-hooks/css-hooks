@@ -7,7 +7,6 @@ import type * as CSS from "csstype";
 import * as lightningcss from "lightningcss";
 import type { Browser, Page } from "playwright";
 import { chromium, firefox, webkit } from "playwright";
-import { pipe } from "remeda";
 
 import type { Hook } from "./index.ts";
 import { createHooksSystem } from "./index.ts";
@@ -48,7 +47,7 @@ describe("`mergeStyles` function", () => {
     const baseStyle = { color: "red", display: "block" };
     const overrideStyle = { color: "blue", opacity: 0.5 };
 
-    const style = pipe(baseStyle, mergeStyles(overrideStyle));
+    const style = mergeStyles(baseStyle, overrideStyle);
 
     assert.deepEqual(style, {
       display: "block",
@@ -61,25 +60,40 @@ describe("`mergeStyles` function", () => {
   });
 
   it("moves override properties after base properties", () => {
-    const style = pipe(
-      { marginTop: 8, margin: 0 },
-      mergeStyles({ marginTop: 16 }),
-    );
+    const style = mergeStyles({ marginTop: 8, margin: 0 }, { marginTop: 16 });
 
     assert.deepEqual(Object.keys(style), ["margin", "marginTop"]);
   });
 
-  it("returns the base style when the override style is absent", () => {
+  it("ignores absent styles", () => {
     const baseStyle = { color: "red" };
-    const style = pipe(baseStyle, mergeStyles(undefined));
+    const style = mergeStyles(baseStyle, undefined);
 
-    assert.strictEqual(style, baseStyle);
+    assert.deepEqual(style, baseStyle);
     style satisfies typeof baseStyle;
+  });
+
+  it("hydrates conditional fallback markers", () => {
+    const { on } = createHooksSystem().createHooks("&:hover");
+    const conditionalStyle = on("&:hover", { color: "blue" });
+
+    assert.deepEqual(
+      JSON.parse(JSON.stringify(conditionalStyle)),
+      conditionalStyle,
+    );
+    assert.match(
+      conditionalStyle.color,
+      /var\(--ch-revert-layer,revert-layer\)/,
+    );
+
+    const style = mergeStyles({ color: "red" }, conditionalStyle);
+    assert.doesNotMatch(style.color, /--ch-revert-layer/);
+    assert.match(style.color, /red/);
   });
 });
 
 describe(`in ${selectedBrowser}`, () => {
-  const { createHooks } = createHooksSystem<CSS.Properties>();
+  const { createHooks, mergeStyles } = createHooksSystem<CSS.Properties>();
 
   let browser: Browser, page: Page;
 
@@ -185,7 +199,7 @@ describe(`in ${selectedBrowser}`, () => {
 
         await createStyledElement(
           "button",
-          pipe(
+          mergeStyles(
             {
               color: expectedDefaultColor.string(),
             },
@@ -217,7 +231,7 @@ describe(`in ${selectedBrowser}`, () => {
 
         const expectedDefaultColor = Color("gray"),
           expectedEnabledColor = Color("blue");
-        const consumerStyle = pipe(
+        const consumerStyle = mergeStyles(
           { color: expectedDefaultColor.string() },
           on("%dark", { color: expectedEnabledColor.string() }),
         );
@@ -266,7 +280,7 @@ describe(`in ${selectedBrowser}`, () => {
         await createStyledElement("main", enable("%dark"));
         await createStyledElement(
           "button",
-          pipe(
+          mergeStyles(
             { color: "gray" },
             on(and("%dark", "&.active"), { color: "blue" }),
           ),
@@ -286,11 +300,11 @@ describe(`in ${selectedBrowser}`, () => {
 
       it("conditionally inverts flags for descendants", async () => {
         const { styleSheet, on, enable, disable } = createHooks("%dark");
-        const consumerStyle = pipe(
+        const consumerStyle = mergeStyles(
           { color: "gray" },
           on("%dark", { color: "blue" }),
         );
-        const invertedStyle = pipe(
+        const invertedStyle = mergeStyles(
           enable("%dark"),
           on("%dark", disable("%dark")),
         );
@@ -334,7 +348,7 @@ describe(`in ${selectedBrowser}`, () => {
 
       await createStyledElement(
         "div",
-        pipe(
+        mergeStyles(
           {
             padding: expectedDefaultPadding,
           },
@@ -369,7 +383,7 @@ describe(`in ${selectedBrowser}`, () => {
 
       const expectedDefaultColor = Color("gray"),
         expectedScopedColor = Color("blue");
-      const style = pipe(
+      const style = mergeStyles(
         { color: expectedDefaultColor.string() },
         on(scope, { color: expectedScopedColor.string() }),
       );
@@ -403,7 +417,7 @@ describe(`in ${selectedBrowser}`, () => {
 
       await createStyledElement(
         "div",
-        pipe(
+        mergeStyles(
           {
             fontSize: expectedDefaultFontSize,
           },
@@ -451,7 +465,7 @@ describe(`in ${selectedBrowser}`, () => {
 
       await createStyledElement(
         "div",
-        pipe(
+        mergeStyles(
           {
             width: "100px",
             height: "100px",
@@ -486,12 +500,9 @@ describe(`in ${selectedBrowser}`, () => {
 
       await createStyledElement(
         "button",
-        pipe(
-          {},
-          on("&:hover", {
-            color: expectedHoverColor.string(),
-          }),
-        ),
+        on("&:hover", {
+          color: expectedHoverColor.string(),
+        }),
       );
 
       const actualDefaultColor = Color(
@@ -514,36 +525,40 @@ describe(`in ${selectedBrowser}`, () => {
 it("generates flag state rules", () => {
   const { createHooks } = createHooksSystem<CSS.Properties>();
 
-  const { styleSheet, enable, disable } = createHooks("%dark");
+  const { styleSheet, enable, disable } = createHooks("%dark", "%compact");
 
   const enabled = enable("%dark"),
     disabled = disable("%dark"),
     [flagVariable] = Object.keys(enabled);
 
   assert(flagVariable);
-  assert.deepStrictEqual(enabled, { [flagVariable]: "on" });
-  assert.deepStrictEqual(disabled, { [flagVariable]: "off" });
+  assert.deepStrictEqual(enabled, { [flagVariable]: 1 });
+  assert.deepStrictEqual(disabled, { [flagVariable]: 0 });
 
   const css = styleSheet();
   assert(css.includes(`@property ${flagVariable}`));
-  assert.match(css, /syntax:\s*"<custom-ident>"/);
+  assert.match(css, /syntax:\s*"<number>"/);
   assert.match(css, /inherits:\s*true/);
-  assert.match(css, /initial-value:\s*off/);
+  assert.match(css, /initial-value:\s*0/);
   assert.match(
     css,
-    new RegExp(`@container\\s+style\\(${flagVariable}:\\s*on\\)`),
+    new RegExp(`@container\\s+style\\(${flagVariable}:\\s*1\\)`),
   );
+
+  assert.deepStrictEqual(Object.values(enable("%dark", "%compact")), [1, 1]);
+  assert.deepStrictEqual(Object.values(disable("%dark", "%compact")), [0, 0]);
+  assert.throws(() => (enable as (...flags: string[]) => object)(), RangeError);
 });
 
 it("uses the specified stringify function when merging values", () => {
-  const { createHooks } = createHooksSystem<CSS.Properties>(
+  const { createHooks, mergeStyles } = createHooksSystem<CSS.Properties>(
     (value, propertyName) =>
       `${propertyName}__${
         typeof value === "string" || typeof value === "number" ? value : ""
       }`,
   );
   const { on } = createHooks("&.class");
-  const { fontSize = "" } = pipe(
+  const { fontSize = "" } = mergeStyles(
     {
       fontSize: "18px",
     },
@@ -572,7 +587,7 @@ it("uses fixed-width hashes without known polynomial collisions", () => {
 });
 
 describe("in production mode (vs. debug)", () => {
-  const { createHooks } = createHooksSystem<CSS.Properties>();
+  const { createHooks, mergeStyles } = createHooksSystem<CSS.Properties>();
 
   const { styleSheet, on, and, or, not } = createHooks(
     "&:hover",
@@ -605,7 +620,7 @@ describe("in production mode (vs. debug)", () => {
     ).map(x =>
       Object.entries(
         withMode(x, () =>
-          pipe(
+          mergeStyles(
             {
               color: "red",
             },
@@ -643,7 +658,7 @@ describe("in production mode (vs. debug)", () => {
 
 it("produces the same result twice given the same style object reference", () => {
   // This is to avoid issues in React Strict Mode. See #167.
-  const { createHooks } = createHooksSystem<CSS.Properties>();
+  const { createHooks, mergeStyles } = createHooksSystem<CSS.Properties>();
 
   const { on } = createHooks("&:hover");
 
@@ -651,14 +666,14 @@ it("produces the same result twice given the same style object reference", () =>
     color: "blue",
   };
 
-  const expected = pipe(
+  const expected = mergeStyles(
     style,
     on("&:hover", {
       color: "red",
     }),
   );
 
-  const actual = pipe(
+  const actual = mergeStyles(
     style,
     on("&:hover", {
       color: "red",
@@ -669,12 +684,12 @@ it("produces the same result twice given the same style object reference", () =>
 });
 
 it("skips a conditional value that can't be stringified", () => {
-  const { createHooks } = createHooksSystem<CSS.Properties<string | number>>(
-    value => (typeof value === "string" ? value : null),
-  );
+  const { createHooks, mergeStyles } = createHooksSystem<
+    CSS.Properties<string | number>
+  >(value => (typeof value === "string" ? value : null));
   const { on } = createHooks("&:hover");
   const expected = "100px";
-  const { width: actual } = pipe(
+  const { width: actual } = mergeStyles(
     { width: expected },
     on("&:hover", { width: 200 }),
   );
@@ -682,11 +697,14 @@ it("skips a conditional value that can't be stringified", () => {
 });
 
 it('uses "revert-layer" in place of a fallback value that can\'t be stringified', () => {
-  const { createHooks } = createHooksSystem<CSS.Properties<string | number>>(
-    value => (typeof value === "string" ? value : null),
-  );
+  const { createHooks, mergeStyles } = createHooksSystem<
+    CSS.Properties<string | number>
+  >(value => (typeof value === "string" ? value : null));
   const { on } = createHooks("&:hover");
-  const { width } = pipe({ width: 100 }, on("&:hover", { width: "200px" }));
+  const { width } = mergeStyles(
+    { width: 100 },
+    on("&:hover", { width: "200px" }),
+  );
   assert.match(
     width,
     /var\(--[a-z0-9_-]+1,200px\)var\(--[a-z0-9_-]+0,revert-layer\)/,
@@ -735,20 +753,19 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 
   const { on, disable } = createHooks("&", "%dark");
 
-  // defined in conflict map
-  pipe(
+  mergeStyles(
     {
       color: "red",
-      // @ts-expect-error shorthand/longhand conflict
       marginTop: 0,
     },
+    // @ts-expect-error shorthand/longhand conflict
     on("&", {
       margin: 1,
     }),
   );
 
   // both properties defined in conflict map but don't conflict with each other
-  pipe(
+  mergeStyles(
     {
       margin: 0,
     },
@@ -758,7 +775,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
   );
 
   // property not defined in conflict map - no conflict
-  pipe(
+  mergeStyles(
     {
       color: "red",
     },
@@ -767,48 +784,46 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
     }),
   );
 
-  pipe(
+  mergeStyles(
     {
       paddingTop: 0,
     },
-    // @ts-expect-error conflicts detected across transforms
     on("&", {
       margin: 0,
     }),
+    // @ts-expect-error conflicts detected across styles
     on("&", {
       padding: 0,
     }),
   );
 
-  pipe(
+  mergeStyles(
     {
-      // @ts-expect-error a later generic merge does not mask internal conflicts
       marginTop: 0,
     },
+    // @ts-expect-error a later generic merge does not mask internal conflicts
     on("&", {
       margin: 1,
     }),
-    mergeStyles({} as CSS.Properties<number>),
+    {} as CSS.Properties<number>,
   );
 
-  pipe(
+  mergeStyles(
     { paddingTop: 0 as const },
-    mergeStyles(disable("%dark")),
+    disable("%dark"),
   ) satisfies CSS.Properties<number>;
 
-  pipe(
+  mergeStyles(
     { color: "red" },
-    mergeStyles({ ...disable("%dark"), color: "blue" }),
+    { ...disable("%dark"), color: "blue" },
   ) satisfies { color: "blue" };
 
-  pipe(
+  mergeStyles(
+    {
+      paddingTop: 0,
+    },
+    disable("%dark"),
     // @ts-expect-error flag declarations do not mask earlier conflicts
-    pipe(
-      {
-        paddingTop: 0,
-      },
-      mergeStyles(disable("%dark")),
-    ),
     on("&", {
       padding: 0,
     }),
@@ -833,7 +848,14 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
   const hooks = createHooks("%dark", "%compact", "&:hover");
 
   hooks.enable("%dark") satisfies CSS.Properties;
+  hooks.enable("%dark", "%compact") satisfies CSS.Properties;
   hooks.disable("%compact") satisfies CSS.Properties;
+
+  const enableWithoutFlags = () => {
+    // @ts-expect-error at least one flag is required
+    hooks.enable();
+  };
+  void enableWithoutFlags;
 
   // @ts-expect-error the flag prefix is required
   "dark" satisfies Parameters<typeof hooks.enable>[0];
@@ -843,9 +865,9 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
   "missing" satisfies Parameters<typeof hooks.enable>[0];
 }
 
-// exact style inference across transforms
+// exact style inference across conditional styles
 {
-  const { createHooks } = createHooksSystem<
+  const { createHooks, mergeStyles } = createHooksSystem<
     {
       color?: string;
       textDecoration?: string;
@@ -855,7 +877,7 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
   >();
   const { on } = createHooks("&");
 
-  const style = pipe(
+  const style = mergeStyles(
     { color: "red", textDecoration: "none" },
     on("&", { color: "green" }),
     on("&", { color: "blue" as const }),
@@ -874,20 +896,20 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
     minHeight?: string;
   };
 
-  const { createHooks } = createHooksSystem<
+  const { createHooks, mergeStyles } = createHooksSystem<
     CSSProperties,
     { background: "backgroundAttachment" }
   >();
   const { on } = createHooks("&");
 
-  pipe(
+  mergeStyles(
     { flexDirection: "column" },
     on("&", { minHeight: "100dvh" }),
     on("&", { background: "black" }),
   );
 }
 
-// bound style merging preserves contextual style inference in a pipe
+// mergeStyles preserves contextual style inference
 {
   const { createHooks, mergeStyles } =
     createHooksSystem<CSS.Properties<number>>();
@@ -895,20 +917,20 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
   const hooks = createHooks("%dark");
   const { on, enable, disable } = hooks;
 
-  pipe(
+  mergeStyles(
     {
       flexDirection: "column",
     },
-    mergeStyles(enable("%dark")),
+    enable("%dark"),
     on("%dark", disable("%dark")),
   ) satisfies CSS.Properties<number>;
 
-  pipe(
+  mergeStyles(
     {
       // @ts-expect-error the base style is contextually typed
       flexDirection: "invalid",
     },
-    mergeStyles(enable("%dark")),
+    enable("%dark"),
   );
 }
 
@@ -916,15 +938,52 @@ it('uses "revert-layer" in place of a fallback value that can\'t be stringified'
 {
   const { mergeStyles } = createHooksSystem<CSS.Properties>();
 
-  pipe(
+  mergeStyles(
     {
       color: "red",
       display: "block" as const,
     },
-    mergeStyles({ color: "blue", opacity: 0.5 }),
+    { color: "blue", opacity: 0.5 },
   ) satisfies {
     color: "blue";
     display: "block";
     opacity: 0.5;
   };
+}
+
+// mergeStyles accepts up to 26 styles
+{
+  const { mergeStyles } = createHooksSystem<CSS.Properties>();
+  const styles = [
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+  ] as const;
+
+  mergeStyles(...styles);
+  // @ts-expect-error at most 26 styles can be merged
+  mergeStyles(...styles, {});
 }

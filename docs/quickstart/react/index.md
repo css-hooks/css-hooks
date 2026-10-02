@@ -11,7 +11,7 @@ order: 1
 ```bash
 npm create vite@latest css-hooks-playground -- --template react-ts
 cd css-hooks-playground
-npm install @css-hooks/react@next remeda
+npm install @css-hooks/react@next
 ```
 
 ## 2. Define a hook
@@ -21,8 +21,9 @@ Create a module for styling utilities:
 ```typescript
 // src/css.ts
 
-import { createHooks } from "@css-hooks/react";
+import { createHooks, mergeStyles } from "@css-hooks/react";
 
+export { mergeStyles };
 export const { on, styleSheet } = createHooks("&:active");
 ```
 
@@ -54,14 +55,12 @@ Use the registered `&:active` hook in a component:
 ```tsx
 // src/App.tsx
 
-import { pipe } from "remeda";
-
-import { on } from "./css";
+import { mergeStyles, on } from "./css";
 
 export default function App() {
   return (
     <button
-      style={pipe(
+      style={mergeStyles(
         { transition: "transform 75ms" },
         on("&:active", { transform: "scale(0.9)" }),
       )}

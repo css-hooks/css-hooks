@@ -1,7 +1,5 @@
-import { pipe } from "remeda";
-
 import { NavLink } from "../components/nav-link.tsx";
-import { dark, not, on } from "../css.ts";
+import { dark, mergeStyles, not, on } from "../css.ts";
 import { docs } from "../data/docs.ts";
 import { createMetaDescriptors } from "../data/meta.ts";
 import { gray } from "../design/colors.ts";
@@ -36,7 +34,7 @@ export default function Docs() {
         Documentation
       </h1>
       <ol
-        style={pipe(
+        style={mergeStyles(
           {
             listStyleType: "none",
             margin: 0,
