@@ -16,7 +16,7 @@ Install the integration package for your framework. For example, a React
 application needs:
 
 ```bash
-npm install @css-hooks/react@next remeda # remeda optional; see below
+npm install @css-hooks/react@next
 ```
 
 The available integration packages are:
@@ -30,32 +30,20 @@ For another framework, install `@css-hooks/core` and provide the conversion from
 a style object to the format expected by your renderer.
 
 ```bash
-npm install @css-hooks/core@next remeda # remeda optional; see below
+npm install @css-hooks/core@next
 ```
-
-## Choose a pipeline utility
-
-CSS Hooks is designed to compose base styles and override styles through a
-pipeline. We recommend Remeda's `pipe`, but any compatible pipeline utility will
-work.
-
-| Library                                                                  | Pipeline utility                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Remeda](https://remedajs.com/)                                          | [`pipe`](https://remedajs.com/docs/#pipe)                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| [Effect](https://effect.website/)                                        | [`pipe`](https://effect.website/docs/data-types/Function/#pipe)                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| [ts-functional-pipe](https://biggyspender.github.io/ts-functional-pipe/) | [`pipeInto`](https://biggyspender.github.io/ts-functional-pipe/modules.html#pipeInto)                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| No library                                                               | [`pipe`](https://www.typescriptlang.org/play?#code/C4TwDgpgBACglpAYgVwHYGNhwPaoDwCSqYywANFAPKknAB8UAvFABRzGkBcURtAlEwbVgtANwAocRAAeYbACdgUAGZpMOVFDAIIeAIJ0WANwCGAG2QRuevtYky5ilWqy4tO-RQBCh0xatQehTKqNzwSC4anlA+tjH2sgpKqhiumtqQ0V4UAMKG4lBQfpbWZAUqqACMYTooqVFBMXRlhSEATDUR9bh42VB5ZXE5CY7JkW4Zuo19ORQAIvmFxQFB5SHVsLXj+NPNa6gdm13qPTN7ragAzJ0QdSf4s1ALg9xzI0nO3ek6LOXL3GgANaobAAd1QLSgADoYSl7gBnazyeQmEB4YzmEpQVAQIwQeQCRgMIEg8F0cRxElgzQAb3K8ggwGQ8k0cLS8KhDIAJsh0BAWCwGfDkGZyBVCQwQoKIMLRVATPDsbj8XwKMs+BIAL7iIA) |
 
 ## Create the styling module
 
-Create a module that exports the hooks used throughout your application.
-Framework integrations export `createHooks` directly:
+Create a module that exports the hooks used throughout your application. With a
+dedicated package, import `createHooks` and `mergeStyles` directly:
 
 ```typescript
 // src/css.ts
 
-import { createHooks } from "@css-hooks/react";
+import { createHooks, mergeStyles } from "@css-hooks/react";
 
+export { mergeStyles };
 export const { on, styleSheet } = createHooks("&:hover");
 ```
 
@@ -66,8 +54,9 @@ When using the core package, create the `createHooks` function first:
 
 import { createHooksSystem } from "@css-hooks/core";
 
-const { createHooks } = createHooksSystem();
+const { createHooks, mergeStyles } = createHooksSystem();
 
+export { mergeStyles };
 export const { on, styleSheet } = createHooks("&:hover");
 ```
 
@@ -88,7 +77,7 @@ style.textContent = styleSheet();
 document.head.append(style);
 ```
 
-Framework integrations use their own mechanism to render the same string. The
+Use your framework's preferred mechanism to render the same string. The
 [Quickstart](../quickstart/index.md) guides show the appropriate placement for
 each supported framework.
 

@@ -2,7 +2,6 @@ import type { CSSProperties, ReactElement, ReactNode } from "react";
 import { Fragment, useState } from "react";
 import { prerenderToNodeStream } from "react-dom/static";
 import { Link } from "react-router";
-import { pipe } from "remeda";
 
 import { version } from "../../package.json";
 import { Block } from "../components/block.tsx";
@@ -79,7 +78,7 @@ export default function Home({
       >
         {/* Zone A: content */}
         <div
-          style={pipe(
+          style={mergeStyles(
             {
               position: "relative",
               overflow: "hidden",
@@ -101,7 +100,7 @@ export default function Home({
           {/* Ambient glow clipped to Zone A */}
           <div
             role="presentation"
-            style={pipe(
+            style={mergeStyles(
               {},
               on(dark, {
                 position: "absolute",
@@ -129,7 +128,7 @@ export default function Home({
               }}
             >
               <h1
-                style={pipe(
+                style={mergeStyles(
                   {
                     margin: 0,
                     fontSize: "4em",
@@ -147,7 +146,7 @@ export default function Home({
                 )}
               >
                 <strong
-                  style={pipe(
+                  style={mergeStyles(
                     {
                       fontWeight: 600,
                       color: purple(61),
@@ -163,7 +162,7 @@ export default function Home({
                 Inline style simplicity.
               </h1>
               <p
-                style={pipe(
+                style={mergeStyles(
                   {
                     fontSize: "1.5em",
                     lineHeight: 4 / 3,
@@ -197,7 +196,7 @@ export default function Home({
                   Docs
                 </CtaButton>
                 <div
-                  style={pipe(
+                  style={mergeStyles(
                     {
                       display: "contents",
                     },
@@ -211,7 +210,7 @@ export default function Home({
                   </CtaButton>
                 </div>
                 <div
-                  style={pipe(
+                  style={mergeStyles(
                     {
                       display: "none",
                     },
@@ -367,7 +366,7 @@ export default function Home({
                         }}
                       >
                         <span
-                          style={pipe(
+                          style={mergeStyles(
                             {
                               display: "inline-block",
                               alignSelf: "flex-start",
@@ -393,7 +392,7 @@ export default function Home({
                           {label}
                         </span>
                         <h2
-                          style={pipe(
+                          style={mergeStyles(
                             {
                               margin: 0,
                               fontSize: 20,
@@ -410,7 +409,7 @@ export default function Home({
                         </h2>
                       </div>
                       <p
-                        style={pipe(
+                        style={mergeStyles(
                           {
                             ...itemStyle,
                             minWidth: "55%",
@@ -437,7 +436,7 @@ export default function Home({
           </ScreenReaderOnly>
           <Block>
             <div
-              style={pipe(
+              style={mergeStyles(
                 {
                   display: "grid",
                   gap: 32,
@@ -625,7 +624,7 @@ export default function Home({
               ].map(({ framework, logo }) => (
                 <div
                   key={framework}
-                  style={pipe(
+                  style={mergeStyles(
                     {
                       background: gray(10),
                       color: gray(80),
@@ -643,7 +642,7 @@ export default function Home({
                   )}
                 >
                   <h1
-                    style={pipe(
+                    style={mergeStyles(
                       {
                         margin: 0,
                         fontWeight: 400,
@@ -665,7 +664,7 @@ export default function Home({
                     </CtaButton>
                   </div>
                   <div
-                    style={pipe(
+                    style={mergeStyles(
                       {
                         opacity: 0.75,
                         filter: "grayscale(0.75)",
@@ -688,7 +687,7 @@ export default function Home({
         </section>
         <Section title="Opinions">
           <div
-            style={pipe(
+            style={mergeStyles(
               {
                 display: "grid",
                 gap: 32,
@@ -810,7 +809,7 @@ function InstallCommand({ framework }: { framework: string }) {
   const command = `npm i @css-hooks/${framework.toLowerCase()}${version.includes("-next.") ? "@next" : ""}`;
   return (
     <div
-      style={pipe(
+      style={mergeStyles(
         {
           display: "flex",
           alignItems: "center",
@@ -834,7 +833,7 @@ function InstallCommand({ framework }: { framework: string }) {
             setTimeout(() => setCopied(false), 2000);
           });
         }}
-        style={pipe(
+        style={mergeStyles(
           {
             background: "none",
             border: "none",
@@ -889,7 +888,7 @@ function CtaButton({
   return (
     <Link
       className={extractClassName({ primary, secondary, subtle }[theme])}
-      style={pipe(
+      style={mergeStyles(
         {
           display: "inline-flex",
           justifyContent: "center",
@@ -911,14 +910,14 @@ function CtaButton({
         }),
         on(
           light,
-          pipe(
+          mergeStyles(
             {
               background: white,
               color: black,
             },
             on(
               primary,
-              pipe(
+              mergeStyles(
                 {
                   background: purple(61),
                 },
@@ -932,7 +931,7 @@ function CtaButton({
             ),
             on(
               secondary,
-              pipe(
+              mergeStyles(
                 {
                   color: purple(61),
                 },
@@ -946,7 +945,7 @@ function CtaButton({
             ),
             on(
               subtle,
-              pipe(
+              mergeStyles(
                 {
                   background: gray(12),
                   color: gray(55),
@@ -965,7 +964,7 @@ function CtaButton({
         ),
         on(
           dark,
-          pipe(
+          mergeStyles(
             {
               background: black,
               color: white,
@@ -973,7 +972,7 @@ function CtaButton({
             },
             on(
               primary,
-              pipe(
+              mergeStyles(
                 {
                   background: gray(15),
                   color: purple(90),
@@ -988,7 +987,7 @@ function CtaButton({
             ),
             on(
               secondary,
-              pipe(
+              mergeStyles(
                 {
                   background: purple(90),
                 },
@@ -1002,7 +1001,7 @@ function CtaButton({
             ),
             on(
               subtle,
-              pipe(
+              mergeStyles(
                 {
                   background: gray(80),
                 },
@@ -1045,11 +1044,11 @@ function Section({
 }
 
 function CodeWindow({ children }: { children: ReactNode }) {
-  const bg = pipe(
+  const bg = mergeStyles(
     { backgroundColor: white },
     on(dark, { backgroundColor: withAlpha(gray(95), 0.45) }),
   );
-  const border = pipe(
+  const border = mergeStyles(
     { borderColor: gray(19) },
     on(dark, { borderColor: withAlpha(gray(55), 0.25) }),
   );
@@ -1063,7 +1062,7 @@ function CodeWindow({ children }: { children: ReactNode }) {
       }}
     >
       <div
-        style={pipe(
+        style={mergeStyles(
           {
             display: "flex",
             padding: 7,
@@ -1073,14 +1072,14 @@ function CodeWindow({ children }: { children: ReactNode }) {
             borderTopLeftRadius: 8,
             borderTopRightRadius: 8,
           },
-          mergeStyles(bg),
-          mergeStyles(border),
+          bg,
+          border,
         )}
       >
         {[0, 1, 2].map(i => (
           <div
             key={i}
-            style={pipe(
+            style={mergeStyles(
               {
                 width: 12,
                 aspectRatio: 1,
@@ -1093,7 +1092,7 @@ function CodeWindow({ children }: { children: ReactNode }) {
         ))}
       </div>
       <div
-        style={pipe(
+        style={mergeStyles(
           {
             flex: 1,
             borderWidth: 1,
@@ -1103,8 +1102,8 @@ function CodeWindow({ children }: { children: ReactNode }) {
             padding: 16,
             overflow: "auto",
           },
-          mergeStyles(bg),
-          mergeStyles(border),
+          bg,
+          border,
         )}
       >
         {children}
@@ -1128,7 +1127,7 @@ function Demo({
     <section>
       <Block>
         <div
-          style={pipe(
+          style={mergeStyles(
             {
               position: "relative",
               overflow: "hidden",
@@ -1158,7 +1157,7 @@ function Demo({
             }}
           >
             <div
-              style={pipe(
+              style={mergeStyles(
                 {
                   width: 28,
                   height: 28,
@@ -1180,7 +1179,7 @@ function Demo({
               {icon}
             </div>
             <span
-              style={pipe(
+              style={mergeStyles(
                 {
                   color: gray(70),
                   fontWeight: 700,
@@ -1194,7 +1193,7 @@ function Demo({
           </div>
           {/* Panels */}
           <div
-            style={pipe(
+            style={mergeStyles(
               {
                 position: "relative",
                 zIndex: 1,
@@ -1214,7 +1213,7 @@ function Demo({
               </CodeWindow>
             </div>
             <div
-              style={pipe(
+              style={mergeStyles(
                 {
                   flex: 1,
                   minHeight: 280,
@@ -1243,7 +1242,7 @@ function Demo({
 function UserInteractionDemoSource() {
   return (
     <SyntaxHighlighter language="tsx">{`<button
-  style={pipe(
+  style={mergeStyles(
     {
       background: "${blue(60)}",
       color: "${white}",
@@ -1264,7 +1263,7 @@ function UserInteractionDemoSource() {
 function UserInteractionDemoPreview() {
   return (
     <button
-      style={pipe(
+      style={mergeStyles(
         {
           margin: 0,
           padding: "0.75em 1em",
@@ -1293,7 +1292,7 @@ function UserInteractionDemoPreview() {
 function ResponsiveDemoSource() {
   return (
     <SyntaxHighlighter language="tsx">{`<span
-  style={pipe(
+  style={mergeStyles(
     { display: "none" },
     on("@container (width >= 50px)", {
       display: "revert-layer"
@@ -1306,7 +1305,7 @@ function ResponsiveDemoSource() {
   sm
 </span>
 <span
-  style={pipe(
+  style={mergeStyles(
     { display: "none" },
     on("@container (width >= 100px)", {
       display: "revert-layer"
@@ -1331,7 +1330,7 @@ function ResponsiveDemoPreview() {
       }}
     >
       <div
-        style={pipe(
+        style={mergeStyles(
           {
             background: white,
             color: black,
@@ -1354,7 +1353,7 @@ function ResponsiveDemoPreview() {
         )}
       >
         <span
-          style={pipe(
+          style={mergeStyles(
             {
               display: "none",
               fontSize: "0.5em",
@@ -1371,7 +1370,7 @@ function ResponsiveDemoPreview() {
           sm
         </span>
         <span
-          style={pipe(
+          style={mergeStyles(
             { display: "none" },
             on("@container (width >= 100px)", {
               display: "revert-layer",
@@ -1400,14 +1399,14 @@ function ResponsiveDemoPreview() {
 function InheritedStateDemoSource() {
   return (
     <SyntaxHighlighter language="tsx">{`<div
-  style={pipe(
+  style={mergeStyles(
     { padding: 24 },
     on("&:hover", enable("%active"))
   )}
 >
   Hover parent
   <span
-    style={pipe(
+    style={mergeStyles(
       { color: "gray" },
       on("%active", { color: "purple" })
     )}
@@ -1421,7 +1420,7 @@ function InheritedStateDemoSource() {
 function InheritedStateDemoPreview() {
   return (
     <div
-      style={pipe(
+      style={mergeStyles(
         {
           display: "flex",
           flexDirection: "column",
@@ -1429,7 +1428,9 @@ function InheritedStateDemoPreview() {
           minWidth: 160,
           padding: 20,
           borderRadius: 8,
-          border: `1px solid ${gray(20)}`,
+          borderWidth: 1,
+          borderStyle: "solid",
+          borderColor: gray(20),
           background: gray(10),
           color: gray(60),
           fontFamily: "sans-serif",
@@ -1445,7 +1446,7 @@ function InheritedStateDemoPreview() {
     >
       <span style={{ fontSize: "0.75em" }}>Hover parent</span>
       <span
-        style={pipe(
+        style={mergeStyles(
           {
             padding: 12,
             borderRadius: 6,
@@ -1504,7 +1505,7 @@ function TestimonialAuthor({
       </div>
       <div style={{ gridArea: "name" }}>{name}</div>
       <div
-        style={pipe(
+        style={mergeStyles(
           { gridArea: "handle", color: gray(50) },
           on(dark, { color: gray(45) }),
         )}
@@ -1526,7 +1527,7 @@ function Testimonial({
     <blockquote style={{ display: "contents" }} cite={href}>
       <a
         href={href}
-        style={pipe(
+        style={mergeStyles(
           {
             textDecoration: "none",
             color: "inherit",
@@ -1625,7 +1626,7 @@ function ResponsiveIcon() {
 function Code({ children }: { children?: ReactNode }) {
   return (
     <code
-      style={pipe(
+      style={mergeStyles(
         { color: teal(60), fontFamily: monospace },
         on(dark, { color: teal(30) }),
       )}

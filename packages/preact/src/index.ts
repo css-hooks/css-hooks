@@ -4,6 +4,7 @@
  * @packageDocumentation
  */
 
+import type { HooksSystem } from "@css-hooks/core";
 import { createHooksSystem } from "@css-hooks/core";
 import type { CSSProperties } from "preact";
 
@@ -28,7 +29,10 @@ const hooksSystem = createHooksSystem<CSSProperties, CSSPropertyConflicts>(
 export const createHooks = hooksSystem.createHooks;
 
 /** A style merger configured to use Preact's `CSSProperties` type. @public */
-export const mergeStyles = hooksSystem.mergeStyles;
+export const mergeStyles: HooksSystem<
+  CSSProperties,
+  CSSPropertyConflicts
+>["mergeStyles"] = hooksSystem.mergeStyles;
 
 /** @internal */
 export function _stringifyValue(value: unknown, propertyName: string) {

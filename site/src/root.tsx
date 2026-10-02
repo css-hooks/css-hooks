@@ -8,7 +8,6 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-import { pipe } from "remeda";
 import * as v from "valibot";
 
 import type { Route } from "./+types/root.ts";
@@ -23,7 +22,7 @@ import {
 import { Logo } from "./components/logo.tsx";
 import { NavLink } from "./components/nav-link.tsx";
 import { ScreenReaderOnly } from "./components/screen-reader-only.tsx";
-import { dark, not, on, or, styleSheet } from "./css.ts";
+import { dark, mergeStyles, not, on, or, styleSheet } from "./css.ts";
 import { createMetaDescriptors } from "./data/meta.ts";
 import { black, gray, purple, white } from "./design/colors.ts";
 import { sansSerif } from "./design/typography.ts";
@@ -95,7 +94,7 @@ function ThemeSwitcher() {
       >
         <div style={{ display: "inline-flex" }}>
           <div
-            style={pipe(
+            style={mergeStyles(
               {
                 display: "none",
               },
@@ -107,7 +106,7 @@ function ThemeSwitcher() {
             <DarkModeIcon />
           </div>
           <div
-            style={pipe(
+            style={mergeStyles(
               {
                 display: "none",
               },
@@ -188,7 +187,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         }}
       >
         <div
-          style={pipe(
+          style={mergeStyles(
             {
               background: white,
               color: gray(90),
@@ -206,7 +205,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           )}
         >
           <header
-            style={pipe(
+            style={mergeStyles(
               {
                 position: "sticky",
                 zIndex: 2,
@@ -230,7 +229,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           >
             <a
               href="/"
-              style={pipe(
+              style={mergeStyles(
                 {
                   textDecoration: "none",
                   outlineWidth: 0,
@@ -256,7 +255,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               }}
             >
               <div
-                style={pipe(
+                style={mergeStyles(
                   { display: "none" },
                   on("@media (width >= 44em)", { display: "contents" }),
                 )}
@@ -291,7 +290,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </div>
           <footer>
             <div
-              style={pipe(
+              style={mergeStyles(
                 {
                   padding: 16,
                   display: "flex",

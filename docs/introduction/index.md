@@ -12,7 +12,7 @@ styles directly in a component.
 
 ```tsx
 <button
-  style={pipe(
+  style={mergeStyles(
     {
       background: "#666",
       color: "white",

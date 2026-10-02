@@ -69,7 +69,7 @@ flag to set the state for an element's descendants:
 ```tsx
 const darkStyle = enable("%dark");
 
-const panelStyle = pipe(
+const panelStyle = mergeStyles(
   { background: "#fff", color: "#000" },
   on("%dark", { background: "#000", color: "#fff" }),
 );
@@ -83,13 +83,19 @@ A nested setter overrides the inherited state for its subtree:
 </main>
 ```
 
+Pass multiple flags to set them together:
+
+```tsx
+<main style={enable("%dark", "%compact")}>{/* Dark, compact subtree */}</main>
+```
+
 The element carrying `enable()` or `disable()` still observes the state from its
 nearest ancestor. Only its descendants observe the newly assigned state. This
 also makes it possible to invert a flag without creating a custom-property
 cycle:
 
 ```typescript
-const invertDark = pipe(enable("%dark"), on("%dark", disable("%dark")));
+const invertDark = mergeStyles(enable("%dark"), on("%dark", disable("%dark")));
 ```
 
 `createHooks()` only returns `enable()` and `disable()` when at least one flag

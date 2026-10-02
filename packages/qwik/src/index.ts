@@ -4,6 +4,7 @@
  * @packageDocumentation
  */
 
+import type { HooksSystem } from "@css-hooks/core";
 import { createHooksSystem } from "@css-hooks/core";
 import type { CSSProperties } from "@qwik.dev/core";
 
@@ -37,7 +38,10 @@ const hooksSystem = createHooksSystem<CSSProperties, CSSPropertyConflicts>(
 export const createHooks = hooksSystem.createHooks;
 
 /** A style merger configured to use Qwik's `CSSProperties` type. @public */
-export const mergeStyles = hooksSystem.mergeStyles;
+export const mergeStyles: HooksSystem<
+  CSSProperties,
+  CSSPropertyConflicts
+>["mergeStyles"] = hooksSystem.mergeStyles;
 
 /**
  * Following code (c) Builder.io. Source modified to account for custom

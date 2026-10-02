@@ -1,14 +1,10 @@
-import { pipe } from "remeda";
-
-import { createHooks } from "./index.ts";
+import { createHooks, mergeStyles } from "./index.ts";
 
 {
   const { on } = createHooks("&");
-  pipe(
-    {
-      // @ts-expect-error generated kebab-case shorthand/longhand conflict
-      margin: "0px",
-    },
+  mergeStyles(
+    { margin: "0px" },
+    // @ts-expect-error generated kebab-case shorthand/longhand conflict
     on("&", { "margin-top": "1px" }),
   );
 }

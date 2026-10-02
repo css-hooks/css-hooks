@@ -51,7 +51,7 @@ Point `jsxImportSource` at Solid v2:
 ## 3. Install CSS Hooks
 
 ```bash
-npm install @css-hooks/solid@next remeda
+npm install @css-hooks/solid@next
 ```
 
 ## 4. Define a hook
@@ -61,8 +61,9 @@ Create a module for styling utilities:
 ```typescript
 // src/css.ts
 
-import { createHooks } from "@css-hooks/solid";
+import { createHooks, mergeStyles } from "@css-hooks/solid";
 
+export { mergeStyles };
 export const { on, styleSheet } = createHooks("&:active");
 ```
 
@@ -96,14 +97,12 @@ Use the registered `&:active` hook in a component:
 ```tsx
 // src/App.tsx
 
-import { pipe } from "remeda";
-
-import { on } from "./css";
+import { mergeStyles, on } from "./css";
 
 export default function App() {
   return (
     <button
-      style={pipe(
+      style={mergeStyles(
         { transition: "transform 75ms" },
         on("&:active", { transform: "scale(0.9)" }),
       )}

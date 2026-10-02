@@ -9,8 +9,8 @@ An object containing the functions needed to support and use the configured hook
 **Signature:**
 
 ```typescript
-export type Hooks<ConfiguredHooks extends readonly Hook[], CSSProperties, CSSPropertyConflicts extends object> = {
-    on: <OverrideCSSProperties extends CSSProperties, BaseCSSProperties extends CSSProperties>(condition: Condition<ConfiguredHooks[number]>, overrideStyle: OverrideCSSProperties) => (style: CSSProperties & CSSPropertiesWithoutConflicts<BaseCSSProperties, CSSPropertyConflicts, OverrideCSSProperties>) => Omit<BaseCSSProperties, keyof OverrideCSSProperties> & OverrideCSSProperties;
+export type Hooks<ConfiguredHooks extends readonly Hook[], CSSProperties> = {
+    on: <const Style extends CSSProperties>(condition: Condition<ConfiguredHooks[number]>, style: Style) => Style;
     and: <C extends Condition<ConfiguredHooks[number]>[]>(...conditions: C) => {
         and: C;
     };
@@ -22,8 +22,8 @@ export type Hooks<ConfiguredHooks extends readonly Hook[], CSSProperties, CSSPro
     };
     styleSheet: () => string;
 } & (`%${string}` extends Flag<ConfiguredHooks> ? unknown : [Flag<ConfiguredHooks>] extends [never] ? unknown : {
-    enable: (flag: Flag<ConfiguredHooks>) => FlagStyle;
-    disable: (flag: Flag<ConfiguredHooks>) => FlagStyle;
+    enable: (flag: Flag<ConfiguredHooks>, ...flags: Flag<ConfiguredHooks>[]) => FlagStyle;
+    disable: (flag: Flag<ConfiguredHooks>, ...flags: Flag<ConfiguredHooks>[]) => FlagStyle;
 });
 ```
 **References:** [Hook](./core.hook.md)<!-- -->, [Condition](./core.condition.md)

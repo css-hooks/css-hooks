@@ -1,7 +1,7 @@
 import type { Element } from "hast";
 import type { CSSProperties } from "react";
 import { use } from "react";
-import { pipe, piped } from "remeda";
+import { pipe } from "remeda";
 import type { ThemeRegistrationRaw } from "shiki";
 import { codeToHtml } from "shiki";
 
@@ -368,7 +368,9 @@ export function SyntaxHighlighter({
             defaultColor: false,
             transformers: [
               {
-                code: mutateStyle(piped(mergeStyles({ font: "inherit" }))),
+                code: mutateStyle(style =>
+                  mergeStyles(style, { font: "inherit" }),
+                ),
               },
               {
                 pre(el) {
@@ -377,14 +379,11 @@ export function SyntaxHighlighter({
                 },
               },
               {
-                span: mutateStyle(
-                  piped(
-                    mergeStyles({
-                      color: "var(--shiki-light)",
-                    }),
-                    on(dark, {
-                      color: "var(--shiki-dark)",
-                    }),
+                span: mutateStyle(style =>
+                  mergeStyles(
+                    style,
+                    { color: "var(--shiki-light)" },
+                    on(dark, { color: "var(--shiki-dark)" }),
                   ),
                 ),
               },

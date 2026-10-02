@@ -4,6 +4,7 @@
  * @packageDocumentation
  */
 
+import type { HooksSystem } from "@css-hooks/core";
 import { createHooksSystem } from "@css-hooks/core";
 import type { CSSProperties } from "react";
 
@@ -38,7 +39,10 @@ const hooksSystem = createHooksSystem<CSSProperties, CSSPropertyConflicts>(
 export const createHooks = hooksSystem.createHooks;
 
 /** A style merger configured to use React's `CSSProperties` type. @public */
-export const mergeStyles = hooksSystem.mergeStyles;
+export const mergeStyles: HooksSystem<
+  CSSProperties,
+  CSSPropertyConflicts
+>["mergeStyles"] = hooksSystem.mergeStyles;
 
 /**
  * Following code (c) Meta Platforms, Inc. and affiliates. Source modified to

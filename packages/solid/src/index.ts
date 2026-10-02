@@ -4,6 +4,7 @@
  * @packageDocumentation
  */
 
+import type { HooksSystem } from "@css-hooks/core";
 import { createHooksSystem } from "@css-hooks/core";
 import type { JSX } from "@solidjs/web";
 
@@ -26,4 +27,7 @@ const hooksSystem = createHooksSystem<
 export const createHooks = hooksSystem.createHooks;
 
 /** A style merger configured to use Solid's `JSX.CSSProperties` type. @public */
-export const mergeStyles = hooksSystem.mergeStyles;
+export const mergeStyles: HooksSystem<
+  JSX.CSSProperties,
+  CSSPropertyConflicts
+>["mergeStyles"] = hooksSystem.mergeStyles;

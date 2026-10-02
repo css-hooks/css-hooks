@@ -48,14 +48,12 @@ Props make those variations discoverable and type-safe while letting the
 component own their visual treatment. For example, a button can expose a
 `variant` prop while limiting direct access to individual CSS properties.
 
-The component can translate that prop into an internal class and keep its
-prop-driven styles in the pipeline:
+The component can translate that prop into an internal class and compose its
+styles with `mergeStyles`:
 
 ```tsx
 import type { ComponentProps } from "react";
-import { pipe } from "remeda";
-
-import { on } from "./css";
+import { mergeStyles, on } from "./css";
 
 type ButtonProps = Omit<ComponentProps<"button">, "style"> & {
   variant?: "primary" | "danger";
@@ -73,7 +71,7 @@ export function Button({
     <button
       {...props}
       className={`${classNameProp} ${{ primary, danger }[variant]}`}
-      style={pipe(
+      style={mergeStyles(
         {
           border: 0,
           borderRadius: 6,
@@ -112,8 +110,8 @@ export { mergeStyles } from "@css-hooks/react";
 ```
 
 To add the escape hatch to the preceding `Button`, include its native `style`
-prop, then use `mergeStyles` at the end of the pipeline to overlay the
-consumer's styles on the component's internal styles:
+prop, then pass it last to `mergeStyles` to overlay the consumer's styles on the
+component's internal styles:
 
 ```diff
 -import { on } from "./css";
@@ -133,13 +131,13 @@ consumer's styles on the component's internal styles:
 
    // ...
 
-       style={pipe(
+       style={mergeStyles(
          // ...
          on(`&.${danger}`, {
            backgroundColor: "#a21d27",
            color: "white",
          }),
-+        mergeStyles(styleProp),
++        styleProp,
        )}
 ```
 
@@ -153,16 +151,16 @@ the override's CSS declaration order is preserved.
 
 ### Conflict protection
 
-Conflict protection still applies throughout the internal pipeline, before the
-public style is merged:
+Conflict protection applies while `mergeStyles` processes the internal styles,
+before the public style is merged:
 
 ```tsx
-pipe(
+mergeStyles(
   { margin: 0 },
   on("&.b", {
     marginTop: 8, // Type error: `margin` conflicts with `marginTop`.
   }),
-  mergeStyles(styleProp),
+  styleProp,
 );
 ```
 

@@ -13,7 +13,6 @@ import { prerenderToNodeStream } from "react-dom/static";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
-import { pipe } from "remeda";
 import slug from "slug";
 
 import { AnchorLink } from "../components/anchor-link.tsx";
@@ -27,7 +26,16 @@ import { NavLink } from "../components/nav-link.tsx";
 import { Preformatted } from "../components/preformatted.tsx";
 import { ScreenReaderOnly } from "../components/screen-reader-only.tsx";
 import { SyntaxHighlighter } from "../components/syntax-highlighter.tsx";
-import { and, dark, extractClassName, hover, not, on, or } from "../css.ts";
+import {
+  and,
+  dark,
+  extractClassName,
+  hover,
+  mergeStyles,
+  not,
+  on,
+  or,
+} from "../css.ts";
 import { docs } from "../data/docs.ts";
 import { createMetaDescriptors } from "../data/meta.ts";
 import { blue, gray, orange, purple, teal, white } from "../design/colors.ts";
@@ -79,7 +87,7 @@ function MenuList({ children }: { children: ReactNode }) {
   return (
     <ol
       className="group"
-      style={pipe(
+      style={mergeStyles(
         {
           listStyleType: "none",
           margin: 0,
@@ -149,7 +157,7 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6, style: CSSProperties) {
         children = (
           <>
             <span
-              style={pipe(
+              style={mergeStyles(
                 {
                   transform: "translateY(-22.5%)",
                   fontSize: "0.75em",
@@ -200,7 +208,7 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6, style: CSSProperties) {
     return (
       <Tag
         className="group"
-        style={pipe(
+        style={mergeStyles(
           {
             lineHeight: 1.25,
             ...style,
@@ -227,7 +235,7 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6, style: CSSProperties) {
           }}
         >
           <div
-            style={pipe(
+            style={mergeStyles(
               {
                 visibility: "hidden",
                 width: "0.5em",
@@ -267,7 +275,7 @@ function CopyCodeButton({ code }: { code: string }) {
       data-copy-code={code}
       aria-label="Copy code"
       title="Copy code"
-      style={pipe(
+      style={mergeStyles(
         {
           position: "sticky",
           right: -16,
@@ -351,7 +359,7 @@ export async function loader({ params }: Route.LoaderArgs) {
         [
           rehypeStyle,
           {
-            table: pipe(
+            table: mergeStyles(
               {
                 borderStyle: "solid",
                 borderWidth: 1,
@@ -364,7 +372,7 @@ export async function loader({ params }: Route.LoaderArgs) {
               }),
             ),
             tablecell: () =>
-              pipe(
+              mergeStyles(
                 {
                   borderWidth: 1,
                   borderColor: "inherit",
@@ -384,7 +392,7 @@ export async function loader({ params }: Route.LoaderArgs) {
                   background: gray(85),
                 }),
               ),
-            tr: pipe(
+            tr: mergeStyles(
               {
                 borderColor: gray(20),
               },
@@ -485,7 +493,7 @@ export async function loader({ params }: Route.LoaderArgs) {
                   className={extractClassName(
                     type === "WARNING" ? warning : note,
                   )}
-                  style={pipe(
+                  style={mergeStyles(
                     {
                       display: "inline-flex",
                       alignItems: "center",
@@ -532,7 +540,7 @@ export async function loader({ params }: Route.LoaderArgs) {
           );
           return (
             <blockquote
-              style={pipe(
+              style={mergeStyles(
                 {
                   borderWidth: 0,
                   borderLeftWidth: "8px",
@@ -591,7 +599,7 @@ export async function loader({ params }: Route.LoaderArgs) {
               >
                 {filename ? (
                   <div
-                    style={pipe(
+                    style={mergeStyles(
                       {
                         marginBlockStart: -16,
                         marginInlineStart: -24,
@@ -644,7 +652,7 @@ export async function loader({ params }: Route.LoaderArgs) {
             <code
               {...rest}
               className={className}
-              style={pipe(
+              style={mergeStyles(
                 {
                   color: teal(60),
                   font: "inherit",
@@ -698,7 +706,7 @@ export async function loader({ params }: Route.LoaderArgs) {
         }),
         hr: ({ style, ...restProps }) => (
           <hr
-            style={pipe(
+            style={mergeStyles(
               {
                 marginBlock: 32,
                 marginInline: 0,
@@ -717,7 +725,7 @@ export async function loader({ params }: Route.LoaderArgs) {
         ),
         p: ({ node: _node, style, ...restProps }) => (
           <p
-            style={pipe(
+            style={mergeStyles(
               {
                 marginBlock: 16,
                 marginInline: 0,
@@ -733,7 +741,7 @@ export async function loader({ params }: Route.LoaderArgs) {
         ),
         pre: ({ children, node: _node, style, ...restProps }) => (
           <pre
-            style={pipe(
+            style={mergeStyles(
               {
                 paddingBlock: 16,
                 paddingInline: 24,
@@ -856,7 +864,7 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
 
   return (
     <div
-      style={pipe(
+      style={mergeStyles(
         {
           flex: 1,
           display: "flex",
@@ -868,7 +876,7 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
       )}
     >
       <nav
-        style={pipe(
+        style={mergeStyles(
           {
             boxSizing: "border-box",
             borderStyle: "solid",
@@ -889,7 +897,7 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
         )}
       >
         <label
-          style={pipe(
+          style={mergeStyles(
             {
               display: "flex",
               alignItems: "center",
@@ -944,7 +952,7 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
             }}
           />
           <div
-            style={pipe(
+            style={mergeStyles(
               {
                 display: "inline-flex",
               },
@@ -959,7 +967,7 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
           <span>Contents</span>
         </label>
         <div
-          style={pipe(
+          style={mergeStyles(
             {
               marginTop: 8,
               paddingTop: 0,
@@ -1005,7 +1013,7 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
         }}
       >
         <div
-          style={pipe(
+          style={mergeStyles(
             {
               width: "calc(100% - 64px)",
               maxWidth: doc.sandpacks.length ? "132ch" : "88ch",
@@ -1070,7 +1078,7 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
                 }}
               >
                 <hr
-                  style={pipe(
+                  style={mergeStyles(
                     {
                       margin: 0,
                       border: 0,

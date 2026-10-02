@@ -27,9 +27,8 @@ layout changes when you cross the 400px threshold.
 // App.tsx
 
 import { useState } from "react";
-import { pipe } from "remeda";
 
-import { on } from "./css";
+import { mergeStyles, on } from "./css";
 
 const image =
   "https://images.unsplash.com/" +
@@ -39,7 +38,7 @@ const image =
 function Card() {
   return (
     <article
-      style={pipe(
+      style={mergeStyles(
         {
           display: "flex",
           flexDirection: "column",
@@ -60,7 +59,7 @@ function Card() {
         alt="Mountain landscape"
         width={960}
         height={640}
-        style={pipe(
+        style={mergeStyles(
           {
             display: "block",
             width: "100%",
@@ -75,7 +74,7 @@ function Card() {
         )}
       />
       <div
-        style={pipe(
+        style={mergeStyles(
           { minWidth: 0, padding: 20 },
           on("@container (min-width: 400px)", {
             padding: 24,
@@ -156,7 +155,7 @@ export default function App() {
 
   return (
     <main
-      style={pipe(
+      style={mergeStyles(
         {
           padding: 24,
           overflowX: "auto",
@@ -196,7 +195,7 @@ export default function App() {
           max={480}
           step={1}
           value={width}
-          style={pipe(
+          style={mergeStyles(
             {
               width: 480,
               margin: 0,
@@ -234,6 +233,7 @@ export default function App() {
 
 import { createHooks } from "@css-hooks/react";
 
+export { mergeStyles } from "@css-hooks/react";
 export const { styleSheet, on } = createHooks(
   "@container (min-width: 400px)",
   "@media (prefers-color-scheme: dark)",

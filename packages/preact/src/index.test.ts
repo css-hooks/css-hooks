@@ -1,9 +1,11 @@
 import assert from "node:assert";
 import { describe, it } from "node:test";
 
-import { pipe } from "remeda";
-
-import { _stringifyValue as stringifyValue, createHooks } from "./index.ts";
+import {
+  _stringifyValue as stringifyValue,
+  createHooks,
+  mergeStyles,
+} from "./index.ts";
 
 describe("`stringifyValue` function", () => {
   it("returns a string as-is", () => {
@@ -31,11 +33,9 @@ describe("`stringifyValue` function", () => {
 
 {
   const { on } = createHooks("&");
-  pipe(
-    {
-      // @ts-expect-error generated camelCase shorthand/longhand conflict
-      margin: 0,
-    },
+  mergeStyles(
+    { margin: 0 },
+    // @ts-expect-error generated camelCase shorthand/longhand conflict
     on("&", { marginTop: 1 }),
   );
 }

@@ -9,5 +9,5 @@ A hook factory configured to use Solid's `JSX.CSSProperties` type and logic for 
 **Signature:**
 
 ```typescript
-createHooks: import("@css-hooks/core").CreateHooksFn<JSX.CSSProperties, CSSPropertyConflicts>
+createHooks: import("@css-hooks/core").CreateHooksFn<JSX.CSSProperties>
 ```

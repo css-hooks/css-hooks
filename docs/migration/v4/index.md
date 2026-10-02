@@ -7,9 +7,48 @@ hidden: true
 
 # Migrating to v4
 
-Apps using a framework integration can upgrade without changing their CSS Hooks
-code, but `@css-hooks/core` has an updated setup API and some framework
-integrations have updated compatibility requirements.
+CSS Hooks v4 makes conditional styles serializable, removes the need for a
+third-party pipeline utility, and adds property conflict protection.
+
+For most applications, the upgrade is a mechanical replacement of the `pipe`
+function with `mergeStyles`; hook definitions and stylesheet setup remain
+unchanged. Some framework integration packages have updated compatibility
+requirements.
+
+Direct consumers of `@css-hooks/core` (advanced use cases) require minor updates
+to their usage of the setup API.
+
+## Style pipelines
+
+To make styles serializable, `on` now returns a style object instead of a
+transform function, so it is no longer compatible with generic pipeline
+utilities. Instead, use `mergeStyles` for composition. Re-export it from your
+styling module alongside your configured hooks:
+
+```typescript
+import { createHooks, mergeStyles } from "@css-hooks/react";
+
+export { mergeStyles };
+export const { on, styleSheet } = createHooks(/* ... */);
+```
+
+Then replace style pipelines with `mergeStyles`:
+
+```diff
+-import { pipe } from "remeda";
+-import { on } from "./css";
++import { mergeStyles, on } from "./css";
+
+-style={pipe(
++style={mergeStyles(
+  { color: "black" },
+  on("&:hover", { color: "blue" }),
+  externalStyle,
+)}
+```
+
+Remove the pipeline dependency if it has no other uses, but leave unrelated
+pipelines unchanged.
 
 ## Core setup
 
@@ -18,22 +57,17 @@ object containing `createHooks` and `mergeStyles`, rather than returning
 `createHooks` directly. Destructure the functions your integration needs from
 the result:
 
-```typescript
-// v3
-import { buildHooksSystem } from "@css-hooks/core";
+```diff
+-import { buildHooksSystem } from "@css-hooks/core";
++import { createHooksSystem } from "@css-hooks/core";
 
-const createHooks = buildHooksSystem<CSSProperties>(stringify);
-
-// v4
-import { createHooksSystem } from "@css-hooks/core";
-
-const { createHooks, mergeStyles } =
-  createHooksSystem<CSSProperties>(stringify);
+-const createHooks = buildHooksSystem<CSSProperties>(stringify);
++const { createHooks, mergeStyles } =
++  createHooksSystem<CSSProperties>(stringify);
 ```
 
-The new `mergeStyles` function is bound to the same CSS properties type as
-`createHooks` and preserves contextual style inference when it is used in a
-pipeline.
+The returned `mergeStyles` function uses the same CSS properties type and value
+stringifier as `createHooks`.
 
 ## Framework compatibility
 
@@ -72,14 +106,13 @@ another. In v4, it is a type error. Use the same property for the base and
 override values instead:
 
 ```typescript
-pipe({ marginTop: 0 }, on("&:hover", { marginTop: 8 }));
+mergeStyles({ marginTop: 0 }, on("&:hover", { marginTop: 8 }));
 ```
 
 Protection includes shorthand and longhand properties, physical and logical
-equivalents, aliases, and conflicts across multiple `on` calls. Because some of
-these declarations only overlap in certain writing modes, the check is
-intentionally conservative; prefer using a consistent property throughout a
-pipeline.
+equivalents, and aliases. Because some of these declarations only overlap in
+certain writing modes, the check is intentionally conservative; prefer using a
+consistent property throughout a `mergeStyles` call.
 
 TypeScript must retain the specific keys in each style object for accurate
 checking. If you explicitly annotate a reusable style with a broad framework
