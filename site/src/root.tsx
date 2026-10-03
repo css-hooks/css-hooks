@@ -8,7 +8,6 @@ import {
   Scripts,
   ScrollRestoration,
 } from "react-router";
-import { pipe } from "remeda";
 import * as v from "valibot";
 
 import type { Route } from "./+types/root.ts";
@@ -23,7 +22,7 @@ import {
 import { Logo } from "./components/logo.tsx";
 import { NavLink } from "./components/nav-link.tsx";
 import { ScreenReaderOnly } from "./components/screen-reader-only.tsx";
-import { dark, not, on, or, styleSheet } from "./css.ts";
+import { dark, mergeStyles, not, on, or, styleSheet } from "./css.ts";
 import { createMetaDescriptors } from "./data/meta.ts";
 import { black, gray, purple, white } from "./design/colors.ts";
 import { sansSerif } from "./design/typography.ts";
@@ -95,7 +94,7 @@ function ThemeSwitcher() {
       >
         <div style={{ display: "inline-flex" }}>
           <div
-            style={pipe(
+            style={mergeStyles(
               {
                 display: "none",
               },
@@ -107,7 +106,7 @@ function ThemeSwitcher() {
             <DarkModeIcon />
           </div>
           <div
-            style={pipe(
+            style={mergeStyles(
               {
                 display: "none",
               },
@@ -158,7 +157,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <html
       lang="en"
       data-theme="auto"
-      style={{ overflowY: "scroll", minHeight: "100dvh" }}
+      style={{
+        overflowY: "scroll",
+        minHeight: "100dvh",
+      }}
       suppressHydrationWarning
     >
       <head>
@@ -172,11 +174,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
         <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `@property --animation-progress { syntax: "<number>"; inherits: false; initial-value: 1; } @keyframes animation-progress { from { --animation-progress: 0; } to { --animation-progress: 1; } }`,
+          }}
+        />
       </head>
       <body
         style={{
           fontFamily: sansSerif,
-          fontSize: "round(up, 1rem, 4px)",
           lineHeight: 1.25,
           margin: 0,
           minHeight: "100dvh",
@@ -186,7 +192,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         }}
       >
         <div
-          style={pipe(
+          style={mergeStyles(
             {
               background: white,
               color: gray(90),
@@ -204,7 +210,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           )}
         >
           <header
-            style={pipe(
+            style={mergeStyles(
               {
                 position: "sticky",
                 zIndex: 2,
@@ -214,11 +220,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                WebkitBackdropFilter: "blur(32px)",
-                backdropFilter: "blur(32px)",
                 color: black,
                 padding: 24,
-                fontSize: "2rem",
+                fontSize: "2em",
                 lineHeight: 1,
               },
               on(dark, {
@@ -226,9 +230,30 @@ export function Layout({ children }: { children: React.ReactNode }) {
               }),
             )}
           >
+            <div
+              style={mergeStyles(
+                {
+                  position: "absolute",
+                  inset: 0,
+                  zIndex: -1,
+                  WebkitBackdropFilter:
+                    "blur(calc(var(--animation-progress, 1) * 32px))",
+                  backdropFilter:
+                    "blur(calc(var(--animation-progress, 1) * 32px))",
+                },
+                on("@supports (animation-timeline: scroll())", {
+                  animationName: "animation-progress",
+                  animationDuration: "1s",
+                  animationTimingFunction: "linear",
+                  animationFillMode: "both",
+                  animationTimeline: "scroll(root block)",
+                  animationRange: "0px 58px",
+                }),
+              )}
+            />
             <a
               href="/"
-              style={pipe(
+              style={mergeStyles(
                 {
                   textDecoration: "none",
                   outlineWidth: 0,
@@ -254,7 +279,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               }}
             >
               <div
-                style={pipe(
+                style={mergeStyles(
                   { display: "none" },
                   on("@media (width >= 44em)", { display: "contents" }),
                 )}
@@ -289,9 +314,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </div>
           <footer>
             <div
-              style={pipe(
+              style={mergeStyles(
                 {
-                  padding: "1em",
+                  padding: 16,
                   display: "flex",
                   flexWrap: "wrap",
                   alignItems: "flex-end",
@@ -311,7 +336,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               <Logo />
               <div
                 style={{
-                  flexBasis: "calc((60rem - 100%) * 999)",
+                  flexBasis: "calc((60em - 100%) * 999)",
                   flexGrow: 1,
                 }}
               />

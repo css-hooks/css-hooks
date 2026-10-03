@@ -40,6 +40,55 @@ export const rehypeClassName: Plugin<
     });
 };
 
+const filenameCommentPattern =
+  /^\/\/[ \t]+((?:[\w.-]+\/)*[\w.-]+\.(?:[cm]?[jt]sx?|css|html|json))[ \t]*(?:\r?\n(?:[ \t]*\r?\n)?|$)/;
+
+export function extractFilename(code: string) {
+  const match = code.match(filenameCommentPattern);
+  return {
+    code: match ? code.substring(match[0].length) : code,
+    filename: match?.[1],
+  };
+}
+
+// Group adjacent top-level file blocks before rehype-raw discards fence metadata.
+export const rehypeSandpack: Plugin<[Record<string, string>[]], Root> =
+  sandpacks => tree => {
+    let files: Record<string, string> | undefined;
+    tree.children = tree.children.flatMap(node => {
+      if (node.type === "text" && !node.value.trim()) return [node];
+      const code = node.type === "element" ? node.children[0] : undefined;
+      if (
+        node.type !== "element" ||
+        node.tagName !== "pre" ||
+        code?.type !== "element" ||
+        code.tagName !== "code" ||
+        code.data?.meta !== "sandpack"
+      ) {
+        files = undefined;
+        return [node];
+      }
+      const source = code.children
+        .filter(child => child.type === "text")
+        .map(child => child.value)
+        .join("");
+      const { code: content, filename } = extractFilename(source);
+      if (!filename) throw new Error("Sandpack files need a filename comment.");
+      const path = `/${filename}`;
+      if (files) {
+        if (Object.hasOwn(files, path))
+          throw new Error(`Duplicate Sandpack file: ${filename}`);
+        files[path] = content;
+        return [];
+      }
+      files = { [path]: content };
+      node.tagName = "div";
+      node.properties = { dataSandpack: sandpacks.push(files) - 1 };
+      node.children = [];
+      return [node];
+    });
+  };
+
 export const rehypeStyle: Plugin<
   [TagNamePluginOptions<CSSProperties>],
   Root

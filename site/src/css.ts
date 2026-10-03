@@ -1,8 +1,10 @@
-import { createHooks } from "@css-hooks/react";
+import { createHooks, mergeStyles } from "@css-hooks/react";
 import type { CSSProperties } from "react";
 
-export const { styleSheet, on, and, or, not } = createHooks(
+export { mergeStyles };
+export const { styleSheet, on, and, or, not, enable } = createHooks(
   "@supports (height: 100dvh)",
+  "@supports (animation-timeline: scroll())",
 
   "@media (width >= 44em)",
   "@media (width >= 69em)",
@@ -12,14 +14,14 @@ export const { styleSheet, on, and, or, not } = createHooks(
   "[data-theme='auto'] &",
   "[data-theme='dark'] &",
 
-  "@container (width < 50px)",
-  "@container (width < 100px)",
+  "@container (width >= 50px)",
   "@container (width >= 64ch)",
   "@container (width >= 112ch)",
   "@container (width >= 100px)",
 
   "&:active",
   "&:focus-visible",
+  "&:first-child",
   "&:has(*)",
   "&:has(:focus)",
   "&:has(:focus-visible)",
@@ -44,6 +46,8 @@ export const { styleSheet, on, and, or, not } = createHooks(
   ":has(:checked) + &",
   "td > &:only-child",
   "th > &:only-child",
+
+  "%active",
 );
 
 export const dark = or(
@@ -87,21 +91,6 @@ export function parseStyle(cssText: string): CSSProperties {
     style[camel] = value;
   }
   return style as CSSProperties;
-}
-
-export function merge(b: CSSProperties | undefined) {
-  return (a: CSSProperties) => {
-    if (!b) {
-      return a;
-    }
-    const style = JSON.parse(JSON.stringify(a)) as CSSProperties;
-    for (const key in b) {
-      const property = key as keyof CSSProperties;
-      delete style[property];
-      Object.assign(style, { [property]: b[property] });
-    }
-    return style;
-  };
 }
 
 type ExtractClassName<Selector extends string> =

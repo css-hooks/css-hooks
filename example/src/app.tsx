@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { pipe } from "remeda";
 
-import { and, dark, not, on } from "./css.ts";
+import { and, dark, mergeStyles, not, on } from "./css.ts";
 import { Portrait } from "./portrait.tsx";
 import { ThemeSwitcher } from "./theme-switcher.tsx";
 
@@ -13,7 +12,7 @@ export function App() {
   return (
     <div className={theme}>
       <div
-        style={pipe(
+        style={mergeStyles(
           {
             minHeight: "100dvh",
             display: "flex",
@@ -32,7 +31,7 @@ export function App() {
         )}
       >
         <article
-          style={pipe(
+          style={mergeStyles(
             {
               display: "flex",
               maxWidth: 460,
@@ -79,16 +78,16 @@ export function App() {
             }}
           >
             <blockquote
-              style={pipe({
+              style={{
                 margin: 0,
                 display: "flex",
                 flexDirection: "column",
                 gap: "0.25em",
-              })}
+              }}
             >
               <span
                 aria-hidden="true"
-                style={pipe(
+                style={mergeStyles(
                   {
                     fontFamily: "serif",
                     fontSize: "3.5em",
@@ -105,7 +104,7 @@ export function App() {
                 &ldquo;
               </span>
               <p
-                style={pipe(
+                style={mergeStyles(
                   {
                     margin: 0,
                     fontFamily: "serif",
@@ -123,7 +122,7 @@ export function App() {
             </blockquote>
 
             <cite
-              style={pipe(
+              style={mergeStyles(
                 {
                   fontStyle: "normal",
                   fontSize: "0.72em",
