@@ -18,15 +18,16 @@
 
 ## Overview
 
-Hooks add CSS features to native inline styles, enabling you to apply styles
-conditionally based on pseudo-classes, custom selectors, media queries, and
-more—all without leaving the `style` prop. By exploiting the hidden
+**CSS power. Inline style simplicity.**
+
+Respond to user interaction, layout context, and inherited state. All
+CSS-driven. All without leaving the `style` prop. By exploiting the hidden
 programmability of CSS Variables, CSS Hooks delivers a flexible CSS-in-JS
 experience without runtime style injection or build steps.
 
 ## Feature highlights
 
-### Pseudo-classes
+### User interaction
 
 ```jsx
 <button
@@ -47,49 +48,50 @@ experience without runtime style injection or build steps.
 </button>
 ```
 
-### Selectors
+### Layout context
 
 ```jsx
-<label>
-  <input type="checkbox" checked />
-  <span
-    style={mergeStyles(
-      {},
-      on(":checked + &", {
-        textDecoration: "line-through",
-      }),
-    )}
-  >
-    Simplify CSS architecture
-  </span>
-</label>
+<span
+  style={mergeStyles(
+    { display: "none" },
+    on("@container (width >= 50px)", {
+      display: "revert-layer",
+    }),
+    on("@container (width >= 100px)", {
+      display: "none",
+    }),
+  )}
+>
+  sm
+</span>
+<span
+  style={mergeStyles(
+    { display: "none" },
+    on("@container (width >= 100px)", {
+      display: "revert-layer",
+    }),
+  )}
+>
+  lg
+</span>
 ```
 
-### Responsive design
+### Inherited state
 
 ```jsx
-<>
+<div style={mergeStyles({ padding: 24 }, on("&:hover", enable("%active")))}>
+  Hover parent
   <span
     style={mergeStyles(
-      {},
-      on(not("@container (width < 400px)"), {
-        display: "none",
+      { color: "gray" },
+      on("%active", {
+        color: "purple",
       }),
     )}
   >
-    sm
+    Child responds
   </span>
-  <span
-    style={mergeStyles(
-      {},
-      on("@container (width < 400px)", {
-        display: "none",
-      }),
-    )}
-  >
-    lg
-  </span>
-</>
+</div>
 ```
 
 ## Compatibility
