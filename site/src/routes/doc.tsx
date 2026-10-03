@@ -657,6 +657,7 @@ export async function loader({ params }: Route.LoaderArgs) {
                   color: teal(60),
                   font: "inherit",
                   fontFamily: monospace,
+                  wordSpacing: "-0.5ch",
                 },
                 on(dark, { color: teal(30) }),
               )}
