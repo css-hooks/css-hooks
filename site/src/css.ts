@@ -4,6 +4,7 @@ import type { CSSProperties } from "react";
 export { mergeStyles };
 export const { styleSheet, on, and, or, not, enable } = createHooks(
   "@supports (height: 100dvh)",
+  "@supports (animation-timeline: scroll())",
 
   "@media (width >= 44em)",
   "@media (width >= 69em)",
