@@ -74,9 +74,12 @@ Use one of these types:
 
 Write the description in lowercase without ending punctuation.
 
-Briefly explain the change in the commit body. Use complete sentences and
-bullets when useful. Omit verification steps unless they differ from the checks
-in [next.yml](.github/workflows/next.yml).
+Briefly explain the change in the commit body using complete sentences. Prefer
+lowercase except for proper nouns and case-sensitive names such as code symbols.
+Use a bulleted list when the change addresses multiple issues that differ enough
+to warrant separate points, and begin each bullet with a capital letter. Do not
+use a bulleted list for a single issue. Omit verification steps unless they
+differ from the checks in [next.yml](.github/workflows/next.yml).
 
 ### Pull requests
 
