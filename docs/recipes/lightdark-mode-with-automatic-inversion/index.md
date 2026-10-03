@@ -3,7 +3,7 @@ title: Light/dark mode with automatic inversion
 description:
   Follow the system theme, support explicit overrides, and
   automatically alternate nested panel themes
-order: 3
+order: 4
 hidden: true
 ---
 
@@ -44,14 +44,16 @@ function ContrastPanel({
         {
           padding: 20,
           borderRadius: 12,
-          border: "1px solid #c4b5fd",
+          borderWidth: 1,
+          borderStyle: "solid",
+          borderColor: "#e2e8f0",
           background: "#fff",
-          color: "#3b0764",
+          color: "#0f172a",
         },
         on("%dark", {
-          borderColor: "#7c3aed",
-          background: "#35204f",
-          color: "#f3e8ff",
+          borderColor: "#334155",
+          background: "#1e293b",
+          color: "#f8fafc",
         }),
         invertDark,
       )}
@@ -92,18 +94,18 @@ export default function App() {
       <main
         style={mergeStyles(
           {
-            background: "#faf5ff",
-            color: "#3b0764",
+            background: "#f8fafc",
+            color: "#0f172a",
             colorScheme: "light",
-            padding: 24,
+            padding: 32,
             minHeight: "100vh",
             boxSizing: "border-box",
             fontFamily: "system-ui, sans-serif",
             lineHeight: 1.5,
           },
           on("%dark", {
-            background: "#1e102f",
-            color: "#f3e8ff",
+            background: "#0f172a",
+            color: "#f8fafc",
             colorScheme: "dark",
           }),
           invertDark,
@@ -119,7 +121,23 @@ export default function App() {
                   "system" | "light" | "dark",
               )
             }
-            style={{ font: "inherit" }}
+            style={mergeStyles(
+              {
+                borderWidth: "1px",
+                borderStyle: "solid",
+                borderColor: "#cbd5e1",
+                borderRadius: 8,
+                padding: "8px 10px",
+                background: "#fff",
+                color: "#0f172a",
+                font: "inherit",
+              },
+              on("%dark", {
+                borderColor: "#475569",
+                background: "#1e293b",
+                color: "#f8fafc",
+              }),
+            )}
           >
             <option value="system">System</option>
             <option value="light">Light</option>
@@ -203,6 +221,6 @@ dark-mode flag, it disables the flag for its descendants.
 Otherwise, it enables the flag for them.
 
 Passing `invertDark` to `mergeStyles` adds the boundary to a
-style. The `App` component applies it once on the `main`
+style. The `App` component applies it once on the `<main>`
 element for an initial inversion; then, each `ContrastPanel`
 applies it again to invert its own children.

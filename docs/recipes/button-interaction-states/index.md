@@ -9,9 +9,9 @@ hidden: true
 
 # Button interaction states
 
-A button should respond to a pointer, remain easy to find
-with a keyboard, and clearly communicate when it is
-disabled. Selector hooks handle those states through
+A `<button>` element should respond to a pointer, remain
+easy to find with a keyboard, and clearly communicate when
+it is disabled. Selector hooks handle those states through
 efficient CSS mechanisms instead of pointer or keyboard
 event handlers.
 
@@ -41,7 +41,7 @@ function Button({
       {...props}
       style={mergeStyles(
         {
-          border: "2px solid transparent",
+          border: 0,
           borderRadius: 8,
           padding: "12px 20px",
           background: "#6d28d9",
@@ -76,6 +76,16 @@ function Button({
           cursor: "not-allowed",
           transform: "none",
         }),
+        on(
+          and(
+            "@media (prefers-color-scheme: dark)",
+            "&:disabled",
+          ),
+          {
+            background: "#334155",
+            color: "#94a3b8",
+          },
+        ),
         style,
       )}
     />
@@ -91,15 +101,17 @@ export default function App() {
       style={mergeStyles(
         {
           padding: 32,
-          background: "#fff",
-          color: "#111827",
+          background: "#f8fafc",
+          color: "#0f172a",
+          colorScheme: "light",
           fontFamily: "system-ui, sans-serif",
           minHeight: "100vh",
           boxSizing: "border-box",
         },
         on("@media (prefers-color-scheme: dark)", {
-          background: "#111827",
-          color: "#f9fafb",
+          background: "#0f172a",
+          color: "#f8fafc",
+          colorScheme: "dark",
         }),
       )}
     >
@@ -107,13 +119,14 @@ export default function App() {
         style={{
           display: "flex",
           alignItems: "center",
-          gap: 4,
+          gap: 8,
           marginBottom: 16,
         }}
       >
         <input
           type="checkbox"
           checked={disabled}
+          style={{ accentColor: "#6d28d9" }}
           onChange={event =>
             setDisabled(event.target.checked)
           }
@@ -189,11 +202,11 @@ pointer capabilities.)
 
 For a given property, the last matching ruleset wins.
 `&:active` follows the hover ruleset, so pressing the
-hovered button uses the `&:active` background. `&:disabled`
-comes last, replacing the background and resetting the
-transform — so a disabled button that also matches `&:hover`
-still shows the disabled styling, and the hover rule needs
-no enabled condition.
+hovered `<button>` element uses the `&:active` background.
+`&:disabled` comes last, replacing the background and
+resetting the transform — so a disabled `<button>` element
+that also matches `&:hover` still shows the disabled
+styling, and the hover rule needs no enabled condition.
 
 An override only affects the properties it declares. The
 focus outline is a separate property, so `&:active` styling
