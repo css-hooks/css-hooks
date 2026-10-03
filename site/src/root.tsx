@@ -174,6 +174,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
         <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `@property --animation-progress { syntax: "<number>"; inherits: false; initial-value: 1; } @keyframes animation-progress { from { --animation-progress: 0; } to { --animation-progress: 1; } }`,
+          }}
+        />
       </head>
       <body
         style={{
@@ -215,8 +220,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                WebkitBackdropFilter: "blur(32px)",
-                backdropFilter: "blur(32px)",
                 color: black,
                 padding: 24,
                 fontSize: "2em",
@@ -227,6 +230,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
               }),
             )}
           >
+            <div
+              style={mergeStyles(
+                {
+                  position: "absolute",
+                  inset: 0,
+                  zIndex: -1,
+                  WebkitBackdropFilter:
+                    "blur(calc(var(--animation-progress, 1) * 32px))",
+                  backdropFilter:
+                    "blur(calc(var(--animation-progress, 1) * 32px))",
+                },
+                on("@supports (animation-timeline: scroll())", {
+                  animationName: "animation-progress",
+                  animationDuration: "1s",
+                  animationTimingFunction: "linear",
+                  animationFillMode: "both",
+                  animationTimeline: "scroll(root block)",
+                  animationRange: "0px 58px",
+                }),
+              )}
+            />
             <a
               href="/"
               style={mergeStyles(

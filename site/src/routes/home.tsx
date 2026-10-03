@@ -93,7 +93,7 @@ export default function Home({
               ].join(", "),
             }),
             on(dark, {
-              background: `linear-gradient(to bottom, ${gray(95)}, ${purple(90)} 55%)`,
+              background: `linear-gradient(to bottom, ${gray(95)}, ${gray(95)} calc(48px + 2em), ${purple(90)} 55%)`,
             }),
           )}
         >
