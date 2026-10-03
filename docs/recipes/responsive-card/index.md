@@ -3,7 +3,7 @@ title: Responsive card
 description:
   Adapt a reusable card to its container with a container
   query
-order: 2
+order: 3
 hidden: true
 ---
 
@@ -43,7 +43,9 @@ function Card() {
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
-          border: "1px solid #e2e8f0",
+          borderWidth: "1px",
+          borderStyle: "solid",
+          borderColor: "#e2e8f0",
           borderRadius: 12,
           background: "#fff",
           color: "#0f172a",
@@ -51,6 +53,12 @@ function Card() {
         },
         on("@container (min-width: 400px)", {
           flexDirection: "row",
+        }),
+        on("@media (prefers-color-scheme: dark)", {
+          borderColor: "#334155",
+          background: "#1e293b",
+          color: "#f8fafc",
+          boxShadow: "0 1px 3px rgb(0 0 0 / 0.2)",
         }),
       )}
     >
@@ -82,14 +90,19 @@ function Card() {
         )}
       >
         <p
-          style={{
-            margin: "0 0 8px",
-            color: "#2563eb",
-            fontSize: 12,
-            fontWeight: 700,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-          }}
+          style={mergeStyles(
+            {
+              margin: "0 0 8px",
+              color: "#6d28d9",
+              fontSize: 12,
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+            },
+            on("@media (prefers-color-scheme: dark)", {
+              color: "#c4b5fd",
+            }),
+          )}
         >
           Travel
         </p>
@@ -103,12 +116,17 @@ function Card() {
           A weekend above the clouds
         </h2>
         <p
-          style={{
-            margin: "0 0 20px",
-            color: "#475569",
-            fontSize: 14,
-            lineHeight: 1.5,
-          }}
+          style={mergeStyles(
+            {
+              margin: "0 0 20px",
+              color: "#475569",
+              fontSize: 14,
+              lineHeight: 1.5,
+            },
+            on("@media (prefers-color-scheme: dark)", {
+              color: "#cbd5e1",
+            }),
+          )}
         >
           Quiet trails, alpine lakes, and everything you
           need for two days away.
@@ -123,16 +141,22 @@ function Card() {
         >
           <span
             aria-hidden="true"
-            style={{
-              display: "grid",
-              placeItems: "center",
-              width: 32,
-              height: 32,
-              borderRadius: "50%",
-              background: "#e2e8f0",
-              color: "#334155",
-              fontWeight: 700,
-            }}
+            style={mergeStyles(
+              {
+                display: "grid",
+                placeItems: "center",
+                width: 32,
+                height: 32,
+                borderRadius: "50%",
+                background: "#f1f5f9",
+                color: "#334155",
+                fontWeight: 700,
+              },
+              on("@media (prefers-color-scheme: dark)", {
+                background: "#334155",
+                color: "#f8fafc",
+              }),
+            )}
           >
             AM
           </span>
@@ -140,7 +164,14 @@ function Card() {
             <strong style={{ display: "block" }}>
               Alex Morgan
             </strong>
-            <span style={{ color: "#64748b" }}>
+            <span
+              style={mergeStyles(
+                { color: "#64748b" },
+                on("@media (prefers-color-scheme: dark)", {
+                  color: "#94a3b8",
+                }),
+              )}
+            >
               6 min read
             </span>
           </span>
@@ -157,10 +188,11 @@ export default function App() {
     <main
       style={mergeStyles(
         {
-          padding: 24,
+          padding: 32,
           overflowX: "auto",
           background: "#f8fafc",
           color: "#0f172a",
+          colorScheme: "light",
           fontFamily: "system-ui, sans-serif",
           minHeight: "100vh",
           boxSizing: "border-box",
@@ -168,6 +200,7 @@ export default function App() {
         on("@media (prefers-color-scheme: dark)", {
           background: "#0f172a",
           color: "#f8fafc",
+          colorScheme: "dark",
         }),
       )}
     >
@@ -195,16 +228,11 @@ export default function App() {
           max={480}
           step={1}
           value={width}
-          style={mergeStyles(
-            {
-              width: 480,
-              margin: 0,
-              accentColor: "#0f172a",
-            },
-            on("@media (prefers-color-scheme: dark)", {
-              accentColor: "#e2e8f0",
-            }),
-          )}
+          style={{
+            width: 480,
+            margin: 0,
+            accentColor: "#6d28d9",
+          }}
           onChange={event =>
             setWidth(
               Math.max(
@@ -284,8 +312,8 @@ provides its space.
 
 The base styles stack the image and content. At widths of
 400px and above, `on("@container (min-width: 400px)", ...)`
-changes the article's flex direction, gives the image a
-fixed width, and increases the content padding. Each
+changes the `<article>` element's flex direction, gives the
+image a fixed width, and increases the content padding. Each
 override only replaces the properties it declares; the rest
 of the base card remains unchanged.
 
