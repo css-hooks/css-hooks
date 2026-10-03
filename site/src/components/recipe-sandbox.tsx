@@ -68,7 +68,7 @@ function SandpackStyles() {
   // Keep the SSR stylesheet mounted and unchanged: Sandpack updates it via CSSOM.
   const [css] = useState(
     () =>
-      `${getSandpackCssText()}.sp-wrapper [title="Open in CodeSandbox"]{display:none}`,
+      `${getSandpackCssText()}.sp-wrapper [title="Open in CodeSandbox"]{display:none}.sp-wrapper .cm-gutter.cm-lineNumbers{font-size:inherit}`,
   );
   return (
     <style
