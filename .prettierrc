@@ -13,7 +13,7 @@
   "jsdocSeparateTagGroups": true,
   "overrides": [
     {
-      "files": ["docs/recipes/**/*.md"],
+      "files": ["docs/recipes/**/*.ts", "docs/recipes/**/*.tsx"],
       "options": {
         "printWidth": 60
       }

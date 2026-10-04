@@ -1,0 +1,43 @@
+---
+title: Disclosure state
+description: Style a disclosure and its descendants from the native open state
+order: 5
+hidden: true
+---
+
+import App from "./App.tsx";
+import appSource from "./App.tsx?raw";
+import { styleSheet } from "./css.ts";
+import cssSource from "./css.ts?raw";
+
+export const recipeFiles = { "App.tsx": appSource, "css.ts": cssSource };
+
+# Disclosure state
+
+The `<details>` element already owns the interaction model for a disclosure: Its
+`<summary>` element works with a pointer or keyboard, and its open state is
+exposed to CSS through `:open`. Descendants can respond to that state without
+mirroring it in component state.
+
+Open and close the questions below with a pointer or keyboard.
+
+<Wide>
+  <RecipeDemo files={recipeFiles} styleSheet={styleSheet()}>
+    <App />
+  </RecipeDemo>
+</Wide>
+
+## Native open state
+
+The `&:open` hook activates when the `<details>` element is open, allowing style
+declarations to target that particular state. Similarly, the contextual
+`:open &` hook allows nested elements to change their styling as a function of
+the `<details>` element state. The browser remains the sole owner of that state.
+
+## Focus handling
+
+`outline: "none"` removes the `<summary>` element's default focus outline. The
+`:focus-visible &` hook restores an equivalent indicator on the chevron, so
+keyboard users still get a visible focus ring without the full-width outline.
+Focus styling only appears for keyboard interaction because `:focus-visible`
+ignores most pointer clicks.

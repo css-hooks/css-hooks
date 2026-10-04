@@ -1,0 +1,51 @@
+---
+title: Custom placeholder
+description:
+  Display an accessible physical label from an input's native placeholder state
+order: 2
+hidden: true
+---
+
+import App from "./App.tsx";
+import appSource from "./App.tsx?raw";
+import { styleSheet } from "./css.ts";
+import cssSource from "./css.ts?raw";
+
+export const recipeFiles = { "App.tsx": appSource, "css.ts": cssSource };
+
+# Custom placeholder
+
+Developers often reach for the `::placeholder` pseudo-element when a physical
+element can do the same job with the help of the `:placeholder-shown`
+pseudo-class. A physical `<label>` element can move, resize, and remain the
+input's accessible name instead of acting as temporary hint text.
+
+Focus a field or enter a value to float its label. Clear the field and move
+focus away to return the label to its placeholder position.
+
+<Wide>
+  <RecipeDemo files={recipeFiles} styleSheet={styleSheet()}>
+    <App />
+  </RecipeDemo>
+</Wide>
+
+## Placeholder state
+
+The whitespace-only `placeholder=" "` prop gives the browser a placeholder to
+track without displaying visible text. While the field is empty, it matches
+`:placeholder-shown`. Once it has a value, it does not.
+
+The `:placeholder-shown + &` and `:not(:focus) + &` hooks target the `<span>`
+element containing the label text through the adjacent-sibling combinator.
+Combining them with `and()` keeps the label in its placeholder position only
+while the field is empty and unfocused. The `<input>` element remains
+responsible for its own focus border.
+
+## Accessible label
+
+Because the `<input>` element and label text are nested within the same
+`<label>` element, the visible text is also the `<input>` element's persistent
+accessible name. It does not disappear from assistive technology when the user
+enters a value, and clicking the `<label>` element focuses the field.
+`pointerEvents: "none"` also ensures the overlaid text never intercepts a
+pointer.

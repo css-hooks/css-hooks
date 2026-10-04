@@ -1,26 +1,3 @@
----
-title: Disclosure state
-description:
-  Style a disclosure and its descendants from the native
-  open state
-order: 5
-hidden: true
----
-
-# Disclosure state
-
-The `<details>` element already owns the interaction model
-for a disclosure: Its `<summary>` element works with a
-pointer or keyboard, and its open state is exposed to CSS
-through `:open`. Descendants can respond to that state
-without mirroring it in component state.
-
-Open and close the questions below with a pointer or
-keyboard.
-
-```tsx sandpack
-// App.tsx
-
 import { mergeStyles, on } from "./css";
 
 function Question({
@@ -42,7 +19,7 @@ function Question({
           background: "#fff",
           boxShadow: "0 1px 2px rgb(15 23 42 / 0.05)",
         },
-        on("@media (prefers-color-scheme: dark)", {
+        on("%dark", {
           borderColor: "#334155",
           background: "#1e293b",
           boxShadow: "0 1px 2px rgb(0 0 0 / 0.2)",
@@ -89,7 +66,7 @@ function Question({
               transform: "rotate(0deg)",
               transition: "transform 150ms",
             },
-            on("@media (prefers-color-scheme: dark)", {
+            on("%dark", {
               background: "#334155",
               color: "#c4b5fd",
             }),
@@ -125,12 +102,8 @@ function Question({
             color: "#475569",
             lineHeight: 1.6,
           },
-          on(":open &", {
-            color: "#334155",
-          }),
-          on("@media (prefers-color-scheme: dark)", {
-            color: "#cbd5e1",
-          }),
+          on(":open &", { color: "#334155" }),
+          on("%dark", { color: "#cbd5e1" }),
         )}
       >
         {children}
@@ -145,14 +118,14 @@ export default function App() {
       style={mergeStyles(
         {
           boxSizing: "border-box",
-          minHeight: "100vh",
+          minHeight: 520,
           padding: 32,
           background: "#f8fafc",
           color: "#0f172a",
           colorScheme: "light",
           fontFamily: "system-ui, sans-serif",
         },
-        on("@media (prefers-color-scheme: dark)", {
+        on("%dark", {
           background: "#0f172a",
           color: "#f8fafc",
           colorScheme: "dark",
@@ -175,14 +148,17 @@ export default function App() {
               letterSpacing: "0.1em",
               textTransform: "uppercase",
             },
-            on("@media (prefers-color-scheme: dark)", {
-              color: "#c4b5fd",
-            }),
+            on("%dark", { color: "#c4b5fd" }),
           )}
         >
           Help center
         </p>
-        <h1 style={{ margin: "0 0 24px", fontSize: 32 }}>
+        <h1
+          style={{
+            margin: "0 0 24px",
+            fontSize: 32,
+          }}
+        >
           Frequently asked questions
         </h1>
         <div style={{ display: "grid", gap: 10 }}>
@@ -204,58 +180,3 @@ export default function App() {
     </main>
   );
 }
-```
-
-```typescript sandpack
-// css.ts
-
-import { createHooks } from "@css-hooks/react";
-
-export { mergeStyles } from "@css-hooks/react";
-
-export const { styleSheet, on } = createHooks(
-  "&:open",
-  ":focus-visible &",
-  ":open &",
-  "@media (prefers-color-scheme: dark)",
-);
-```
-
-```tsx sandpack
-// main.tsx
-
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-
-import App from "./App";
-import { styleSheet } from "./css";
-
-document.body.style.margin = "0";
-
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <style
-      dangerouslySetInnerHTML={{ __html: styleSheet() }}
-    />
-    <App />
-  </StrictMode>,
-);
-```
-
-## Native open state
-
-The `&:open` hook activates when the `<details>` element is
-open, allowing style declarations to target that particular
-state. Similarly, the contextual `:open &` hook allows
-nested elements to change their styling as a function of the
-`<details>` element state. The browser remains the sole
-owner of that state.
-
-## Focus handling
-
-`outline: "none"` removes the `<summary>` element's default
-focus outline. The `:focus-visible &` hook restores an
-equivalent indicator on the chevron, so keyboard users still
-get a visible focus ring without the full-width outline.
-Focus styling only appears for keyboard interaction because
-`:focus-visible` ignores most pointer clicks.

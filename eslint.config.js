@@ -100,6 +100,16 @@ export default tseslint.config(
     },
   },
   {
+    // Recipe demos are standalone examples, so they import example-only
+    // dependencies and use the single-file playground conventions.
+    files: ["docs/recipes/**/*.{ts,tsx}"],
+    rules: {
+      "import/extensions": "off",
+      "import/no-default-export": "off",
+      "import/no-extraneous-dependencies": "off",
+    },
+  },
+  {
     files: ["site/**/*.tsx"],
     languageOptions: {
       parserOptions: {

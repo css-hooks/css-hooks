@@ -2,7 +2,7 @@ import { createHooks, mergeStyles } from "@css-hooks/react";
 import type { CSSProperties } from "react";
 
 export { mergeStyles };
-export const { styleSheet, on, and, or, not, enable } = createHooks(
+export const { styleSheet, on, and, or, not, enable, disable } = createHooks(
   "@supports (height: 100dvh)",
   "@supports (animation-timeline: scroll())",
 
@@ -18,6 +18,7 @@ export const { styleSheet, on, and, or, not, enable } = createHooks(
   "@container (width >= 64ch)",
   "@container (width >= 112ch)",
   "@container (width >= 100px)",
+  "@container (width >= 1000px)",
 
   "&:active",
   "&:focus-visible",
@@ -47,12 +48,20 @@ export const { styleSheet, on, and, or, not, enable } = createHooks(
   "td > &:only-child",
   "th > &:only-child",
 
+  ".prose > &:not(.wide)",
+
   "%active",
+  "%dark",
 );
 
 export const dark = or(
   "[data-theme='dark'] &",
   and("[data-theme='auto'] &", "@media (prefers-color-scheme: dark)"),
+);
+
+export const darkFlag = mergeStyles(
+  disable("%dark"),
+  on(dark, enable("%dark")),
 );
 
 export const light = not(dark);

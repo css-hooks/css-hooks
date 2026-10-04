@@ -1,31 +1,3 @@
----
-title: Responsive card
-description:
-  Adapt a reusable card to its container with a container
-  query
-order: 3
-hidden: true
----
-
-# Responsive card
-
-Media queries are a great way to implement viewport-relative
-responsive behavior on a website. But in a web application
-context, it is usually better for a reusable component to
-respond to its surrounding context. For example, a card in a
-sidebar has less room than the same card in the main content
-area, even on a wide screen. Query its container instead of
-the viewport so the component adapts to the space it
-actually receives.
-
-The card component demonstrated here implements this
-responsive design approach. Try adjusting the slider to
-change the width of the container. Notice that the content
-layout changes when you cross the 400px threshold.
-
-```tsx sandpack
-// App.tsx
-
 import { useState } from "react";
 
 import { mergeStyles, on } from "./css";
@@ -54,7 +26,7 @@ function Card() {
         on("@container (min-width: 400px)", {
           flexDirection: "row",
         }),
-        on("@media (prefers-color-scheme: dark)", {
+        on("%dark", {
           borderColor: "#334155",
           background: "#1e293b",
           color: "#f8fafc",
@@ -99,9 +71,7 @@ function Card() {
               letterSpacing: "0.08em",
               textTransform: "uppercase",
             },
-            on("@media (prefers-color-scheme: dark)", {
-              color: "#c4b5fd",
-            }),
+            on("%dark", { color: "#c4b5fd" }),
           )}
         >
           Travel
@@ -123,9 +93,7 @@ function Card() {
               fontSize: 14,
               lineHeight: 1.5,
             },
-            on("@media (prefers-color-scheme: dark)", {
-              color: "#cbd5e1",
-            }),
+            on("%dark", { color: "#cbd5e1" }),
           )}
         >
           Quiet trails, alpine lakes, and everything you
@@ -152,7 +120,7 @@ function Card() {
                 color: "#334155",
                 fontWeight: 700,
               },
-              on("@media (prefers-color-scheme: dark)", {
+              on("%dark", {
                 background: "#334155",
                 color: "#f8fafc",
               }),
@@ -167,9 +135,7 @@ function Card() {
             <span
               style={mergeStyles(
                 { color: "#64748b" },
-                on("@media (prefers-color-scheme: dark)", {
-                  color: "#94a3b8",
-                }),
+                on("%dark", { color: "#94a3b8" }),
               )}
             >
               6 min read
@@ -194,10 +160,10 @@ export default function App() {
           color: "#0f172a",
           colorScheme: "light",
           fontFamily: "system-ui, sans-serif",
-          minHeight: "100vh",
+          minHeight: 520,
           boxSizing: "border-box",
         },
-        on("@media (prefers-color-scheme: dark)", {
+        on("%dark", {
           background: "#0f172a",
           color: "#f8fafc",
           colorScheme: "dark",
@@ -254,76 +220,3 @@ export default function App() {
     </main>
   );
 }
-```
-
-```typescript sandpack
-// css.ts
-
-import { createHooks } from "@css-hooks/react";
-
-export { mergeStyles } from "@css-hooks/react";
-export const { styleSheet, on } = createHooks(
-  "@container (min-width: 400px)",
-  "@media (prefers-color-scheme: dark)",
-);
-```
-
-```tsx sandpack
-// main.tsx
-
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-
-import App from "./App";
-import { styleSheet } from "./css";
-
-document.body.style.margin = "0";
-
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <style
-      dangerouslySetInnerHTML={{ __html: styleSheet() }}
-    />
-    <App />
-  </StrictMode>,
-);
-```
-
-## Query container
-
-`containerType: "inline-size"` turns the wrapper into a size
-query container on its inline axis (width). Its descendants
-can now test the available width, while its height remains
-driven by its content. That is all this horizontal
-breakpoint needs.
-
-The condition is unnamed, so the browser uses the nearest
-ancestor eligible for inline-size queries. This keeps the
-hook generic: The card can move between a sidebar, grid
-track, or dialog and respond to whichever local container
-provides its space.
-
-> [!NOTE] The slider is only a control for the demo. It
-> updates the wrapper's width, then the browser reevaluates
-> the container query. React never decides whether the card
-> should use its stacked or horizontal layout.
-
-## Container-relative styles
-
-The base styles stack the image and content. At widths of
-400px and above, `on("@container (min-width: 400px)", ...)`
-changes the `<article>` element's flex direction, gives the
-image a fixed width, and increases the content padding. Each
-override only replaces the properties it declares; the rest
-of the base card remains unchanged.
-
-A container query measures an ancestor, not the element it
-styles. Keep the query-container wrapper outside the card;
-putting `containerType` on the card itself would not let it
-query its own width.
-
-> [!NOTE] If the layout must instead follow a container
-> farther up the tree, an element inside that container can
-> use its own query to enable an inherited
-> [flag](../../configuration/#flags) for the component
-> subtree.
