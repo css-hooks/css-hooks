@@ -19,25 +19,19 @@ Propose documentation changes in a
 
 ### Recipes
 
-Add recipes under `docs/recipes/<name>/index.md` and link them from
-`docs/recipes/index.md`. Set `hidden: true` in each recipe's frontmatter so only
-the index appears in the documentation sidebar.
+Add recipes under `docs/recipes/<name>/` with an `index.mdx` document, an
+`App.tsx` example, and a `css.ts` hook registration. The website registers the
+recipe in the `docs/recipes/` index automatically; add `hidden: true` to its
+frontmatter so only the index appears in the documentation sidebar.
 
 List recipes by practical utility, with broadly useful patterns before narrower
-platform patterns. Keep the numbered index and each recipe's frontmatter `order`
-value synchronized.
+platform patterns. Set each recipe's frontmatter `order` value to its position
+in the list.
 
-Use adjacent top-level `tsx sandpack` or `typescript sandpack` fenced code
-blocks, each beginning with a filename comment such as `// App.tsx`. The website
-groups these blocks into one tabbed Sandpack; GitHub displays each file as
-source code. Only whitespace may separate files in the same playground.
-
-Keep the example in `App.tsx` (the initially selected tab), hook registration in
-`css.ts`, and `createRoot(...).render(...)` in `main.tsx`. The bootstrap should
-render `<style dangerouslySetInnerHTML={{ __html: styleSheet() }} />` alongside
-`<App />`. Sandpack runs `main.tsx` and supplies the HTML mount point
-(`<div id="root"></div>`), React, `@css-hooks/react`, and Remeda. Ordinary code
-fences still use Shiki.
+Use an existing recipe as the template for `index.mdx` imports and the
+`<Wide><RecipeDemo>…</RecipeDemo></Wide>` wrapper. Keep the prose focused on the
+pattern, why it is useful, and any accessibility or platform behavior readers
+should understand.
 
 Follow
 [MDN's HTML element terminology](https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Writing_style_guide#terminology):
@@ -69,11 +63,9 @@ them behind CSS custom properties, theme objects, or shared demo utilities.
 | Disabled surface | `#e5e7eb` | `#334155` |
 | Disabled text    | `#4b5563` | `#94a3b8` |
 
-Every recipe must register `@media (prefers-color-scheme: dark)` and apply it to
-the canvas and all physical surfaces, text, borders, and controls. Set
-`colorScheme: "light"` on the canvas and switch it to `"dark"` in the media
-query so native controls match. A recipe specifically demonstrating theme
-overrides may route the media query through its theme state instead.
+Every recipe must use the inherited `"%dark"` flag for its light and dark styles
+and set `colorScheme` so native controls match. Do not add theme synchronization
+code unless the recipe specifically demonstrates theme overrides.
 
 Use `system-ui, sans-serif`, a full-height canvas, `boxSizing: "border-box"`,
 and 32px canvas padding unless the demonstrated layout requires otherwise. Use

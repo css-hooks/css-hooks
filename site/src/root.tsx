@@ -22,8 +22,9 @@ import {
 import { Logo } from "./components/logo.tsx";
 import { NavLink } from "./components/nav-link.tsx";
 import { ScreenReaderOnly } from "./components/screen-reader-only.tsx";
-import { dark, mergeStyles, not, on, or, styleSheet } from "./css.ts";
+import { dark, darkFlag, mergeStyles, not, on, or, styleSheet } from "./css.ts";
 import { createMetaDescriptors } from "./data/meta.ts";
+import { themeAttr, themeKey, themes } from "./data/themes.ts";
 import { black, gray, purple, white } from "./design/colors.ts";
 import { sansSerif } from "./design/typography.ts";
 
@@ -48,10 +49,6 @@ export const links: Route.LinksFunction = () => [
     href: "/manifest.json",
   },
 ];
-
-const themeAttr = "data-theme";
-const themeKey = "pref.theme";
-const themes = ["dark", "auto", "light"] as const;
 
 function ThemeSwitcher() {
   const [theme, setTheme] = useState<(typeof themes)[number]>("auto");
@@ -207,6 +204,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               background: gray(90),
               color: white,
             }),
+            darkFlag,
           )}
         >
           <header

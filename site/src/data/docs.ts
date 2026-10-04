@@ -1,9 +1,23 @@
 import fm from "front-matter";
+import type { ComponentType } from "react";
+import { lazy } from "react";
 import * as v from "valibot";
+
+type MdxModule = {
+  default: ComponentType<{
+    components?: Record<string, ComponentType<never>>;
+  }>;
+  recipeFiles?: Record<string, string>;
+};
+
+const mdxModules = import.meta.glob<MdxModule>("../../../docs/**/*.mdx");
 
 export const docs = Object.entries(
   import.meta.glob(
-    ["../../../docs/**/*.md", "!../../../docs/**/*.csspropertyconflicts.md"],
+    [
+      "../../../docs/**/*.{md,mdx}",
+      "!../../../docs/**/*.csspropertyconflicts.md",
+    ],
     { eager: true, query: "raw" },
   ),
 )
@@ -19,8 +33,8 @@ export const docs = Object.entries(
   .map(([key, { default: value }]) => {
     const pathname = `/docs${key
       .substring("../../../docs".length)
-      .replace(/\/index\.md$/, "")
-      .replace(/\.md$/, "")}/`;
+      .replace(/\/index\.mdx?$/, "")
+      .replace(/\.mdx?$/, "")}/`;
 
     const level =
       key
@@ -28,7 +42,12 @@ export const docs = Object.entries(
         .split("")
         .filter(x => x === "/").length - 1;
 
-    const index = /\/index\.md$/.test(key);
+    const index = /\/index\.mdx?$/.test(key);
+
+    const loadMdx = mdxModules[key];
+    const component = loadMdx
+      ? lazy(async () => ({ default: (await loadMdx()).default }))
+      : undefined;
 
     if (/\/api\//.test(key)) {
       return {
@@ -41,8 +60,11 @@ export const docs = Object.entries(
           description: "Detailed API reference",
           order: key.endsWith("index.md") ? 99 : -1,
           hidden: false,
+          disableFooterDivider: false,
         },
         body: value,
+        component,
+        loadMdx,
       };
     }
 
@@ -53,6 +75,7 @@ export const docs = Object.entries(
           description: v.string(),
           order: v.number(),
           hidden: v.optional(v.boolean(), false),
+          disableFooterDivider: v.optional(v.boolean(), false),
         }),
         body: v.string(),
       }),
@@ -60,7 +83,6 @@ export const docs = Object.entries(
     );
 
     return {
-      ...doc,
       attributes: {
         ...doc.attributes,
         index,
@@ -68,5 +90,8 @@ export const docs = Object.entries(
         level,
         editURL: `https://github.com/css-hooks/css-hooks/edit/next/docs${key.substring("../../../docs".length)}`,
       },
+      body: doc.body,
+      component,
+      loadMdx,
     };
   });

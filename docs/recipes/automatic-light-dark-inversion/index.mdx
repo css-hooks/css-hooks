@@ -1,0 +1,59 @@
+---
+title: Automatic light/dark inversion
+description:
+  Follow the system theme, support explicit overrides, and automatically
+  alternate nested panel themes
+order: 4
+hidden: true
+---
+
+import App from "./App.tsx";
+import appSource from "./App.tsx?raw";
+import { styleSheet } from "./css.ts";
+import cssSource from "./css.ts?raw";
+
+export const recipeFiles = { "App.tsx": appSource, "css.ts": cssSource };
+
+# Automatic light/dark inversion
+
+Light and dark modes let an application adapt to a user's preferred appearance.
+Similarly, a panel may need to adapt to its surrounding context by switching to
+the opposite mode in order to create visual contrast.
+
+This `ContrastPanel` component demonstrates that approach. The page inherits
+your chosen theme for the site by default. Try selecting Light or Dark to
+override it, and notice that the outer panel contrasts with the page while the
+inner panel contrasts with the outer panel.
+
+<Wide>
+  <RecipeDemo files={recipeFiles} styleSheet={styleSheet()}>
+    <App />
+  </RecipeDemo>
+</Wide>
+
+## Theme inheritance
+
+The `"%dark"` hook carries the theme as inherited boolean state.
+`enable("%dark")` and `disable("%dark")` set that state for an element's
+descendants, and `on("%dark", …)` applies style overrides when the flag is
+enabled.
+
+Notice that the `ContrastPanel` component doesn't expose a `theme` prop or
+consume React Context. These aren't needed because an ancestor defines an
+initial state, and its descendants receive it through efficient CSS mechanisms.
+The initial state comes from an inherited flag or explicit user selection and is
+then passed down through a [flag](../../configuration/#flags).
+
+## Inversion boundary
+
+```typescript
+const invertDark = mergeStyles(enable("%dark"), on("%dark", disable("%dark")));
+```
+
+An inversion boundary element switches dark mode on or off at each nesting
+level. When the boundary inherits an enabled dark-mode flag, it disables the
+flag for its descendants. Otherwise, it enables the flag for them.
+
+Passing `invertDark` to `mergeStyles` adds the boundary to a style. The `App`
+component applies it once on the `<main>` element for an initial inversion;
+then, each `ContrastPanel` applies it again to invert its own children.

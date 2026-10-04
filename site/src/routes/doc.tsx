@@ -1,14 +1,5 @@
 import type { ComponentProps, CSSProperties, ReactNode, Ref } from "react";
-import {
-  Children,
-  cloneElement,
-  createElement,
-  isValidElement,
-  lazy,
-  Suspense,
-  useEffect,
-  useRef,
-} from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { prerenderToNodeStream } from "react-dom/static";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -22,33 +13,22 @@ import {
   EditIcon,
   ExpandMoreIcon,
 } from "../components/icons.tsx";
+import { MarkdownBlockquote } from "../components/markdown-blockquote.tsx";
 import { NavLink } from "../components/nav-link.tsx";
 import { Preformatted } from "../components/preformatted.tsx";
+import { RecipeDemo } from "../components/recipe-demo.tsx";
+import { RecipeIndex } from "../components/recipe-index.tsx";
 import { ScreenReaderOnly } from "../components/screen-reader-only.tsx";
 import { SyntaxHighlighter } from "../components/syntax-highlighter.tsx";
-import {
-  and,
-  dark,
-  extractClassName,
-  hover,
-  mergeStyles,
-  not,
-  on,
-  or,
-} from "../css.ts";
+import { Wide } from "../components/wide.tsx";
+import { and, dark, hover, mergeStyles, not, on, or } from "../css.ts";
 import { docs } from "../data/docs.ts";
 import { createMetaDescriptors } from "../data/meta.ts";
-import { blue, gray, orange, purple, teal, white } from "../design/colors.ts";
+import { blue, gray, purple, teal, white } from "../design/colors.ts";
+import { proseWidth, wideWidth } from "../design/layout.ts";
 import { monospace } from "../design/typography.ts";
-import {
-  extractFilename,
-  rehypeClassName,
-  rehypeSandpack,
-  rehypeStyle,
-} from "../rehype.ts";
+import { extractFilename, rehypeClassName, rehypeStyle } from "../rehype.ts";
 import type { Route } from "./+types/doc.ts";
-
-const RecipeSandbox = lazy(() => import("../components/recipe-sandbox.tsx"));
 
 type MenuItem = {
   pathname: string;
@@ -334,6 +314,16 @@ function CopyCodeButton({ code }: { code: string }) {
   );
 }
 
+async function prerender(node: ReactNode) {
+  const { prelude: stream } = await prerenderToNodeStream(node);
+  return await new Promise<string>((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    stream.on("data", chunk => chunks.push(Buffer.from(chunk)));
+    stream.on("error", reject);
+    stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+  });
+}
+
 export async function loader({ params }: Route.LoaderArgs) {
   const pathname = `/docs/${params["*"]}`;
   const doc = docs.find(
@@ -349,11 +339,47 @@ export async function loader({ params }: Route.LoaderArgs) {
     });
   }
 
-  const sandpacks: Record<string, string>[] = [];
-  const { prelude: stream } = await prerenderToNodeStream(
+  if (doc.component) {
+    const { component: _component, loadMdx, ...data } = doc;
+    const { recipeFiles = {} } = (await loadMdx?.()) ?? {};
+    const highlightedFiles = Object.fromEntries(
+      await Promise.all(
+        Object.entries(recipeFiles).map(async ([filename, code]) => [
+          filename,
+          await prerender(
+            <SyntaxHighlighter
+              language={filename.endsWith(".tsx") ? "tsx" : "typescript"}
+            >
+              {code}
+            </SyntaxHighlighter>,
+          ),
+        ]),
+      ),
+    );
+    const highlightedCode = Object.fromEntries(
+      await Promise.all(
+        [
+          ...doc.body.matchAll(/^```([\w-]+)[^\n]*\n([\s\S]*?)\n```[ \t]*$/gm),
+        ].map(async ([, language = "text", code = ""]) => [
+          `${language}\0${code}`,
+          await prerender(
+            <SyntaxHighlighter language={language}>{code}</SyntaxHighlighter>,
+          ),
+        ]),
+      ),
+    );
+    return {
+      ...data,
+      body: "",
+      mdx: true,
+      highlightedFiles,
+      highlightedCode,
+    };
+  }
+
+  const body = await prerender(
     <Markdown
       rehypePlugins={[
-        [rehypeSandpack, sandpacks],
         rehypeRaw,
         [rehypeClassName, { tr: "group" }],
         [
@@ -436,151 +462,7 @@ export async function loader({ params }: Route.LoaderArgs) {
             </AnchorLink>
           );
         },
-        blockquote: ({
-          children: childrenProp,
-          style,
-          node: _node,
-          ...restProps
-        }) => {
-          const note = "&.a";
-          const warning = "&.b";
-          const hasNote = `&:has(.${extractClassName(note)})` as const;
-          const hasWarning = `&:has(.${extractClassName(warning)})` as const;
-          const noteColor = purple;
-          const warningColor = orange;
-
-          const children = (function alertify(
-            alert,
-            node: ReactNode,
-          ): ReactNode {
-            if (isValidElement(node)) {
-              return cloneElement(
-                node,
-                {},
-                ...Children.map(
-                  node.props &&
-                    typeof node.props === "object" &&
-                    "children" in node.props
-                    ? node.props.children
-                    : [],
-                  child => {
-                    if (typeof child === "string") {
-                      const match = child.match(/^\s*\[!([A-Z]+)\]/);
-                      if (
-                        match &&
-                        (match[1] === "WARNING" || match[1] === "NOTE")
-                      ) {
-                        return (
-                          <>
-                            {alert(match[1])}
-                            {child.substring(match[0].length)}
-                          </>
-                        );
-                      }
-                    }
-                    return Children.map(child, x =>
-                      alertify(alert, x as ReactNode),
-                    );
-                  },
-                ),
-              );
-            }
-            return node;
-          })(
-            (type: "WARNING" | "NOTE") => (
-              <span style={{ display: "block" }}>
-                <strong
-                  className={extractClassName(
-                    type === "WARNING" ? warning : note,
-                  )}
-                  style={mergeStyles(
-                    {
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 8,
-                    },
-                    on(warning, {
-                      color: warningColor(50),
-                    }),
-                    on(note, {
-                      color: noteColor(50),
-                    }),
-                    on(and(dark, warning), {
-                      color: warningColor(40),
-                    }),
-                    on(and(dark, note), {
-                      color: noteColor(40),
-                    }),
-                  )}
-                >
-                  <svg
-                    viewBox="0 0 16 16"
-                    style={{
-                      minWidth: "1em",
-                      maxWidth: "1em",
-                      minHeight: "1em",
-                      maxHeight: "1em",
-                      transform: "translateY(-0.0625em)",
-                    }}
-                  >
-                    <path
-                      fill="currentColor"
-                      d={
-                        type === "WARNING"
-                          ? "M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"
-                          : "M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"
-                      }
-                    />
-                  </svg>
-                  {`${type[0]}${type.substring(1).toLowerCase()}`}
-                </strong>
-              </span>
-            ),
-            createElement("div", { children: childrenProp }), // eslint-disable-line react/no-children-prop
-          );
-          return (
-            <blockquote
-              style={mergeStyles(
-                {
-                  borderWidth: 0,
-                  borderLeftWidth: "8px",
-                  borderStyle: "solid",
-                  paddingBlock: "0.1px",
-                  paddingInline: 16,
-                  marginLeft: 0,
-                  marginRight: 0,
-                  marginBlock: 24,
-                  borderColor: gray(50),
-                  color: gray(70),
-                  background: white,
-                  ...style,
-                },
-                on(not(dark), {
-                  boxShadow: `inset 0 0 0 1px ${gray(20)}`,
-                }),
-                on(dark, {
-                  background: gray(85),
-                  color: gray(30),
-                }),
-                on(hasWarning, {
-                  borderColor: warningColor(40),
-                }),
-                on(hasNote, {
-                  borderColor: noteColor(40),
-                }),
-                on(and(dark, hasWarning), {
-                  borderColor: warningColor(61),
-                }),
-                on(and(dark, hasNote), {
-                  borderColor: noteColor(61),
-                }),
-              )}
-              {...restProps}
-            >
-              {children}
-            </blockquote>
-          );
-        },
+        blockquote: MarkdownBlockquote,
         code: props => {
           const { children, className, node: _node, ref, ...rest } = props;
           const match = /language-(\w+)/.exec(className || "");
@@ -774,17 +656,11 @@ export async function loader({ params }: Route.LoaderArgs) {
     </Markdown>,
   );
 
-  const body = await new Promise<string>((resolve, reject) => {
-    const chunks: Buffer[] = [];
-    stream.on("data", chunk => chunks.push(Buffer.from(chunk)));
-    stream.on("error", err => reject(err));
-    stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
-  });
-
+  const { component: _component, loadMdx: _loadMdx, ...data } = doc;
   return {
-    ...doc,
+    ...data,
     body,
-    sandpacks,
+    mdx: false as const,
   };
 }
 
@@ -799,6 +675,15 @@ export const meta: Route.MetaFunction = createMetaDescriptors(
 export default function Doc({ loaderData: doc }: Route.ComponentProps) {
   const proseRef = useRef<HTMLDivElement>(null);
   const copyStatusRef = useRef<HTMLSpanElement>(null);
+  const MdxContent = docs.find(
+    source => source.attributes.pathname === doc.attributes.pathname,
+  )?.component;
+  const highlightedFiles = doc.mdx ? doc.highlightedFiles : {};
+  const highlightedCode = doc.mdx ? doc.highlightedCode : {};
+  const proseColumn = on(".prose > &:not(.wide)", {
+    maxWidth: proseWidth,
+    marginInline: "auto",
+  });
 
   useEffect(() => {
     const prose = proseRef.current;
@@ -1017,7 +902,7 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
           style={mergeStyles(
             {
               width: "calc(100% - 64px)",
-              maxWidth: doc.sandpacks.length ? "132ch" : "88ch",
+              maxWidth: wideWidth,
               margin: "auto",
               paddingBlock: 16,
               paddingInline: 0,
@@ -1035,33 +920,125 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
             }}
           >
             <div ref={proseRef}>
-              {doc.body
-                .split(/<div data-sandpack="(\d+)"><\/div>/)
-                .map((part, index) =>
-                  index % 2 === 0 ? (
-                    <div
-                      key={index}
-                      className="prose"
-                      style={{ maxWidth: "88ch", marginInline: "auto" }}
-                      dangerouslySetInnerHTML={{ __html: part }}
-                    />
-                  ) : (
-                    <div
-                      key={`${doc.attributes.pathname}-${index}`}
-                      style={{
-                        width: "100%",
-                        maxWidth: "132ch",
-                        marginBlock: 24,
+              {MdxContent ? (
+                <Suspense fallback={<p>Loading recipe…</p>}>
+                  <div className="prose">
+                    <MdxContent
+                      components={{
+                        RecipeDemo: (
+                          props: Omit<
+                            ComponentProps<typeof RecipeDemo>,
+                            "highlightedFiles"
+                          >,
+                        ) => (
+                          <RecipeDemo
+                            {...props}
+                            highlightedFiles={highlightedFiles}
+                          />
+                        ),
+                        RecipeIndex,
+                        Wide,
+                        h1: createHeading(1, {
+                          fontSize: "3em",
+                          fontWeight: 400,
+                          marginBlockStart: 48,
+                          marginBlockEnd: 16,
+                          ...proseColumn,
+                        }),
+                        h2: createHeading(2, {
+                          fontSize: "2em",
+                          fontWeight: 400,
+                          marginBlockStart: 40,
+                          marginBlockEnd: 12,
+                          ...proseColumn,
+                        }),
+                        p: (props: ComponentProps<"p">) => (
+                          <p
+                            {...props}
+                            style={{ marginBlock: 16, ...proseColumn }}
+                          />
+                        ),
+                        ul: (props: ComponentProps<"ul">) => (
+                          <ul {...props} style={proseColumn} />
+                        ),
+                        ol: (props: ComponentProps<"ol">) => (
+                          <ol {...props} style={proseColumn} />
+                        ),
+                        a: (props: ComponentProps<"a">) => (
+                          <AnchorLink {...props} />
+                        ),
+                        blockquote: (props: ComponentProps<"blockquote">) => (
+                          <MarkdownBlockquote {...props} style={proseColumn} />
+                        ),
+                        pre: (props: ComponentProps<"pre">) => (
+                          <pre
+                            {...props}
+                            style={mergeStyles(
+                              {
+                                boxSizing: "border-box",
+                                marginBlock: 24,
+                                padding: "16px 24px",
+                                overflow: "auto",
+                                background: white,
+                                ...proseColumn,
+                              },
+                              on(not(dark), {
+                                boxShadow: `inset 0 0 0 1px ${gray(20)}`,
+                              }),
+                              on(dark, { background: gray(85) }),
+                            )}
+                          />
+                        ),
+                        code: ({
+                          children,
+                          className,
+                          ...props
+                        }: ComponentProps<"code">) => {
+                          const language = /language-(\w+)/.exec(
+                            className ?? "",
+                          )?.[1];
+                          const code = String(children).replace(/\n$/, "");
+                          return language ? (
+                            highlightedCode[`${language}\0${code}`] ? (
+                              <Preformatted
+                                as="div"
+                                dangerouslySetInnerHTML={{
+                                  __html:
+                                    highlightedCode[`${language}\0${code}`],
+                                }}
+                              />
+                            ) : (
+                              <Preformatted as="div">{code}</Preformatted>
+                            )
+                          ) : (
+                            <code
+                              {...props}
+                              className={className}
+                              style={mergeStyles(
+                                {
+                                  color: teal(60),
+                                  font: "inherit",
+                                  fontFamily: monospace,
+                                  wordSpacing: "-0.5ch",
+                                },
+                                on(dark, { color: teal(30) }),
+                              )}
+                            >
+                              {children}
+                            </code>
+                          );
+                        },
                       }}
-                    >
-                      <Suspense fallback={<p>Loading code playground…</p>}>
-                        <RecipeSandbox
-                          files={doc.sandpacks[Number(part)] ?? {}}
-                        />
-                      </Suspense>
-                    </div>
-                  ),
-                )}
+                    />
+                  </div>
+                </Suspense>
+              ) : (
+                <div
+                  className="prose"
+                  style={{ maxWidth: proseWidth, marginInline: "auto" }}
+                  dangerouslySetInnerHTML={{ __html: doc.body }}
+                />
+              )}
             </div>
             <ScreenReaderOnly>
               <span ref={copyStatusRef} aria-live="polite" />
@@ -1074,24 +1051,28 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
                   alignItems: "flex-start",
                   gap: 16,
                   width: "100%",
-                  maxWidth: "88ch",
+                  maxWidth: proseWidth,
                   marginInline: "auto",
                 }}
               >
-                <hr
-                  style={mergeStyles(
-                    {
-                      margin: 0,
-                      border: 0,
-                      width: "100%",
-                      height: 1,
-                      background: gray(10),
-                    },
-                    on(dark, {
-                      background: gray(80),
-                    }),
-                  )}
-                />
+                {doc.attributes.disableFooterDivider ? (
+                  <></>
+                ) : (
+                  <hr
+                    style={mergeStyles(
+                      {
+                        margin: 0,
+                        border: 0,
+                        width: "100%",
+                        height: 1,
+                        background: gray(10),
+                      },
+                      on(dark, {
+                        background: gray(80),
+                      }),
+                    )}
+                  />
+                )}
                 <NavLink to={doc.attributes.editURL}>
                   <div
                     style={{
@@ -1100,7 +1081,10 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
                       gap: "0.25em",
                     }}
                   >
-                    <span style={{ display: "inline-flex" }} aria-hidden="true">
+                    <span
+                      style={{ display: "inline-flex", lineHeight: 1 }}
+                      aria-hidden="true"
+                    >
                       <EditIcon />
                     </span>
                     <span>Suggest an edit</span>

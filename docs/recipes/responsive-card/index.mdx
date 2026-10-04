@@ -1,0 +1,64 @@
+---
+title: Responsive card
+description: Adapt a reusable card to its container with a container query
+order: 3
+hidden: true
+---
+
+import App from "./App.tsx";
+import appSource from "./App.tsx?raw";
+import { styleSheet } from "./css.ts";
+import cssSource from "./css.ts?raw";
+
+export const recipeFiles = { "App.tsx": appSource, "css.ts": cssSource };
+
+# Responsive card
+
+Media queries are a great way to implement viewport-relative responsive behavior
+on a website. But in a web application context, it is usually better for a
+reusable component to respond to its surrounding context. For example, a card in
+a sidebar has less room than the same card in the main content area, even on a
+wide screen. Query its container instead of the viewport so the component adapts
+to the space it actually receives.
+
+The card component demonstrated here implements this responsive design approach.
+Try adjusting the slider to change the width of the container. Notice that the
+content layout changes when you cross the 400px threshold.
+
+<Wide>
+  <RecipeDemo files={recipeFiles} styleSheet={styleSheet()}>
+    <App />
+  </RecipeDemo>
+</Wide>
+
+## Query container
+
+`containerType: "inline-size"` turns the wrapper into a size query container on
+its inline axis (width). Its descendants can now test the available width, while
+its height remains driven by its content. That is all this horizontal breakpoint
+needs.
+
+The condition is unnamed, so the browser uses the nearest ancestor eligible for
+inline-size queries. This keeps the hook generic: The card can move between a
+sidebar, grid track, or dialog and respond to whichever local container provides
+its space.
+
+> [!NOTE] The slider is only a control for the demo. It updates the wrapper's
+> width, then the browser reevaluates the container query. React never decides
+> whether the card should use its stacked or horizontal layout.
+
+## Container-relative styles
+
+The base styles stack the image and content. At widths of 400px and above,
+`on("@container (min-width: 400px)", ...)` changes the `<article>` element's
+flex direction, gives the image a fixed width, and increases the content
+padding. Each override only replaces the properties it declares; the rest of the
+base card remains unchanged.
+
+A container query measures an ancestor, not the element it styles. Keep the
+query-container wrapper outside the card; putting `containerType` on the card
+itself would not let it query its own width.
+
+> [!NOTE] If the layout must instead follow a container farther up the tree, an
+> element inside that container can use its own query to enable an inherited
+> [flag](../../configuration/#flags) for the component subtree.
