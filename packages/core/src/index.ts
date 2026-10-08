@@ -58,8 +58,8 @@ export type Hook =
 /** Extracts the flags in a hook tuple. */
 type Flag<Hooks extends readonly Hook[]> = Extract<Hooks[number], `%${string}`>;
 
-/** Style declarations that set an inherited flag for descendants */
-type FlagStyle = { [P in `--${string}`]: 0 | 1 };
+/** Style declarations that set a flag for an element and its descendants */
+type FlagStyle = { [P in `--${string}`]: string };
 
 const fallbackMarker = "var(--ch-revert-layer,revert-layer)";
 const fallbackMarkerPattern = /var\(--ch-revert-layer,revert-layer\)/g;
@@ -2289,13 +2289,19 @@ export type Hooks<ConfiguredHooks extends readonly Hook[], CSSProperties> = {
   : [Flag<ConfiguredHooks>] extends [never]
     ? unknown
     : {
-        /** Returns style declarations that enable flags for descendants. */
+        /**
+         * Returns style declarations that enable flags for the element and its
+         * descendants.
+         */
         enable: (
           flag: Flag<ConfiguredHooks>,
           ...flags: Flag<ConfiguredHooks>[]
         ) => FlagStyle;
 
-        /** Returns style declarations that disable flags for descendants. */
+        /**
+         * Returns style declarations that disable flags for the element and its
+         * descendants.
+         */
         disable: (
           flag: Flag<ConfiguredHooks>,
           ...flags: Flag<ConfiguredHooks>[]
@@ -2425,22 +2431,132 @@ export function createHooksSystem<
       // `process.env.NODE_ENV` is absent in unbundled browser environments
     }
 
+    // The "off" value for flag variables. It resolves to a truly-empty value
+    // (so `var()` treats it as empty rather than substituting its fallback),
+    // without introducing whitespace that would accumulate when composed
+    // through nested `var()` expressions. `--ch-empty` is never defined.
+    const empty = "var(--ch-empty, )";
+
     const hookHashes = new Map<string, string>(
       hooks.map(hook => [hook, createHash(hook)]),
     );
+
+    // Names a hook's custom property: `--{hash}` with suffix
+    const hookVar = (hash: string, suffix = ""): string => `--${hash}${suffix}`;
+
+    const flagVars = (hash: string) =>
+      [
+        "0", // off
+        "1", // on
+        "0s", // off (seed)
+        "1s", // on (seed)
+      ].map(suffix => hookVar(hash, suffix));
+
+    const flagKeys = new Set(
+      hooks
+        .filter(hook => hook.startsWith("%"))
+        .flatMap(hook => {
+          const hash = hookHashes.get(hook);
+          return hash ? flagVars(hash) : [];
+        }),
+    );
+
     const flagDeclarations = (flags: string[], enabled: boolean) => {
       if (flags.length === 0) {
         throw new RangeError("At least one flag is required");
       }
       return Object.fromEntries(
-        flags.map(flag => {
+        flags.flatMap(flag => {
           const hash = hookHashes.get(flag);
           if (!flag.startsWith("%") || !hash) {
             throw new RangeError(`Unknown flag: ${flag}`);
           }
-          return [`--${hash}f`, enabled ? 1 : 0];
+          const [off, on, offSeed, onSeed] = flagVars(hash);
+          return [
+            [off, enabled ? empty : "initial"],
+            [on, enabled ? "initial" : empty],
+            [offSeed, enabled ? empty : "initial"],
+            [onSeed, enabled ? "initial" : empty],
+          ];
         }),
       ) as FlagStyle;
+    };
+
+    // Hoists a long value into its own custom property, returning a `var()`
+    // reference to it. Keeps the generated conditional expressions short.
+    const hoist = (
+      value: string,
+      extraDecls: Record<string, string>,
+    ): string => {
+      if (value.includes(fallbackMarker) || value.length <= 32) {
+        return value;
+      }
+      const hash = createHash(value);
+      extraDecls[`--${hash}`] = value;
+      return `var(--${hash})`;
+    };
+
+    // Builds the `var()` expression that selects `valueIfTrue` when the
+    // condition matches and `valueIfFalse` otherwise. `suffix` is `"i"` when
+    // the condition should read the inherited flag variables (`--{hash}*i`)
+    // rather than the element's own (`--{hash}*`).
+    const buildExpression = (
+      condition: string | Condition<string>,
+      valueIfTrue: string,
+      valueIfFalse: string,
+      suffix: "" | "i" = "",
+    ): [string, Record<string, string>] => {
+      if (typeof condition === "string") {
+        const extraDecls: Record<string, string> = {};
+        const valTrue = hoist(valueIfTrue, extraDecls);
+        const valFalse = hoist(valueIfFalse, extraDecls);
+        const hookHash = hookHashes.get(condition) || createHash(condition);
+        const conditionSuffix = condition.startsWith("%") ? suffix : "";
+        return [
+          `var(${hookVar(hookHash, `1${conditionSuffix}`)},${valTrue})var(${hookVar(hookHash, `0${conditionSuffix}`)},${valFalse})`,
+          extraDecls,
+        ];
+      }
+      if ("and" in condition) {
+        const [head, ...tail] = condition.and;
+        if (!head) {
+          return [valueIfTrue, {}];
+        }
+        if (tail.length === 0) {
+          return buildExpression(head, valueIfTrue, valueIfFalse, suffix);
+        }
+        const [tailExpr, tailDecls] = buildExpression(
+          { and: tail },
+          valueIfTrue,
+          valueIfFalse,
+          suffix,
+        );
+        const [expr, decls] = buildExpression(
+          head,
+          tailExpr,
+          valueIfFalse,
+          suffix,
+        );
+        return [expr, { ...decls, ...tailDecls }];
+      }
+      if ("or" in condition) {
+        // De Morgan: `a || b` is equivalent to `!(¬a && ¬b)`.
+        return buildExpression(
+          { and: condition.or.map(c => ({ not: c })) },
+          valueIfFalse,
+          valueIfTrue,
+          suffix,
+        );
+      }
+      if (condition.not) {
+        return buildExpression(
+          condition.not,
+          valueIfFalse,
+          valueIfTrue,
+          suffix,
+        );
+      }
+      throw new Error(`Invalid condition: ${JSON.stringify(condition)}`);
     };
 
     return {
@@ -2450,39 +2566,79 @@ export function createHooksSystem<
         flagDeclarations(flags, false),
       styleSheet() {
         type Ruleset = [string[], { [P: string]: string } | Ruleset];
+
+        const parityVariable = "--ch-parity";
+        const evenQuery = `@container not style(${parityVariable}:${space})`;
+        const oddQuery = `@container style(${parityVariable}:${space})`;
+
         return hooks
-          .flatMap(hook => {
-            const hookHash = hookHashes.get(hook);
-            const offVariable = `--${hookHash}0`;
-            const onVariable = `--${hookHash}1`;
+          .flatMap((hook): Ruleset[] => {
+            const hookHash = hookHashes.get(hook)!;
+
+            const offVariable = hookVar(hookHash, "0");
+            const onVariable = hookVar(hookHash, "1");
+
+            if (hook.startsWith("%")) {
+              const rulesets: Ruleset[] = ["0", "1"].flatMap(lane => {
+                const valueVariable = hookVar(hookHash, lane);
+                const evenVariable = hookVar(hookHash, lane + "e");
+                const oddVariable = hookVar(hookHash, lane + "o");
+                const seedVariable = hookVar(hookHash, lane + "s");
+                const inheritedVariable = hookVar(hookHash, lane + "i");
+                return [
+                  [
+                    [evenQuery],
+                    [
+                      ["*"],
+                      {
+                        [evenVariable]: `var(${seedVariable})`,
+                        [inheritedVariable]: `var(${oddVariable})`,
+                      },
+                    ],
+                  ],
+                  [
+                    [oddQuery],
+                    [
+                      ["*"],
+                      {
+                        [oddVariable]: `var(${seedVariable})`,
+                        [inheritedVariable]: `var(${evenVariable})`,
+                      },
+                    ],
+                  ],
+                  [
+                    ["*"],
+                    {
+                      [valueVariable]: `var(${inheritedVariable})`,
+                    },
+                  ],
+                ];
+              });
+              // Initialize each flag to its "off" state on the root element, so
+              // that when no ancestor ever enables or disables it, it reads as
+              // "off" rather than "unset". These custom properties inherit, so
+              // the default propagates to the whole tree unless overridden.
+              rulesets.push([
+                [":root"],
+                {
+                  [hookVar(hookHash, "0s")]: "initial",
+                  [hookVar(hookHash, "1s")]: empty,
+                },
+              ]);
+              return rulesets;
+            }
+
             const offDeclarations = {
               [offVariable]: "initial",
-              [onVariable]: space,
+              [onVariable]: empty,
             };
             const onDeclarations = {
-              [offVariable]: space,
+              [offVariable]: empty,
               [onVariable]: "initial",
             };
-            if (hook.startsWith("%")) {
-              const flagVariable = `--${hookHash}f`;
-              return [
-                [
-                  [`@property ${flagVariable}`],
-                  {
-                    syntax: '"<number>"',
-                    inherits: "true",
-                    "initial-value": "0",
-                  },
-                ] satisfies Ruleset,
-                [[":root"], { [flagVariable]: "0" }] satisfies Ruleset,
-                [["*"], offDeclarations] satisfies Ruleset,
-                [
-                  [`@container style(${flagVariable}:${space}1)`],
-                  [["*"], onDeclarations],
-                ] satisfies Ruleset,
-              ];
-            }
+
             const rulesets: Ruleset[] = [[["*"], offDeclarations]];
+
             if (hook.startsWith("@")) {
               const target = ["*"];
               if (hook.startsWith("@scope")) {
@@ -2495,8 +2651,17 @@ export function createHooksSystem<
                 onDeclarations,
               ]);
             }
+
             return rulesets;
           })
+          .concat(
+            hooks.some(hook => hook.startsWith("%"))
+              ? [
+                  [[evenQuery], [["*"], { [parityVariable]: space }]],
+                  [[oddQuery], [["*"], { [parityVariable]: "initial" }]],
+                ]
+              : [],
+          )
           .map(
             unary(function render(ruleset: Ruleset, level: number = 0): string {
               const [headers, declarations] = ruleset;
@@ -2527,6 +2692,7 @@ export function createHooksSystem<
       on(condition, inputStyle) {
         const style = {} as CSSProperties;
         for (const property in inputStyle) {
+          const suffix = flagKeys.has(property) ? "i" : "";
           const overrideValue = stringify(inputStyle[property], property);
           if (overrideValue === null) {
             continue;
@@ -2535,63 +2701,11 @@ export function createHooksSystem<
             condition,
             overrideValue,
             fallbackMarker,
+            suffix,
           );
           Object.assign(style, { [property]: value }, extraDecls);
         }
         return style as typeof inputStyle;
-        function buildExpression(
-          condition: string | Condition<string>,
-          valueIfTrue: string,
-          valueIfFalse: string,
-        ): [string, Record<string, string>] {
-          if (typeof condition === "string") {
-            let valTrue = valueIfTrue,
-              valFalse = valueIfFalse;
-            const extraDecls: Record<string, string> = {};
-            if (!valTrue.includes(fallbackMarker) && valTrue.length > 32) {
-              const hash = createHash(valTrue);
-              extraDecls[`--${hash}`] = valTrue;
-              valTrue = `var(--${hash})`;
-            }
-            if (!valFalse.includes(fallbackMarker) && valFalse.length > 32) {
-              const hash = createHash(valFalse);
-              extraDecls[`--${hash}`] = valFalse;
-              valFalse = `var(--${hash})`;
-            }
-            const hookHash = hookHashes.get(condition) || createHash(condition);
-            return [
-              `var(--${hookHash}1,${space}${valTrue})${space}var(--${hookHash}0,${space}${valFalse})`,
-              extraDecls,
-            ];
-          }
-          if ("and" in condition) {
-            const [head, ...tail] = condition.and;
-            if (!head) {
-              return [valueIfTrue, {}];
-            }
-            if (tail.length === 0) {
-              return buildExpression(head, valueIfTrue, valueIfFalse);
-            }
-            const [tailExpr, tailDecls] = buildExpression(
-              { and: tail },
-              valueIfTrue,
-              valueIfFalse,
-            );
-            const [expr, decls] = buildExpression(head, tailExpr, valueIfFalse);
-            return [expr, { ...decls, ...tailDecls }];
-          }
-          if ("or" in condition) {
-            return buildExpression(
-              { and: condition.or.map(not => ({ not })) },
-              valueIfFalse,
-              valueIfTrue,
-            );
-          }
-          if (condition.not) {
-            return buildExpression(condition.not, valueIfFalse, valueIfTrue);
-          }
-          throw new Error(`Invalid condition: ${JSON.stringify(condition)}`);
-        }
       },
     };
   };

@@ -34,8 +34,8 @@ inner panel contrasts with the outer panel.
 ## Theme inheritance
 
 The `"%dark"` hook carries the theme as inherited boolean state.
-`enable("%dark")` and `disable("%dark")` set that state for an element's
-descendants, and `on("%dark", …)` applies style overrides when the flag is
+`enable("%dark")` and `disable("%dark")` set that state for an element's element
+and descendants, and `on("%dark", …)` applies style overrides when the flag is
 enabled.
 
 Notice that the `ContrastPanel` component doesn't expose a `theme` prop or
@@ -52,8 +52,8 @@ const invertDark = mergeStyles(enable("%dark"), on("%dark", disable("%dark")));
 
 An inversion boundary element switches dark mode on or off at each nesting
 level. When the boundary inherits an enabled dark-mode flag, it disables the
-flag for its descendants. Otherwise, it enables the flag for them.
+flag for itself and its descendants. Otherwise, it enables the flag for them.
 
-Passing `invertDark` to `mergeStyles` adds the boundary to a style. The `App`
-component applies it once on the `<main>` element for an initial inversion;
-then, each `ContrastPanel` applies it again to invert its own children.
+Passing `invertDark` to `mergeStyles` adds the boundary to a style. Each
+`ContrastPanel` applies it to contrast with its surrounding theme, so nested
+panels automatically alternate between light and dark.

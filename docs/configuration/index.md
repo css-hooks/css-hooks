@@ -64,7 +64,7 @@ scoped descendants, excluding any scope limit and its descendants.
 
 Register a `%<name>` hook to condition styles on inherited boolean state.
 Registered flags are disabled by default. Use `enable()` or `disable()` with the
-flag to set the state for an element's descendants:
+flag to set the state for an element and its descendants:
 
 ```tsx
 const darkStyle = enable("%dark");
@@ -89,10 +89,10 @@ Pass multiple flags to set them together:
 <main style={enable("%dark", "%compact")}>{/* Dark, compact subtree */}</main>
 ```
 
-The element carrying `enable()` or `disable()` still observes the state from its
-nearest ancestor. Only its descendants observe the newly assigned state. This
-also makes it possible to invert a flag without creating a custom-property
-cycle:
+The element carrying `enable()` or `disable()` observes the newly assigned
+state. When either function is applied conditionally, the condition observes the
+state from the nearest ancestor. This makes it possible to invert a flag without
+creating a custom-property cycle:
 
 ```typescript
 const invertDark = mergeStyles(enable("%dark"), on("%dark", disable("%dark")));

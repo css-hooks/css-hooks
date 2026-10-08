@@ -56,9 +56,23 @@ export default function App() {
   >("system");
 
   return (
-    <div
+    <main
       style={mergeStyles(
-        { display: "contents" },
+        {
+          background: "#f8fafc",
+          color: "#0f172a",
+          colorScheme: "light",
+          padding: 32,
+          minHeight: 520,
+          boxSizing: "border-box",
+          fontFamily: "system-ui, sans-serif",
+          lineHeight: 1.5,
+        },
+        on("%dark", {
+          background: "#0f172a",
+          color: "#f8fafc",
+          colorScheme: "dark",
+        }),
         theme === "light"
           ? disable("%dark")
           : theme === "dark"
@@ -66,66 +80,45 @@ export default function App() {
             : undefined,
       )}
     >
-      <main
-        style={mergeStyles(
-          {
-            background: "#f8fafc",
-            color: "#0f172a",
-            colorScheme: "light",
-            padding: 32,
-            minHeight: 520,
-            boxSizing: "border-box",
-            fontFamily: "system-ui, sans-serif",
-            lineHeight: 1.5,
-          },
-          on("%dark", {
-            background: "#0f172a",
-            color: "#f8fafc",
-            colorScheme: "dark",
-          }),
-          invertDark,
-        )}
-      >
-        <label>
-          Page theme:{" "}
-          <select
-            value={theme}
-            onChange={event =>
-              setTheme(
-                event.currentTarget.value as
-                  "system" | "light" | "dark",
-              )
-            }
-            style={mergeStyles(
-              {
-                borderWidth: "1px",
-                borderStyle: "solid",
-                borderColor: "#cbd5e1",
-                borderRadius: 8,
-                padding: "8px 10px",
-                background: "#fff",
-                color: "#0f172a",
-                font: "inherit",
-              },
-              on("%dark", {
-                borderColor: "#475569",
-                background: "#1e293b",
-                color: "#f8fafc",
-              }),
-            )}
-          >
-            <option value="system">System</option>
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-          </select>
-        </label>
-        <h1 style={{ fontSize: 24 }}>Page theme</h1>
-        <ContrastPanel>
-          <div style={{ marginTop: 16 }}>
-            <ContrastPanel />
-          </div>
-        </ContrastPanel>
-      </main>
-    </div>
+      <label>
+        Page theme:{" "}
+        <select
+          value={theme}
+          onChange={event =>
+            setTheme(
+              event.currentTarget.value as
+                "system" | "light" | "dark",
+            )
+          }
+          style={mergeStyles(
+            {
+              borderWidth: "1px",
+              borderStyle: "solid",
+              borderColor: "#cbd5e1",
+              borderRadius: 8,
+              padding: "8px 10px",
+              background: "#fff",
+              color: "#0f172a",
+              font: "inherit",
+            },
+            on("%dark", {
+              borderColor: "#475569",
+              background: "#1e293b",
+              color: "#f8fafc",
+            }),
+          )}
+        >
+          <option value="system">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </label>
+      <h1 style={{ fontSize: 24 }}>Page theme</h1>
+      <ContrastPanel>
+        <div style={{ marginTop: 16 }}>
+          <ContrastPanel />
+        </div>
+      </ContrastPanel>
+    </main>
   );
 }

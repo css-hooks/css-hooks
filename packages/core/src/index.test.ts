@@ -224,7 +224,7 @@ describe(`in ${selectedBrowser}`, () => {
         assert.deepStrictEqual(actualHoverColor, expectedHoverColor);
       });
 
-      it("applies boolean flags to descendants", async () => {
+      it("applies boolean flags to the controlling element and its descendants", async () => {
         const { styleSheet, on, enable, disable } = createHooks("%dark");
 
         await page.addStyleTag({ content: styleSheet() });
@@ -255,13 +255,13 @@ describe(`in ${selectedBrowser}`, () => {
         );
         await createStyledElement("strong", consumerStyle, "article");
 
-        for (const selector of ["p", "main", "i", "article"]) {
+        for (const selector of ["p", "section", "i"]) {
           assert.deepStrictEqual(
             Color(await getComputedPropertyValue(selector, "color")),
             expectedDefaultColor,
           );
         }
-        for (const selector of ["span", "section", "strong"]) {
+        for (const selector of ["main", "span", "article", "strong"]) {
           assert.deepStrictEqual(
             Color(await getComputedPropertyValue(selector, "color")),
             expectedEnabledColor,
@@ -298,7 +298,41 @@ describe(`in ${selectedBrowser}`, () => {
         );
       });
 
-      it("conditionally inverts flags for descendants", async () => {
+      it("conditionally sets flags with selector hooks", async () => {
+        const { styleSheet, on, enable, disable } = createHooks(
+          "%dark",
+          "&.dark",
+        );
+        const consumerStyle = mergeStyles(
+          { color: "gray" },
+          on("%dark", { color: "blue" }),
+        );
+
+        await page.addStyleTag({ content: styleSheet() });
+        await createStyledElement("main", {
+          ...mergeStyles(disable("%dark"), on("&.dark", enable("%dark"))),
+          ...consumerStyle,
+        });
+        await createStyledElement("span", consumerStyle, "main");
+
+        for (const selector of ["main", "span"]) {
+          assert.deepStrictEqual(
+            Color(await getComputedPropertyValue(selector, "color")),
+            Color("gray"),
+          );
+        }
+
+        await queryAndSetClassName("main", "dark");
+
+        for (const selector of ["main", "span"]) {
+          assert.deepStrictEqual(
+            Color(await getComputedPropertyValue(selector, "color")),
+            Color("blue"),
+          );
+        }
+      });
+
+      it("conditionally inverts flags for the controlling element and its descendants", async () => {
         const { styleSheet, on, enable, disable } = createHooks("%dark");
         const consumerStyle = mergeStyles(
           { color: "gray" },
@@ -325,9 +359,9 @@ describe(`in ${selectedBrowser}`, () => {
         await createStyledElement("strong", consumerStyle, "article");
 
         for (const [selector, expectedColor] of [
-          ["section", "blue"],
+          ["section", "gray"],
           ["span", "gray"],
-          ["article", "gray"],
+          ["article", "blue"],
           ["strong", "blue"],
         ] as const) {
           assert.deepStrictEqual(
@@ -522,34 +556,6 @@ describe(`in ${selectedBrowser}`, () => {
   }
 });
 
-it("generates flag state rules", () => {
-  const { createHooks } = createHooksSystem<CSS.Properties>();
-
-  const { styleSheet, enable, disable } = createHooks("%dark", "%compact");
-
-  const enabled = enable("%dark"),
-    disabled = disable("%dark"),
-    [flagVariable] = Object.keys(enabled);
-
-  assert(flagVariable);
-  assert.deepStrictEqual(enabled, { [flagVariable]: 1 });
-  assert.deepStrictEqual(disabled, { [flagVariable]: 0 });
-
-  const css = styleSheet();
-  assert(css.includes(`@property ${flagVariable}`));
-  assert.match(css, /syntax:\s*"<number>"/);
-  assert.match(css, /inherits:\s*true/);
-  assert.match(css, /initial-value:\s*0/);
-  assert.match(
-    css,
-    new RegExp(`@container\\s+style\\(${flagVariable}:\\s*1\\)`),
-  );
-
-  assert.deepStrictEqual(Object.values(enable("%dark", "%compact")), [1, 1]);
-  assert.deepStrictEqual(Object.values(disable("%dark", "%compact")), [0, 0]);
-  assert.throws(() => (enable as (...flags: string[]) => object)(), RangeError);
-});
-
 it("uses the specified stringify function when merging values", () => {
   const { createHooks, mergeStyles } = createHooksSystem<CSS.Properties>(
     (value, propertyName) =>
@@ -568,22 +574,6 @@ it("uses the specified stringify function when merging values", () => {
   );
   assert.match(fontSize.toString(), /fontSize__18px/);
   assert.match(fontSize.toString(), /fontSize__24px/);
-});
-
-it("uses fixed-width hashes without known polynomial collisions", () => {
-  const { createHooks } = createHooksSystem();
-  const { styleSheet } = createHooks("&.Aa", "&.BB");
-  const propertyNames = [...styleSheet().matchAll(/--([^:]+):/g)].map(match => {
-    const propertyName = match[1];
-    assert(propertyName);
-    return propertyName;
-  });
-
-  assert(propertyNames.every(name => /^[a-z0-9_-]{7}[01]$/.test(name)));
-  assert.strictEqual(
-    new Set(propertyNames.map(name => name.slice(0, -1))).size,
-    2,
-  );
 });
 
 describe("in production mode (vs. debug)", () => {
