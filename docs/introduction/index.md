@@ -1,14 +1,17 @@
 ---
 title: Introduction
-description: How to use CSS selectors and at-rules inside the style prop
+description: CSS-powered conditional styling with inline style simplicity
 order: 1
 ---
 
 # Introduction
 
-CSS Hooks lets you use CSS selectors and at-rules with the `style` prop. Define
-the conditions your application needs once, then apply base styles and override
-styles directly in a component.
+CSS Hooks adds CSS-powered conditions to inline styles. It lets an element's
+`style` prop respond to user interaction, layout, browser capabilities,
+surrounding markup, and inherited state.
+
+Define shared conditions once; then build them into ordinary style objects. For
+example, this button provides visual feedback on hover and press:
 
 ```tsx
 <button
@@ -29,28 +32,66 @@ styles directly in a component.
 </button>
 ```
 
-The conditions in this example are ordinary CSS:
+The browser evaluates these conditions through CSS, without JavaScript event
+listeners, component state, or style injection.
 
-- Pseudo-classes such as `&:hover`, `&:focus-visible`, and `&:active`
-- Stateful and contextual selectors such as `:checked + &` and `.group:hover &`
-- At-rules such as `@media`, `@container`, `@supports`, and `@scope`
+## Why inline styles
 
-## The purpose of CSS Hooks
+Inline styles have several advantages over stylesheets:
 
-Typically most CSS in an application amounts to a declaration plus a condition,
-like a hover state, container query, or contextual selector. Those conditions
-filter declarations for the current element. CSS Hooks turns that filtering
-logic into hooks, so that the declarations can remain in the element's style
-object.
+- **Familiar, typed syntax.** Inline styles use standard CSS properties and
+  values as plain objects, so editors provide completion and type checking and
+  there is no new language or abstraction to learn.
+- **Local reasoning.** Declarations live with the element they style, so there
+  is no separate stylesheet to consult and no dead CSS left over after a design
+  change or refactor.
+- **Deterministic resolution.** Inline styles take precedence over stylesheet
+  rules and apply in the order you write them, so there are no specificity,
+  source-order, or cascade-layer surprises.
+- **Dynamic values.** Values can be computed from data or state directly.
+- **No build step.** Nothing needs to be compiled, extracted, or generated ahead
+  of time.
+- **No render-blocking request.** There is no separate stylesheet to download
+  before the element can render.
 
-CSS Hooks does not try to eliminate stylesheets completely. Instead, it can
-reduce them to a maintainable scale: Only the rulesets that must actually live
-in a stylesheet, such as keyframes, pseudo-elements, and rules targeting markup
-outside your control. CSS Hooks renders a small plumbing-only stylesheet once at
-the application root. Your components own their styles.
+The main gap is conditionality: The `style` prop cannot express states or
+context such as `&:hover`, container queries, or inherited state.
+
+## Why CSS Hooks
+
+CSS Hooks adds capabilities to inline styles while keeping their advantages.
+Compared with other styling approaches:
+
+- Does not inject styles at runtime, unlike typical CSS-in-JS solutions
+- Does not require a compiler or restrict styles to statically analyzable
+  values, unlike "zero runtime" CSS solutions
+- Keeps the familiar syntax of the `style` prop, unlike atomic or
+  "utility-first" CSS solutions
+
+Building on inline styles, CSS Hooks provides:
+
+- Conditional selector and at-rule logic
+- `and`, `or`, and `not` combinators that enable the expression of advanced
+  conditions through hook composition
+- CSS-driven interaction and responsive behavior without mirrored JavaScript
+  state
+- Predictable composition and fallback values through the `mergeStyles` function
+- Inheritable Boolean state for coordinating styles across a subtree
+
+Because conditions resolve through CSS, styles render on the server, including
+in server components, without hydration mismatches.
+
+## How it fits with CSS
+
+CSS Hooks cannot replace stylesheets entirely, but it can reduce them to a
+maintainable scale. You can reserve them for rules that must live there, such as
+keyframes, pseudo-elements, and rules that target markup outside your control.
+
+CSS Hooks itself renders one small stylesheet amounting to "plumbing code" for
+evaluating declared hooks. It does not create a ruleset for every component or
+inject styles as components render. Components render their own styles.
 
 ## Next steps
 
-Start with a [Quickstart](../quickstart/index.md) to create a new project, or
-use [Setup](../setup/index.md) when adding CSS Hooks to an existing or custom
-application.
+Follow the [Quickstart](../quickstart/index.md) for your framework or browser
+environment.

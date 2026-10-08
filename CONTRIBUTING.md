@@ -17,10 +17,31 @@ Propose documentation changes in a
 [pull request](https://github.com/css-hooks/css-hooks/compare) or
 [open an issue](https://github.com/css-hooks/css-hooks/issues/new?labels=documentation).
 
+### Writing style
+
+Follow the
+[MDN Web Docs writing style guide](https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Writing_style_guide),
+and treat it as the default for grammar, terminology, lists, headings, and
+cross-references.
+
+Use sentence case for headings and for cross-reference link text that matches
+the linked page title. Prefer the active voice and the imperative mood for
+instructions.
+
+Use consistent terminology throughout the documentation: declare hooks with
+`createHooks()`, define conditions with the `and`, `or`, and `not` combinators,
+and associate styles with `on`. Refer to callables by name, such as the `on`
+function or the `and` combinator, and reserve parentheses for actual
+invocations. Avoid "CSS-in-JS" and any implication that CSS Hooks generates
+code.
+
+Do not edit the generated API reference under `docs/api/` by hand. Update the
+source JSDoc and run `npm run docs`.
+
 ### Recipes
 
 Add recipes under `docs/recipes/<name>/` with an `index.mdx` document, an
-`App.tsx` example, and a `css.ts` hook registration. The website registers the
+`App.tsx` example, and a `css.ts` hook declaration. The website registers the
 recipe in the `docs/recipes/` index automatically; add `hidden: true` to its
 frontmatter so only the index appears in the documentation sidebar.
 

@@ -1,29 +1,37 @@
 ---
 title: Qwik
-description: Adding CSS Hooks to a new Qwik project
+description: Adding CSS Hooks to a Qwik project
 order: 4
 ---
 
 # Quickstart: Qwik
 
-## 1. Create the project
+This guide adds CSS Hooks to a new or existing Qwik project. The finished button
+shrinks while you press it. You need Node.js and npm. The final project uses
+Qwik v2.
+
+## 1. Create or open the project
+
+Create a Qwik app with Vite. If you already have a project, continue to step 2.
 
 ```bash
 npm create vite@latest css-hooks-playground -- --template qwik-ts
 cd css-hooks-playground
 ```
 
-## 2. Upgrade to Qwik v2
+## 2. Use Qwik v2
 
-The Vite `qwik-ts` template ships Qwik v1, which does not support Vite 8.
-Replace it with Qwik v2 and install CSS Hooks:
+The Vite `qwik-ts` template uses Qwik v1, which does not support Vite 8. If your
+project already uses Qwik v2, run `npm install @css-hooks/qwik@next` and
+continue to step 3. Otherwise, replace Qwik v1 with Qwik v2 and install CSS
+Hooks.
 
 ```bash
 npm uninstall @builder.io/qwik
 npm install @css-hooks/qwik@next @qwik.dev/core
 ```
 
-Then replace the Qwik v1 optimizer import:
+Replace the Qwik v1 optimizer import.
 
 ```diff
 // vite.config.ts
@@ -41,7 +49,7 @@ Then replace the Qwik v1 optimizer import:
  });
 ```
 
-Point `jsxImportSource` at Qwik v2:
+Set `jsxImportSource` to Qwik v2.
 
 ```diff
 // tsconfig.app.json
@@ -52,7 +60,7 @@ Point `jsxImportSource` at Qwik v2:
 
 ## 3. Define a hook
 
-Create a module for styling utilities:
+Create `src/css.ts` to export shared styling utilities.
 
 ```typescript
 // src/css.ts
@@ -63,9 +71,13 @@ export { mergeStyles };
 export const { on, styleSheet } = createHooks("&:active");
 ```
 
-## 4. Render the generated stylesheet
+`createHooks()` declares `&:active` and returns the `on` and `styleSheet`
+functions.
 
-Render `styleSheet()` once at the application root:
+## 4. Render the stylesheet
+
+Render `styleSheet()` once at the application root. The stylesheet evaluates the
+declared hook.
 
 ```tsx
 // src/main.tsx
@@ -88,7 +100,9 @@ render(
 
 ## 5. Apply an override style
 
-Use the registered `&:active` hook in a component:
+Use the declared `&:active` hook in a component. The `mergeStyles` function
+combines the base style with the active style, so the button shrinks while you
+press it.
 
 ```tsx
 // src/app.tsx
@@ -109,6 +123,7 @@ export const App = component$(() => (
 ));
 ```
 
-Run `npm run dev` to try it. Continue to
-[Configuration](../../configuration/index.md) to define more hooks, then see
-[Usage](../../usage/index.md) for composition patterns.
+If you created a Vite project, run `npm run dev` to view the result. Continue to
+[Hooks and conditions](../../hooks-and-conditions/index.md) to declare more
+hooks, then read [Applying styles](../../applying-styles/index.md) for
+composition patterns.

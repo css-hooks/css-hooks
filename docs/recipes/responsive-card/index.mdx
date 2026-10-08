@@ -14,16 +14,14 @@ export const recipeFiles = { "App.tsx": appSource, "css.ts": cssSource };
 
 # Responsive card
 
-Media queries are a great way to implement viewport-relative responsive behavior
-on a website. But in a web application context, it is usually better for a
-reusable component to respond to its surrounding context. For example, a card in
-a sidebar has less room than the same card in the main content area, even on a
-wide screen. Query its container instead of the viewport so the component adapts
-to the space it actually receives.
+A container query applies styles according to the size of a containing element
+rather than the viewport. This behavior lets a reusable component adapt to its
+available space. For example, the same card can use different layouts in a
+narrow sidebar and a wide content area.
 
-The card component demonstrated here implements this responsive design approach.
-Try adjusting the slider to change the width of the container. Notice that the
-content layout changes when you cross the 400px threshold.
+Move the slider to resize this example's query container. Below 400px, the card
+places its image before the content in a vertical layout. At 400px or wider, it
+places them side by side and adds more content padding.
 
 <Wide>
   <RecipeDemo files={recipeFiles} styleSheet={styleSheet()}>
@@ -33,32 +31,30 @@ content layout changes when you cross the 400px threshold.
 
 ## Query container
 
-`containerType: "inline-size"` turns the wrapper into a size query container on
-its inline axis (width). Its descendants can now test the available width, while
-its height remains driven by its content. That is all this horizontal breakpoint
-needs.
+`containerType: "inline-size"` makes the wrapper a size query container on its
+inline axis, which is width in this writing mode. Descendants can query that
+width while the content continues to determine the wrapper's height.
 
-The condition is unnamed, so the browser uses the nearest ancestor eligible for
-inline-size queries. This keeps the hook generic: The card can move between a
-sidebar, grid track, or dialog and respond to whichever local container provides
-its space.
+Because the query does not name a container, the browser uses the nearest
+ancestor that supports inline-size queries. The card can therefore move between
+a sidebar, grid track, or dialog and respond to its local container.
 
-> [!NOTE] The slider is only a control for the demo. It updates the wrapper's
-> width, then the browser reevaluates the container query. React never decides
-> whether the card should use its stacked or horizontal layout.
+> [!NOTE] The slider only controls the demo. It changes the wrapper's width, and
+> the browser reevaluates the container query. React does not choose the card's
+> stacked or horizontal layout.
 
 ## Container-relative styles
 
-The base styles stack the image and content. At widths of 400px and above,
+The base styles stack the image and content. At widths of 400px or wider,
 `on("@container (min-width: 400px)", ...)` changes the `<article>` element's
 flex direction, gives the image a fixed width, and increases the content
 padding. Each override only replaces the properties it declares; the rest of the
 base card remains unchanged.
 
-A container query measures an ancestor, not the element it styles. Keep the
-query-container wrapper outside the card; putting `containerType` on the card
-itself would not let it query its own width.
+A container query measures an ancestor, not the element it styles. The example
+therefore keeps the query container outside the card. Setting `containerType` on
+the card would not let the card query its own width.
 
-> [!NOTE] If the layout must instead follow a container farther up the tree, an
-> element inside that container can use its own query to enable an inherited
-> [flag](../../configuration/#flags) for the component subtree.
+> [!NOTE] To follow a container farther up the tree, an element inside that
+> container can use a query to enable an [inherited flag](../../flags/) for the
+> component subtree.

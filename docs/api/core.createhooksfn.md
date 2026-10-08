@@ -4,7 +4,7 @@
 
 ## CreateHooksFn type
 
-Represents the function used to define hooks and related configuration.
+Represents the function used to declare hooks and related configuration.
 
 **Signature:**
 
@@ -15,5 +15,5 @@ export type CreateHooksFn<CSSProperties> = <const ConfiguredHooks extends Hook[]
 
 ## Remarks
 
-When the registered hooks are known to include one or more `%<name>` values, the return type also exposes `enable()` and `disable()` functions restricted to those flags.
+When the declared hooks are known to include one or more `%<name>` values, the return type also exposes `enable` and `disable` functions restricted to those flags.
 

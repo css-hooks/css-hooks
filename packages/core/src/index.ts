@@ -5,7 +5,7 @@
  */
 
 /**
- * Represents the conditions under which a given hook or declaration applies.
+ * Represents a hook or combination of hooks that can activate declarations.
  *
  * @typeParam H - The basic hook type to enhance with boolean operations
  *
@@ -34,13 +34,13 @@ export type StringifyFn = (
 ) => string | null;
 
 /**
- * Represents a hook registered with `createHooks`.
+ * Represents a hook declared with `createHooks`.
  *
  * @remarks
  * Four forms are supported:
  *
- * 1. A selector hook, where `&` is used as a placeholder for the element to which
- *    the condition applies. The `&` character must appear somewhere.
+ * 1. A selector hook, where `&` is used as a placeholder for the element for which
+ *    the hook activates. The `&` character must appear somewhere.
  * 2. An at-rule hook beginning with `@media`, `@container`, `@supports`, or
  *    `@scope`, followed by a space. `@scope` requires an explicit scope root.
  * 3. The `@starting-style` at-rule hook with no additional parameters.
@@ -2282,7 +2282,7 @@ export type Hooks<ConfiguredHooks extends readonly Hook[], CSSProperties> = {
     not: C;
   };
 
-  /** Returns the style sheet required to support the configured hooks. */
+  /** Returns the stylesheet required to support the declared hooks. */
   styleSheet: () => string;
 } & (`%${string}` extends Flag<ConfiguredHooks>
   ? unknown
@@ -2309,21 +2309,21 @@ export type Hooks<ConfiguredHooks extends readonly Hook[], CSSProperties> = {
       });
 
 /**
- * Represents the function used to define hooks and related configuration.
+ * Represents the function used to declare hooks and related configuration.
  *
  * @remarks
- * When the registered hooks are known to include one or more `%<name>` values,
- * the return type also exposes `enable()` and `disable()` functions restricted
- * to those flags.
+ * When the declared hooks are known to include one or more `%<name>` values,
+ * the return type also exposes `enable` and `disable` functions restricted to
+ * those flags.
  *
  * @typeParam CSSProperties - The type of a style object, typically defined by
  *   an app framework (e.g., React's `CSSProperties` type)
- * @typeParam ConfiguredHooks - The tuple of hooks to create
+ * @typeParam ConfiguredHooks - The tuple of hooks to declare
  *
- * @param hooks - The hooks to create
+ * @param hooks - The hooks to declare
  *
  * @returns An object containing the functions needed to support and use the
- *   configured hooks
+ *   declared hooks
  *
  * @public
  */
@@ -2347,7 +2347,7 @@ export type HooksSystem<
   CSSProperties extends object,
   CSSPropertyConflicts extends object = object,
 > = {
-  /** Creates functions for the configured hooks. */
+  /** Creates functions for the declared hooks. */
   createHooks: CreateHooksFn<CSSProperties>;
 
   /** Merges style objects from left to right. */

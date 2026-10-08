@@ -4,7 +4,7 @@
 
 ## Condition type
 
-Represents the conditions under which a given hook or declaration applies.
+Represents a hook or combination of hooks that can activate declarations.
 
 **Signature:**
 

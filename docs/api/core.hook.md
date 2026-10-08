@@ -4,7 +4,7 @@
 
 ## Hook type
 
-Represents a hook registered with `createHooks`<!-- -->.
+Represents a hook declared with `createHooks`<!-- -->.
 
 **Signature:**
 
@@ -16,5 +16,5 @@ export type Hook = `${string}&${string}` | `@${"media" | "container" | "supports
 
 Four forms are supported:
 
-1. A selector hook, where `&` is used as a placeholder for the element to which the condition applies. The `&` character must appear somewhere. 2. An at-rule hook beginning with `@media`<!-- -->, `@container`<!-- -->, `@supports`<!-- -->, or `@scope`<!-- -->, followed by a space. `@scope` requires an explicit scope root. 3. The `@starting-style` at-rule hook with no additional parameters. 4. A named boolean flag hook beginning with `%`<!-- -->.
+1. A selector hook, where `&` is used as a placeholder for the element for which the hook activates. The `&` character must appear somewhere. 2. An at-rule hook beginning with `@media`<!-- -->, `@container`<!-- -->, `@supports`<!-- -->, or `@scope`<!-- -->, followed by a space. `@scope` requires an explicit scope root. 3. The `@starting-style` at-rule hook with no additional parameters. 4. A named boolean flag hook beginning with `%`<!-- -->.
 

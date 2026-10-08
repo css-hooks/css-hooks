@@ -14,12 +14,13 @@ export const recipeFiles = { "App.tsx": appSource, "css.ts": cssSource };
 
 # Disclosure state
 
-The `<details>` element already owns the interaction model for a disclosure: Its
-`<summary>` element works with a pointer or keyboard, and its open state is
-exposed to CSS through `:open`. Descendants can respond to that state without
-mirroring it in component state.
+A disclosure is a control that shows or hides related content. The `<details>`
+element provides this behavior natively: its `<summary>` element responds to
+pointer and keyboard input, and the `:open` pseudo-class exposes its state to
+CSS. Descendants can respond without copying the state into React.
 
-Open and close the questions below with a pointer or keyboard.
+Open and close a question with a pointer or keyboard. The border changes and the
+chevron rotates when the `<details>` element opens.
 
 <Wide>
   <RecipeDemo files={recipeFiles} styleSheet={styleSheet()}>
@@ -29,15 +30,14 @@ Open and close the questions below with a pointer or keyboard.
 
 ## Native open state
 
-The `&:open` hook activates when the `<details>` element is open, allowing style
-declarations to target that particular state. Similarly, the contextual
-`:open &` hook allows nested elements to change their styling as a function of
-the `<details>` element state. The browser remains the sole owner of that state.
+The `&:open` hook activates for an open `<details>` element. The contextual
+`:open &` hook activates for a descendant of an open element. The example uses
+these hooks to style the container, chevron, and answer while the browser
+remains the sole owner of the open state.
 
 ## Focus handling
 
-`outline: "none"` removes the `<summary>` element's default focus outline. The
-`:focus-visible &` hook restores an equivalent indicator on the chevron, so
-keyboard users still get a visible focus ring without the full-width outline.
-Focus styling only appears for keyboard interaction because `:focus-visible`
-ignores most pointer clicks.
+`outline: "none"` removes the default outline from the `<summary>` element. The
+`:focus-visible &` hook displays a replacement focus ring on the chevron, so
+keyboard users retain a visible indicator. Browsers generally match
+`:focus-visible` for keyboard focus but not for pointer focus.
