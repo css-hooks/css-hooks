@@ -1,7 +1,13 @@
 import type { ReactNode } from "react";
-import { useState } from "react";
 
-import { disable, enable, mergeStyles, on } from "./css";
+import {
+  and,
+  disable,
+  enable,
+  mergeStyles,
+  on,
+  or,
+} from "./css";
 
 const invertDark = mergeStyles(
   enable("%dark"),
@@ -51,10 +57,6 @@ function ContrastPanel({
 }
 
 export default function App() {
-  const [theme, setTheme] = useState<
-    "system" | "light" | "dark"
-  >("system");
-
   return (
     <main
       style={mergeStyles(
@@ -73,23 +75,19 @@ export default function App() {
           color: "#f8fafc",
           colorScheme: "dark",
         }),
-        theme === "light"
-          ? disable("%dark")
-          : theme === "dark"
-            ? enable("%dark")
-            : undefined,
+        disable("%dark"),
+        on(
+          or(
+            "&:has([value=dark]:checked)",
+            and("%dark", "&:has([value=system]:checked)"),
+          ),
+          enable("%dark"),
+        ),
       )}
     >
       <label>
         Page theme:{" "}
         <select
-          value={theme}
-          onChange={event =>
-            setTheme(
-              event.currentTarget.value as
-                "system" | "light" | "dark",
-            )
-          }
           style={mergeStyles(
             {
               borderWidth: "1px",
