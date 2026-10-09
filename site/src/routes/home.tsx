@@ -329,13 +329,12 @@ export default function Home({
                   headline: "Static stability, dynamic delivery",
                   body: (
                     <>
-                      This approach combines the modularity of runtime CSS-in-JS
-                      with the performance of static CSS. A tiny stylesheet
-                      added once at startup handles the plumbing, and CSS
-                      variable fallbacks handle the rest—ensuring that your
-                      styling payload stays proportional to your{" "}
-                      <strong>active UI</strong> instead of your{" "}
-                      <strong>entire application</strong>. All without the
+                      This approach combines component-local styles with the
+                      performance of static CSS. A tiny stylesheet added once at
+                      startup handles the plumbing, and CSS variable fallbacks
+                      handle the rest—ensuring that your styling payload stays
+                      proportional to your <strong>active UI</strong> instead of
+                      your <strong>entire application</strong>. All without the
                       overhead of client-side style injection.
                     </>
                   ),

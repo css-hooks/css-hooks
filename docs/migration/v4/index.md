@@ -10,20 +10,23 @@ hidden: true
 CSS Hooks v4 makes conditional styles serializable, removes the need for a
 third-party pipeline utility, and adds property conflict protection.
 
-For most applications, the upgrade is a mechanical replacement of the `pipe`
-function with `mergeStyles`; hook definitions and stylesheet setup remain
-unchanged. Some framework integration packages have updated compatibility
-requirements.
+This guide explains how to migrate a v3 application. Before you begin, identify
+every style pipeline, check your framework version, and determine whether your
+application imports `@css-hooks/core` directly. For most applications, replace
+`pipe` with `mergeStyles`. Hook definitions and stylesheet setup remain
+unchanged.
 
 Direct consumers of `@css-hooks/core` (advanced use cases) require minor updates
-to their usage of the setup API.
+to the setup API. After the migration, conditional styles will be serializable,
+and supported framework integrations will report property conflicts in
+TypeScript.
 
 ## Style pipelines
 
-To make styles serializable, `on` now returns a style object instead of a
-transform function, so it is no longer compatible with generic pipeline
-utilities. Instead, use `mergeStyles` for composition. Re-export it from your
-styling module alongside your configured hooks:
+In v4, `on` returns a style object instead of a transform function. This change
+makes conditional styles serializable, but they no longer work with generic
+pipeline utilities. Use `mergeStyles` for composition. Re-export it from your
+styling module with your configured hooks:
 
 ```typescript
 import { createHooks, mergeStyles } from "@css-hooks/react";
@@ -32,7 +35,10 @@ export { mergeStyles };
 export const { on, styleSheet } = createHooks(/* ... */);
 ```
 
-Then replace style pipelines with `mergeStyles`:
+This keeps framework imports in your styling module and gives components one
+module from which to import `mergeStyles` and `on`.
+
+Replace each CSS Hooks style pipeline with `mergeStyles`:
 
 ```diff
 -import { pipe } from "remeda";
@@ -41,21 +47,23 @@ Then replace style pipelines with `mergeStyles`:
 
 -style={pipe(
 +style={mergeStyles(
-  { color: "black" },
-  on("&:hover", { color: "blue" }),
-  externalStyle,
-)}
+   { color: "black" },
+   on("&:hover", { color: "blue" }),
+ )}
 ```
 
-Remove the pipeline dependency if it has no other uses, but leave unrelated
-pipelines unchanged.
+Keep the base style and conditional styles in the same order as the v3 pipeline.
+Unlike the v3 pipeline, `mergeStyles` also accepts ordinary style objects. Pass
+an external style object last when it should take precedence over the
+component's internal styles.
+
+Remove the pipeline dependency if it has no other uses.
 
 ## Core setup
 
-`buildHooksSystem` has been renamed to `createHooksSystem`. It now returns an
-object containing `createHooks` and `mergeStyles`, rather than returning
-`createHooks` directly. Destructure the functions your integration needs from
-the result:
+`buildHooksSystem` was renamed to `createHooksSystem`. It now returns an object
+containing `createHooks` and `mergeStyles`, rather than returning `createHooks`
+directly. Destructure the functions your integration needs from the result:
 
 ```diff
 -import { buildHooksSystem } from "@css-hooks/core";
@@ -67,62 +75,48 @@ the result:
 ```
 
 The returned `mergeStyles` function uses the same CSS properties type and value
-stringifier as `createHooks`.
+stringifier as `createHooks`. Use this returned function so both APIs share your
+integration's types and serialization behavior.
 
 ## Framework compatibility
 
 ### Preact
 
-`@css-hooks/preact` now supports Preact v11 and requires Preact v10.27.2 or
-later. Upgrade Preact before upgrading CSS Hooks if your app uses an earlier
+`@css-hooks/preact` supports Preact v11 and requires Preact v10.27.2 or later.
+Upgrade Preact before upgrading CSS Hooks if your application uses an earlier
 Preact v10 release.
 
 ### Solid
 
-`@css-hooks/solid` now targets Solid v2 through `@solidjs/web` instead of Solid
-v1 through `solid-js`. Migrate your app to Solid v2 before upgrading CSS Hooks.
-See the [Solid quickstart](../../quickstart/solid/index.md) for the package,
-Vite plugin, and TypeScript configuration changes.
+`@css-hooks/solid` targets Solid v2 through `@solidjs/web` instead of Solid v1
+through `solid-js`. Migrate your application to Solid v2 before upgrading CSS
+Hooks. See the [Solid quickstart](../../quickstart/solid/index.md) for the
+package, Vite plugin, and TypeScript configuration changes.
 
 ### Qwik
 
-`@css-hooks/qwik` now targets Qwik v2 through `@qwik.dev/core` instead of Qwik
-v1 through `@builder.io/qwik`. Migrate your app to Qwik v2 before upgrading CSS
-Hooks. See the [Qwik quickstart](../../quickstart/qwik/index.md) for the
+`@css-hooks/qwik` targets Qwik v2 through `@qwik.dev/core` instead of Qwik v1
+through `@builder.io/qwik`. Migrate your application to Qwik v2 before upgrading
+CSS Hooks. See the [Qwik quickstart](../../quickstart/qwik/index.md) for the
 package, optimizer import, and TypeScript configuration changes.
 
 ## Property conflict protection
 
-The React, Preact, Qwik, and Solid integrations now use TypeScript to prevent
-conflicting CSS declarations across base and override styles. For example, v3
-allowed a shorthand and one of its longhands to be mixed:
+v4 adds TypeScript protection against conflicting CSS declarations across base
+and override styles. In v3, mixing a shorthand with one of its longhands was
+allowed:
 
 ```typescript
 pipe({ margin: 0 }, on("&:hover", { marginTop: 8 }));
 ```
 
-This can produce unexpected results because the declarations can overwrite one
+This can produce unexpected results because the declarations overwrite one
 another. In v4, it is a type error. Use the same property for the base and
-override values instead:
+override values:
 
 ```typescript
 mergeStyles({ marginTop: 0 }, on("&:hover", { marginTop: 8 }));
 ```
 
-Protection includes shorthand and longhand properties, physical and logical
-equivalents, and aliases. Because some of these declarations only overlap in
-certain writing modes, the check is intentionally conservative; prefer using a
-consistent property throughout a `mergeStyles` call.
-
-TypeScript must retain the specific keys in each style object for accurate
-checking. If you explicitly annotate a reusable style with a broad framework
-type such as `CSSProperties`, use `satisfies` instead:
-
-```typescript
-const baseStyle = {
-  color: "black",
-} satisfies CSSProperties;
-```
-
-This protection is compile-time only. JavaScript users and custom integrations
-built directly with `@css-hooks/core` do not receive it automatically.
+For the conflicts the check detects and how to keep your styles compatible, see
+[Property conflicts](../../applying-styles/index.md#property-conflicts).

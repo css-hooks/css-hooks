@@ -52,7 +52,7 @@ Description
 
 </td><td>
 
-Represents the conditions under which a given hook or declaration applies.
+Represents a hook or combination of hooks that can activate declarations.
 
 
 </td></tr>
@@ -63,7 +63,7 @@ Represents the conditions under which a given hook or declaration applies.
 
 </td><td>
 
-Represents the function used to define hooks and related configuration.
+Represents the function used to declare hooks and related configuration.
 
 
 </td></tr>
@@ -74,7 +74,7 @@ Represents the function used to define hooks and related configuration.
 
 </td><td>
 
-Represents a hook registered with `createHooks`<!-- -->.
+Represents a hook declared with `createHooks`<!-- -->.
 
 
 </td></tr>

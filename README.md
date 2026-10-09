@@ -22,8 +22,8 @@
 
 Respond to user interaction, layout context, and inherited state. All
 CSS-driven. All without leaving the `style` prop. By exploiting the hidden
-programmability of CSS Variables, CSS Hooks delivers a flexible CSS-in-JS
-experience without runtime style injection or build steps.
+programmability of CSS Variables, CSS Hooks delivers flexible component-owned
+styling without runtime style injection or build steps.
 
 ## Feature highlights
 

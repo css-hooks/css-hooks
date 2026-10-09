@@ -1,22 +1,33 @@
 ---
 title: No framework
-description: Add CSS Hooks to a new vanilla TypeScript project.
+description: Add CSS Hooks to a vanilla TypeScript project
 order: 99
 ---
 
 # Quickstart: No framework
 
-## 1. Create the project
+This guide adds CSS Hooks to a new or existing vanilla TypeScript project. The
+finished button shrinks while you press it. You need Node.js and npm.
+
+## 1. Create or open the project
+
+Create a vanilla TypeScript app with Vite. If you already have a project,
+continue to step 2.
 
 ```bash
 npm create vite@latest css-hooks-playground -- --template vanilla-ts
 cd css-hooks-playground
+```
+
+## 2. Install CSS Hooks
+
+```bash
 npm install @css-hooks/core@next
 ```
 
-## 2. Define a hook
+## 3. Define a hook
 
-Create a module for styling utilities:
+Create `src/css.ts` to export shared styling utilities.
 
 ```typescript
 // src/css.ts
@@ -29,10 +40,14 @@ export { mergeStyles };
 export const { on, styleSheet } = createHooks("&:active");
 ```
 
-## 3. Render the generated stylesheet
+`createHooksSystem()` provides renderer-independent styling utilities.
+`createHooks()` declares `&:active` and returns the `on` and `styleSheet`
+functions.
 
-Add the generated stylesheet to the document once near the application entry
-point:
+## 4. Render the stylesheet
+
+Add the stylesheet to the document once near the application entry point. The
+stylesheet evaluates the declared hook.
 
 ```typescript
 // src/main.ts
@@ -44,11 +59,11 @@ style.textContent = styleSheet();
 document.head.append(style);
 ```
 
-## 4. Apply an override style
+## 5. Apply an override style
 
-The core package returns a style object, so convert it to an inline style string
-before applying it. This minimal example only supports the string values used
-below; use a renderer-appropriate serializer in an application.
+Convert the style object from the core package to an inline style string. This
+example only supports the string values in this example. In an application, use
+a serializer designed for your renderer.
 
 ```typescript
 // src/main.ts
@@ -71,6 +86,10 @@ document
   .setAttribute("style", styleObjectToString(buttonStyle));
 ```
 
-Run `npm run dev` to try it. Continue to
-[Configuration](../../configuration/index.md) to define more hooks, then see
-[Usage](../../usage/index.md) for composition patterns.
+The `mergeStyles` function combines the base style with the active style, so the
+button shrinks while you press it.
+
+If you created a Vite project, run `npm run dev` to view the result. Continue to
+[Hooks and conditions](../../hooks-and-conditions/index.md) to declare more
+hooks, then read [Applying styles](../../applying-styles/index.md) for
+composition patterns.

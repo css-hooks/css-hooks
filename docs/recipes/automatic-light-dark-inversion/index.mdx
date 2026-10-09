@@ -17,8 +17,8 @@ export const recipeFiles = { "App.tsx": appSource, "css.ts": cssSource };
 # Automatic light/dark inversion
 
 Light and dark modes let an application adapt to a user's preferred appearance.
-Similarly, a panel may need to adapt to its surrounding context by switching to
-the opposite mode in order to create visual contrast.
+A panel may also need to adapt to its surrounding context by switching to the
+opposite mode to create visual contrast.
 
 This `ContrastPanel` component demonstrates that approach. The page inherits
 your chosen theme for the site by default. Try selecting Light or Dark to
@@ -33,16 +33,14 @@ inner panel contrasts with the outer panel.
 
 ## Theme inheritance
 
-The `"%dark"` hook carries the theme as inherited boolean state.
-`enable("%dark")` and `disable("%dark")` set that state for an element's element
-and descendants, and `on("%dark", …)` applies style overrides when the flag is
-enabled.
+The `"%dark"` hook carries the theme as inherited Boolean state. The
+`enable("%dark")` and `disable("%dark")` functions set that state for an element
+and its descendants, and the `on("%dark", …)` function applies style overrides
+when the flag is enabled.
 
-Notice that the `ContrastPanel` component doesn't expose a `theme` prop or
-consume React Context. These aren't needed because an ancestor defines an
-initial state, and its descendants receive it through efficient CSS mechanisms.
-The initial state comes from an inherited flag or explicit user selection and is
-then passed down through a [flag](../../configuration/#flags).
+`ContrastPanel` does not expose a `theme` prop or consume React context. It does
+not need to: an ancestor defines the initial state, and descendants inherit it
+through CSS. See [Flags](../../flags/) for details.
 
 ## Inversion boundary
 
@@ -50,9 +48,9 @@ then passed down through a [flag](../../configuration/#flags).
 const invertDark = mergeStyles(enable("%dark"), on("%dark", disable("%dark")));
 ```
 
-An inversion boundary element switches dark mode on or off at each nesting
-level. When the boundary inherits an enabled dark-mode flag, it disables the
-flag for itself and its descendants. Otherwise, it enables the flag for them.
+An inversion boundary switches dark mode on or off at each nesting level. When
+the boundary inherits an enabled dark-mode flag, it disables the flag for itself
+and its descendants. Otherwise, it enables the flag for them.
 
 Passing `invertDark` to `mergeStyles` adds the boundary to a style. Each
 `ContrastPanel` applies it to contrast with its surrounding theme, so nested
