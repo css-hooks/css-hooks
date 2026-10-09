@@ -1,9 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "esm",
-    "declarationDir": "types"
+    "noEmit": true,
+    "jsx": "react",
+    "jsxFactory": "jsx"
   },
-  "include": ["src"]
+  "include": ["src", "test"]
 }
