@@ -484,55 +484,52 @@ export async function loader({ params }: Route.LoaderArgs) {
                   }),
                 )}
               >
-                {filename ? (
-                  <div
-                    style={mergeStyles(
-                      {
-                        marginBlockStart: -16,
-                        marginInlineStart: -24,
-                        marginBlockEnd: 16,
-                        borderBottomWidth: 1,
-                        borderBottomStyle: "solid",
-                        borderColor: gray(20),
-                        paddingBlock: 8,
-                        paddingInlineStart: 24,
-                        paddingInlineEnd: 8,
-                        background: gray(10),
-                        color: gray(60),
-                        fontFamily: monospace,
-                        fontSize: "0.875em",
-                        lineHeight: 1.5,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 16,
-                      },
-                      on(dark, {
-                        borderColor: gray(70),
-                        background: gray(80),
-                        color: gray(35),
-                      }),
-                    )}
-                  >
-                    <span>{filename}</span>
-                    <CopyCodeButton code={code} />
-                  </div>
-                ) : (
-                  <div
-                    style={{
-                      position: "relative",
-                      zIndex: 1,
+                <div
+                  style={mergeStyles(
+                    {
+                      marginBlockStart: -16,
+                      marginInlineStart: -24,
+                      marginBlockEnd: 16,
+                      borderBottomWidth: 1,
+                      borderBottomStyle: "solid",
+                      borderColor: gray(20),
+                      paddingBlock: 8,
+                      paddingInlineStart: 24,
+                      paddingInlineEnd: 8,
+                      background: gray(10),
+                      color: gray(60),
+                      fontFamily: monospace,
+                      fontSize: "0.875em",
+                      lineHeight: 1.5,
                       display: "flex",
-                      height: 0,
-                      transform: "translateY(-8px)",
-                    }}
-                  >
-                    <CopyCodeButton code={code} />
-                  </div>
-                )}
+                      alignItems: "center",
+                      gap: 16,
+                    },
+                    on(dark, {
+                      borderColor: gray(70),
+                      background: gray(80),
+                      color: gray(35),
+                    }),
+                    on("blockquote &", {
+                      marginInlineStart: -40,
+                      paddingInlineStart: 40,
+                    }),
+                  )}
+                >
+                  <span style={{ position: "sticky", left: 0 }}>
+                    {filename ??
+                      (match[1] === "bash"
+                        ? "shell"
+                        : match[1] === "tsx"
+                          ? "typescript"
+                          : match[1])}
+                  </span>
+                  <CopyCodeButton code={code} />
+                </div>
                 <SyntaxHighlighter
                   language={match[1]}
                   style={mergeStyles(
-                    {},
+                    { paddingInlineEnd: 24 },
                     on("blockquote &", { paddingInlineEnd: 40 }),
                   )}
                 >
@@ -649,6 +646,9 @@ export async function loader({ params }: Route.LoaderArgs) {
               on("blockquote &", {
                 marginInline: -16,
                 paddingInline: 40,
+              }),
+              on(and("blockquote &", "&:first-child"), {
+                marginBlockStart: 0,
               }),
               on("blockquote &:last-child", {
                 marginBlockEnd: 0,
