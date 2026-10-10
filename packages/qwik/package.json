@@ -7,8 +7,7 @@
     "@css-hooks/core": "4.0.0-next.64"
   },
   "devDependencies": {
-    "@qwik.dev/core": "^2.0.0-beta.30",
-    "remeda": "^2.45.0"
+    "@qwik.dev/core": "^2.0.0-beta.30"
   },
   "files": [
     "cjs",

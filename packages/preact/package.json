@@ -7,8 +7,7 @@
     "@css-hooks/core": "4.0.0-next.64"
   },
   "devDependencies": {
-    "preact": "^11.0.0-0",
-    "remeda": "^2.45.0"
+    "preact": "^11.0.0-0"
   },
   "files": [
     "cjs",

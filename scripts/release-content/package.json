@@ -8,7 +8,6 @@
     "test": "node --test"
   },
   "dependencies": {
-    "remeda": "^2.33.4",
     "valibot": "^1.2.0"
   }
 }
