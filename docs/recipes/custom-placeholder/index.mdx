@@ -1,0 +1,50 @@
+---
+title: Custom placeholder
+description:
+  Display an accessible physical label from an input's native placeholder state
+order: 2
+hidden: true
+---
+
+import App from "./App.tsx";
+import appSource from "./App.tsx?raw";
+import { styleSheet } from "./css.ts";
+import cssSource from "./css.ts?raw";
+
+export const recipeFiles = { "App.tsx": appSource, "css.ts": cssSource };
+
+# Custom placeholder
+
+The `:placeholder-shown` pseudo-class matches an input while it displays
+placeholder text. This example uses that state to move a visible `<label>`
+element instead of styling temporary text with the `::placeholder`
+pseudo-element. The label remains the input's accessible name in every state.
+
+Focus a field or enter a value to move its label to the input's top edge. Clear
+the field and move focus away to return the label to the placeholder position.
+
+<Wide>
+  <RecipeDemo files={recipeFiles} styleSheet={styleSheet()}>
+    <App />
+  </RecipeDemo>
+</Wide>
+
+## Placeholder state
+
+The `placeholder=" "` prop contains one space. It gives the browser a
+placeholder to track without displaying text. The empty field matches
+`:placeholder-shown`; a field with a value does not.
+
+The adjacent-sibling combinator (`+`) selects the `<span>` element immediately
+after the `<input>` element. The `and` combinator combines
+`:placeholder-shown + &` with `:not(:focus) + &`, so the text stays in the
+placeholder position only while the field is empty and unfocused. The `<input>`
+element controls its own focus border.
+
+## Accessible label
+
+The `<label>` element contains both the `<input>` element and its visible text,
+so the text provides a persistent accessible name. It remains available to
+assistive technology after the user enters a value, and selecting the label
+focuses the field. `pointerEvents: "none"` prevents the overlaid `<span>`
+element from intercepting pointer input.

@@ -1,117 +1,129 @@
 ---
 title: Qwik
-description: Get up and running with Qwik in a few simple steps.
+description: Adding CSS Hooks to a Qwik project
 order: 4
 ---
 
 # Quickstart: Qwik
 
-## 1. Initialize project
+This guide adds CSS Hooks to a new or existing Qwik project. The finished button
+shrinks while you press it. You need Node.js and npm. The final project uses
+Qwik v2.
+
+## 1. Create or open the project
+
+Create a Qwik app with Vite. If you already have a project, continue to step 2.
 
 ```bash
 npm create vite@latest css-hooks-playground -- --template qwik-ts
 cd css-hooks-playground
-npm install @css-hooks/qwik remeda
 ```
 
-## 2. Start dev server
+## 2. Use Qwik v2
+
+The Vite `qwik-ts` template uses Qwik v1, which does not support Vite 8. If your
+project already uses Qwik v2, run `npm install @css-hooks/qwik@next` and
+continue to step 3. Otherwise, replace Qwik v1 with Qwik v2 and install CSS
+Hooks.
 
 ```bash
-npm run dev
+npm uninstall @builder.io/qwik
+npm install @css-hooks/qwik@next @qwik.dev/core
 ```
 
-Visit http://localhost:5173 to view changes in real time.
+Replace the Qwik v1 optimizer import.
 
-## 3. Set up CSS Hooks
+```diff
+// vite.config.ts
 
-Create a `src/css.ts` module with the following contents:
+-import { qwikVite } from "@builder.io/qwik/optimizer";
++import { qwikVite } from "@qwik.dev/core/optimizer";
+ import { defineConfig } from "vite";
+
+ export default defineConfig({
+   plugins: [
+     qwikVite({
+       csr: true,
+     }),
+   ],
+ });
+```
+
+Set `jsxImportSource` to Qwik v2.
+
+```diff
+// tsconfig.app.json
+
+-    "jsxImportSource": "@builder.io/qwik",
++    "jsxImportSource": "@qwik.dev/core",
+```
+
+## 3. Define a hook
+
+Create `src/css.ts` to export shared styling utilities.
 
 ```typescript
-import { createHooks } from "@css-hooks/qwik";
+// src/css.ts
 
-export const { styleSheet, on } = createHooks("&:active");
+import { createHooks, mergeStyles } from "@css-hooks/qwik";
+
+export { mergeStyles };
+export const { on, styleSheet } = createHooks("&:active");
 ```
 
-## 4. Add style sheet
+`createHooks()` declares `&:active` and returns the `on` and `styleSheet`
+functions.
 
-Modify `src/main.tsx` to add the style sheet to the document:
+## 4. Render the stylesheet
 
-<!-- prettier-ignore-start -->
+Render `styleSheet()` once at the application root. The stylesheet evaluates the
+declared hook.
 
-```diff
- import '@builder.io/qwik/qwikloader.js'
+```tsx
+// src/main.tsx
 
- import { render } from '@builder.io/qwik'
- import { App } from './app.tsx'
- import './index.css'
-+import { styleSheet } from './css.ts'
+import "@qwik.dev/core/qwikloader.js";
 
--render(document.getElementById('app') as HTMLElement, <App />)
-+render(
-+  document.getElementById('app') as HTMLElement,
-+  <>
-+    <style dangerouslySetInnerHTML={styleSheet()} />
-+    <App />
-+  </>
-+)
+import { render } from "@qwik.dev/core";
+
+import { App } from "./app";
+import { styleSheet } from "./css";
+
+render(
+  document.getElementById("app")!,
+  <>
+    <style dangerouslySetInnerHTML={styleSheet()} />
+    <App />
+  </>,
+);
 ```
 
-<!-- prettier-ignore-end -->
+## 5. Apply an override style
 
-## 5. Add conditional style
+Use the declared `&:active` hook in a component. The `mergeStyles` function
+combines the base style with the active style, so the button shrinks while you
+press it.
 
-Use the configured `&:active` hook to implement an effect when the counter
-button is pressed:
+```tsx
+// src/app.tsx
 
-<!-- prettier-ignore-start -->
+import { component$ } from "@qwik.dev/core";
 
-```diff
- // src/app.tsx
+import { mergeStyles, on } from "./css";
 
- import { component$, useSignal } from '@builder.io/qwik'
-
- import qwikLogo from './assets/qwik.svg'
- import viteLogo from '/vite.svg'
- import './app.css'
-+import { on } from './css.ts'
-+import { pipe } from 'remeda'
-
- export const App = component$(() => {
-   const count = useSignal(0)
-
-   return (
-     <>
-       <div>
-         <a href="https://vitejs.dev" target="_blank">
-           <img src={viteLogo} className="logo" alt="Vite logo" />
-         </a>
-         <a href="https://qwik.builder.io" target="_blank">
-           <img src={qwikLogo} className="logo qwik" alt="Qwik logo" />
-         </a>
-       </div>
-       <h1>Vite + Qwik</h1>
-       <div className="card">
--        <button onClick$={() => count.value++}>count is {count.value}</button>
-+        <button
-+          onClick$={() => count.value++}
-+          style={pipe(
-+            {
-+              transition: "transform 75ms",
-+            },
-+            on("&:active", {
-+              transform: "scale(0.9)"
-+            })
-+          )}
-+        >
-           count is {count}
-         </button>
-       </div>
-       <p className="read-the-docs">
-         Click on the Vite and Qwik logos to learn more
-       </p>
-     </>
-   )
- })
+export const App = component$(() => (
+  <button
+    style={mergeStyles(
+      { transition: "transform 75ms" },
+      on("&:active", { transform: "scale(0.9)" }),
+    )}
+  >
+    Press me
+  </button>
+));
 ```
 
-<!-- prettier-ignore-end -->
+If you created a Vite project, run `npm run dev` to view the result. Continue to
+[Hooks and conditions](../../hooks-and-conditions/index.md) to declare more
+hooks, then read [Applying styles](../../applying-styles/index.md) for
+composition patterns.

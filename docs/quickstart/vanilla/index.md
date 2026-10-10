@@ -1,146 +1,95 @@
 ---
 title: No framework
-description: Get up and running with vanilla JavaScript in a few simple steps.
+description: Add CSS Hooks to a vanilla TypeScript project
 order: 99
 ---
 
 # Quickstart: No framework
 
-## 1. Initialize project
+This guide adds CSS Hooks to a new or existing vanilla TypeScript project. The
+finished button shrinks while you press it. You need Node.js and npm.
+
+## 1. Create or open the project
+
+Create a vanilla TypeScript app with Vite. If you already have a project,
+continue to step 2.
 
 ```bash
 npm create vite@latest css-hooks-playground -- --template vanilla-ts
 cd css-hooks-playground
-npm install @css-hooks/core remeda
 ```
 
-## 2. Start dev server
+## 2. Install CSS Hooks
 
 ```bash
-npm run dev
+npm install @css-hooks/core@next
 ```
 
-Visit http://localhost:5173 to view changes in real time.
+## 3. Define a hook
 
-## 3. Set up CSS Hooks
-
-Create a `src/css.ts` module with the following contents:
+Create `src/css.ts` to export shared styling utilities.
 
 ```typescript
-import { buildHooksSystem } from "@css-hooks/core";
+// src/css.ts
 
-const createHooks = buildHooksSystem();
+import { createHooksSystem } from "@css-hooks/core";
 
-export const { styleSheet, on } = createHooks("&:active");
+const { createHooks, mergeStyles } = createHooksSystem();
 
-/**
- * Converts a style object to a string.
- *
- * @remarks
- * This functionality (or equivalent) would typically be bundled with an app framework.
- */
-export function styleObjectToString(obj: Record<string, unknown>) {
-  return Object.entries(obj)
-    .filter(
-      ([, value]) => typeof value === "string" || typeof value === "number",
-    )
-    .map(
-      ([property, value]) =>
-        `${/^--/.test(property) ? property : property.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`)}: ${value}`,
-    )
+export { mergeStyles };
+export const { on, styleSheet } = createHooks("&:active");
+```
+
+`createHooksSystem()` provides renderer-independent styling utilities.
+`createHooks()` declares `&:active` and returns the `on` and `styleSheet`
+functions.
+
+## 4. Render the stylesheet
+
+Add the stylesheet to the document once near the application entry point. The
+stylesheet evaluates the declared hook.
+
+```typescript
+// src/main.ts
+
+import { styleSheet } from "./css";
+
+const style = document.createElement("style");
+style.textContent = styleSheet();
+document.head.append(style);
+```
+
+## 5. Apply an override style
+
+Convert the style object from the core package to an inline style string. This
+example only supports the string values in this example. In an application, use
+a serializer designed for your renderer.
+
+```typescript
+// src/main.ts
+
+import { mergeStyles, on } from "./css";
+
+function styleObjectToString(style: Record<string, string>) {
+  return Object.entries(style)
+    .map(([property, value]) => `${property}: ${value}`)
     .join("; ");
 }
+
+const buttonStyle = mergeStyles(
+  { transition: "transform 75ms" },
+  on("&:active", { transform: "scale(0.9)" }),
+);
+
+document
+  .querySelector<HTMLButtonElement>("#button")!
+  .setAttribute("style", styleObjectToString(buttonStyle));
 ```
 
-## 4. Add style sheet
+The `mergeStyles` function combines the base style with the active style, so the
+button shrinks while you press it.
 
-Modify `src/main.ts` to add the style sheet to the document:
-
-<!-- prettier-ignore-start -->
-
-```diff
- import './style.css'
- import typescriptLogo from './typescript.svg'
- import viteLogo from '/vite.svg'
- import { setupCounter } from './counter.ts'
-+import { styleSheet } from './css.ts'
-
- document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-+  <style>${styleSheet()}</style>
-   <div>
-     <a href="https://vitejs.dev" target="_blank">
-       <img src="${viteLogo}" class="logo" alt="Vite logo" />
-     </a>
-     <a href="https://www.typescriptlang.org/" target="_blank">
-       <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-     </a>
-     <h1>Vite + TypeScript</h1>
-     <div class="card">
-       <button id="counter" type="button"></button>
-     </div>
-     <p class="read-the-docs">
-       Click on the Vite and TypeScript logos to learn more
-     </p>
-   </div>
- `
-
- setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
-```
-
-<!-- prettier-ignore-end -->
-
-## 5. Add conditional style
-
-Use the configured `&:active` hook to implement an effect when the counter
-button is pressed:
-
-<!-- prettier-ignore-start -->
-
-```diff
- // src/main.ts
-
- import './style.css'
- import typescriptLogo from './typescript.svg'
- import viteLogo from '/vite.svg'
- import { setupCounter } from './counter.ts'
--import { styleSheet } from './css.ts'
-+import { on, styleObjectToString, styleSheet } from './css.ts'
-+import { pipe } from 'remeda'
-
- document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-   <style>${styleSheet()}</style>
-   <div>
-     <a href="https://vitejs.dev" target="_blank">
-       <img src="${viteLogo}" class="logo" alt="Vite logo" />
-     </a>
-     <a href="https://www.typescriptlang.org/" target="_blank">
-       <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-     </a>
-     <h1>Vite + TypeScript</h1>
-     <div class="card">
--      <button id="counter" type="button"></button>
-+      <button
-+        id="counter"
-+        type="button"
-+        style="${styleObjectToString(
-+          pipe(
-+            {
-+              transition: 'transform 75ms',
-+            },
-+            on('&:active', {
-+              transform: 'scale(0.9)'
-+            })
-+          )
-+        )}">
-+      </button>
-     </div>
-     <p class="read-the-docs">
-       Click on the Vite and TypeScript logos to learn more
-     </p>
-   </div>
- `
-
- setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
-```
-
-<!-- prettier-ignore-end -->
+If you created a Vite project, run `npm run dev` to view the result. Continue to
+[Hooks and conditions](../../hooks-and-conditions/index.md) to declare more
+hooks, then read [Applying styles](../../applying-styles/index.md) for
+composition patterns.

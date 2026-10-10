@@ -1,7 +1,6 @@
 import type { CSSProperties, ReactElement } from "react";
-import { pipe } from "remeda";
 
-import { dark, intent, on, or } from "../css.ts";
+import { dark, intent, mergeStyles, on, or } from "../css.ts";
 import { gray, purple, white } from "../design/colors.ts";
 import { Slot } from "./slot.tsx";
 
@@ -12,7 +11,7 @@ export function HeaderUtility(props: {
   return (
     <Slot
       {...props}
-      style={pipe(
+      style={mergeStyles(
         {
           fontSize: "0.75em",
           position: "relative",
@@ -31,7 +30,7 @@ export function HeaderUtility(props: {
         }),
         on(
           dark,
-          pipe(
+          mergeStyles(
             {
               color: gray(60),
               outlineColor: purple(50),

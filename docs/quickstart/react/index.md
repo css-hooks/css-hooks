@@ -1,118 +1,93 @@
 ---
 title: React
-description: Get up and running with React in a few simple steps.
+description: Adding CSS Hooks to a React project
 order: 1
 ---
 
 # Quickstart: React
 
-## 1. Initialize project
+This guide adds CSS Hooks to a new or existing React project. The finished
+button shrinks while you press it. You need Node.js and npm.
+
+## 1. Create or open the project
+
+Create a React app with Vite. If you already have a project, continue to step 2.
 
 ```bash
 npm create vite@latest css-hooks-playground -- --template react-ts
 cd css-hooks-playground
-npm install @css-hooks/react remeda
 ```
 
-## 2. Start dev server
+## 2. Install CSS Hooks
 
 ```bash
-npm run dev
+npm install @css-hooks/react@next
 ```
 
-Visit http://localhost:5173 to view changes in real time.
+## 3. Define a hook
 
-## 3. Set up CSS Hooks
-
-Create a `src/css.ts` module with the following contents:
+Create `src/css.ts` to export shared styling utilities.
 
 ```typescript
-import { createHooks } from "@css-hooks/react";
+// src/css.ts
 
-export const { styleSheet, on } = createHooks("&:active");
+import { createHooks, mergeStyles } from "@css-hooks/react";
+
+export { mergeStyles };
+export const { on, styleSheet } = createHooks("&:active");
 ```
 
-## 4. Add style sheet
+`createHooks()` declares `&:active` and returns the `on` and `styleSheet`
+functions.
 
-Modify `src/main.tsx` to add the style sheet to the document:
+## 4. Render the stylesheet
 
-<!-- prettier-ignore-start -->
+Render `styleSheet()` once at the application root. The stylesheet evaluates the
+declared hook.
 
-```diff
- import React from 'react'
- import ReactDOM from 'react-dom/client'
- import App from './App.tsx'
- import './index.css'
-+import { styleSheet } from './css.ts'
+```tsx
+// src/main.tsx
 
- ReactDOM.createRoot(document.getElementById('root')!).render(
-   <React.StrictMode>
-+    <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-     <App />
-   </React.StrictMode>,
- )
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+
+import App from "./App";
+import { styleSheet } from "./css";
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
+    <App />
+  </StrictMode>,
+);
 ```
 
-<!-- prettier-ignore-end -->
+## 5. Apply an override style
 
-## 5. Add conditional style
+Use the declared `&:active` hook in a component. The `mergeStyles` function
+combines the base style with the active style, so the button shrinks while you
+press it.
 
-Use the configured `&:active` hook to implement an effect when the counter
-button is pressed:
+```tsx
+// src/App.tsx
 
-<!-- prettier-ignore-start -->
+import { mergeStyles, on } from "./css";
 
-```diff
- // src/App.tsx
-
- import { useState } from 'react'
- import reactLogo from './assets/react.svg'
- import viteLogo from '/vite.svg'
- import './App.css'
-+import { on } from './css.ts'
-+import { pipe } from 'remeda'
-
- function App() {
-   const [count, setCount] = useState(0)
-
-   return (
-     <>
-       <div>
-         <a href="https://vitejs.dev" target="_blank">
-           <img src={viteLogo} className="logo" alt="Vite logo" />
-         </a>
-         <a href="https://react.dev" target="_blank">
-           <img src={reactLogo} className="logo react" alt="React logo" />
-         </a>
-       </div>
-       <h1>Vite + React</h1>
-       <div className="card">
--        <button onClick={() => setCount((count) => count + 1)}>
-+        <button
-+          onClick={() => setCount((count) => count + 1)}
-+          style={pipe(
-+            {
-+              transition: "transform 75ms",
-+            },
-+            on("&:active", {
-+              transform: "scale(0.9)"
-+            })
-+          )}
-+        >
-           count is {count}
-         </button>
-         <p>
-           Edit <code>src/App.tsx</code> and save to test HMR
-         </p>
-       </div>
-       <p className="read-the-docs">
-         Click on the Vite and React logos to learn more
-       </p>
-     </>
-   )
- }
-
- export default App
+export default function App() {
+  return (
+    <button
+      style={mergeStyles(
+        { transition: "transform 75ms" },
+        on("&:active", { transform: "scale(0.9)" }),
+      )}
+    >
+      Press me
+    </button>
+  );
+}
 ```
 
-<!-- prettier-ignore-end -->
+If you created a Vite project, run `npm run dev` to view the result. Continue to
+[Hooks and conditions](../../hooks-and-conditions/index.md) to declare more
+hooks, then read [Applying styles](../../applying-styles/index.md) for
+composition patterns.

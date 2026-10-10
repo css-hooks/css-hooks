@@ -1,23 +1,33 @@
 import type { ComponentProps, CSSProperties, ReactNode, Ref } from "react";
-import { Children, cloneElement, createElement, isValidElement } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { prerenderToNodeStream } from "react-dom/static";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
-import { pipe } from "remeda";
 import slug from "slug";
 
 import { AnchorLink } from "../components/anchor-link.tsx";
-import { EditIcon, ExpandMoreIcon } from "../components/icons.tsx";
+import {
+  CheckIcon,
+  ContentCopyIcon,
+  EditIcon,
+  ExpandMoreIcon,
+} from "../components/icons.tsx";
+import { MarkdownBlockquote } from "../components/markdown-blockquote.tsx";
 import { NavLink } from "../components/nav-link.tsx";
 import { Preformatted } from "../components/preformatted.tsx";
+import { RecipeDemo } from "../components/recipe-demo.tsx";
+import { RecipeIndex } from "../components/recipe-index.tsx";
+import { ScreenReaderOnly } from "../components/screen-reader-only.tsx";
 import { SyntaxHighlighter } from "../components/syntax-highlighter.tsx";
-import { and, dark, extractClassName, hover, not, on, or } from "../css.ts";
+import { Wide } from "../components/wide.tsx";
+import { and, dark, hover, mergeStyles, not, on, or } from "../css.ts";
 import { docs } from "../data/docs.ts";
 import { createMetaDescriptors } from "../data/meta.ts";
-import { blue, gray, orange, purple, teal, white } from "../design/colors.ts";
+import { blue, gray, purple, teal, white } from "../design/colors.ts";
+import { proseWidth, wideWidth } from "../design/layout.ts";
 import { monospace } from "../design/typography.ts";
-import { rehypeClassName, rehypeStyle } from "../rehype.ts";
+import { extractFilename, rehypeClassName, rehypeStyle } from "../rehype.ts";
 import type { Route } from "./+types/doc.ts";
 
 type MenuItem = {
@@ -57,15 +67,17 @@ function MenuList({ children }: { children: ReactNode }) {
   return (
     <ol
       className="group"
-      style={pipe(
+      style={mergeStyles(
         {
           listStyleType: "none",
           margin: 0,
-          padding: 0,
+          paddingTop: 0,
+          paddingRight: 0,
+          paddingBottom: 0,
           paddingLeft: 0,
         },
         on(".group &.group", {
-          paddingLeft: "2em",
+          paddingLeft: 16,
         }),
       )}
     >
@@ -81,7 +93,7 @@ function MenuItem({
   level = 0,
 }: MenuItem & { level?: number }) {
   return (
-    <li style={{ marginTop: level === 0 ? "1em" : "0.4em" }}>
+    <li style={{ marginTop: level === 0 ? 16 : 8 }}>
       <NavLink
         to={pathname}
         end
@@ -125,7 +137,7 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6, style: CSSProperties) {
         children = (
           <>
             <span
-              style={pipe(
+              style={mergeStyles(
                 {
                   transform: "translateY(-22.5%)",
                   fontSize: "0.75em",
@@ -143,7 +155,7 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6, style: CSSProperties) {
                 }),
               )}
             >
-              <span style={{ fontSize: "0.666em", lineHeight: "1.5em" }}>
+              <span style={{ fontSize: "0.666em", lineHeight: 1.5 }}>
                 {step}
               </span>
             </span>
@@ -176,11 +188,14 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6, style: CSSProperties) {
     return (
       <Tag
         className="group"
-        style={{
-          lineHeight: 1.25,
-          ...style,
-          ...styleProp,
-        }}
+        style={mergeStyles(
+          {
+            lineHeight: 1.25,
+            ...style,
+            ...styleProp,
+          },
+          on("&:first-child", { marginBlockStart: 0 }),
+        )}
         {...restProps}
       >
         <span
@@ -200,7 +215,7 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6, style: CSSProperties) {
           }}
         >
           <div
-            style={pipe(
+            style={mergeStyles(
               {
                 visibility: "hidden",
                 width: "0.5em",
@@ -233,6 +248,82 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6, style: CSSProperties) {
   return component;
 }
 
+function CopyCodeButton({ code }: { code: string }) {
+  return (
+    <button
+      type="button"
+      data-copy-code={code}
+      aria-label="Copy code"
+      title="Copy code"
+      style={mergeStyles(
+        {
+          position: "sticky",
+          right: -16,
+          zIndex: 1,
+          marginLeft: "auto",
+          boxSizing: "border-box",
+          display: "inline-grid",
+          placeItems: "center",
+          width: 28,
+          height: 28,
+          padding: 4,
+          border: 0,
+          borderRadius: 4,
+          background: "transparent",
+          color: gray(60),
+          cursor: "pointer",
+          fontSize: 16,
+          lineHeight: 1,
+          outlineWidth: 0,
+          outlineStyle: "solid",
+          outlineColor: purple(20),
+          outlineOffset: 2,
+        },
+        on(hover, {
+          background: gray(15),
+          color: gray(75),
+        }),
+        on("&:active", {
+          background: gray(20),
+          color: gray(85),
+        }),
+        on(dark, {
+          color: gray(35),
+          outlineColor: purple(50),
+        }),
+        on(and(dark, hover), {
+          background: gray(75),
+          color: gray(15),
+        }),
+        on(and(dark, "&:active"), {
+          background: gray(70),
+          color: white,
+        }),
+        on("&:focus-visible", {
+          outlineWidth: 2,
+        }),
+      )}
+    >
+      <span data-copy-icon style={{ gridArea: "1 / 1" }}>
+        <ContentCopyIcon />
+      </span>
+      <span data-copied-icon hidden style={{ gridArea: "1 / 1" }}>
+        <CheckIcon />
+      </span>
+    </button>
+  );
+}
+
+async function prerender(node: ReactNode) {
+  const { prelude: stream } = await prerenderToNodeStream(node);
+  return await new Promise<string>((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    stream.on("data", chunk => chunks.push(Buffer.from(chunk)));
+    stream.on("error", reject);
+    stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+  });
+}
+
 export async function loader({ params }: Route.LoaderArgs) {
   const pathname = `/docs/${params["*"]}`;
   const doc = docs.find(
@@ -248,7 +339,45 @@ export async function loader({ params }: Route.LoaderArgs) {
     });
   }
 
-  const { prelude: stream } = await prerenderToNodeStream(
+  if (doc.component) {
+    const { component: _component, loadMdx, ...data } = doc;
+    const { recipeFiles = {} } = (await loadMdx?.()) ?? {};
+    const highlightedFiles = Object.fromEntries(
+      await Promise.all(
+        Object.entries(recipeFiles).map(async ([filename, code]) => [
+          filename,
+          await prerender(
+            <SyntaxHighlighter
+              language={filename.endsWith(".tsx") ? "tsx" : "typescript"}
+            >
+              {code}
+            </SyntaxHighlighter>,
+          ),
+        ]),
+      ),
+    );
+    const highlightedCode = Object.fromEntries(
+      await Promise.all(
+        [
+          ...doc.body.matchAll(/^```([\w-]+)[^\n]*\n([\s\S]*?)\n```[ \t]*$/gm),
+        ].map(async ([, language = "text", code = ""]) => [
+          `${language}\0${code}`,
+          await prerender(
+            <SyntaxHighlighter language={language}>{code}</SyntaxHighlighter>,
+          ),
+        ]),
+      ),
+    );
+    return {
+      ...data,
+      body: "",
+      mdx: true,
+      highlightedFiles,
+      highlightedCode,
+    };
+  }
+
+  const body = await prerender(
     <Markdown
       rehypePlugins={[
         rehypeRaw,
@@ -256,7 +385,7 @@ export async function loader({ params }: Route.LoaderArgs) {
         [
           rehypeStyle,
           {
-            table: pipe(
+            table: mergeStyles(
               {
                 borderStyle: "solid",
                 borderWidth: 1,
@@ -269,12 +398,12 @@ export async function loader({ params }: Route.LoaderArgs) {
               }),
             ),
             tablecell: () =>
-              pipe(
+              mergeStyles(
                 {
                   borderWidth: 1,
                   borderColor: "inherit",
                   borderStyle: "solid",
-                  padding: "calc(0.375em - 0.5px) 0.75em",
+                  padding: "calc(6px - 0.5px) 12px",
                 },
                 on(not(or(dark, ".group:nth-child(even) &")), {
                   background: white,
@@ -289,7 +418,7 @@ export async function loader({ params }: Route.LoaderArgs) {
                   background: gray(85),
                 }),
               ),
-            tr: pipe(
+            tr: mergeStyles(
               {
                 borderColor: gray(20),
               },
@@ -319,6 +448,9 @@ export async function loader({ params }: Route.LoaderArgs) {
                 ? doc.attributes.pathname
                 : doc.attributes.pathname.replace(/\/[^/]+\/$/, "/"),
             );
+          if (to.endsWith(".csspropertyconflicts/")) {
+            return <>{children}</>;
+          }
           return (
             <AnchorLink
               href={to}
@@ -330,168 +462,92 @@ export async function loader({ params }: Route.LoaderArgs) {
             </AnchorLink>
           );
         },
-        blockquote: ({
-          children: childrenProp,
-          style,
-          node: _node,
-          ...restProps
-        }) => {
-          const note = "&.a";
-          const warning = "&.b";
-          const hasNote = `&:has(.${extractClassName(note)})` as const;
-          const hasWarning = `&:has(.${extractClassName(warning)})` as const;
-          const noteColor = purple;
-          const warningColor = orange;
-
-          const children = (function alertify(
-            alert,
-            node: ReactNode,
-          ): ReactNode {
-            if (isValidElement(node)) {
-              return cloneElement(
-                node,
-                {},
-                ...Children.map(
-                  node.props &&
-                    typeof node.props === "object" &&
-                    "children" in node.props
-                    ? node.props.children
-                    : [],
-                  child => {
-                    if (typeof child === "string") {
-                      const match = child.match(/^\s*\[!([A-Z]+)\]/);
-                      if (
-                        match &&
-                        (match[1] === "WARNING" || match[1] === "NOTE")
-                      ) {
-                        return (
-                          <>
-                            {alert(match[1])}
-                            {child.substring(match[0].length)}
-                          </>
-                        );
-                      }
-                    }
-                    return Children.map(child, x =>
-                      alertify(alert, x as ReactNode),
-                    );
-                  },
-                ),
-              );
-            }
-            return node;
-          })(
-            (type: "WARNING" | "NOTE") => (
-              <span style={{ display: "block" }}>
-                <strong
-                  className={extractClassName(
-                    type === "WARNING" ? warning : note,
-                  )}
-                  style={pipe(
-                    {
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.375em",
-                    },
-                    on(warning, {
-                      color: warningColor(50),
-                    }),
-                    on(note, {
-                      color: noteColor(50),
-                    }),
-                    on(and(dark, warning), {
-                      color: warningColor(40),
-                    }),
-                    on(and(dark, note), {
-                      color: noteColor(40),
-                    }),
-                  )}
-                >
-                  <svg
-                    viewBox="0 0 16 16"
-                    style={{
-                      minWidth: "1em",
-                      maxWidth: "1em",
-                      minHeight: "1em",
-                      maxHeight: "1em",
-                      transform: "translateY(-0.0625em)",
-                    }}
-                  >
-                    <path
-                      fill="currentColor"
-                      d={
-                        type === "WARNING"
-                          ? "M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0ZM9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0Z"
-                          : "M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"
-                      }
-                    />
-                  </svg>
-                  {`${type[0]}${type.substring(1).toLowerCase()}`}
-                </strong>
-              </span>
-            ),
-            createElement("div", { children: childrenProp }), // eslint-disable-line react/no-children-prop
-          );
-          return (
-            <blockquote
-              style={pipe(
-                {
-                  borderWidth: 0,
-                  borderLeftWidth: "8px",
-                  borderStyle: "solid",
-                  padding: "0.1px 1em",
-                  marginLeft: 0,
-                  marginRight: 0,
-                  marginBlock: "1.5rem",
-                  borderColor: gray(50),
-                  color: gray(70),
-                  background: white,
-                  ...style,
-                },
-                on(not(dark), {
-                  boxShadow: `inset 0 0 0 1px ${gray(20)}`,
-                }),
-                on(dark, {
-                  background: gray(85),
-                  color: gray(30),
-                }),
-                on(hasWarning, {
-                  borderColor: warningColor(40),
-                }),
-                on(hasNote, {
-                  borderColor: noteColor(40),
-                }),
-                on(and(dark, hasWarning), {
-                  borderColor: warningColor(61),
-                }),
-                on(and(dark, hasNote), {
-                  borderColor: noteColor(61),
-                }),
-              )}
-              {...restProps}
-            >
-              {children}
-            </blockquote>
-          );
-        },
+        blockquote: MarkdownBlockquote,
         code: props => {
           const { children, className, node: _node, ref, ...rest } = props;
           const match = /language-(\w+)/.exec(className || "");
-          return match?.[1] ? (
-            <div {...rest} ref={ref as Ref<HTMLDivElement> | undefined}>
-              <SyntaxHighlighter language={match?.[1]}>
-                {String(children).replace(/\n$/, "")}
-              </SyntaxHighlighter>
-            </div>
-          ) : (
+          if (match?.[1]) {
+            const { code, filename } = extractFilename(
+              String(children).replace(/\n$/, ""),
+            );
+            return (
+              <div
+                {...rest}
+                ref={ref as Ref<HTMLDivElement> | undefined}
+                style={mergeStyles(
+                  {
+                    width: "max-content",
+                    minWidth: "calc(100% + 24px)",
+                  },
+                  on("blockquote &", {
+                    minWidth: "100%",
+                  }),
+                )}
+              >
+                <div
+                  style={mergeStyles(
+                    {
+                      marginBlockStart: -16,
+                      marginInlineStart: -24,
+                      marginBlockEnd: 16,
+                      borderBottomWidth: 1,
+                      borderBottomStyle: "solid",
+                      borderColor: gray(20),
+                      paddingBlock: 8,
+                      paddingInlineStart: 24,
+                      paddingInlineEnd: 8,
+                      background: gray(10),
+                      color: gray(60),
+                      fontFamily: monospace,
+                      fontSize: "0.875em",
+                      lineHeight: 1.5,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 16,
+                    },
+                    on(dark, {
+                      borderColor: gray(70),
+                      background: gray(80),
+                      color: gray(35),
+                    }),
+                    on("blockquote &", {
+                      marginInlineStart: -40,
+                      paddingInlineStart: 40,
+                    }),
+                  )}
+                >
+                  <span style={{ position: "sticky", left: 0 }}>
+                    {filename ??
+                      (match[1] === "bash"
+                        ? "shell"
+                        : match[1] === "tsx"
+                          ? "typescript"
+                          : match[1])}
+                  </span>
+                  <CopyCodeButton code={code} />
+                </div>
+                <SyntaxHighlighter
+                  language={match[1]}
+                  style={mergeStyles(
+                    { paddingInlineEnd: 24 },
+                    on("blockquote &", { paddingInlineEnd: 40 }),
+                  )}
+                >
+                  {code}
+                </SyntaxHighlighter>
+              </div>
+            );
+          }
+          return (
             <code
               {...rest}
               className={className}
-              style={pipe(
+              style={mergeStyles(
                 {
                   color: teal(60),
                   font: "inherit",
                   fontFamily: monospace,
+                  wordSpacing: "-0.5ch",
                 },
                 on(dark, { color: teal(30) }),
               )}
@@ -501,40 +557,50 @@ export async function loader({ params }: Route.LoaderArgs) {
           );
         },
         h1: createHeading(1, {
-          fontSize: "3rem",
+          fontSize: "3em",
           fontWeight: 400,
-          marginBlock: "1.25rem",
+          marginBlockStart: 48,
+          marginBlockEnd: 16,
         }),
         h2: createHeading(2, {
-          fontSize: "2.2rem",
+          fontSize: "2em",
           fontWeight: 400,
-          marginBlock: "1.75rem",
+          marginBlockStart: 40,
+          marginBlockEnd: 12,
         }),
         h3: createHeading(3, {
-          fontSize: "1.8rem",
+          fontSize: "1.5em",
           fontWeight: 400,
-          marginBlock: "2rem",
+          lineHeight: 4 / 3,
+          marginBlockStart: 32,
+          marginBlockEnd: 8,
         }),
         h4: createHeading(4, {
-          fontSize: "1.4rem",
+          fontSize: "1.25em",
           fontWeight: 400,
-          marginBlock: "2.25rem",
+          lineHeight: 1.4,
+          marginBlockStart: 28,
+          marginBlockEnd: 8,
         }),
         h5: createHeading(5, {
-          fontSize: "1rem",
+          fontSize: "1em",
           fontWeight: 700,
-          marginBlock: "2.5rem",
+          marginBlockStart: 24,
+          marginBlockEnd: 8,
         }),
         h6: createHeading(6, {
-          fontSize: "0.75rem",
+          fontSize: "0.75em",
           fontWeight: 700,
-          marginBlock: "2.625rem",
+          lineHeight: 4 / 3,
+          marginBlockStart: 24,
+          marginBlockEnd: 8,
         }),
         hr: ({ style, ...restProps }) => (
           <hr
-            style={pipe(
+            style={mergeStyles(
               {
-                margin: "2rem 0",
+                marginBlock: 32,
+                marginInline: 0,
                 border: 0,
                 width: "100%",
                 height: 1,
@@ -550,13 +616,15 @@ export async function loader({ params }: Route.LoaderArgs) {
         ),
         p: ({ node: _node, style, ...restProps }) => (
           <p
-            style={pipe(
+            style={mergeStyles(
               {
-                margin: "1em 0",
+                marginBlock: 16,
+                marginInline: 0,
                 ...style,
               },
               on(or("th > &:only-child", "td > &:only-child"), {
-                margin: 0,
+                marginBlock: 0,
+                marginInline: 0,
               }),
             )}
             {...restProps}
@@ -564,14 +632,28 @@ export async function loader({ params }: Route.LoaderArgs) {
         ),
         pre: ({ children, node: _node, style, ...restProps }) => (
           <pre
-            style={pipe(
+            style={mergeStyles(
               {
-                padding: "1rem 1.5rem",
+                paddingBlockStart: 16,
+                paddingBlockEnd: 16,
+                paddingInline: 24,
                 background: white,
-                marginBlock: "1.5rem",
+                marginBlockStart: 24,
+                marginBlockEnd: 24,
                 overflow: "auto",
                 ...style,
               },
+              on("blockquote &", {
+                marginInline: -16,
+                paddingInline: 40,
+              }),
+              on(and("blockquote &", "&:first-child"), {
+                marginBlockStart: 0,
+              }),
+              on("blockquote &:last-child", {
+                marginBlockEnd: 0,
+                paddingBlockEnd: 40,
+              }),
               on(not(dark), {
                 boxShadow: `inset 0 0 0 1px ${gray(20)}`,
               }),
@@ -595,28 +677,101 @@ export async function loader({ params }: Route.LoaderArgs) {
     </Markdown>,
   );
 
-  const body = await new Promise<string>((resolve, reject) => {
-    const chunks: Buffer[] = [];
-    stream.on("data", chunk => chunks.push(Buffer.from(chunk)));
-    stream.on("error", err => reject(err));
-    stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
-  });
-
+  const { component: _component, loadMdx: _loadMdx, ...data } = doc;
   return {
-    ...doc,
+    ...data,
     body,
+    mdx: false as const,
   };
 }
 
-export const meta: Route.MetaFunction = createMetaDescriptors(({ data }) => ({
-  title: data.attributes.title,
-  description: data.attributes.description,
-}));
+export const meta: Route.MetaFunction = createMetaDescriptors(
+  ({ loaderData }) => ({
+    title: loaderData?.attributes.title,
+    description:
+      loaderData?.attributes.description ?? "Documentation for CSS Hooks.",
+  }),
+);
 
 export default function Doc({ loaderData: doc }: Route.ComponentProps) {
+  const proseRef = useRef<HTMLDivElement>(null);
+  const copyStatusRef = useRef<HTMLSpanElement>(null);
+  const MdxContent = docs.find(
+    source => source.attributes.pathname === doc.attributes.pathname,
+  )?.component;
+  const highlightedFiles = doc.mdx ? doc.highlightedFiles : {};
+  const highlightedCode = doc.mdx ? doc.highlightedCode : {};
+  const proseColumn = on(".prose > &:not(.wide)", {
+    maxWidth: proseWidth,
+    marginInline: "auto",
+  });
+
+  useEffect(() => {
+    const prose = proseRef.current;
+    if (!prose) return;
+
+    const resetTimers = new Map<HTMLButtonElement, number>();
+    const setButtonCopied = (button: HTMLButtonElement, copied: boolean) => {
+      const copyIcon = button.querySelector<HTMLElement>("[data-copy-icon]");
+      const copiedIcon =
+        button.querySelector<HTMLElement>("[data-copied-icon]");
+      if (copyIcon) copyIcon.hidden = copied;
+      if (copiedIcon) copiedIcon.hidden = !copied;
+    };
+    const resetButton = (button: HTMLButtonElement) => {
+      setButtonCopied(button, false);
+      resetTimers.delete(button);
+    };
+
+    const handleClick = (event: MouseEvent) => {
+      if (!(event.target instanceof Element)) return;
+      const button =
+        event.target.closest<HTMLButtonElement>("[data-copy-code]");
+      if (!button) return;
+
+      const code = button.dataset["copyCode"];
+      if (code === undefined) return;
+      if (copyStatusRef.current) copyStatusRef.current.textContent = "";
+      if (!navigator.clipboard) {
+        if (copyStatusRef.current) {
+          copyStatusRef.current.textContent = "Unable to copy code.";
+        }
+        return;
+      }
+
+      void navigator.clipboard.writeText(code).then(
+        () => {
+          const currentTimer = resetTimers.get(button);
+          if (currentTimer !== undefined) window.clearTimeout(currentTimer);
+
+          setButtonCopied(button, true);
+          if (copyStatusRef.current) {
+            copyStatusRef.current.textContent = "Code copied to clipboard.";
+          }
+
+          resetTimers.set(
+            button,
+            window.setTimeout(() => resetButton(button), 2000),
+          );
+        },
+        () => {
+          if (copyStatusRef.current) {
+            copyStatusRef.current.textContent = "Unable to copy code.";
+          }
+        },
+      );
+    };
+
+    prose.addEventListener("click", handleClick);
+    return () => {
+      prose.removeEventListener("click", handleClick);
+      resetTimers.forEach(timer => window.clearTimeout(timer));
+    };
+  }, []);
+
   return (
     <div
-      style={pipe(
+      style={mergeStyles(
         {
           flex: 1,
           display: "flex",
@@ -628,7 +783,7 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
       )}
     >
       <nav
-        style={pipe(
+        style={mergeStyles(
           {
             boxSizing: "border-box",
             borderStyle: "solid",
@@ -649,13 +804,15 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
         )}
       >
         <label
-          style={pipe(
+          style={mergeStyles(
             {
               display: "flex",
               alignItems: "center",
-              padding: "1rem 1.25rem",
-              gap: "0.25rem",
-              fontSize: "1.25rem",
+              paddingBlock: 16,
+              paddingInline: 20,
+              gap: 4,
+              fontSize: "1.25em",
+              lineHeight: 1.2,
               background: gray(12),
               color: gray(55),
               outlineWidth: 0,
@@ -702,7 +859,7 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
             }}
           />
           <div
-            style={pipe(
+            style={mergeStyles(
               {
                 display: "inline-flex",
               },
@@ -717,31 +874,33 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
           <span>Contents</span>
         </label>
         <div
-          style={pipe(
+          style={mergeStyles(
             {
-              marginTop: "0.5em",
+              marginTop: 8,
               paddingTop: 0,
-              paddingRight: "1.75rem",
-              paddingBottom: "1.75rem",
-              paddingLeft: "1.75rem",
+              paddingRight: 28,
+              paddingBottom: 28,
+              paddingLeft: 28,
             },
             on(not(or(":has(:checked) + &", "@media (width >= 44em)")), {
               display: "none",
             }),
             on("@media (width >= 44em)", {
               position: "fixed",
-              marginTop: "-0.5em",
-              paddingTop: "2rem",
-              paddingRight: "2rem",
-              paddingBottom: "2rem",
-              paddingLeft: "2rem",
+              marginTop: -8,
+              paddingTop: 32,
+              paddingRight: 32,
+              paddingBottom: 32,
+              paddingLeft: 32,
             }),
           )}
         >
           <MenuList>
             {menu(
               doc.attributes.pathname,
-              docs.filter(({ attributes: { order } }) => order >= 0),
+              docs.filter(
+                ({ attributes: { order, hidden } }) => order >= 0 && !hidden,
+              ),
             )
               .sort((a, b) =>
                 a.order < b.order ? -1 : a.order > b.order ? 1 : 0,
@@ -761,15 +920,16 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
         }}
       >
         <div
-          style={pipe(
+          style={mergeStyles(
             {
-              width: "calc(100% - 4rem)",
-              maxWidth: "88ch",
+              width: "calc(100% - 64px)",
+              maxWidth: wideWidth,
               margin: "auto",
-              padding: "1rem 0",
+              paddingBlock: 16,
+              paddingInline: 0,
             },
             on("@media (width >= 69em)", {
-              width: "calc(100% - 8rem)",
+              width: "calc(100% - 128px)",
             }),
           )}
         >
@@ -777,36 +937,163 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: "2rem",
+              gap: 32,
             }}
           >
-            <div
-              className="prose"
-              dangerouslySetInnerHTML={{ __html: doc.body }}
-            />
+            <div ref={proseRef}>
+              {MdxContent ? (
+                <Suspense fallback={<p>Loading recipe…</p>}>
+                  <div className="prose">
+                    <MdxContent
+                      components={{
+                        RecipeDemo: (
+                          props: Omit<
+                            ComponentProps<typeof RecipeDemo>,
+                            "highlightedFiles"
+                          >,
+                        ) => (
+                          <RecipeDemo
+                            {...props}
+                            highlightedFiles={highlightedFiles}
+                          />
+                        ),
+                        RecipeIndex,
+                        Wide,
+                        h1: createHeading(1, {
+                          fontSize: "3em",
+                          fontWeight: 400,
+                          marginBlockStart: 48,
+                          marginBlockEnd: 16,
+                          ...proseColumn,
+                        }),
+                        h2: createHeading(2, {
+                          fontSize: "2em",
+                          fontWeight: 400,
+                          marginBlockStart: 40,
+                          marginBlockEnd: 12,
+                          ...proseColumn,
+                        }),
+                        p: (props: ComponentProps<"p">) => (
+                          <p
+                            {...props}
+                            style={{ marginBlock: 16, ...proseColumn }}
+                          />
+                        ),
+                        ul: (props: ComponentProps<"ul">) => (
+                          <ul {...props} style={proseColumn} />
+                        ),
+                        ol: (props: ComponentProps<"ol">) => (
+                          <ol {...props} style={proseColumn} />
+                        ),
+                        a: (props: ComponentProps<"a">) => (
+                          <AnchorLink {...props} />
+                        ),
+                        blockquote: (props: ComponentProps<"blockquote">) => (
+                          <MarkdownBlockquote {...props} style={proseColumn} />
+                        ),
+                        pre: (props: ComponentProps<"pre">) => (
+                          <pre
+                            {...props}
+                            style={mergeStyles(
+                              {
+                                boxSizing: "border-box",
+                                marginBlock: 24,
+                                padding: "16px 24px",
+                                overflow: "auto",
+                                background: white,
+                                ...proseColumn,
+                              },
+                              on(not(dark), {
+                                boxShadow: `inset 0 0 0 1px ${gray(20)}`,
+                              }),
+                              on(dark, { background: gray(85) }),
+                            )}
+                          />
+                        ),
+                        code: ({
+                          children,
+                          className,
+                          ...props
+                        }: ComponentProps<"code">) => {
+                          const language = /language-(\w+)/.exec(
+                            className ?? "",
+                          )?.[1];
+                          const code = String(children).replace(/\n$/, "");
+                          return language ? (
+                            highlightedCode[`${language}\0${code}`] ? (
+                              <Preformatted
+                                as="div"
+                                dangerouslySetInnerHTML={{
+                                  __html:
+                                    highlightedCode[`${language}\0${code}`],
+                                }}
+                              />
+                            ) : (
+                              <Preformatted as="div">{code}</Preformatted>
+                            )
+                          ) : (
+                            <code
+                              {...props}
+                              className={className}
+                              style={mergeStyles(
+                                {
+                                  color: teal(60),
+                                  font: "inherit",
+                                  fontFamily: monospace,
+                                  wordSpacing: "-0.5ch",
+                                },
+                                on(dark, { color: teal(30) }),
+                              )}
+                            >
+                              {children}
+                            </code>
+                          );
+                        },
+                      }}
+                    />
+                  </div>
+                </Suspense>
+              ) : (
+                <div
+                  className="prose"
+                  style={{ maxWidth: proseWidth, marginInline: "auto" }}
+                  dangerouslySetInnerHTML={{ __html: doc.body }}
+                />
+              )}
+            </div>
+            <ScreenReaderOnly>
+              <span ref={copyStatusRef} aria-live="polite" />
+            </ScreenReaderOnly>
             {doc.attributes.editURL ? (
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "flex-start",
-                  gap: "1rem",
+                  gap: 16,
+                  width: "100%",
+                  maxWidth: proseWidth,
+                  marginInline: "auto",
                 }}
               >
-                <hr
-                  style={pipe(
-                    {
-                      margin: 0,
-                      border: 0,
-                      width: "100%",
-                      height: 1,
-                      background: gray(10),
-                    },
-                    on(dark, {
-                      background: gray(80),
-                    }),
-                  )}
-                />
+                {doc.attributes.disableFooterDivider ? (
+                  <></>
+                ) : (
+                  <hr
+                    style={mergeStyles(
+                      {
+                        margin: 0,
+                        border: 0,
+                        width: "100%",
+                        height: 1,
+                        background: gray(10),
+                      },
+                      on(dark, {
+                        background: gray(80),
+                      }),
+                    )}
+                  />
+                )}
                 <NavLink to={doc.attributes.editURL}>
                   <div
                     style={{
@@ -815,7 +1102,10 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
                       gap: "0.25em",
                     }}
                   >
-                    <span style={{ display: "inline-flex" }} aria-hidden="true">
+                    <span
+                      style={{ display: "inline-flex", lineHeight: 1 }}
+                      aria-hidden="true"
+                    >
                       <EditIcon />
                     </span>
                     <span>Suggest an edit</span>
@@ -827,7 +1117,7 @@ export default function Doc({ loaderData: doc }: Route.ComponentProps) {
             )}
           </div>
         </div>
-        <div style={{ height: "2rem" }} />
+        <div style={{ height: 32 }} />
       </main>
     </div>
   );

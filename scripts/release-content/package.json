@@ -1,0 +1,13 @@
+{
+  "name": "@scripts/release-content",
+  "version": "4.0.0-next.68",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node main.ts",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "valibot": "^1.2.0"
+  }
+}

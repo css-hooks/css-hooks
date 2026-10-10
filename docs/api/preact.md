@@ -26,7 +26,44 @@ Description
 
 </td><td>
 
-A [CreateHooksFn](./core.createhooksfn.md) configured to use Preact's `JSX.CSSProperties` type and logic for converting CSS values into strings.
+A hook factory configured to use Preact's `CSSProperties` type and logic for converting CSS values into strings
+
+
+</td></tr>
+<tr><td>
+
+[mergeStyles](./preact.mergestyles.md)
+
+
+</td><td>
+
+A style merger configured to use Preact's `CSSProperties` type.
+
+
+</td></tr>
+</tbody></table>
+
+## Type Aliases
+
+<table><thead><tr><th>
+
+Type Alias
+
+
+</th><th>
+
+Description
+
+
+</th></tr></thead>
+<tbody><tr><td>
+
+[CSSPropertyConflicts](./preact.csspropertyconflicts.md)
+
+
+</td><td>
+
+A map of conflicting CSS property names
 
 
 </td></tr>
