@@ -7,8 +7,7 @@
     "@css-hooks/core": "4.0.0-next.64"
   },
   "devDependencies": {
-    "@solidjs/web": "^2.0.0-rc.6",
-    "remeda": "^2.45.0"
+    "@solidjs/web": "^2.0.0-rc.6"
   },
   "files": [
     "cjs",

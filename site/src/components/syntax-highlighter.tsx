@@ -1,7 +1,6 @@
 import type { Element } from "hast";
 import type { CSSProperties } from "react";
 import { use } from "react";
-import { pipe } from "remeda";
 import type { ThemeRegistrationRaw } from "shiki";
 import { codeToHtml } from "shiki";
 
@@ -345,7 +344,7 @@ const mutateStyle =
     const styleAttr = el.properties["style"];
     const baseStyle: CSSProperties =
       typeof styleAttr === "string" ? parseStyle(styleAttr) : {};
-    el.properties["style"] = pipe(baseStyle, f, stringifyStyle);
+    el.properties["style"] = stringifyStyle(f(baseStyle));
   };
 
 export function SyntaxHighlighter({
