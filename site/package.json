@@ -5,12 +5,18 @@
   "type": "module",
   "scripts": {
     "build": "wireit",
-    "dev": "react-router dev",
+    "dev": "wireit",
     "prepare": "wireit"
   },
   "wireit": {
     "build": {
       "command": "tsc -b && NODE_ENV=production react-router build",
+      "dependencies": [
+        "../packages/react:build"
+      ]
+    },
+    "dev": {
+      "command": "react-router dev",
       "dependencies": [
         "../packages/react:build"
       ]

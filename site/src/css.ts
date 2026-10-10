@@ -47,6 +47,8 @@ export const { styleSheet, on, and, or, not, enable, disable } = createHooks(
   ":has(:checked) + &",
   "td > &:only-child",
   "th > &:only-child",
+  "blockquote &",
+  "blockquote &:last-child",
 
   ".prose > &:not(.wide)",
 

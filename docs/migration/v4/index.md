@@ -21,6 +21,29 @@ to the setup API. After the migration, conditional styles will be serializable,
 and supported framework integrations will report property conflicts in
 TypeScript.
 
+## Agent prompt
+
+Copy this prompt into a coding agent to perform the migration:
+
+> ```text
+> Migrate this project from CSS Hooks v3 to v4.
+>
+> Use this migration guide:
+> https://next.css-hooks.com/docs/migration/v4/
+>
+> In particular:
+>
+> - Find `pipe` or `pipeInto` calls that combine style objects with `on(...)` transforms, including reusable values later passed to a `style` prop. Replace those calls with `mergeStyles`, preserving argument order.
+> - Export `mergeStyles` from the project's styling module.
+> - Do not replace unrelated uses of `pipe` or remove a pipeline dependency that is still used.
+> - For direct `@css-hooks/core` usage, migrate `buildHooksSystem` to `createHooksSystem` and destructure the returned functions.
+> - Apply the framework compatibility requirements only when relevant.
+> - Resolve new property-conflict errors without changing intended styling behavior.
+> - Avoid unrelated refactoring or formatting.
+>
+> Inspect the entire project for affected usage. Update dependencies using the project's existing package manager, run its type checker and tests, and summarize any work that still requires manual review.
+> ```
+
 ## Style pipelines
 
 In v4, `on` returns a style object instead of a transform function. This change

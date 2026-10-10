@@ -12,3 +12,16 @@ export function normalizeInstallCommands(
       ),
   );
 }
+
+export function normalizeDocumentationUrls(
+  content: string,
+  channel: "latest" | "next",
+) {
+  const siteUrl =
+    channel === "next" ? "https://next.css-hooks.com" : "https://css-hooks.com";
+
+  return content.replace(
+    /https:\/\/(?:next\.)?css-hooks\.com(?=\/|$)/g,
+    siteUrl,
+  );
+}

@@ -1,7 +1,41 @@
 import assert from "node:assert";
 import { describe, it } from "node:test";
 
-import { normalizeInstallCommands } from "./normalize-install-commands.ts";
+import {
+  normalizeDocumentationUrls,
+  normalizeInstallCommands,
+} from "./normalize-content.ts";
+
+describe("normalizeDocumentationUrls", () => {
+  it("uses the stable site for the latest channel", () => {
+    assert.equal(
+      normalizeDocumentationUrls(
+        "See https://next.css-hooks.com/docs/migration/v4/.",
+        "latest",
+      ),
+      "See https://css-hooks.com/docs/migration/v4/.",
+    );
+  });
+
+  it("uses the preview site for the next channel", () => {
+    assert.equal(
+      normalizeDocumentationUrls(
+        "See https://css-hooks.com/docs/migration/v4/.",
+        "next",
+      ),
+      "See https://next.css-hooks.com/docs/migration/v4/.",
+    );
+  });
+
+  it("preserves unrelated URLs", () => {
+    const content = [
+      "https://github.com/css-hooks/css-hooks",
+      "https://css-hooks.com.example/docs/",
+    ].join("\n");
+
+    assert.equal(normalizeDocumentationUrls(content, "next"), content);
+  });
+});
 
 describe("normalizeInstallCommands", () => {
   it("removes next tags for the latest channel", () => {
