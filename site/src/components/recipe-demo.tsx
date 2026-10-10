@@ -4,6 +4,7 @@ import { useState } from "react";
 import { and, dark, hover, mergeStyles, on } from "../css.ts";
 import { gray, purple, white } from "../design/colors.ts";
 import { monospace } from "../design/typography.ts";
+import { CheckIcon, ContentCopyIcon } from "./icons.tsx";
 import { Preformatted } from "./preformatted.tsx";
 
 // Shared height so the preview and source panes line up in two-column mode.
@@ -109,13 +110,10 @@ export function RecipeDemo({
           )}
         >
           <div
-            role="tablist"
-            aria-label="Recipe files"
             style={mergeStyles(
               {
                 display: "flex",
                 flexShrink: 0,
-                overflowX: "auto",
                 borderBottomWidth: 1,
                 borderBottomStyle: "solid",
                 borderColor: gray(20),
@@ -127,96 +125,129 @@ export function RecipeDemo({
               }),
             )}
           >
-            {filenames.map(filename => {
-              const selected = filename === activeFile;
-              return (
-                <button
-                  key={filename}
-                  type="button"
-                  role="tab"
-                  aria-selected={selected}
-                  tabIndex={selected ? 0 : -1}
-                  onClick={() => setActiveFile(filename)}
-                  onKeyDown={event => {
-                    if (event.key === "ArrowLeft") selectAdjacentTab(event, -1);
-                    if (event.key === "ArrowRight") selectAdjacentTab(event, 1);
-                  }}
-                  style={mergeStyles(
-                    {
-                      border: 0,
-                      borderBottomWidth: 2,
-                      borderBottomStyle: "solid",
-                      borderBottomColor: selected ? purple(55) : "transparent",
-                      padding: "10px 16px 8px",
-                      background: "transparent",
-                      color: selected ? gray(90) : gray(60),
-                      fontFamily: monospace,
-                      fontSize: 14,
-                      cursor: "pointer",
-                    },
-                    on(hover, { color: gray(90) }),
-                    on(dark, { color: selected ? white : gray(35) }),
-                    on(and(dark, hover), { color: white }),
-                    on("&:focus-visible", {
-                      outlineWidth: 2,
-                      outlineStyle: "solid",
-                      outlineColor: purple(35),
-                      outlineOffset: -3,
-                    }),
-                  )}
-                >
-                  {filename}
-                </button>
-              );
-            })}
+            <div
+              role="tablist"
+              aria-label="Recipe files"
+              style={{
+                display: "flex",
+                minWidth: 0,
+                flex: 1,
+                overflowX: "auto",
+              }}
+            >
+              {filenames.map(filename => {
+                const selected = filename === activeFile;
+                return (
+                  <button
+                    key={filename}
+                    type="button"
+                    role="tab"
+                    aria-selected={selected}
+                    tabIndex={selected ? 0 : -1}
+                    onClick={() => setActiveFile(filename)}
+                    onKeyDown={event => {
+                      if (event.key === "ArrowLeft")
+                        selectAdjacentTab(event, -1);
+                      if (event.key === "ArrowRight")
+                        selectAdjacentTab(event, 1);
+                    }}
+                    style={mergeStyles(
+                      {
+                        border: 0,
+                        borderBottomWidth: 2,
+                        borderBottomStyle: "solid",
+                        borderBottomColor: selected
+                          ? purple(55)
+                          : "transparent",
+                        padding: "10px 16px 8px",
+                        background: "transparent",
+                        color: selected ? gray(90) : gray(60),
+                        fontFamily: monospace,
+                        fontSize: 14,
+                        cursor: "pointer",
+                      },
+                      on(hover, { color: gray(90) }),
+                      on(dark, { color: selected ? white : gray(35) }),
+                      on(and(dark, hover), { color: white }),
+                      on("&:focus-visible", {
+                        outlineWidth: 2,
+                        outlineStyle: "solid",
+                        outlineColor: purple(35),
+                        outlineOffset: -3,
+                      }),
+                    )}
+                  >
+                    {filename}
+                  </button>
+                );
+              })}
+            </div>
+            <button
+              type="button"
+              data-copy-code={code}
+              aria-label="Copy code"
+              title="Copy code"
+              style={mergeStyles(
+                {
+                  flexShrink: 0,
+                  alignSelf: "center",
+                  boxSizing: "border-box",
+                  display: "inline-grid",
+                  placeItems: "center",
+                  width: 28,
+                  height: 28,
+                  marginInline: 8,
+                  padding: 4,
+                  border: 0,
+                  borderRadius: 4,
+                  background: "transparent",
+                  color: gray(60),
+                  cursor: "pointer",
+                  fontSize: 16,
+                  lineHeight: 1,
+                  outlineWidth: 0,
+                  outlineStyle: "solid",
+                  outlineColor: purple(20),
+                  outlineOffset: 2,
+                },
+                on(hover, { background: gray(15), color: gray(75) }),
+                on("&:active", { background: gray(20), color: gray(85) }),
+                on(dark, {
+                  color: gray(35),
+                  outlineColor: purple(50),
+                }),
+                on(and(dark, hover), {
+                  background: gray(75),
+                  color: gray(15),
+                }),
+                on(and(dark, "&:active"), {
+                  background: gray(70),
+                  color: white,
+                }),
+                on("&:focus-visible", { outlineWidth: 2 }),
+              )}
+            >
+              <span data-copy-icon style={{ gridArea: "1 / 1" }}>
+                <ContentCopyIcon />
+              </span>
+              <span data-copied-icon hidden style={{ gridArea: "1 / 1" }}>
+                <CheckIcon />
+              </span>
+            </button>
           </div>
           <div
             role="tabpanel"
             aria-label={activeFile}
             style={mergeStyles(
-              { position: "relative", minHeight: 0 },
+              { minHeight: 0 },
               on("@container (width >= 1000px)", { flex: 1 }),
             )}
           >
-            <button
-              type="button"
-              onClick={() => {
-                void navigator.clipboard.writeText(code).catch(() => {});
-              }}
-              style={mergeStyles(
-                {
-                  position: "absolute",
-                  zIndex: 1,
-                  top: 12,
-                  right: 12,
-                  borderWidth: 1,
-                  borderStyle: "solid",
-                  borderColor: gray(25),
-                  borderRadius: 6,
-                  padding: "5px 9px",
-                  background: white,
-                  color: gray(65),
-                  font: "inherit",
-                  fontSize: 13,
-                  cursor: "pointer",
-                },
-                on(hover, { color: gray(90), background: gray(10) }),
-                on(dark, {
-                  borderColor: gray(65),
-                  background: gray(80),
-                  color: gray(30),
-                }),
-                on(and(dark, hover), { background: gray(75), color: white }),
-              )}
-            >
-              Copy
-            </button>
             <pre
               style={mergeStyles(
                 {
                   margin: 0,
                   padding: 20,
-                  paddingRight: 72,
                   maxHeight: 560,
                   overflow: "auto",
                 },
