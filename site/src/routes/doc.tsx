@@ -474,10 +474,15 @@ export async function loader({ params }: Route.LoaderArgs) {
               <div
                 {...rest}
                 ref={ref as Ref<HTMLDivElement> | undefined}
-                style={{
-                  width: "max-content",
-                  minWidth: "calc(100% + 24px)",
-                }}
+                style={mergeStyles(
+                  {
+                    width: "max-content",
+                    minWidth: "calc(100% + 24px)",
+                  },
+                  on("blockquote &", {
+                    minWidth: "100%",
+                  }),
+                )}
               >
                 {filename ? (
                   <div
@@ -524,7 +529,13 @@ export async function loader({ params }: Route.LoaderArgs) {
                     <CopyCodeButton code={code} />
                   </div>
                 )}
-                <SyntaxHighlighter language={match[1]}>
+                <SyntaxHighlighter
+                  language={match[1]}
+                  style={mergeStyles(
+                    {},
+                    on("blockquote &", { paddingInlineEnd: 40 }),
+                  )}
+                >
                   {code}
                 </SyntaxHighlighter>
               </div>
@@ -626,13 +637,23 @@ export async function loader({ params }: Route.LoaderArgs) {
           <pre
             style={mergeStyles(
               {
-                paddingBlock: 16,
+                paddingBlockStart: 16,
+                paddingBlockEnd: 16,
                 paddingInline: 24,
                 background: white,
-                marginBlock: 24,
+                marginBlockStart: 24,
+                marginBlockEnd: 24,
                 overflow: "auto",
                 ...style,
               },
+              on("blockquote &", {
+                marginInline: -16,
+                paddingInline: 40,
+              }),
+              on("blockquote &:last-child", {
+                marginBlockEnd: 0,
+                paddingBlockEnd: 40,
+              }),
               on(not(dark), {
                 boxShadow: `inset 0 0 0 1px ${gray(20)}`,
               }),

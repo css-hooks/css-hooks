@@ -6,7 +6,10 @@ import { promisify } from "node:util";
 
 import * as v from "valibot";
 
-import { normalizeInstallCommands } from "./normalize-install-commands.ts";
+import {
+  normalizeDocumentationUrls,
+  normalizeInstallCommands,
+} from "./normalize-content.ts";
 
 const exec = promisify(execCb);
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -167,7 +170,10 @@ async function main() {
     for await (const relativePath of fs.glob("**/*.md", { cwd: docsDir })) {
       const path = resolve(docsDir, relativePath);
       const content = await fs.readFile(path, "utf-8");
-      const normalizedContent = normalizeInstallCommands(content, channel);
+      const normalizedContent = normalizeDocumentationUrls(
+        normalizeInstallCommands(content, channel),
+        channel,
+      );
       if (normalizedContent !== content) {
         await fs.writeFile(path, normalizedContent, "utf-8");
       }
