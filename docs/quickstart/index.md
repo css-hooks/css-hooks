@@ -1,19 +1,21 @@
 ---
 title: Quickstart
-description: Get up and running in a few simple steps.
+description: Adding CSS Hooks to a new or existing project
 order: 2
 ---
 
 # Quickstart
 
-Welcome to CSS Hooks! In just a few steps, this Quickstart guide will help you
-take the simplest styling approach to the next level. To get started, choose
-your preferred framework below.
+Use these guides to add CSS Hooks to a new or existing project. Each example
+creates a button that shrinks while you press it. You need Node.js and npm.
 
-## 0. Choose framework
+Choose your framework or browser environment:
 
 - [React](./react/index.md)
 - [Preact](./preact/index.md)
 - [Solid](./solid/index.md)
 - [Qwik](./qwik/index.md)
 - [No framework](./vanilla/index.md)
+
+If your framework is not listed, start with [No framework](./vanilla/index.md).
+Adapt the style-object conversion to your renderer.

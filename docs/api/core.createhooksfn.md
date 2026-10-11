@@ -4,12 +4,16 @@
 
 ## CreateHooksFn type
 
-Represents the function used to define hooks and related configuration.
+Represents the function used to declare hooks and related configuration.
 
 **Signature:**
 
 ```typescript
-export type CreateHooksFn<CSSProperties> = <S extends Selector>(...selectors: S[]) => CreateHooksResult<S, CSSProperties>;
+export type CreateHooksFn<CSSProperties> = <const ConfiguredHooks extends Hook[]>(...hooks: ConfiguredHooks) => Hooks<ConfiguredHooks, CSSProperties>;
 ```
-**References:** [Selector](./core.selector.md)<!-- -->, [CreateHooksResult](./core.createhooksresult.md)
+**References:** [Hook](./core.hook.md)<!-- -->, [Hooks](./core.hooks.md)
+
+## Remarks
+
+When the declared hooks are known to include one or more `%<name>` values, the return type also exposes `enable` and `disable` functions restricted to those flags.
 

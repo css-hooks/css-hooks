@@ -1,0 +1,66 @@
+---
+title: Button interaction states
+description:
+  Combine hover, keyboard focus, active, and disabled states with accessible
+  defaults
+order: 1
+hidden: true
+---
+
+import App from "./App.tsx";
+import appSource from "./App.tsx?raw";
+import { styleSheet } from "./css.ts";
+import cssSource from "./css.ts?raw";
+
+export const recipeFiles = { "App.tsx": appSource, "css.ts": cssSource };
+
+# Button interaction states
+
+A `<button>` element should show when a pointer hovers over or presses it, when
+it has keyboard focus, and when it is disabled. This example uses selector hooks
+to style those native browser states without JavaScript event handlers.
+
+Hover over and press the button to see its pointer states. Use keyboard
+navigation to display the focus ring, and select **Disable button** to prevent
+interaction and apply disabled styling. If your system requests reduced motion,
+the button omits its transitions.
+
+<Wide>
+  <RecipeDemo files={recipeFiles} styleSheet={styleSheet()}>
+    <App />
+  </RecipeDemo>
+</Wide>
+
+## Hook composition
+
+The `and` function combines hooks into one condition. In this example,
+`and("@media (hover: hover)", "&:hover")` requires both a device that can
+conveniently hover and a hovered `<button>` element. This condition avoids a
+sticky hover effect when the primary input cannot hover. The separate
+`&:focus-visible` hook keeps the keyboard focus indicator independent of pointer
+capabilities.
+
+## Override precedence
+
+For a given property, the last matching override wins. The `&:active` override
+follows the hover override, so a pressed `<button>` element uses the active
+background. The `&:disabled` override follows both and resets the transform, so
+a disabled button retains its disabled appearance even if it also matches
+`&:hover`.
+
+An override only affects the properties it declares. The focus outline is a
+separate property, so `&:active` styling does not remove it.
+
+## Native state handling
+
+A pseudo-class selects an element in a particular state. Pseudo-classes such as
+`:hover`, `:focus-visible`, `:active`, and `:disabled` use state that the
+browser already tracks. They preserve expected pointer, keyboard, and disabled
+behavior without duplicating that state in React.
+
+## Style escape hatch
+
+`Button` passes its `style` prop to `mergeStyles` after its internal styles.
+Later declarations take precedence, so callers can replace properties from the
+base style or a hook. Use this escape hatch for layout or one-off customization,
+and expose it only when callers should be able to override internal styles.

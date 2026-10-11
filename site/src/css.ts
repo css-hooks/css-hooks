@@ -1,8 +1,10 @@
-import { createHooks } from "@css-hooks/react";
+import { createHooks, mergeStyles } from "@css-hooks/react";
 import type { CSSProperties } from "react";
 
-export const { styleSheet, on, and, or, not } = createHooks(
+export { mergeStyles };
+export const { styleSheet, on, and, or, not, enable, disable } = createHooks(
   "@supports (height: 100dvh)",
+  "@supports (animation-timeline: scroll())",
 
   "@media (width >= 44em)",
   "@media (width >= 69em)",
@@ -12,14 +14,15 @@ export const { styleSheet, on, and, or, not } = createHooks(
   "[data-theme='auto'] &",
   "[data-theme='dark'] &",
 
-  "@container (width < 50px)",
-  "@container (width < 100px)",
+  "@container (width >= 50px)",
   "@container (width >= 64ch)",
   "@container (width >= 112ch)",
   "@container (width >= 100px)",
+  "@container (width >= 1000px)",
 
   "&:active",
   "&:focus-visible",
+  "&:first-child",
   "&:has(*)",
   "&:has(:focus)",
   "&:has(:focus-visible)",
@@ -44,11 +47,23 @@ export const { styleSheet, on, and, or, not } = createHooks(
   ":has(:checked) + &",
   "td > &:only-child",
   "th > &:only-child",
+  "blockquote &",
+  "blockquote &:last-child",
+
+  ".prose > &:not(.wide)",
+
+  "%active",
+  "%dark",
 );
 
 export const dark = or(
   "[data-theme='dark'] &",
   and("[data-theme='auto'] &", "@media (prefers-color-scheme: dark)"),
+);
+
+export const darkFlag = mergeStyles(
+  disable("%dark"),
+  on(dark, enable("%dark")),
 );
 
 export const light = not(dark);
@@ -87,21 +102,6 @@ export function parseStyle(cssText: string): CSSProperties {
     style[camel] = value;
   }
   return style as CSSProperties;
-}
-
-export function merge(b: CSSProperties | undefined) {
-  return (a: CSSProperties) => {
-    if (!b) {
-      return a;
-    }
-    const style = JSON.parse(JSON.stringify(a)) as CSSProperties;
-    for (const key in b) {
-      const property = key as keyof CSSProperties;
-      delete style[property];
-      Object.assign(style, { [property]: b[property] });
-    }
-    return style;
-  };
 }
 
 type ExtractClassName<Selector extends string> =
