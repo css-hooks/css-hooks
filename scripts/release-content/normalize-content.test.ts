@@ -4,6 +4,7 @@ import { describe, it } from "node:test";
 import {
   normalizeDocumentationUrls,
   normalizeInstallCommands,
+  normalizeNextBranchWarning,
 } from "./normalize-content.ts";
 
 describe("normalizeDocumentationUrls", () => {
@@ -83,5 +84,23 @@ describe("normalizeInstallCommands", () => {
       ),
       "$ npm install @css-hooks/qwik@next # install the integration",
     );
+  });
+});
+
+describe("normalizeNextBranchWarning", () => {
+  const readme = "Badges\n\n---\n\n## Overview\n";
+
+  it("adds the warning to next branch content", () => {
+    const normalized = normalizeNextBranchWarning(readme, true);
+
+    assert.match(normalized, /> \[!WARNING\]/);
+    assert.match(normalized, /css-hooks\/css-hooks\/tree\/latest/);
+    assert.equal(normalizeNextBranchWarning(normalized, true), normalized);
+  });
+
+  it("removes the warning from other content", () => {
+    const nextReadme = normalizeNextBranchWarning(readme, true);
+
+    assert.equal(normalizeNextBranchWarning(nextReadme, false), readme);
   });
 });

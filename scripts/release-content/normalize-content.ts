@@ -25,3 +25,23 @@ export function normalizeDocumentationUrls(
     siteUrl,
   );
 }
+
+const nextBranchWarning = `<!-- next-branch-warning:start -->
+
+<!-- prettier-ignore -->
+> [!WARNING]
+> This is the **\`next\`** branch, tracking the upcoming release. For the latest stable code,
+> switch to the [\`latest\`](https://github.com/css-hooks/css-hooks/tree/latest) branch.
+
+<!-- next-branch-warning:end -->`;
+
+export function normalizeNextBranchWarning(content: string, show: boolean) {
+  const withoutWarning = content.replace(
+    /\n*<!-- next-branch-warning:start -->[\s\S]*?<!-- next-branch-warning:end -->\n*/g,
+    "\n\n",
+  );
+
+  return show
+    ? withoutWarning.replace("\n---\n", `\n---\n\n${nextBranchWarning}\n`)
+    : withoutWarning;
+}

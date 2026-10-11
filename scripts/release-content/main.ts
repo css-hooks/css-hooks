@@ -9,6 +9,7 @@ import * as v from "valibot";
 import {
   normalizeDocumentationUrls,
   normalizeInstallCommands,
+  normalizeNextBranchWarning,
 } from "./normalize-content.ts";
 
 const exec = promisify(execCb);
@@ -112,7 +113,7 @@ async function main() {
       )
       .join("");
 
-    return rootReadmeContent
+    const content = rootReadmeContent
       .replace(
         patterns.logomark,
         `<a id="logomark" href="${siteUrl}"><img alt="CSS Hooks" src="${npm ? `https://github.com/css-hooks/css-hooks/raw/${ref}/.github/logomark.svg` : `.github/logomark.svg`}" height="128" /></a>`,
@@ -148,6 +149,8 @@ async function main() {
         `<div align="center" id="badges">${badges}\n</div>`,
       )
       .replace(/@css-hooks\/core/g, packageName);
+
+    return normalizeNextBranchWarning(content, channel === "next" && !npm);
   };
 
   if (npm) {

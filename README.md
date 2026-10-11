@@ -16,6 +16,15 @@
 
 ---
 
+<!-- next-branch-warning:start -->
+
+<!-- prettier-ignore -->
+> [!WARNING]
+> This is the **`next`** branch, tracking the upcoming release. For the latest stable code,
+> switch to the [`latest`](https://github.com/css-hooks/css-hooks/tree/latest) branch.
+
+<!-- next-branch-warning:end -->
+
 ## Overview
 
 **CSS power. Inline style simplicity.**
