@@ -2,9 +2,12 @@ import { createHooks, mergeStyles } from "@css-hooks/react";
 import type { CSSProperties } from "react";
 
 export { mergeStyles };
+export const pageContentTimeline = "--page-content";
+
 export const { styleSheet, on, and, or, not, enable, disable } = createHooks(
   "@supports (height: 100dvh)",
   "@supports (animation-timeline: scroll())",
+  "@supports (timeline-scope: --a)",
 
   "@media (width >= 44em)",
   "@media (width >= 69em)",

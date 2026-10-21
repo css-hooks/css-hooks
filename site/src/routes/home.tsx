@@ -22,6 +22,7 @@ import {
   not,
   on,
   or,
+  pageContentTimeline,
   withAlpha,
 } from "../css.ts";
 import {
@@ -67,10 +68,12 @@ export default function Home({
   loaderData: { demoSource },
 }: Route.ComponentProps) {
   return (
-    <main style={{ display: "contents" }}>
+    <main>
       <section
         style={{
-          position: "relative",
+          position: "sticky",
+          top: 0,
+          zIndex: 0,
           overflowX: "clip",
           marginTop: "calc(-48px - 2em)",
           width: "100%",
@@ -231,13 +234,22 @@ export default function Home({
         </div>
       </section>
       <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 48,
-          marginTop: 64,
-          marginBottom: 96,
-        }}
+        style={mergeStyles(
+          {
+            position: "relative",
+            zIndex: 1,
+            viewTimelineName: pageContentTimeline,
+            viewTimelineAxis: "block",
+            viewTimelineInset: 0,
+            background: white,
+            display: "flex",
+            flexDirection: "column",
+            gap: 48,
+            paddingTop: 64,
+            paddingBottom: 96,
+          },
+          on(dark, { background: gray(90) }),
+        )}
       >
         <Demo
           icon={<UserInteractionIcon />}
