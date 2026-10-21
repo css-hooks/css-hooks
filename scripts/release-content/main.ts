@@ -155,6 +155,10 @@ async function main() {
 
   if (npm) {
     for (const pkg of packages) {
+      await fs.copyFile(
+        resolve(rootDir, "LICENSE"),
+        resolve(rootDir, pkg.location, "LICENSE"),
+      );
       await fs.writeFile(
         resolve(rootDir, pkg.location, "README.md"),
         readmeContent(pkg.name),
