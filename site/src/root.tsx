@@ -146,6 +146,7 @@ function ThemeSwitcher() {
               <option
                 key={theme}
                 style={{
+                  fontSize: "initial",
                   background: white,
                   color: black,
                 }}
