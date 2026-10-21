@@ -5,12 +5,13 @@ import {
   disable,
   enable,
   mergeStyles,
+  not,
   on,
   or,
 } from "./css";
 
 const invertDark = mergeStyles(
-  enable("%dark"),
+  on(not("%dark"), enable("%dark")),
   on("%dark", disable("%dark")),
 );
 
