@@ -253,7 +253,7 @@ export function ThemeSwitcher({ value, onChange }: ThemeSwitcherProps) {
           onChange={e => onChange(e.target.value as Theme)}
         >
           {themes.map(t => (
-            <option key={t} value={t}>
+            <option key={t} value={t} style={{ fontSize: "initial" }}>
               {t}
             </option>
           ))}
