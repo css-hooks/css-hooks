@@ -60,6 +60,39 @@ In the preceding example, `on(and("@media (hover: hover)", "&:hover"), ...)`
 changes the background on hover-capable devices, while `on("&:hover", ...)`
 scales the button on any device.
 
+## Nesting conditions
+
+Because `on` returns a style object, calls can be nested. The declarations apply
+only when every enclosing condition matches:
+
+```typescript
+on("@media (hover: hover)", on("&:hover", { background: "#009" }));
+```
+
+This is equivalent to:
+
+```typescript
+on(and("@media (hover: hover)", "&:hover"), { background: "#009" });
+```
+
+Use `mergeStyles` inside an `on` call to group declarations and nested overrides
+under one condition:
+
+```tsx
+style={mergeStyles(
+  { background: "#eee", color: "#333" },
+  on(
+    "@media (hover: hover)",
+    mergeStyles(
+      { background: "#ddd" },
+      on("&:hover", { color: "#009" }),
+    ),
+  ),
+)}
+```
+
+Nested overrides fall back to defaults from enclosing `mergeStyles` calls.
+
 ## Override priority
 
 The `mergeStyles` function prioritizes later arguments over earlier ones. This

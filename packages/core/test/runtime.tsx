@@ -84,6 +84,18 @@ describe("`mergeStyles` function", () => {
     assert.match(style.color, /red/);
   });
 
+  it("preserves unresolved fallbacks for later merges", () => {
+    const { on } = createHooksSystem().createHooks("&:hover");
+    const conditionalStyle = on("&:hover", { color: "blue" });
+    const innerStyle = mergeStyles({ display: "block" }, conditionalStyle);
+
+    assert.strictEqual(innerStyle.color, conditionalStyle.color);
+    assert.deepEqual(
+      mergeStyles({ color: "red" }, innerStyle),
+      mergeStyles({ color: "red", display: "block" }, conditionalStyle),
+    );
+  });
+
   it("uses the specified stringify function when merging values", () => {
     const { createHooks, mergeStyles } = createHooksSystem<CSS.Properties>(
       (value, propertyName) =>
@@ -314,6 +326,33 @@ describe(`in ${selectedBrowser}`, () => {
         await assertColor("#target", "gray");
         await page.hover("#target");
         await assertColor("#target", "blue");
+      });
+
+      it("supports nested conditional styles with outer fallbacks", async () => {
+        const { styleSheet, on } = createHooks("&.a", "&.b");
+
+        await render(
+          <div
+            id="target"
+            style={mergeStyles(
+              { color: "gray", fontSize: "18px" },
+              on(
+                "&.a",
+                mergeStyles({ fontSize: "24px" }, on("&.b", { color: "blue" })),
+              ),
+            )}
+          />,
+          styleSheet(),
+        );
+
+        for (const className of ["", "a", "b", "a b"]) {
+          await setClassName("#target", className);
+          await assertColor("#target", className === "a b" ? "blue" : "gray");
+          assert.strictEqual(
+            await computedStyle("#target", "fontSize"),
+            className.includes("a") ? "24px" : "18px",
+          );
+        }
       });
 
       it("applies flags to an element and its descendants", async () => {
@@ -574,9 +613,11 @@ describe(`in ${selectedBrowser}`, () => {
         await render(
           <div
             id="target"
-            style={on("&:hover", {
-              color: "blue",
-            })}
+            style={mergeStyles(
+              on("&:hover", {
+                color: "blue",
+              }),
+            )}
           />,
           `#target { color: gray; height: 1px; width: 1px } ${styleSheet()}`,
         );
