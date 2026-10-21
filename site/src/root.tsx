@@ -7,6 +7,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
 } from "react-router";
 import * as v from "valibot";
 
@@ -22,7 +23,17 @@ import {
 import { Logo } from "./components/logo.tsx";
 import { NavLink } from "./components/nav-link.tsx";
 import { ScreenReaderOnly } from "./components/screen-reader-only.tsx";
-import { dark, darkFlag, mergeStyles, not, on, or, styleSheet } from "./css.ts";
+import {
+  and,
+  dark,
+  darkFlag,
+  mergeStyles,
+  not,
+  on,
+  or,
+  pageContentTimeline,
+  styleSheet,
+} from "./css.ts";
 import { createMetaDescriptors } from "./data/meta.ts";
 import { themeAttr, themeKey, themes } from "./data/themes.ts";
 import { black, gray, purple, white } from "./design/colors.ts";
@@ -150,6 +161,8 @@ function ThemeSwitcher() {
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const isHome = useLocation().pathname === "/";
+
   return (
     <html
       lang="en"
@@ -198,6 +211,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
               display: "flex",
               flexDirection: "column",
               minHeight: "100vh",
+              timelineScope: pageContentTimeline,
             },
             on("@supports (height: 100dvh)", {
               minHeight: "100dvh",
@@ -241,14 +255,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
                   backdropFilter:
                     "blur(calc(var(--animation-progress, 1) * 32px))",
                 },
-                on("@supports (animation-timeline: scroll())", {
-                  animationName: "animation-progress",
-                  animationDuration: "1s",
-                  animationTimingFunction: "linear",
-                  animationFillMode: "both",
-                  animationTimeline: "scroll(root block)",
-                  animationRange: "0px 58px",
-                }),
+                // shortcut: unsupported scroll timelines keep static frost; add a fallback if timing is required there.
+                on(
+                  isHome
+                    ? and(
+                        "@supports (animation-timeline: scroll())",
+                        "@supports (timeline-scope: --a)",
+                      )
+                    : "@supports (animation-timeline: scroll())",
+                  {
+                    animationName: "animation-progress",
+                    animationDuration: "1s",
+                    animationTimingFunction: isHome
+                      ? "steps(1, end)"
+                      : "linear",
+                    animationFillMode: "both",
+                    animationTimeline: isHome
+                      ? pageContentTimeline
+                      : "scroll(root block)",
+                    animationRange: isHome ? "entry 0% entry 100%" : "0px 58px",
+                  },
+                ),
               )}
             />
             <a
