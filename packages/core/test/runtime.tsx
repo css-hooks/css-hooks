@@ -492,6 +492,52 @@ describe(`in ${selectedBrowser}`, () => {
         await assertColor("#restored-child", "purple");
       });
 
+      it("evaluates nested flag controls against inherited state", async () => {
+        const { styleSheet, on, enable, disable } = createHooks(
+          "%dark",
+          "&:hover",
+          "&.dark",
+        );
+        const themeAwareStyle = mergeStyles(
+          { color: "yellow" },
+          on("%dark", { color: "purple" }),
+        );
+
+        await render(
+          <div
+            id="parent"
+            style={mergeStyles(disable("%dark"), on("&.dark", enable("%dark")))}
+          >
+            <div
+              id="target"
+              style={mergeStyles(
+                { height: "40px", width: "40px" },
+                enable("%dark"),
+                on("%dark", on("&:hover", disable("%dark"))),
+                themeAwareStyle,
+              )}
+            >
+              <div id="child" style={themeAwareStyle} />
+            </div>
+          </div>,
+          styleSheet(),
+        );
+
+        for (const inheritedDark of [false, true]) {
+          await setClassName("#parent", inheritedDark ? "dark" : "");
+          for (const hovered of [false, true]) {
+            if (hovered) {
+              await page.hover("#target");
+            } else {
+              await page.mouse.move(0, 0);
+            }
+            const expected = inheritedDark && hovered ? "yellow" : "purple";
+            await assertColor("#target", expected);
+            await assertColor("#child", expected);
+          }
+        }
+      });
+
       it("supports at-rule hooks", async () => {
         const { styleSheet, on } = createHooks("@media (width < 600px)");
 
