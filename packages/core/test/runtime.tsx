@@ -405,6 +405,55 @@ describe(`in ${selectedBrowser}`, () => {
         }
       });
 
+      it("supports default, explicit, and inverted flags on the root element", async () => {
+        const { styleSheet, on, enable, disable } = createHooks("%dark");
+        const themeAwareStyle = mergeStyles(
+          { color: "yellow" },
+          on("%dark", { color: "purple" }),
+        );
+
+        for (const { control, expected } of [
+          { control: {}, expected: "yellow" },
+          { control: enable("%dark"), expected: "purple" },
+          { control: disable("%dark"), expected: "yellow" },
+          {
+            control: mergeStyles(
+              enable("%dark"),
+              on("%dark", disable("%dark")),
+            ),
+            expected: "purple",
+          },
+        ]) {
+          await render(
+            <div id="child" style={themeAwareStyle}>
+              <div id="grandchild" style={themeAwareStyle} />
+            </div>,
+            styleSheet(),
+          );
+          await page.evaluate(
+            ({ root, body }) => {
+              for (const [element, style] of [
+                [document.documentElement, root],
+                [document.body, body],
+              ] as const) {
+                element.removeAttribute("style");
+                for (const [property, value] of Object.entries(style)) {
+                  element.style.setProperty(property, value);
+                }
+              }
+            },
+            {
+              root: mergeStyles(control, themeAwareStyle),
+              body: themeAwareStyle,
+            },
+          );
+
+          for (const selector of ["html", "body", "#child", "#grandchild"]) {
+            await assertColor(selector, expected);
+          }
+        }
+      });
+
       it("composes flags with selector hooks", async () => {
         const { styleSheet, on, and, enable } = createHooks(
           "%dark",
