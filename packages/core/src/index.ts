@@ -2399,8 +2399,11 @@ export function createHooksSystem<
           typeof value === "string" &&
           value.includes(fallbackMarker)
         ) {
+          // Preserve missing fallbacks so enclosing merges can supply them.
           const fallbackValue =
-            property in result ? stringify(result[property], property) : null;
+            property in result
+              ? stringify(result[property], property)
+              : fallbackMarker;
           merged[property] = value.replace(
             fallbackMarkerPattern,
             () => fallbackValue ?? "revert-layer",

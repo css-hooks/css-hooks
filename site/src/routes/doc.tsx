@@ -440,8 +440,8 @@ export async function loader({ params }: Route.LoaderArgs) {
           ...restProps
         }) {
           const to = href
-            .replace(/\/index.md$/, "/")
-            .replace(/\.md$/, "/")
+            .replace(/\/index\.md(?=[?#]|$)/, "/")
+            .replace(/\.md(?=[?#]|$)/, "/")
             .replace(
               /^\.\//,
               doc.attributes.index
