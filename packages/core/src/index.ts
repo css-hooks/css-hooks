@@ -2626,6 +2626,11 @@ export function createHooksSystem<
                 {
                   [hookVar(hookHash, "0s")]: "initial",
                   [hookVar(hookHash, "1s")]: empty,
+                  // The root has no query container to initialize these lanes.
+                  [hookVar(hookHash, "0i")]: "initial",
+                  [hookVar(hookHash, "1i")]: empty,
+                  [hookVar(hookHash, "0o")]: `var(${hookVar(hookHash, "0s")})`,
+                  [hookVar(hookHash, "1o")]: `var(${hookVar(hookHash, "1s")})`,
                 },
               ]);
               return rulesets;
