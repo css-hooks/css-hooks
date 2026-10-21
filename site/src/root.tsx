@@ -157,6 +157,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
       style={{
         overflowY: "scroll",
         minHeight: "100dvh",
+        WebkitTextSizeAdjust: "100%",
+        textSizeAdjust: "100%",
       }}
       suppressHydrationWarning
     >
