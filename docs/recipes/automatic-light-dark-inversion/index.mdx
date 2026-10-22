@@ -38,14 +38,16 @@ The `"%dark"` hook carries the theme as inherited Boolean state. The
 and its descendants, and the `on("%dark", …)` function applies style overrides
 when the flag is enabled.
 
-`ContrastPanel` does not expose a `theme` prop or consume React context. It does
-not need to: An ancestor defines the initial state, and descendants inherit it
-through CSS. See [Flags](../../flags/) for details.
+`ContrastPanel` inherits its theme from an ancestor through CSS rather than a
+`theme` prop or React context. See [Flags](../../flags/) for details.
 
 ## Inversion boundary
 
 ```typescript
-const invertDark = mergeStyles(enable("%dark"), on("%dark", disable("%dark")));
+const invertDark = mergeStyles(
+  on(not("%dark"), enable("%dark")),
+  on("%dark", disable("%dark")),
+);
 ```
 
 An inversion boundary switches dark mode on or off at each nesting level. When

@@ -31,8 +31,8 @@ export const { on, and, or, not, styleSheet } = createHooks(
 `createHooks()` returns the `styleSheet` function, which constructs the plumbing
 stylesheet that supports the declared hooks. It also returns the `and`, `or`,
 and `not` combinators, which combine hooks into conditions. The returned `on`
-function associates style declarations with hooks and conditions; the
-[Applying styles](../applying-styles/index.md) guide covers its use.
+function makes style declarations conditional. See
+[Applying styles](../applying-styles/index.md) for details.
 
 ## Selector hooks
 
@@ -104,10 +104,6 @@ export const hoverOnly = and("@media (hover: hover)", "&:hover");
 
 The `hoverOnly` condition activates only when the media query and the `:hover`
 pseudo-class both match.
-
-Conditions can also be combined by nesting `on` calls. See
-[Nesting conditions](../applying-styles/index.md#nesting-conditions) for
-examples.
 
 For best results, keep hooks small and generic so they compose. Export reusable
 conditions such as `hoverOnly` from your styling module.

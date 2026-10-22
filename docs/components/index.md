@@ -45,10 +45,10 @@ the same element.
 
 ### Explicit props
 
-Prefer explicit props for the variations a component intentionally supports.
-Props make those variations discoverable and type-safe while letting the
-component own their visual treatment. For example, a button can expose a
-`variant` prop while limiting direct access to individual CSS properties.
+Prefer explicit props for supported component variants. Props make those
+variants discoverable and type-safe while letting the component own their visual
+treatment. For example, a button can expose a `variant` prop while limiting
+direct access to individual CSS properties.
 
 The component can translate that prop into an internal class and compose its
 styles with `mergeStyles`:
@@ -135,10 +135,9 @@ component's internal styles:
        )}
 ```
 
-Input order determines priority, with each style object overriding previous
-arguments. Thus, if the consumer style includes a property set internally, it
-overrides the internal value (whether or not it is conditional). This makes the
-`style` prop more predictable.
+Later style objects override matching properties from earlier ones. Because the
+consumer's `style` prop is passed last, it overrides internal values, including
+conditional ones.
 
 ### Conflict protection
 
@@ -155,7 +154,7 @@ mergeStyles(
 ```
 
 Because a component's `style` prop is usually typed as `CSSProperties`, the
-compiler cannot know which specific properties will be passed. Conflict
-protection therefore does not cross the component boundary. Keep the component's
-internal styles conflict-free, then treat the final merge as an intentional
-handoff to the consumer.
+compiler cannot determine which specific properties will be passed. Therefore,
+conflict protection does not cross the component boundary. TypeScript checks
+internal styles for conflicts, but consumer overrides can still introduce them
+at runtime.

@@ -7,15 +7,12 @@ hidden: true
 
 # Migrating to v2
 
-CSS Hooks v2 introduces a composable model for conditional styles. This guide
-explains how to migrate a v1 application. You will combine the `createHooks`
-parameters, update its return value, render the stylesheet, and replace nested
-conditional styles with the `on` callback.
+CSS Hooks v2 changes how you configure hooks, render the stylesheet, and apply
+conditional styles.
 
-Before you begin, identify the module that calls `createHooks`, the component
-that renders the stylesheet, and every call to `css`. Complete the sections in
-order. After the migration, your application will use the v2 configuration
-object and conditional-style syntax without changing its intended styles.
+To migrate from v1, update the module that calls `createHooks`, the component
+that renders the stylesheet, and calls to the `css` function. Follow the
+sections in order.
 
 ## Configuration
 
@@ -29,34 +26,23 @@ Pass one object to `createHooks`. Move the hook declarations to its `hooks`
 property. Keep the configuration options from the former second parameter as
 properties of the same object.
 
-**Before**
-
-```typescript
+```diff
 // src/css.ts
 
-export const [hooks, css] = createHooks(
-  {
-    "&:hover": "&:hover",
-  },
-  {
-    fallback: "revert-layer",
-    debug: true,
-  },
-);
-```
-
-**After**
-
-```typescript
-// src/css.ts
-
-export const { styleSheet, css } = createHooks({
-  hooks: {
-    "&:hover": "&:hover",
-  },
-  fallback: "revert-layer",
-  debug: true,
-});
+-export const [hooks, css] = createHooks(
+-  {
++export const { styleSheet, css } = createHooks({
++  hooks: {
+     "&:hover": "&:hover",
+   },
+-  {
+-    fallback: "revert-layer",
+-    debug: true,
+-  },
+-);
++  fallback: "revert-layer",
++  debug: true,
++});
 ```
 
 The v2 call keeps the same hook and option values, but groups them in one
@@ -98,20 +84,11 @@ of a string.
 Replace array destructuring with object destructuring. Rename the value commonly
 called `hooks` to `styleSheet`.
 
-**Before**
-
-```typescript
+```diff
 // src/css.ts
 
-export const [hooks, css] = createHooks(/* ... */);
-```
-
-**After**
-
-```typescript
-// src/css.ts
-
-export const { styleSheet, css } = createHooks(/* ... */);
+-export const [hooks, css] = createHooks(/* ... */);
++export const { styleSheet, css } = createHooks(/* ... */);
 ```
 
 Object destructuring selects the v2 `styleSheet` and `css` properties by name.
@@ -122,38 +99,21 @@ Find the component that renders the stylesheet, such as your root component.
 Import `styleSheet` instead of `hooks`. Call `styleSheet()` to produce the CSS
 string.
 
-**Before**
-
-```tsx
+```diff
 // src/app.tsx
 
-import { hooks } from "./css";
+-import { hooks } from "./css";
++import { styleSheet } from "./css";
 
-export function App() {
-  return (
-    <>
-      <style dangerouslySetInnerHTML={{ __html: hooks }} />
-      <HomePage />
-    </>
-  );
-}
-```
-
-**After**
-
-```tsx
-// src/app.tsx
-
-import { styleSheet } from "./css";
-
-export function App() {
-  return (
-    <>
-      <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-      <HomePage />
-    </>
-  );
-}
+ export function App() {
+   return (
+     <>
+-      <style dangerouslySetInnerHTML={{ __html: hooks }} />
++      <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
+       <HomePage />
+     </>
+   );
+ }
 ```
 
 In v2, calling `styleSheet()` constructs the CSS for the configured hooks when
@@ -174,44 +134,26 @@ in the style object, and return conditional declarations from `on`.
 
 ### Basic use case
 
-**Before**
-
-```jsx
-export function Button({ children }) {
-  return (
-    <button
-      style={css({
-        color: "blue",
-        "&:hover": {
-          color: "red",
-        },
-      })}
-    >
-      {children}
-    </button>
-  );
-}
-```
-
-**After**
-
-```jsx
-export function Button({ children }) {
-  return (
-    <button
-      style={css({
-        color: "blue",
-        on: $ => [
-          $("&:hover", {
-            color: "red",
-          }),
-        ],
-      })}
-    >
-      {children}
-    </button>
-  );
-}
+```diff
+ export function Button({ children }) {
+   return (
+     <button
+       style={css({
+         color: "blue",
+-        "&:hover": {
+-          color: "red",
+-        },
++        on: $ => [
++          $("&:hover", {
++            color: "red",
++          }),
++        ],
+       })}
+     >
+       {children}
+     </button>
+   );
+ }
 ```
 
 The `on` callback receives `$`, a function that associates a hook with a style
@@ -220,46 +162,27 @@ button remains blue until `&:hover` matches, when it becomes red.
 
 ### With compositional nesting
 
-**Before**
-
-```tsx
-export function Button({ children }) {
-  return (
-    <button
-      style={css({
-        color: "blue",
-        "&:enabled": {
-          "&:hover": {
-            color: "red",
-          },
-        },
-      })}
-    >
-      {children}
-    </button>
-  );
-}
-```
-
-**After**
-
-```tsx
-export function Button({ children }) {
-  return (
-    <button
-      style={css({
-        color: "blue",
-        on: ($, { and }) => [
-          $(and("&:enabled", "&:hover"), {
-            color: "red",
-          }),
-        ],
-      })}
-    >
-      {children}
-    </button>
-  );
-}
+```diff
+ export function Button({ children }) {
+   return (
+     <button
+       style={css({
+         color: "blue",
+-        "&:enabled": {
+-          "&:hover": {
++        on: ($, { and }) => [
++          $(and("&:enabled", "&:hover"), {
+             color: "red",
+-          },
+-        },
++          }),
++        ],
+       })}
+     >
+       {children}
+     </button>
+   );
+ }
 ```
 
 The v1 nesting applies the red text only when both `&:enabled` and `&:hover`

@@ -30,10 +30,10 @@ instructions.
 
 Use consistent terminology throughout the documentation: declare hooks with
 `createHooks()`, define conditions with the `and`, `or`, and `not` combinators,
-and associate styles with `on`. Refer to callables by name, such as the `on`
-function or the `and` combinator, and reserve parentheses for actual
-invocations. Avoid "CSS-in-JS" and any implication that CSS Hooks generates
-code.
+and make style declarations conditional on a hook or condition with `on`. Refer
+to callables by name, such as the `on` function or the `and` combinator, and
+reserve parentheses for actual invocations. Avoid "CSS-in-JS" and any
+implication that CSS Hooks generates code.
 
 Do not edit the generated API reference under `docs/api/` by hand. Update the
 source JSDoc and run `npm run docs`.

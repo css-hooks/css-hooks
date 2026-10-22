@@ -7,15 +7,12 @@ hidden: true
 
 # Migrating to v3
 
-CSS Hooks v3 simplifies how applications declare hooks and apply conditional
-styles. This guide explains how to migrate a v2 application. You will update the
-exports from `createHooks`, replace the configuration object with hook values,
-define reusable conditions, and replace `css` calls with a pipeline function.
+CSS Hooks v3 accepts hook strings instead of a configuration object and uses a
+pipeline function to apply conditional styles.
 
-Before you begin, identify your `createHooks` call, any globally defined complex
-hooks, and every use of the v2 `css` function. Choose a pipeline implementation
-before updating inline styles. After the migration, your application will use
-the smaller v3 API while preserving its existing conditions and style order.
+To migrate from v2, update your styling module's exports, replace complex hooks
+with reusable conditions, and replace calls to the `css` function with a
+pipeline. Choose a pipeline implementation before updating inline styles.
 
 ## New exports
 
@@ -23,20 +20,11 @@ In v2, the return value of `createHooks` included a `css` function. In v3, `on`
 replaces `css`, and `and`, `or`, and `not` construct complex conditions. Export
 these functions from your `css.ts` module.
 
-**Before**
-
-```typescript
+```diff
 // src/css.ts
 
-export const { styleSheet, css } = createHooks(/* ... */);
-```
-
-**After**
-
-```typescript
-// src/css.ts
-
-export const { styleSheet, on, and, or, not } = createHooks(/* ... */);
+-export const { styleSheet, css } = createHooks(/* ... */);
++export const { styleSheet, on, and, or, not } = createHooks(/* ... */);
 ```
 
 Keep exporting `styleSheet`. Components will import `on` and the condition
@@ -50,7 +38,7 @@ function it replaces, so v3 removes those configuration options.
 
 The initialization API changes in two ways:
 
-- Pass hook strings directly to `createHooks`; v3 does not use aliases.
+- Pass hook strings directly to `createHooks`. v3 does not use aliases.
 - Define complex conditions with `and`, `or`, and `not` instead of defining them
   in the `createHooks` configuration.
 
@@ -63,31 +51,22 @@ Complete these steps:
    `on("&:hover", styles)`.
 3. Replace each complex hook with the individual hook strings that compose it.
 
-**Before**
-
-```typescript
+```diff
 // src/css.ts
 
-export const {/* ... */} = createHooks({
-  hooks: ({ or }) => ({
-    "&:hover": "&:hover",
-    "&:intent": or("&:hover", "&:focus"),
-  }),
-  sort: {
-    properties: true,
-    conditionalStyles: true,
-  },
-  fallback: "revert-layer",
-  debug: true,
-});
-```
-
-**After**
-
-```typescript
-// src/css.ts
-
-export const {/* ... */} = createHooks("&:hover", "&:focus");
+-export const {/* ... */} = createHooks({
+-  hooks: ({ or }) => ({
+-    "&:hover": "&:hover",
+-    "&:intent": or("&:hover", "&:focus"),
+-  }),
+-  sort: {
+-    properties: true,
+-    conditionalStyles: true,
+-  },
+-  fallback: "revert-layer",
+-  debug: true,
+-});
++export const {/* ... */} = createHooks("&:hover", "&:focus");
 ```
 
 The v3 call declares `&:hover` and `&:focus` directly. It omits the v2 aliases,
@@ -140,57 +119,41 @@ Update each inline style that uses the v2 `css` function:
 5. Import `on` from your `css.ts` module. Import `and`, `or`, and `not` when the
    style uses them.
 
-**Before**
+```diff
+-import { css } from "./css";
++import { pipe } from "remeda"; // or from fp-ts, etc.
++import { on, or } from "./css";
 
-```jsx
-import { css } from "./css";
-
-function HelloWorld() {
-  return (
-    <button
-      style={css({
-        color: "black",
-        on: ($, { or }) => [
-          $(or("&:hover", "&:focus"), {
-            color: "blue",
-          }),
-          $("&:active", {
-            color: "red",
-          }),
-        ],
-      })}
-    >
-      Hello World
-    </button>
-  );
-}
-```
-
-**After**
-
-```jsx
-import { pipe } from "remeda"; // or from fp-ts, etc.
-import { on, or } from "./css";
-
-function HelloWorld() {
-  return (
-    <button
-      style={pipe(
-        {
-          color: "black",
-        },
-        on(or("&:hover", "&:focus"), {
-          color: "blue",
-        }),
-        on("&:active", {
-          color: "red",
-        }),
-      )}
-    >
-      Hello World
-    </button>
-  );
-}
+ function HelloWorld() {
+   return (
+     <button
+-      style={css({
+-        color: "black",
+-        on: ($, { or }) => [
+-          $(or("&:hover", "&:focus"), {
+-            color: "blue",
+-          }),
+-          $("&:active", {
+-            color: "red",
+-          }),
+-        ],
+-      })}
++      style={pipe(
++        {
++          color: "black",
++        },
++        on(or("&:hover", "&:focus"), {
++          color: "blue",
++        }),
++        on("&:active", {
++          color: "red",
++        }),
++      )}
+     >
+       Hello World
+     </button>
+   );
+ }
 ```
 
 `pipe` starts with the base style object. Each `on` call then applies its color
