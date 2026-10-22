@@ -18,7 +18,7 @@ conditions without requiring specialized rulesets per component.
 CSS Hooks works by filtering an element's own style declarations with
 conditions. Some rules do not fit that model, such as `@keyframes`,
 pseudo-elements like `::before` and `::after`, and styling for markup you do not
-control. Prefer inline styles where possible; otherwise, keep the rule in a
+control. Prefer inline styles where possible. Otherwise, keep the rule in a
 stylesheet.
 
 ## How can an ancestor apply styles to a descendant element?
@@ -37,10 +37,8 @@ on(".group:hover &", {
 ```
 <!--prettier-ignore-end-->
 
-For more advanced use cases, [Flags](../flags/index.md) offer a way to share
-state with descendants without mutating their presentational properties. The
-descendant's own declarations determine its appearance as a function of that
-state.
+Use [Flags](../flags/index.md) to share state with descendants. Each descendant
+defines its own styles for that state.
 
 For cases where you do not control the descendant markup, a traditional
 stylesheet may be the appropriate tool.

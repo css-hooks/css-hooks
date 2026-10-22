@@ -48,7 +48,7 @@ a sidebar, grid track, or dialog and respond to its local container.
 The base styles stack the image and content. At widths of 400px or wider,
 `on("@container (min-width: 400px)", ...)` changes the `<article>` element's
 flex direction, gives the image a fixed width, and increases the content
-padding. Each override only replaces the properties it declares; the rest of the
+padding. Each override replaces only the properties it declares. The rest of the
 base card remains unchanged.
 
 A container query measures an ancestor, not the element it styles. The example

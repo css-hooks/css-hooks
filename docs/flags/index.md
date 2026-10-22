@@ -7,8 +7,8 @@ order: 5
 # Flags
 
 Styling state may need to propagate through a subtree while remaining
-overridable within nested sections—for example, for theme inversion or changes
-in layout density.
+overridable within nested sections. For example, a nested section may invert the
+theme or change the layout density.
 
 A **flag** is a hook that carries such state from an element to its descendants.
 
@@ -73,11 +73,14 @@ value from the nearest ancestor. This makes it possible to invert a flag without
 creating a cycle:
 
 ```typescript
-const invertDark = mergeStyles(enable("%dark"), on("%dark", disable("%dark")));
+const invertDark = mergeStyles(
+  on(not("%dark"), enable("%dark")),
+  on("%dark", disable("%dark")),
+);
 ```
 
-In this case, the style enables `%dark` for the element and its descendants by
-default. When `%dark` is already enabled in the surrounding context, the
-conditional override disables it instead. See the
+When the inherited `%dark` flag is disabled, the style enables it for the
+element and its descendants. When the inherited flag is enabled, the style
+disables it instead. See the
 [Automatic light/dark inversion](../recipes/automatic-light-dark-inversion/)
 recipe for a complete example.

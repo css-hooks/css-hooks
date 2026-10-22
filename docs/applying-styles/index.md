@@ -42,9 +42,8 @@ export function Button() {
 
 The `mergeStyles` function processes style objects from left to right. Each
 object's properties move to the end of the result, overriding matching
-properties from earlier objects. This ensures that input order determines
-priority. `mergeStyles` also resolves each conditional property against the
-value it overrides.
+properties from earlier objects. `mergeStyles` also resolves each conditional
+property against the value it overrides.
 
 > [!WARNING] Do not use object spread instead of the `mergeStyles` function when
 > combining base and conditional styles. Object spread does not resolve
@@ -62,8 +61,8 @@ scales the button on any device.
 
 ## Nesting conditions
 
-Because `on` returns a style object, calls can be nested. The declarations apply
-only when every enclosing condition matches:
+Because `on` returns a plain style object, calls can be nested. The declarations
+apply only when every enclosing condition matches:
 
 ```typescript
 on("@media (hover: hover)", on("&:hover", { background: "#009" }));
@@ -76,7 +75,7 @@ on(and("@media (hover: hover)", "&:hover"), { background: "#009" });
 ```
 
 Use `mergeStyles` inside an `on` call to group declarations and nested overrides
-under one condition:
+under a single condition:
 
 ```tsx
 style={mergeStyles(
@@ -128,8 +127,7 @@ equivalents, physical and logical properties that affect the same edge, and
 aliases. Avoid mixing these properties across base styles and overrides.
 
 The TypeScript types for the React, Preact, Solid, and Qwik integrations report
-these conflicts in calls to `mergeStyles`. Because some declarations overlap
-only in certain writing modes, the check is intentionally conservative.
+these conflicts in calls to `mergeStyles`.
 
 Conflict checking requires the specific keys of each style object to be
 retained. If you annotate a reusable style with a broad framework type such as
@@ -141,6 +139,6 @@ const baseStyle = {
 } satisfies CSSProperties;
 ```
 
-This protection is compile-time only. JavaScript users and custom integrations
-built directly with `@css-hooks/core` do not receive it automatically; those
-integrations must supply a property-conflict map.
+This protection is compile-time only. Custom integrations built directly with
+`@css-hooks/core` can enable conflict checking by supplying a property-conflict
+map.

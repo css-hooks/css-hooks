@@ -6,11 +6,9 @@ order: 3
 
 # Quickstart: Solid
 
-This guide adds CSS Hooks to a new or existing Solid project. The finished
-button shrinks while you press it. You need Node.js and npm. The final project
-uses Solid v2.
+This guide shows how to add CSS Hooks to a Solid project.
 
-## 1. Create or open the project
+## 1. Create the project
 
 Create a Solid app with Vite. If you already have a project, continue to step 2.
 
@@ -126,7 +124,21 @@ export default function App() {
 }
 ```
 
-If you created a Vite project, run `npm run dev` to view the result. Continue to
-[Hooks and conditions](../../hooks-and-conditions/index.md) to declare more
-hooks, then read [Applying styles](../../applying-styles/index.md) for
-composition patterns.
+## 7. View the result
+
+Start the development server and view the application in your browser to see the
+result.
+
+If you used Vite, start the development server using the following command:
+
+```bash
+npm run dev
+```
+
+By default, the development server is accessible at http://localhost:5173.
+
+## Next steps
+
+Continue to [Hooks and conditions](../../hooks-and-conditions/index.md) to
+declare more hooks, then read [Applying styles](../../applying-styles/index.md)
+for composition patterns.

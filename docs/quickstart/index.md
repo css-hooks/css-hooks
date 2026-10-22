@@ -6,8 +6,7 @@ order: 2
 
 # Quickstart
 
-Use these guides to add CSS Hooks to a new or existing project. Each example
-creates a button that shrinks while you press it. You need Node.js and npm.
+Use these guides to add CSS Hooks to a new or existing project.
 
 Choose your framework or browser environment:
 

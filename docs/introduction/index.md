@@ -6,12 +6,12 @@ order: 1
 
 # Introduction
 
-CSS Hooks adds CSS-powered conditions to inline styles. It lets an element's
-`style` prop respond to user interaction, layout, browser capabilities,
-surrounding markup, and inherited state.
+CSS Hooks adds CSS-powered conditions to inline styles. Hooks allow an element's
+`style` prop to respond to user interaction, layout, browser capabilities,
+surrounding markup, and inherited state. Declare hooks once and reuse them
+throughout your application to add conditional values to ordinary style objects.
 
-Define shared conditions once; then build them into ordinary style objects. For
-example, this button provides visual feedback on hover and press:
+For example, this button provides visual feedback on hover and press:
 
 ```tsx
 <button
@@ -59,14 +59,14 @@ context such as `&:hover`, container queries, or inherited state.
 
 ## Why CSS Hooks
 
-CSS Hooks adds capabilities to inline styles while keeping their advantages.
-Compared with other styling approaches:
+CSS Hooks provides advanced styling capabilities without sacrificing the
+advantages of native inline styles. Compared with other approaches:
 
 - Does not inject styles at runtime, unlike typical CSS-in-JS solutions
-- Does not require a compiler or restrict styles to statically analyzable
-  values, unlike "zero runtime" CSS solutions
 - Keeps the familiar syntax of the `style` prop, unlike atomic or
   "utility-first" CSS solutions
+- Does not require a compiler or restrict styles to statically analyzable
+  values, unlike "zero runtime" CSS solutions
 
 Building on inline styles, CSS Hooks provides:
 
@@ -78,8 +78,9 @@ Building on inline styles, CSS Hooks provides:
 - Predictable composition and fallback values through the `mergeStyles` function
 - Inheritable Boolean state for coordinating styles across a subtree
 
-Because conditions resolve through CSS, styles render on the server, including
-in server components, without hydration mismatches.
+CSS Hooks supports server rendering, including server components. The browser
+evaluates conditions through CSS, so components do not need access to the
+browser environment to render conditional styles.
 
 ## How it fits with CSS
 
