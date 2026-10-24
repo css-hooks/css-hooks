@@ -4,7 +4,7 @@
 
 ## StringifyFn type
 
-Function to convert a value into a string.
+Function to convert a value into a string
 
 **Signature:**
 
@@ -14,5 +14,5 @@ export type StringifyFn = (value: unknown, propertyName: string) => string | nul
 
 ## Remarks
 
-Used for merging a conditional property value with the fallback value.
+Used for merging a conditional property value with the fallback value
 

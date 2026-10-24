@@ -1,117 +1,107 @@
 ---
 title: Preact
-description: Get up and running with Preact in a few simple steps.
+description: Adding CSS Hooks to a Preact project
 order: 2
 ---
 
 # Quickstart: Preact
 
-## 1. Initialize project
+This guide shows how to add CSS Hooks to a Preact project.
+
+## 1. Create the project
+
+Create a Preact app with Vite. If you already have a project, continue to
+step 2.
 
 ```bash
 npm create vite@latest css-hooks-playground -- --template preact-ts
 cd css-hooks-playground
-npm install @css-hooks/preact remeda
 ```
 
-## 2. Start dev server
+## 2. Install CSS Hooks
+
+```bash
+npm install @css-hooks/preact@next
+```
+
+## 3. Define a hook
+
+Create `src/css.ts` to export shared styling utilities.
+
+```typescript
+// src/css.ts
+
+import { createHooks, mergeStyles } from "@css-hooks/preact";
+
+export { mergeStyles };
+export const { on, styleSheet } = createHooks("&:active");
+```
+
+`createHooks()` declares `&:active` and returns the `on` and `styleSheet`
+functions.
+
+## 4. Render the stylesheet
+
+Render `styleSheet()` once at the application root. The stylesheet evaluates the
+declared hook.
+
+```tsx
+// src/main.tsx
+
+import { render } from "preact";
+
+import { App } from "./app";
+import { styleSheet } from "./css";
+
+render(
+  <>
+    <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
+    <App />
+  </>,
+  document.getElementById("app")!,
+);
+```
+
+## 5. Apply an override style
+
+Use the declared `&:active` hook in a component. The `mergeStyles` function
+combines the base style with the pressed style, so the button shrinks while you
+press it.
+
+```tsx
+// src/app.tsx
+
+import { mergeStyles, on } from "./css";
+
+export function App() {
+  return (
+    <button
+      style={mergeStyles(
+        { transition: "transform 75ms" },
+        on("&:active", { transform: "scale(0.9)" }),
+      )}
+    >
+      Press me
+    </button>
+  );
+}
+```
+
+## 6. View the result
+
+Start the development server and view the application in your browser to see the
+result.
+
+If you used Vite, start the development server using the following command:
 
 ```bash
 npm run dev
 ```
 
-Visit http://localhost:5173 to view changes in real time.
+By default, the development server is accessible at http://localhost:5173.
 
-## 3. Set up CSS Hooks
+## Next steps
 
-Create a `src/css.ts` module with the following contents:
-
-```typescript
-import { createHooks } from "@css-hooks/preact";
-
-export const { styleSheet, on } = createHooks("&:active");
-```
-
-## 4. Add style sheet
-
-Modify `src/main.tsx` to add the style sheet to the document:
-
-<!-- prettier-ignore-start -->
-
-```diff
- import { render } from 'preact'
- import { App } from './app.tsx'
- import './index.css'
-+import { styleSheet } from './css.ts'
-
--render(<App />, document.getElementById('app')!)
-+render(
-+  <>
-+    <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-+    <App />
-+  </>,
-+  document.getElementById('app')!
-+)
-```
-
-<!-- prettier-ignore-end -->
-
-## 5. Add conditional style
-
-Use the configured `&:active` hook to implement an effect when the counter
-button is pressed:
-
-<!-- prettier-ignore-start -->
-
-```diff
- // src/app.tsx
-
- import { useState } from 'preact/hooks'
- import preactLogo from './assets/preact.svg'
- import viteLogo from '/vite.svg'
- import './app.css'
-+import { on } from './css.ts'
-+import { pipe } from 'remeda'
-
- export function App() {
-   const [count, setCount] = useState(0)
-
-   return (
-     <>
-       <div>
-         <a href="https://vitejs.dev" target="_blank">
-           <img src={viteLogo} className="logo" alt="Vite logo" />
-         </a>
-         <a href="https://preactjs.com" target="_blank">
-           <img src={preactLogo} className="logo preact" alt="Preact logo" />
-         </a>
-       </div>
-       <h1>Vite + Preact</h1>
-       <div className="card">
--        <button onClick={() => setCount((count) => count + 1)}>
-+        <button
-+          onClick={() => setCount((count) => count + 1)}
-+          style={pipe(
-+            {
-+              transition: "transform 75ms",
-+            },
-+            on("&:active", {
-+              transform: "scale(0.9)"
-+            })
-+          )}
-+        >
-           count is {count}
-         </button>
-         <p>
-           Edit <code>src/app.tsx</code> and save to test HMR
-         </p>
-       </div>
-       <p className="read-the-docs">
-         Click on the Vite and Preact logos to learn more
-       </p>
-     </>
-   )
- }
-```
-
-<!-- prettier-ignore-end -->
+Continue to [Hooks and conditions](../../hooks-and-conditions/index.md) to
+declare more hooks, then read [Applying styles](../../applying-styles/index.md)
+for composition patterns.

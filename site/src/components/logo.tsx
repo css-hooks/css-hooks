@@ -1,8 +1,7 @@
 import type { CSSProperties } from "react";
 import { useId } from "react";
-import { pipe } from "remeda";
 
-import { dark, on } from "../css.ts";
+import { dark, mergeStyles, on } from "../css.ts";
 import { gray } from "../design/colors.ts";
 import { Logomark } from "./logomark.tsx";
 
@@ -10,7 +9,7 @@ export function Logo({ height = "1em" }: Pick<CSSProperties, "height">) {
   const id = useId();
   return (
     <div
-      style={pipe(
+      style={mergeStyles(
         {
           fontSize: height,
           lineHeight: 1,

@@ -1,0 +1,38 @@
+---
+title: Disclosure state
+description: Style a disclosure and its content when it opens.
+order: 5
+hidden: true
+---
+
+import App from "./App.tsx";
+import appSource from "./App.tsx?raw";
+import { styleSheet } from "./css.ts";
+import cssSource from "./css.ts?raw";
+
+export const recipeFiles = { "App.tsx": appSource, "css.ts": cssSource };
+
+# Disclosure state
+
+Change the appearance of a disclosure and its descendants based on whether it is
+open or closed.
+
+## Example
+
+Click a question to reveal its answer, then click again to close it. Use Tab key
+navigation to give a question focus, then press Enter or Space to toggle it.
+
+<Wide>
+  <RecipeDemo files={recipeFiles} styleSheet={styleSheet()}>
+    <App />
+  </RecipeDemo>
+</Wide>
+
+## Features
+
+**Open state.** The `&:open` and `:open &` conditions style the disclosure and
+its descendants based on the same native open state.
+
+**Visible focus.** The `:focus-visible &` condition displays an outline around
+the chevron when the `<summary>` element needs a visible focus indicator,
+replacing its default outline.

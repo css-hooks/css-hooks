@@ -1,7 +1,11 @@
 import assert from "node:assert";
 import { describe, it } from "node:test";
 
-import { _stringifyValue as stringifyValue } from "./index.ts";
+import {
+  _stringifyValue as stringifyValue,
+  createHooks,
+  mergeStyles,
+} from "./index.ts";
 
 describe("`stringifyValue` function", () => {
   it("returns a string as-is", () => {
@@ -16,9 +20,22 @@ describe("`stringifyValue` function", () => {
     });
   });
 
+  it("assumes numbers assigned to custom properties are unitless values", () => {
+    assert.equal(stringifyValue(7, "--foo"), "7");
+  });
+
   it("returns non-unitless numbers as px values", () => {
     ["width", "marginTop", "fontSize"].forEach(propertyName => {
       assert.equal(stringifyValue(15.5, propertyName), "15.5px");
     });
   });
 });
+
+{
+  const { on } = createHooks("&");
+  mergeStyles(
+    { margin: 0 },
+    // @ts-expect-error generated camelCase shorthand/longhand conflict
+    on("&", { marginTop: 1 }),
+  );
+}

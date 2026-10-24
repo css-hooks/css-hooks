@@ -1,4 +1,6 @@
-import { createHooks } from "@css-hooks/react";
+import { createHooks, mergeStyles } from "@css-hooks/react";
+
+export { mergeStyles };
 
 export const { styleSheet, on, and, not, or } = createHooks(
   "&:hover",
