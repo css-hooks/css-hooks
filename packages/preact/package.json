@@ -12,7 +12,6 @@
   "files": [
     "cjs",
     "esm",
-    "types",
     "tsdoc-metadata.json",
     "!**/*.test.*"
   ],
@@ -37,12 +36,19 @@
     "directory": "packages/preact"
   },
   "scripts": {
+    "attw": "wireit",
     "build": "wireit",
     "codegen": "npm run --silent start -w @scripts/css-property-conflicts -- --casing camel > src/css-property-conflicts.ts",
     "prepublishOnly": "wireit",
     "test": "node --conditions @css-hooks/source --test src/index.test.ts"
   },
   "wireit": {
+    "attw": {
+      "command": "attw --pack .",
+      "dependencies": [
+        "build"
+      ]
+    },
     "apix": {
       "command": "api-extractor run",
       "dependencies": [
@@ -61,13 +67,12 @@
       ]
     }
   },
-  "types": "types",
+  "types": "./esm/index.d.ts",
   "exports": {
     ".": {
       "@css-hooks/source": "./src/index.ts",
       "import": "./esm/index.js",
-      "require": "./cjs/index.js",
-      "types": "./types/index.d.ts"
+      "require": "./cjs/index.js"
     }
   }
 }

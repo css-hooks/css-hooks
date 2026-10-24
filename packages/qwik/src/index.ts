@@ -6,7 +6,9 @@
 
 import type { HooksSystem } from "@css-hooks/core";
 import { createHooksSystem } from "@css-hooks/core";
-import type { CSSProperties } from "@qwik.dev/core";
+import type { CSSProperties } from "@qwik.dev/core" with {
+  "resolution-mode": "import",
+};
 
 import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
