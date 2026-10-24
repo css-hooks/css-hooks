@@ -13,7 +13,6 @@
   "files": [
     "cjs",
     "esm",
-    "types",
     "tsdoc-metadata.json",
     "!**/*.test.*"
   ],
@@ -30,11 +29,18 @@
     "directory": "packages/core"
   },
   "scripts": {
+    "attw": "wireit",
     "build": "wireit",
     "prepublishOnly": "wireit",
     "test": "tsc && node --import tsx --conditions @css-hooks/source --test test/runtime.tsx"
   },
   "wireit": {
+    "attw": {
+      "command": "attw --pack .",
+      "dependencies": [
+        "build"
+      ]
+    },
     "apix": {
       "command": "api-extractor run",
       "dependencies": [
@@ -50,13 +56,12 @@
       ]
     }
   },
-  "types": "types",
+  "types": "./esm/index.d.ts",
   "exports": {
     ".": {
       "@css-hooks/source": "./src/index.ts",
       "import": "./esm/index.js",
-      "require": "./cjs/index.js",
-      "types": "./types/index.d.ts"
+      "require": "./cjs/index.js"
     }
   }
 }

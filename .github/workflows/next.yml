@@ -93,6 +93,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      - run: npm run attw --workspaces --if-present
       - run: npx playwright install --with-deps chromium firefox webkit
       - run: npm test --workspaces --if-present
       - run: npm test --workspace=@css-hooks/core

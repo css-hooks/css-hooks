@@ -6,7 +6,7 @@
 
 import type { HooksSystem } from "@css-hooks/core";
 import { createHooksSystem } from "@css-hooks/core";
-import type { JSX } from "@solidjs/web";
+import type { JSX } from "@solidjs/web" with { "resolution-mode": "import" };
 
 import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
