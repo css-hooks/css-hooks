@@ -102,7 +102,7 @@ render(
 ## 6. Apply an override style
 
 Use the declared `&:active` hook in a component. The `mergeStyles` function
-combines the base style with the active style, so the button shrinks while you
+combines the base style with the pressed style, so the button shrinks while you
 press it.
 
 ```tsx

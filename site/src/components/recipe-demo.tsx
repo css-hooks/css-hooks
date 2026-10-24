@@ -44,8 +44,6 @@ export function RecipeDemo({
         style={mergeStyles(
           { display: "grid", gridTemplateColumns: "1fr" },
           on("@container (width >= 1000px)", {
-            // Keep the source column wide enough for a 60-column example; the
-            // preview shrinks to at least 300px before falling back to stacked.
             gridTemplateColumns: "minmax(0, 1fr) minmax(700px, 1fr)",
             alignItems: "stretch",
           }),

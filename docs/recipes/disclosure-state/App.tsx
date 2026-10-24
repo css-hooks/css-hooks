@@ -53,11 +53,6 @@ function Question({
               placeItems: "center",
               width: 32,
               height: 32,
-              borderWidth: 1,
-              borderStyle: "solid",
-              borderColor: "#c4b5fd",
-              borderRadius: "50%",
-              background: "#ede9fe",
               color: "#5b21b6",
               outlineWidth: 3,
               outlineStyle: "solid",
@@ -67,7 +62,6 @@ function Question({
               transition: "transform 150ms",
             },
             on("%dark", {
-              background: "#334155",
               color: "#c4b5fd",
             }),
             on(":focus-visible &", {

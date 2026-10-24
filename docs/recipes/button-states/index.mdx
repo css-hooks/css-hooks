@@ -1,0 +1,49 @@
+---
+title: Button states
+description: Compose hover, focus, pressed, and disabled styles.
+order: 1
+hidden: true
+---
+
+import App from "./App.tsx";
+import appSource from "./App.tsx?raw";
+import { styleSheet } from "./css.ts";
+import cssSource from "./css.ts?raw";
+
+export const recipeFiles = { "App.tsx": appSource, "css.ts": cssSource };
+
+# Button states
+
+Provide visual feedback for hover, focus, pressed, and disabled button states,
+respecting user preferences and device capabilities.
+
+## Example
+
+Hover over the button, press it, and hold it to see the visual styling change in
+each state. Then use Tab key navigation to reveal the focus outline. Check the
+**Disable button** box to activate the disabled style. Repeat the interactions
+to see how the disabled state overrides the others.
+
+<Wide>
+  <RecipeDemo files={recipeFiles} styleSheet={styleSheet()}>
+    <App />
+  </RecipeDemo>
+</Wide>
+
+## Features
+
+**State precedence.** The hover style precedes the pressed style, while the
+disabled style follows both. This ensures that the disabled style always applies
+when the button is disabled and that otherwise the pressed style always applies
+when the button is pressed.
+
+**Hover support.** The combination of `&:hover` with `@media (hover: hover)`
+ensures that the hover style only applies with a hover-capable primary input
+device.
+
+**Visible focus.** `&:focus-visible` reveals an outline when the browser
+determines that a focus indicator is needed, such as during keyboard navigation.
+The outline remains visible alongside the hover and pressed backgrounds.
+
+**Motion preference.** Style changes take immediate effect when the user has
+requested reduced motion.

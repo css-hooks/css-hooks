@@ -4,7 +4,7 @@
 
 ## mergeStyles variable
 
-A style merger configured to use Solid's `JSX.CSSProperties` type.
+A style merger configured to use Solid’s `JSX.CSSProperties` type.
 
 **Signature:**
 

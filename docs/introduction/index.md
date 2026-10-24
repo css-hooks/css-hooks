@@ -6,7 +6,7 @@ order: 1
 
 # Introduction
 
-CSS Hooks adds CSS-powered conditions to inline styles. Hooks allow an element's
+CSS Hooks adds CSS-powered conditions to inline styles. Hooks allow an element’s
 `style` prop to respond to user interaction, layout, browser capabilities,
 surrounding markup, and inherited state. Declare hooks once and reuse them
 throughout your application to add conditional values to ordinary style objects.

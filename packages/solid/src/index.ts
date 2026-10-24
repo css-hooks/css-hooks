@@ -19,14 +19,14 @@ const hooksSystem = createHooksSystem<
 >();
 
 /**
- * A hook factory configured to use Solid's `JSX.CSSProperties` type and logic
+ * A hook factory configured to use Solid’s `JSX.CSSProperties` type and logic
  * for converting CSS values into strings
  *
  * @public
  */
 export const createHooks = hooksSystem.createHooks;
 
-/** A style merger configured to use Solid's `JSX.CSSProperties` type. @public */
+/** A style merger configured to use Solid’s `JSX.CSSProperties` type. @public */
 export const mergeStyles: HooksSystem<
   JSX.CSSProperties,
   CSSPropertyConflicts

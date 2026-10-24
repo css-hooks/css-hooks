@@ -26,7 +26,7 @@ Description
 
 </td><td>
 
-A hook factory configured to use Solid's `JSX.CSSProperties` type and logic for converting CSS values into strings
+A hook factory configured to use Solid’s `JSX.CSSProperties` type and logic for converting CSS values into strings
 
 
 </td></tr>
@@ -37,7 +37,7 @@ A hook factory configured to use Solid's `JSX.CSSProperties` type and logic for 
 
 </td><td>
 
-A style merger configured to use Solid's `JSX.CSSProperties` type.
+A style merger configured to use Solid’s `JSX.CSSProperties` type.
 
 
 </td></tr>

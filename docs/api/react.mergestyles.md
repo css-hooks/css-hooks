@@ -4,7 +4,7 @@
 
 ## mergeStyles variable
 
-A style merger configured to use React's `CSSProperties` type.
+A style merger configured to use React’s `CSSProperties` type.
 
 **Signature:**
 

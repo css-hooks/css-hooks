@@ -15,7 +15,7 @@ conditions without requiring specialized rulesets per component.
 
 ## Which rules belong in a stylesheet?
 
-CSS Hooks works by filtering an element's own style declarations with
+CSS Hooks works by filtering an element’s own style declarations with
 conditions. Some rules do not fit that model, such as `@keyframes`,
 pseudo-elements like `::before` and `::after`, and styling for markup you do not
 control. Prefer inline styles where possible. Otherwise, keep the rule in a
@@ -25,7 +25,7 @@ stylesheet.
 
 Hooks do not allow an ancestor to style a descendant directly. Instead, a hook
 acts as a filter on declarations, activating when the element to which they
-apply matches the hook's logic. Such logic can include contextual selectors, so
+apply matches the hook’s logic. Such logic can include contextual selectors, so
 you can style a descendant based on its position within a group:
 
 <!--prettier-ignore-start-->
@@ -43,16 +43,16 @@ defines its own styles for that state.
 For cases where you do not control the descendant markup, a traditional
 stylesheet may be the appropriate tool.
 
-## Why don't hooks support pseudo-elements?
+## Why don’t hooks support pseudo-elements?
 
 Pseudo-elements target virtual elements rather than the existing element that
 owns a style object. Use a physical element when possible, or keep the
 pseudo-element rule in a stylesheet.
 
 > [!NOTE] Some common use cases for pseudo-elements can be solved with physical
-> elements instead. For example, a physical placeholder element's visibility can
+> elements instead. For example, a physical placeholder element’s visibility can
 > be controlled using the `:placeholder-shown` pseudo-class, as demonstrated in
-> the [Custom placeholder](../recipes/custom-placeholder/) recipe.
+> the [Floating label](../recipes/floating-label/) recipe.
 
 ## Is CSS Hooks widely supported in browsers?
 

@@ -41,7 +41,7 @@ export function Button() {
 ## Style object composition
 
 The `mergeStyles` function processes style objects from left to right. Each
-object's properties move to the end of the result, overriding matching
+object’s properties move to the end of the result, overriding matching
 properties from earlier objects. `mergeStyles` also resolves each conditional
 property against the value it overrides.
 
@@ -52,7 +52,7 @@ property against the value it overrides.
 ## Conditional overrides
 
 The `on` function encodes a hook or condition in a style object. `mergeStyles`
-then resolves each declaration's fallback from the corresponding value
+then resolves each declaration’s fallback from the corresponding value
 accumulated from earlier style object arguments.
 
 In the preceding example, `on(and("@media (hover: hover)", "&:hover"), ...)`
@@ -111,12 +111,13 @@ style={mergeStyles(
 ```
 
 This example shows how order matters. The `:hover` and `:disabled`
-pseudo-classes can both be active at the same time, but in that case disabled
-styles should usually override hover styles. Likewise, `:active` styles should
-generally be prioritized over `:hover` styles when the element is pressed.
+pseudo-classes can both be active at the same time, but in that case the
+disabled style should usually override the hover style. Likewise, the pressed
+style should generally be prioritized over the hover style when the element is
+pressed.
 
 The final `consumerStyle` argument represents a value passed to a custom
-component's `style` prop. It overrides the previous value for each property
+component’s `style` prop. It overrides the previous value for each property
 unconditionally.
 
 ## Property conflicts

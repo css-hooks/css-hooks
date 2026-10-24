@@ -4,7 +4,7 @@
 
 ## mergeStyles variable
 
-A style merger configured to use Preact's `CSSProperties` type.
+A style merger configured to use Preact’s `CSSProperties` type.
 
 **Signature:**
 

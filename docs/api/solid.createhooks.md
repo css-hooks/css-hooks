@@ -4,7 +4,7 @@
 
 ## createHooks variable
 
-A hook factory configured to use Solid's `JSX.CSSProperties` type and logic for converting CSS values into strings
+A hook factory configured to use Solid’s `JSX.CSSProperties` type and logic for converting CSS values into strings
 
 **Signature:**
 

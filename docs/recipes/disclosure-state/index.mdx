@@ -1,6 +1,6 @@
 ---
 title: Disclosure state
-description: Style a disclosure and its descendants from the native open state
+description: Style a disclosure and its content when it opens.
 order: 5
 hidden: true
 ---
@@ -14,13 +14,13 @@ export const recipeFiles = { "App.tsx": appSource, "css.ts": cssSource };
 
 # Disclosure state
 
-A disclosure is a control that shows or hides related content. The `<details>`
-element provides this behavior natively: its `<summary>` element responds to
-pointer and keyboard input, and the `:open` pseudo-class exposes its state to
-CSS. Descendants can respond without copying the state into React.
+Change the appearance of a disclosure and its descendants based on whether it is
+open or closed.
 
-Open and close a question with a pointer or keyboard. The border changes and the
-chevron rotates when the `<details>` element opens.
+## Example
+
+Click a question to reveal its answer, then click again to close it. Use Tab key
+navigation to give a question focus, then press Enter or Space to toggle it.
 
 <Wide>
   <RecipeDemo files={recipeFiles} styleSheet={styleSheet()}>
@@ -28,16 +28,11 @@ chevron rotates when the `<details>` element opens.
   </RecipeDemo>
 </Wide>
 
-## Native open state
+## Features
 
-The `&:open` hook activates for an open `<details>` element. The contextual
-`:open &` hook activates for a descendant of an open element. The example uses
-these hooks to style the container, chevron, and answer. The browser tracks
-whether the disclosure is open.
+**Open state.** The `&:open` and `:open &` conditions style the disclosure and
+its descendants based on the same native open state.
 
-## Focus handling
-
-`outline: "none"` removes the default outline from the `<summary>` element. The
-`:focus-visible &` hook displays a replacement focus ring on the chevron, so
-keyboard users retain a visible indicator. Browsers generally match
-`:focus-visible` for keyboard focus but not for pointer focus.
+**Visible focus.** The `:focus-visible &` condition displays an outline around
+the chevron when the `<summary>` element needs a visible focus indicator,
+replacing its default outline.

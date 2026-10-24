@@ -46,16 +46,30 @@ recipe in the `docs/recipes/` index automatically; add `hidden: true` to its
 frontmatter so only the index appears in the documentation sidebar.
 
 List recipes by practical utility, with broadly useful patterns before narrower
-platform patterns. Set each recipe's frontmatter `order` value to its position
+platform patterns. Set each recipe’s frontmatter `order` value to its position
 in the list.
 
 Use an existing recipe as the template for `index.mdx` imports and the
-`<Wide><RecipeDemo>…</RecipeDemo></Wide>` wrapper. Keep the prose focused on the
-pattern, why it is useful, and any accessibility or platform behavior readers
-should understand.
+`<Wide><RecipeDemo>…</RecipeDemo></Wide>` wrapper. Reuse the existing code
+examples and live demos when rewriting recipe prose.
+
+Follow this formula: **Outcome → demo → decisions that matter.**
+
+- Open with one or two sentences describing the result.
+- Under **Example**, give readers specific things to try, then show the live
+  demo and source.
+- Under **Features**, explain only recipe-specific choices, overlapping
+  conditions, and meaningful caveats. Use short paragraphs with descriptive
+  labels, such as **State precedence** or **Motion preferences**.
+- Assume familiarity with CSS Hooks basics. Link to foundational documentation
+  when needed rather than explaining what `on` or `createHooks()` does.
+- Keep accessibility and platform notes specific to the example. Do not turn
+  recipes into general tutorials or line-by-line code walkthroughs.
+- Use only the headings the content needs; omit sections that add no useful
+  information.
 
 Follow
-[MDN's HTML element terminology](https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Writing_style_guide#terminology):
+[MDN’s HTML element terminology](https://developer.mozilla.org/en-US/docs/MDN/Writing_guidelines/Writing_style_guide#terminology):
 wrap the element name in angle brackets and backticks, and use the word
 "element," as in "the `<span>` element." Do not use the JSX self-closing slash
 in prose.
@@ -117,7 +131,7 @@ coding agents.
 Development requires [Node.js](https://nodejs.org). See [.nvmrc](.nvmrc) for the
 required version.
 
-VS Code users can install the project's
+VS Code users can install the project’s
 [recommended extensions](.vscode/extensions.json).
 
 ### Commit messages

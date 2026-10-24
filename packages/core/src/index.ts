@@ -2216,7 +2216,7 @@ type MergeStylesFn<
  *
  * @typeParam ConfiguredHooks - The tuple of configured hooks
  * @typeParam CSSProperties - The type of a style object, typically defined by
- *   an app framework (e.g., React's `CSSProperties` type)
+ *   an app framework (e.g., React’s `CSSProperties` type)
  *
  * @public
  */
@@ -2317,7 +2317,7 @@ export type Hooks<ConfiguredHooks extends readonly Hook[], CSSProperties> = {
  * those flags.
  *
  * @typeParam CSSProperties - The type of a style object, typically defined by
- *   an app framework (e.g., React's `CSSProperties` type)
+ *   an app framework (e.g., React’s `CSSProperties` type)
  * @typeParam ConfiguredHooks - The tuple of hooks to declare
  *
  * @param hooks - The hooks to declare
@@ -2337,7 +2337,7 @@ export type CreateHooksFn<CSSProperties> = <
  * The functions configured by `createHooksSystem` for a specific app framework
  *
  * @typeParam CSSProperties - The type of a style object, typically defined by
- *   an app framework (e.g., React's `CSSProperties` type)
+ *   an app framework (e.g., React’s `CSSProperties` type)
  * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
  *   with which they conflict
  *
@@ -2362,7 +2362,7 @@ export type HooksSystem<
  * framework integration is not provided
  *
  * @typeParam CSSProperties - The type of a style object, typically defined by
- *   an app framework (e.g., React's `CSSProperties` type)
+ *   an app framework (e.g., React’s `CSSProperties` type)
  * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
  *   with which they conflict
  *
