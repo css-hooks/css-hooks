@@ -21,14 +21,14 @@ const hooksSystem = createHooksSystem<CSSProperties, CSSPropertyConflicts>(
 );
 
 /**
- * A hook factory configured to use Preact's `CSSProperties` type and logic for
+ * A hook factory configured to use Preact’s `CSSProperties` type and logic for
  * converting CSS values into strings
  *
  * @public
  */
 export const createHooks = hooksSystem.createHooks;
 
-/** A style merger configured to use Preact's `CSSProperties` type. @public */
+/** A style merger configured to use Preact’s `CSSProperties` type. @public */
 export const mergeStyles: HooksSystem<
   CSSProperties,
   CSSPropertyConflicts

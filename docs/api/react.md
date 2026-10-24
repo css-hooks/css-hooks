@@ -26,7 +26,7 @@ Description
 
 </td><td>
 
-A hook factory configured to use React's `CSSProperties` type and logic for converting CSS values into strings
+A hook factory configured to use React’s `CSSProperties` type and logic for converting CSS values into strings
 
 
 </td></tr>
@@ -37,7 +37,7 @@ A hook factory configured to use React's `CSSProperties` type and logic for conv
 
 </td><td>
 
-A style merger configured to use React's `CSSProperties` type.
+A style merger configured to use React’s `CSSProperties` type.
 
 
 </td></tr>

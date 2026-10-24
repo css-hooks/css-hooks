@@ -85,8 +85,8 @@ document
   .setAttribute("style", styleObjectToString(buttonStyle));
 ```
 
-The `mergeStyles` function combines the base style with the active style, so the
-button shrinks while you press it.
+The `mergeStyles` function combines the base style with the pressed style, so
+the button shrinks while you press it.
 
 ## 6. View the result
 

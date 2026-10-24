@@ -7,7 +7,7 @@ order: 3
 # Hooks and conditions
 
 A **hook** describes a CSS state that can be used to filter declarations in an
-element's style object so that they apply conditionally. Hooks work
+element’s style object so that they apply conditionally. Hooks work
 independently, but they can also serve as building blocks for more advanced
 conditions. This guide explains how to declare selector, at-rule, and flag hooks
 and combine them into reusable conditions.
@@ -37,7 +37,7 @@ function makes style declarations conditional. See
 ## Selector hooks
 
 A selector hook activates when the element matches its selector logic. Use
-selector hooks for the element's state, reusable class markers, relationships
+selector hooks for the element’s state, reusable class markers, relationships
 with ancestors or siblings, and other surrounding context. The `&` character
 represents the styled element. Every selector hook must include it.
 
@@ -52,15 +52,15 @@ represents the styled element. Every selector hook must include it.
 
 ## At-rule hooks
 
-An at-rule hook activates based on criteria beyond the element's selector, such
-as the browsing environment, a container's size or style, or the element's own
+An at-rule hook activates based on criteria beyond the element’s selector, such
+as the browsing environment, a container’s size or style, or the element’s own
 state. CSS Hooks supports these at-rules:
 
 - `@media` responds to the viewport, input devices, and user preferences.
 - `@container` responds to the size or styles of a containing element.
 - `@supports` checks whether the browser supports a CSS feature.
 - `@scope` limits a condition to a section of the document tree.
-- `@starting-style` defines an element's starting styles when it first renders
+- `@starting-style` defines an element’s starting styles when it first renders
   or changes from `display: none` to a rendered state.
 
 <!--prettier-ignore-start-->
@@ -69,7 +69,7 @@ state. CSS Hooks supports these at-rules:
 "@container (min-width: 400px)" // The container is at least 400px wide.
 "@supports (height: 100dvh)" // The browser supports the dvh unit.
 "@scope ([data-theme='dark']) to ([data-theme])" // Within a dark-themed donut scope
-"@starting-style" // The element's first rendered styles
+"@starting-style" // The element’s first rendered styles
 ```
 <!--prettier-ignore-end-->
 
@@ -81,7 +81,7 @@ descendants.
 
 A flag hook activates when its inherited Boolean state is enabled. Use flags
 when an entire subtree must respond to shared state, such as a color mode,
-display density, or a parent's interaction state. Flags rely on property
+display density, or a parent’s interaction state. Flags rely on property
 inheritance, so descendants can respond without receiving presentational state
 through component props or framework context.
 

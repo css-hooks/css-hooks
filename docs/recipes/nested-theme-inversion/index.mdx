@@ -1,0 +1,41 @@
+---
+title: Nested theme inversion
+description: Make nested panels alternate between light and dark themes.
+order: 4
+hidden: true
+---
+
+import App from "./App.tsx";
+import appSource from "./App.tsx?raw";
+import { styleSheet } from "./css.ts";
+import cssSource from "./css.ts?raw";
+
+export const recipeFiles = { "App.tsx": appSource, "css.ts": cssSource };
+
+# Nested theme inversion
+
+Make a panel’s theme alternate between dark and light mode automatically at each
+level of nesting.
+
+## Example
+
+Use the **Page theme** menu to select **Light** or **Dark**. The outer panel
+switches to the opposite theme. The inner panel then switches back to create
+contrast with its parent.
+
+<Wide>
+  <RecipeDemo files={recipeFiles} styleSheet={styleSheet()}>
+    <App />
+  </RecipeDemo>
+</Wide>
+
+## Features
+
+**Theme inheritance.** Each `ContrastPanel` inherits the `%dark` flag indicating
+whether its parent is in dark mode. Likewise, descendants inherit its `%dark`
+flag value.
+
+**Theme inversion.** When the inherited `%dark` flag is disabled, the
+`invertDark` style enables `%dark`. Otherwise, it disables `%dark`. Each
+`ContrastPanel` uses this `invertDark` style to create contrast with its
+surrounding context.

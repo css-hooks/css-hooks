@@ -82,5 +82,5 @@ const invertDark = mergeStyles(
 When the inherited `%dark` flag is disabled, the style enables it for the
 element and its descendants. When the inherited flag is enabled, the style
 disables it instead. See the
-[Automatic light/dark inversion](../recipes/automatic-light-dark-inversion/)
-recipe for a complete example.
+[Nested theme inversion](../recipes/nested-theme-inversion/) recipe for a
+complete example.

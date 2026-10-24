@@ -103,12 +103,12 @@ of JavaScript expressions.
 
 A public `style` prop can be useful for layout, integration, and one-off
 customization that a component does not anticipate. It also lets consumers
-override declarations outside the component's documented API, so expose it only
+override declarations outside the component’s documented API, so expose it only
 when that flexibility is appropriate.
 
 To add this escape hatch to the `Button` component, expose the native `style`
 prop. Then pass its value as the last `mergeStyles` argument to override the
-component's internal styles:
+component’s internal styles:
 
 ```diff
 -type ButtonProps = Omit<ComponentProps<"button">, "style"> & {
@@ -136,7 +136,7 @@ component's internal styles:
 ```
 
 Later style objects override matching properties from earlier ones. Because the
-consumer's `style` prop is passed last, it overrides internal values, including
+consumer’s `style` prop is passed last, it overrides internal values, including
 conditional ones.
 
 ### Conflict protection
@@ -153,7 +153,7 @@ mergeStyles(
 );
 ```
 
-Because a component's `style` prop is usually typed as `CSSProperties`, the
+Because a component’s `style` prop is usually typed as `CSSProperties`, the
 compiler cannot determine which specific properties will be passed. Therefore,
 conflict protection does not cross the component boundary. TypeScript checks
 internal styles for conflicts, but consumer overrides can still introduce them

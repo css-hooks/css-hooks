@@ -300,7 +300,7 @@ export default function Home({
                       components are self-contained, you stop hunting through
                       external stylesheets to find a layout bug. You can
                       refactor confidently, knowing your changes are scoped
-                      exactly where they&apos;re written.
+                      exactly where they’re written.
                     </>
                   ),
                 },
@@ -743,7 +743,7 @@ export default function Home({
               }
             >
               <p style={{ margin: 0 }}>
-                That&apos;s how I always wished the style prop worked!
+                That’s how I always wished the style prop worked!
               </p>
             </Testimonial>
             <Testimonial
@@ -757,11 +757,10 @@ export default function Home({
               }
             >
               <p style={{ margin: 0 }}>
-                I absolutely love it. There&apos;s just something
-                &quot;fresh&quot; about it. Simple to get started, practically
-                no overhead, and it just makes sense. Best part is that it does
-                this all using native CSS features, nothing fancy - just really
-                cleverly done.
+                I absolutely love it. There’s just something &quot;fresh&quot;
+                about it. Simple to get started, practically no overhead, and it
+                just makes sense. Best part is that it does this all using
+                native CSS features, nothing fancy - just really cleverly done.
               </p>
             </Testimonial>
             <Testimonial
@@ -804,7 +803,7 @@ export default function Home({
               }
             >
               <p style={{ margin: 0 }}>
-                I&apos;m curious if there is a &quot;catch&quot; to css hooks,
+                I’m curious if there is a &quot;catch&quot; to css hooks,
                 because from first glance it seems too good to be true!
               </p>
             </Testimonial>

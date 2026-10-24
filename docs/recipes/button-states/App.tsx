@@ -3,14 +3,11 @@ import { useState } from "react";
 
 import { and, mergeStyles, on } from "./css";
 
-function Button({
-  style,
-  ...props
-}: ComponentProps<"button">) {
+function Button(
+  props: Omit<ComponentProps<"button">, "style">,
+) {
   return (
     <button
-      type="button"
-      {...props}
       style={mergeStyles(
         {
           border: 0,
@@ -52,15 +49,14 @@ function Button({
           background: "#334155",
           color: "#94a3b8",
         }),
-        style,
       )}
+      {...props}
     />
   );
 }
 
 export default function App() {
   const [disabled, setDisabled] = useState(false);
-  const [count, setCount] = useState(0);
 
   return (
     <main
@@ -99,12 +95,7 @@ export default function App() {
         />
         Disable button
       </label>
-      <Button
-        disabled={disabled}
-        onClick={() => setCount(count + 1)}
-      >
-        Count: {count}
-      </Button>
+      <Button disabled={disabled}>Save changes</Button>
     </main>
   );
 }

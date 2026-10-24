@@ -34,14 +34,14 @@ Copy this prompt into a coding agent to perform the migration:
 > In particular:
 >
 > - Find `pipe` or `pipeInto` calls that combine style objects with `on(...)` transforms, including reusable values later passed to a `style` prop. Replace those calls with `mergeStyles`, preserving argument order.
-> - Export `mergeStyles` from the project's styling module.
+> - Export `mergeStyles` from the project’s styling module.
 > - Do not replace unrelated uses of `pipe` or remove a pipeline dependency that is still used.
 > - For direct `@css-hooks/core` usage, migrate `buildHooksSystem` to `createHooksSystem` and destructure the returned functions.
 > - Apply the framework compatibility requirements only when relevant.
 > - Resolve new property-conflict errors without changing intended styling behavior.
 > - Avoid unrelated refactoring or formatting.
 >
-> Inspect the entire project for affected usage. Update dependencies using the project's existing package manager, run its type checker and tests, and summarize any work that still requires manual review.
+> Inspect the entire project for affected usage. Update dependencies using the project’s existing package manager, run its type checker and tests, and summarize any work that still requires manual review.
 > ```
 
 ## Style pipelines
@@ -78,7 +78,7 @@ Replace each CSS Hooks style pipeline with `mergeStyles`:
 Keep the base style and conditional styles in the same order as the v3 pipeline.
 Unlike the v3 pipeline, `mergeStyles` also accepts ordinary style objects. Pass
 an external style object last when it should take precedence over the
-component's internal styles.
+component’s internal styles.
 
 Remove the pipeline dependency if it has no other uses.
 
@@ -99,7 +99,7 @@ directly. Destructure the functions your integration needs from the result:
 
 The returned `mergeStyles` function uses the same CSS properties type and value
 stringifier as `createHooks`. Use this returned function so both APIs share your
-integration's types and serialization behavior.
+integration’s types and serialization behavior.
 
 ## Framework compatibility
 

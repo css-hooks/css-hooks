@@ -10,7 +10,7 @@ hidden: true
 CSS Hooks v3 accepts hook strings instead of a configuration object and uses a
 pipeline function to apply conditional styles.
 
-To migrate from v2, update your styling module's exports, replace complex hooks
+To migrate from v2, update your styling module’s exports, replace complex hooks
 with reusable conditions, and replace calls to the `css` function with a
 pipeline. Choose a pipeline implementation before updating inline styles.
 
@@ -112,7 +112,7 @@ left to right. Keep that order when you migrate each `css` call.
 Update each inline style that uses the v2 `css` function:
 
 1. Replace `css` with [`pipe`](#pipeline-function).
-2. Move the `on` array's contents outside of the style object and pass them as
+2. Move the `on` array’s contents outside of the style object and pass them as
    additional inputs to `pipe` after the style object.
 3. Remove the `on` field from the style object.
 4. Update `$` function calls to use the new function `on`.
