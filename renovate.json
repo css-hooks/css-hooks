@@ -11,13 +11,6 @@
   "commitMessageExtra": "to v{{lowercase newVersion}}",
   "packageRules": [
     {
-      "matchUpdateTypes": ["configMigration"],
-      "commitMessagePrefix": "misc:",
-      "commitMessageTopic": "configuration",
-      "commitMessageAction": "migrate",
-      "prTitle": "misc: migrate renovate configuration"
-    },
-    {
       "description": "Default major update prefix (Broadest rule)",
       "matchUpdateTypes": ["major"],
       "commitMessagePrefix": "breaking:",
