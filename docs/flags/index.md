@@ -65,12 +65,10 @@ declared flags together:
 <main style={enable("%dark", "%compact")}>{/* Dark, compact subtree */}</main>
 ```
 
-## Inversion
+## Conditional controls
 
-The element carrying the `enable` or `disable` function observes the newly
-assigned value. When either function is applied conditionally, it observes the
-value from the nearest ancestor. This makes it possible to invert a flag without
-creating a cycle:
+Controls can apply conditionally. For example, this style inverts the inherited
+`%dark` flag:
 
 ```typescript
 const invertDark = mergeStyles(
@@ -79,8 +77,8 @@ const invertDark = mergeStyles(
 );
 ```
 
-When the inherited `%dark` flag is disabled, the style enables it for the
-element and its descendants. When the inherited flag is enabled, the style
-disables it instead. See the
-[Nested theme inversion](../recipes/nested-theme-inversion/) recipe for a
-complete example.
+Conditions on `enable` or `disable` are always evaluated against _inherited_
+flag values. This avoids circular logic that would silently break at runtime.
+
+Conditions on ordinary style declarations are evaluated against the element's
+own flag values.
