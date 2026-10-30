@@ -1,14 +1,13 @@
 ---
 title: Quickstart
-description: Adding CSS Hooks to a new or existing project
+description: Create a minimal app with CSS Hooks.
 order: 2
 ---
 
 # Quickstart
 
-Use these guides to add CSS Hooks to a new or existing project.
-
-Choose your framework or browser environment:
+Get started with CSS Hooks by building a minimal app. Choose your framework or
+environment:
 
 - [React](./react/index.md)
 - [Preact](./preact/index.md)
@@ -16,5 +15,5 @@ Choose your framework or browser environment:
 - [Qwik](./qwik/index.md)
 - [No framework](./vanilla/index.md)
 
-If your framework is not listed, start with [No framework](./vanilla/index.md).
-Adapt the style-object conversion to your renderer.
+If your framework is not listed, start with [No framework](./vanilla/index.md)
+to learn how to use the core package directly.

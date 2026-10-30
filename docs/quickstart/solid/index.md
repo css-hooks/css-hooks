@@ -1,141 +1,83 @@
 ---
 title: Solid
-description: Adding CSS Hooks to a Solid project
+description: Create a minimal Solid app with CSS Hooks.
 order: 3
 ---
 
 # Quickstart: Solid
 
-This guide shows how to add CSS Hooks to a Solid project.
-
 ## 1. Create the project
 
-Create a Solid app with Vite. If you already have a project, continue to step 2.
-
 ```bash
-npm create vite@latest css-hooks-playground -- --template solid-ts
+npm create solid@latest css-hooks-playground -- --solid --template bare --ts
 cd css-hooks-playground
 ```
 
-## 2. Use Solid v2
-
-The Vite `solid-ts` template targets Solid v1, but `@css-hooks/solid` v4
-requires Solid v2. If your project already uses Solid v2, continue to step 3.
-Otherwise, replace the Solid v1 plugin and packages with their Solid v2
-equivalents.
-
-```bash
-npm uninstall vite-plugin-solid
-npm install solid-js@next @solidjs/web@next
-npm install -D @solidjs/vite-plugin
-```
-
-Replace the Solid v1 Vite plugin.
-
-```diff
-// vite.config.ts
-
- import { defineConfig } from "vite";
--import solid from "vite-plugin-solid";
-+import solid from "@solidjs/vite-plugin";
-
- export default defineConfig({
-   plugins: [solid()],
- });
-```
-
-Set `jsxImportSource` to Solid v2.
-
-```diff
-// tsconfig.app.json
-
--    "jsxImportSource": "solid-js",
-+    "jsxImportSource": "@solidjs/web",
-```
-
-## 3. Install CSS Hooks
+## 2. Install CSS Hooks
 
 ```bash
 npm install @css-hooks/solid@next
 ```
 
-## 4. Define a hook
-
-Create `src/css.ts` to export shared styling utilities.
+## 3. Create the styling module
 
 ```typescript
 // src/css.ts
 
 import { createHooks, mergeStyles } from "@css-hooks/solid";
 
+export const { on, styleSheet } = createHooks("&:hover");
+
 export { mergeStyles };
-export const { on, styleSheet } = createHooks("&:active");
 ```
 
-`createHooks()` declares `&:active` and returns the `on` and `styleSheet`
-functions.
+## 4. Render the stylesheet
 
-## 5. Render the stylesheet
+```diff
+// src/Document.tsx
 
-Render `styleSheet()` once at the application root. The stylesheet evaluates the
-declared hook.
+ import type { ParentProps } from 'solid-js';
+ import { HydrationScript } from '@solidjs/web';
++import { styleSheet } from './css';
 
-```tsx
-// src/index.tsx
-
-import { render } from "@solidjs/web";
-
-import App from "./App";
-import { styleSheet } from "./css";
-
-render(
-  () => (
-    <>
-      <style innerHTML={styleSheet()} />
-      <App />
-    </>
-  ),
-  document.getElementById("root")!,
-);
+ export default function Document(props: ParentProps) {
+   return (
+     <html lang="en">
+       <head>
+         <meta charset="utf-8" />
+         <meta name="viewport" content="width=device-width, initial-scale=1" />
+         <link rel="icon" href="/favicon.ico" />
+         <title>Solid App</title>
++        <style innerHTML={styleSheet()} />
+         <HydrationScript />
+       </head>
+       <body>{props.children}</body>
+     </html>
+   );
+ }
 ```
 
-## 6. Apply an override style
+## 5. Create a hover effect
 
-Use the declared `&:active` hook in a component. The `mergeStyles` function
-combines the base style with the pressed style, so the button shrinks while you
-press it.
+Replace the contents of `src/App.tsx` with the following:
 
 ```tsx
 // src/App.tsx
 
-import { mergeStyles, on } from "./css";
+import { on } from "./css";
 
 export default function App() {
-  return (
-    <button
-      style={mergeStyles(
-        { transition: "transform 75ms" },
-        on("&:active", { transform: "scale(0.9)" }),
-      )}
-    >
-      Press me
-    </button>
-  );
+  return <button style={on("&:hover", { color: "red" })}>Hover me</button>;
 }
 ```
 
-## 7. View the result
-
-Start the development server and view the application in your browser to see the
-result.
-
-If you used Vite, start the development server using the following command:
+## 6. View the result
 
 ```bash
 npm run dev
 ```
 
-By default, the development server is accessible at http://localhost:5173.
+By default, the development server is accessible at http://localhost:3000.
 
 ## Next steps
 

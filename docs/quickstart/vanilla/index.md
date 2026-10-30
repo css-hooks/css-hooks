@@ -1,17 +1,12 @@
 ---
 title: No framework
-description: Add CSS Hooks to a vanilla TypeScript project
+description: Create a minimal TypeScript app with CSS Hooks.
 order: 99
 ---
 
 # Quickstart: No framework
 
-This guide shows how to add CSS Hooks to a vanilla TypeScript project.
-
 ## 1. Create the project
-
-Create a vanilla TypeScript app with Vite. If you already have a project,
-continue to step 2.
 
 ```bash
 npm create vite@latest css-hooks-playground -- --template vanilla-ts
@@ -21,79 +16,77 @@ cd css-hooks-playground
 ## 2. Install CSS Hooks
 
 ```bash
-npm install @css-hooks/core@next
+npm install @css-hooks/core@next csstype
 ```
 
-## 3. Define a hook
-
-Create `src/css.ts` to export shared styling utilities.
+## 3. Create the styling module
 
 ```typescript
 // src/css.ts
 
 import { createHooksSystem } from "@css-hooks/core";
+import type { PropertiesHyphen } from "csstype";
 
-const { createHooks, mergeStyles } = createHooksSystem();
+const { createHooks, mergeStyles } =
+  createHooksSystem<PropertiesHyphen<string>>();
 
-export { mergeStyles };
-export const { on, styleSheet } = createHooks("&:active");
-```
+export const { on, styleSheet } = createHooks("&:hover");
 
-`createHooksSystem()` provides renderer-independent styling utilities.
-`createHooks()` declares `&:active` and returns the `on` and `styleSheet`
-functions.
-
-## 4. Render the stylesheet
-
-Add the stylesheet to the document once near the application entry point. The
-stylesheet evaluates the declared hook.
-
-```typescript
-// src/main.ts
-
-import { styleSheet } from "./css";
-
-const style = document.createElement("style");
-style.textContent = styleSheet();
-document.head.append(style);
-```
-
-## 5. Apply an override style
-
-Convert the style object from the core package to an inline style string. This
-example only supports the string values in this example. In an application, use
-a serializer designed for your renderer.
-
-```typescript
-// src/main.ts
-
-import { mergeStyles, on } from "./css";
-
-function styleObjectToString(style: Record<string, string>) {
+/** Converts a style object to a string. */
+export function styleObjectToString(style: PropertiesHyphen<string>) {
   return Object.entries(style)
+    .filter(([, value]) => value !== undefined)
     .map(([property, value]) => `${property}: ${value}`)
     .join("; ");
 }
 
-const buttonStyle = mergeStyles(
-  { transition: "transform 75ms" },
-  on("&:active", { transform: "scale(0.9)" }),
-);
-
-document
-  .querySelector<HTMLButtonElement>("#button")!
-  .setAttribute("style", styleObjectToString(buttonStyle));
+export { mergeStyles };
 ```
 
-The `mergeStyles` function combines the base style with the pressed style, so
-the button shrinks while you press it.
+## 4. Create a button
 
-## 6. View the result
+Replace the contents of `src/main.ts` with the following:
 
-Start the development server and view the application in your browser to see the
-result.
+```typescript
+// src/main.ts
 
-If you used Vite, start the development server using the following command:
+document.querySelector("#app")!.innerHTML = "<button>Hover me</button>";
+```
+
+## 5. Render the stylesheet
+
+```diff
+// src/main.ts
+
++import { styleSheet } from "./css";
++
++const style = document.createElement("style");
++style.textContent = styleSheet();
++document.head.append(style);
++
+ document.querySelector("#app")!.innerHTML = "<button>Hover me</button>";
+```
+
+## 6. Create a hover effect
+
+```diff
+// src/main.ts
+
+-import { styleSheet } from "./css";
++import { on, styleObjectToString, styleSheet } from "./css";
+
+ const style = document.createElement("style");
+ style.textContent = styleSheet();
+ document.head.append(style);
+
+ document.querySelector("#app")!.innerHTML = "<button>Hover me</button>";
++
++document
++  .querySelector("button")!
++  .setAttribute("style", styleObjectToString(on("&:hover", { color: "red" })));
+```
+
+## 7. View the result
 
 ```bash
 npm run dev
