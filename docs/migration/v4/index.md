@@ -113,15 +113,13 @@ Preact v10 release.
 
 `@css-hooks/solid` targets Solid v2 through `@solidjs/web` instead of Solid v1
 through `solid-js`. Migrate your application to Solid v2 before upgrading CSS
-Hooks. See the [Solid quickstart](../../quickstart/solid/index.md) for the
-package, Vite plugin, and TypeScript configuration changes.
+Hooks.
 
 ### Qwik
 
 `@css-hooks/qwik` targets Qwik v2 through `@qwik.dev/core` instead of Qwik v1
 through `@builder.io/qwik`. Migrate your application to Qwik v2 before upgrading
-CSS Hooks. See the [Qwik quickstart](../../quickstart/qwik/index.md) for the
-package, optimizer import, and TypeScript configuration changes.
+CSS Hooks.
 
 ## Property conflict protection
 

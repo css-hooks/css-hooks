@@ -1,132 +1,93 @@
 ---
 title: Qwik
-description: Adding CSS Hooks to a Qwik project
+description: Create a minimal Qwik app with CSS Hooks.
 order: 4
 ---
 
 # Quickstart: Qwik
 
-This guide shows how to add CSS Hooks to a Qwik project.
-
 ## 1. Create the project
 
-Create a Qwik app with Vite. If you already have a project, continue to step 2.
-
 ```bash
-npm create vite@latest css-hooks-playground -- --template qwik-ts
+npm create qwik@rc empty css-hooks-playground
 cd css-hooks-playground
 ```
 
-## 2. Use Qwik v2
-
-The Vite `qwik-ts` template uses Qwik v1, which does not support Vite 8. If your
-project already uses Qwik v2, run `npm install @css-hooks/qwik@next` and
-continue to step 3. Otherwise, replace Qwik v1 with Qwik v2 and install CSS
-Hooks.
+## 2. Install CSS Hooks
 
 ```bash
-npm uninstall @builder.io/qwik
-npm install @css-hooks/qwik@next @qwik.dev/core
+npm install @css-hooks/qwik@next
 ```
 
-Replace the Qwik v1 optimizer import.
-
-```diff
-// vite.config.ts
-
--import { qwikVite } from "@builder.io/qwik/optimizer";
-+import { qwikVite } from "@qwik.dev/core/optimizer";
- import { defineConfig } from "vite";
-
- export default defineConfig({
-   plugins: [
-     qwikVite({
-       csr: true,
-     }),
-   ],
- });
-```
-
-Set `jsxImportSource` to Qwik v2.
-
-```diff
-// tsconfig.app.json
-
--    "jsxImportSource": "@builder.io/qwik",
-+    "jsxImportSource": "@qwik.dev/core",
-```
-
-## 3. Define a hook
-
-Create `src/css.ts` to export shared styling utilities.
+## 3. Create the styling module
 
 ```typescript
 // src/css.ts
 
 import { createHooks, mergeStyles } from "@css-hooks/qwik";
 
-export { mergeStyles };
-export const { on, styleSheet } = createHooks("&:active");
-```
+export const { on, styleSheet } = createHooks("&:hover");
 
-`createHooks()` declares `&:active` and returns the `on` and `styleSheet`
-functions.
+export { mergeStyles };
+```
 
 ## 4. Render the stylesheet
 
-Render `styleSheet()` once at the application root. The stylesheet evaluates the
-declared hook.
+```diff
+// src/root.tsx
 
-```tsx
-// src/main.tsx
+ import { component$ } from "@qwik.dev/core";
+ import {
+   DocumentHeadTags,
+   RouterOutlet,
+   useLocation,
+   useQwikRouter,
+ } from "@qwik.dev/router";
 
-import "@qwik.dev/core/qwikloader.js";
++import { styleSheet } from "./css";
+ import "./global.css";
 
-import { render } from "@qwik.dev/core";
+ export default component$(() => {
+   useQwikRouter();
+   const { url } = useLocation();
 
-import { App } from "./app";
-import { styleSheet } from "./css";
+   return (
+     <>
+       <head>
+         <meta charset="utf-8" />
+         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-render(
-  document.getElementById("app")!,
-  <>
-    <style dangerouslySetInnerHTML={styleSheet()} />
-    <App />
-  </>,
-);
+         <DocumentHeadTags />
++        <style dangerouslySetInnerHTML={styleSheet()} />
+
+         <link rel="canonical" href={url.href} />
+       </head>
+       <body>
+         <RouterOutlet />
+       </body>
+     </>
+   );
+ });
 ```
 
-## 5. Apply an override style
+## 5. Create a hover effect
 
-Use the declared `&:active` hook in a component. The `mergeStyles` function
-combines the base style with the pressed style, so the button shrinks while you
-press it.
+Replace the contents of `src/routes/index.tsx` with the following:
 
 ```tsx
-// src/app.tsx
+// src/routes/index.tsx
 
 import { component$ } from "@qwik.dev/core";
 
-import { mergeStyles, on } from "./css";
+import { on } from "../css";
 
-export const App = component$(() => (
-  <button
-    style={mergeStyles(
-      { transition: "transform 75ms" },
-      on("&:active", { transform: "scale(0.9)" }),
-    )}
-  >
-    Press me
-  </button>
+export default component$(() => (
+  <button style={on("&:hover", { color: "red" })}>Hover me</button>
 ));
 ```
 
 ## 6. View the result
-
-Start the development server and view the application in your browser to see the
-result.
-
-If you used Vite, start the development server using the following command:
 
 ```bash
 npm run dev
