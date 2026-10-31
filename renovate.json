@@ -30,6 +30,11 @@
       "enabled": false
     },
     {
+      "description": "Cap Node.js types at the .nvmrc major; update this limit when that major changes",
+      "matchPackageNames": ["@types/node"],
+      "allowedVersions": "<25.0.0"
+    },
+    {
       "description": "Block typescript v7 without linting support",
       "matchPackageNames": ["typescript"],
       "allowedVersions": "/^[0-68-9]|7\\.[^0]/"
