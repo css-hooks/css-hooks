@@ -1,19 +1,19 @@
 ---
 title: Quickstart
-description: Get up and running in a few simple steps.
+description: Create a minimal app with CSS Hooks.
 order: 2
 ---
 
 # Quickstart
 
-Welcome to CSS Hooks! In just a few steps, this Quickstart guide will help you
-take the simplest styling approach to the next level. To get started, choose
-your preferred framework below.
-
-## 0. Choose framework
+Get started with CSS Hooks by building a minimal app. Choose your framework or
+environment:
 
 - [React](./react/index.md)
 - [Preact](./preact/index.md)
 - [Solid](./solid/index.md)
 - [Qwik](./qwik/index.md)
 - [No framework](./vanilla/index.md)
+
+If your framework is not listed, start with [No framework](./vanilla/index.md)
+to learn how to use the core package directly.

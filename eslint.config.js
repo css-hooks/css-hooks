@@ -3,7 +3,6 @@
 import eslint from "@eslint/js";
 import prettierConfig from "eslint-config-prettier/flat";
 import importPlugin from "eslint-plugin-import";
-import prettier from "eslint-plugin-prettier";
 import react from "eslint-plugin-react";
 import importSortPlugin from "eslint-plugin-simple-import-sort";
 import unusedImportPlugin from "eslint-plugin-unused-imports";
@@ -101,6 +100,16 @@ export default tseslint.config(
     },
   },
   {
+    // Recipe demos are standalone examples, so they import example-only
+    // dependencies and use the single-file playground conventions.
+    files: ["docs/recipes/**/*.{ts,tsx}"],
+    rules: {
+      "import/extensions": "off",
+      "import/no-default-export": "off",
+      "import/no-extraneous-dependencies": "off",
+    },
+  },
+  {
     files: ["site/**/*.tsx"],
     languageOptions: {
       parserOptions: {
@@ -121,14 +130,6 @@ export default tseslint.config(
       ...react.configs.recommended.rules,
       ...react.configs["jsx-runtime"].rules,
       "react/function-component-definition": "error",
-    },
-  },
-  {
-    plugins: {
-      prettier,
-    },
-    rules: {
-      "prettier/prettier": "error",
     },
   },
   prettierConfig,

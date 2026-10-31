@@ -1,6 +1,7 @@
 /.github
 /CHANGELOG.md
 /docs/api
+/example/dist
 /packages/**/cjs
 /packages/**/esm
 /packages/**/types

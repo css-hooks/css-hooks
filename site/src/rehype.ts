@@ -40,6 +40,17 @@ export const rehypeClassName: Plugin<
     });
 };
 
+const filenameCommentPattern =
+  /^\/\/[ \t]+((?:[\w.-]+\/)*[\w.-]+\.(?:[cm]?[jt]sx?|css|html|json))[ \t]*(?:\r?\n(?:[ \t]*\r?\n)?|$)/;
+
+export function extractFilename(code: string) {
+  const match = code.match(filenameCommentPattern);
+  return {
+    code: match ? code.substring(match[0].length) : code,
+    filename: match?.[1],
+  };
+}
+
 export const rehypeStyle: Plugin<
   [TagNamePluginOptions<CSSProperties>],
   Root

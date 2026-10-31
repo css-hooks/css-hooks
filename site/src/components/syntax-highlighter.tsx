@@ -1,11 +1,10 @@
 import type { Element } from "hast";
 import type { CSSProperties } from "react";
 import { use } from "react";
-import { pipe, piped } from "remeda";
 import type { ThemeRegistrationRaw } from "shiki";
 import { codeToHtml } from "shiki";
 
-import { dark, merge, on, parseStyle, stringifyStyle } from "../css.ts";
+import { dark, mergeStyles, on, parseStyle, stringifyStyle } from "../css.ts";
 import {
   blue,
   gray,
@@ -345,7 +344,7 @@ const mutateStyle =
     const styleAttr = el.properties["style"];
     const baseStyle: CSSProperties =
       typeof styleAttr === "string" ? parseStyle(styleAttr) : {};
-    el.properties["style"] = pipe(baseStyle, f, stringifyStyle);
+    el.properties["style"] = stringifyStyle(f(baseStyle));
   };
 
 export function SyntaxHighlighter({
@@ -368,7 +367,9 @@ export function SyntaxHighlighter({
             defaultColor: false,
             transformers: [
               {
-                code: mutateStyle(piped(merge({ font: "inherit" }))),
+                code: mutateStyle(style =>
+                  mergeStyles(style, { font: "inherit" }),
+                ),
               },
               {
                 pre(el) {
@@ -377,14 +378,11 @@ export function SyntaxHighlighter({
                 },
               },
               {
-                span: mutateStyle(
-                  piped(
-                    merge({
-                      color: "var(--shiki-light)",
-                    }),
-                    on(dark, {
-                      color: "var(--shiki-dark)",
-                    }),
+                span: mutateStyle(style =>
+                  mergeStyles(
+                    style,
+                    { color: "var(--shiki-light)" },
+                    on(dark, { color: "var(--shiki-dark)" }),
                   ),
                 ),
               },

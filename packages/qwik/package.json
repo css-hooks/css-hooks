@@ -1,45 +1,54 @@
 {
   "name": "@css-hooks/qwik",
   "description": "CSS Hooks for Qwik",
-  "version": "3.1.2",
+  "version": "4.0.0-next.87",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "3.1.2"
+    "@css-hooks/core": "4.0.0-next.87"
   },
   "devDependencies": {
-    "@builder.io/qwik": "^1.9.0"
+    "@qwik.dev/core": "^2.0.0-beta.30"
   },
   "files": [
     "cjs",
     "esm",
-    "types",
     "tsdoc-metadata.json",
     "!**/*.test.*"
   ],
   "license": "MIT",
-  "main": "cjs",
-  "module": "esm",
+  "main": "./cjs/index.js",
+  "module": "./esm/index.js",
   "type": "module",
+  "sideEffects": false,
   "peerDependencies": {
-    "@builder.io/qwik": ">=1.2.0 <2"
+    "@qwik.dev/core": ">=2.0.0-beta.30 <3"
   },
   "peerDependenciesMeta": {
-    "@builder.io/qwik": {
+    "@qwik.dev/core": {
       "optional": true
     }
   },
   "private": false,
+  "homepage": "https://next.css-hooks.com",
   "repository": {
     "type": "git",
     "url": "https://github.com/css-hooks/css-hooks.git",
     "directory": "packages/qwik"
   },
   "scripts": {
+    "attw": "wireit",
     "build": "wireit",
+    "codegen": "npm run --silent start -w @scripts/css-property-conflicts -- --casing camel --casing kebab > src/css-property-conflicts.ts",
     "prepublishOnly": "wireit",
     "test": "node --conditions @css-hooks/source --test src/index.test.ts"
   },
   "wireit": {
+    "attw": {
+      "command": "attw --pack .",
+      "dependencies": [
+        "build"
+      ]
+    },
     "apix": {
       "command": "api-extractor run",
       "dependencies": [
@@ -47,7 +56,7 @@
       ]
     },
     "build": {
-      "command": "tsc && tsc --project tsconfig.cjs.json",
+      "command": "tsc && tsc --project tsconfig.cjs.json && node -e \"require('node:fs').writeFileSync('cjs/package.json', JSON.stringify({type:'commonjs'}))\"",
       "dependencies": [
         "../core:build"
       ]
@@ -58,13 +67,12 @@
       ]
     }
   },
-  "types": "types",
+  "types": "./esm/index.d.ts",
   "exports": {
     ".": {
       "@css-hooks/source": "./src/index.ts",
       "import": "./esm/index.js",
-      "require": "./cjs/index.js",
-      "types": "./types/index.d.ts"
+      "require": "./cjs/index.js"
     }
   }
 }
