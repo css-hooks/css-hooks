@@ -1,6 +1,6 @@
 {
   "name": "site",
-  "version": "4.0.0-next.86",
+  "version": "4.0.0-next.87",
   "private": true,
   "type": "module",
   "scripts": {
@@ -30,7 +30,7 @@
     "isbot": "^5"
   },
   "devDependencies": {
-    "@css-hooks/react": "4.0.0-next.86",
+    "@css-hooks/react": "4.0.0-next.87",
     "@mdx-js/rollup": "^3.1.1",
     "@react-router/dev": "^8.0.0",
     "@total-typescript/ts-reset": "^0.6.1",
