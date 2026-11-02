@@ -2700,16 +2700,20 @@ export function createHooksSystem<
       on(condition, inputStyle) {
         const style = {} as CSSProperties;
         for (const property in inputStyle) {
-          const suffix = flagKeys.has(property) ? "i" : "";
-          const overrideValue = stringify(inputStyle[property], property);
+          const inputStyleValue = inputStyle[property];
+          if (inputStyleValue === undefined) {
+            continue;
+          }
+          const overrideValue = stringify(inputStyleValue, property);
           if (overrideValue === null) {
             continue;
           }
+
           const [value, extraDecls] = buildExpression(
             condition,
             overrideValue,
             fallbackMarker,
-            suffix,
+            flagKeys.has(property) ? "i" : "",
           );
           Object.assign(style, { [property]: value }, extraDecls);
         }

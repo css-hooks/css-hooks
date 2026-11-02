@@ -721,6 +721,31 @@ describe(`in ${selectedBrowser}`, () => {
         await page.hover("#target");
         await assertColor("#target", "blue");
       });
+
+      describe("with default serializer", () => {
+        const { createHooks } = createHooksSystem();
+
+        it("ignores undefined conditional values", async () => {
+          const { styleSheet, on } = createHooks("&:hover");
+
+          await render(
+            <div
+              id="target"
+              style={mergeStyles(
+                { color: "gray" },
+                on("&:hover", {
+                  color: undefined,
+                }),
+              )}
+            />,
+            `#target { height: 1px; width: 1px } ${styleSheet()}`,
+          );
+
+          await assertColor("#target", "gray");
+          await page.hover("#target");
+          await assertColor("#target", "gray");
+        });
+      });
     });
   }
 });
