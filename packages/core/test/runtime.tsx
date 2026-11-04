@@ -96,6 +96,24 @@ describe("`mergeStyles` function", () => {
     );
   });
 
+  it("keeps compound override size proportional to the number of merges", () => {
+    const { on, and } = createHooksSystem().createHooks("&.a", "&.b", "&.c");
+    const sizes = [6, 12].map(count => {
+      let style = { color: "red" };
+      for (let i = 0; i < count; i++) {
+        style = mergeStyles(
+          style,
+          on(and("&.a", "&.b", "&.c"), { color: `rgb(${i},0,0)` }),
+        );
+      }
+      assert.ok(style.color.length < 1024);
+      return JSON.stringify(style).length;
+    });
+
+    assert.ok(sizes[1]! < sizes[0]! * 2.5, `Unexpected size growth: ${sizes}`);
+    assert.ok(sizes[1]! < 12000);
+  });
+
   it("uses the specified stringify function when merging values", () => {
     const { createHooks, mergeStyles } = createHooksSystem<CSS.Properties>(
       (value, propertyName) =>
@@ -354,6 +372,65 @@ describe(`in ${selectedBrowser}`, () => {
           );
         }
       });
+
+      it("preserves fallbacks through many compound overrides", async () => {
+        const { styleSheet, on, and } = createHooks("&.a", "&.b", "&.c");
+        let style: CSS.Properties = { color: "red" };
+        for (let i = 0; i < 12; i++) {
+          style = mergeStyles(
+            style,
+            on(and("&.a", "&.b", "&.c"), {
+              color: i % 2 === 0 ? "blue" : "green",
+            }),
+          );
+        }
+
+        await render(<div id="target" style={style} />, styleSheet());
+
+        for (const className of ["", "a", "a b", "a b c", "b c", ""]) {
+          await setClassName("#target", className);
+          await assertColor("#target", className === "a b c" ? "green" : "red");
+        }
+      });
+
+      for (const [reset, expected] of [
+        ["initial", "black"],
+        ["revert-layer", "yellow"],
+        ["revert", "purple"],
+        ["inherit", "purple"],
+        ["unset", "purple"],
+        ["INITIAL", "black"],
+        [String.raw`\69nitial`, "black"],
+      ] as const) {
+        it(`preserves ${reset} through later conditional overrides`, async () => {
+          const { styleSheet, on } = createHooks("&.a", "&.b");
+
+          await render(
+            <div style={{ color: "purple" }}>
+              <div
+                id="target"
+                style={mergeStyles(
+                  { color: "red" },
+                  on("&.a", { color: reset }),
+                  on("&.b", { color: "blue" }),
+                )}
+              />
+            </div>,
+            `${styleSheet()} #target { color: yellow }`,
+          );
+
+          for (const [className, color] of [
+            ["", "red"],
+            ["a", expected],
+            ["b", "blue"],
+            ["a b", "blue"],
+            ["a", expected],
+          ] as const) {
+            await setClassName("#target", className);
+            await assertColor("#target", color);
+          }
+        });
+      }
 
       it("applies flags to an element and its descendants", async () => {
         const { styleSheet, on, enable, disable } = createHooks("%dark");
