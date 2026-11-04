@@ -2381,6 +2381,25 @@ export function createHooksSystem<
 >(
   stringify: StringifyFn = String,
 ): HooksSystem<CSSProperties, CSSPropertyConflicts> {
+  // Hoists a long resolved value so conditional branches share a reference.
+  const hoist = (
+    value: string,
+    extraDecls: Record<string, unknown>,
+  ): string => {
+    // shortcut: unresolved chains can still grow; retain their property context before hoisting.
+    // CSS resets must resolve on the original property; escapes may hide them.
+    if (
+      value.includes(fallbackMarker) ||
+      value.length <= 32 ||
+      /\\|\b(?:initial|inherit|unset|revert(?:-layer)?)\b/i.test(value)
+    ) {
+      return value;
+    }
+    const hash = createHash(value);
+    extraDecls[`--${hash}`] = value;
+    return `var(--${hash})`;
+  };
+
   const mergeStyles = (...inputs: (object | null | undefined)[]): object => {
     let result: Record<PropertyKey, unknown> = {};
     for (const input of inputs) {
@@ -2400,13 +2419,15 @@ export function createHooksSystem<
           value.includes(fallbackMarker)
         ) {
           // Preserve missing fallbacks so enclosing merges can supply them.
-          const fallbackValue =
+          const fallbackValue = hoist(
             property in result
-              ? stringify(result[property], property)
-              : fallbackMarker;
+              ? (stringify(result[property], property) ?? "revert-layer")
+              : fallbackMarker,
+            merged,
+          );
           merged[property] = value.replace(
             fallbackMarkerPattern,
-            () => fallbackValue ?? "revert-layer",
+            () => fallbackValue,
           );
         } else {
           merged[property] = value;
@@ -2483,20 +2504,6 @@ export function createHooksSystem<
           ];
         }),
       ) as FlagStyle;
-    };
-
-    // Hoists a long value into its own custom property, returning a `var()`
-    // reference to it. Keeps the generated conditional expressions short.
-    const hoist = (
-      value: string,
-      extraDecls: Record<string, string>,
-    ): string => {
-      if (value.includes(fallbackMarker) || value.length <= 32) {
-        return value;
-      }
-      const hash = createHash(value);
-      extraDecls[`--${hash}`] = value;
-      return `var(--${hash})`;
     };
 
     // Builds the `var()` expression that selects `valueIfTrue` when the
