@@ -15,7 +15,7 @@ describe("`stringifyValue` function", () => {
   });
 
   it("returns unitless numbers as direct string equivalents", () => {
-    ["lineHeight", "flexGrow", "zIndex"].forEach(propertyName => {
+    ["lineHeight", "flexGrow", "mathDepth", "zIndex"].forEach(propertyName => {
       assert.equal(stringifyValue(1.5, propertyName), "1.5");
     });
   });
