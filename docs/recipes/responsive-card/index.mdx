@@ -1,0 +1,39 @@
+---
+title: Responsive card
+description: Make a card layout respond to the width of its container.
+order: 3
+hidden: true
+---
+
+import App from "./App.tsx";
+import appSource from "./App.tsx?raw";
+import { styleSheet } from "./css.ts";
+import cssSource from "./css.ts?raw";
+
+export const recipeFiles = { "App.tsx": appSource, "css.ts": cssSource };
+
+# Responsive card
+
+Change the layout of a card based on available space rather than viewport width.
+This allows the card to be placed in a narrow sidebar or a wide content area.
+
+## Example
+
+Move the **Container width** slider to adjust the width of the element
+containing the card. As you cross the 400px threshold, the card will change to a
+side-by-side layout with more generous spacing.
+
+<Wide>
+  <RecipeDemo files={recipeFiles} styleSheet={styleSheet()}>
+    <App />
+  </RecipeDemo>
+</Wide>
+
+## Features
+
+**Container width.** The wrapper establishes a container with
+`containerType: "inline-size"`. The card can then query the nearest container’s
+width to adjust its own layout accordingly.
+
+**Coordinated layout.** The `@container (min-width: 400px)` condition changes
+the flex direction, image width, and content padding all at the same time.

@@ -1,118 +1,79 @@
 ---
 title: React
-description: Get up and running with React in a few simple steps.
+description: Create a minimal React app with CSS Hooks.
 order: 1
 ---
 
 # Quickstart: React
 
-## 1. Initialize project
+## 1. Create the project
 
 ```bash
 npm create vite@latest css-hooks-playground -- --template react-ts
 cd css-hooks-playground
-npm install @css-hooks/react remeda
 ```
 
-## 2. Start dev server
+## 2. Install CSS Hooks
+
+```bash
+npm install @css-hooks/react@next
+```
+
+## 3. Create the styling module
+
+```typescript
+// src/css.ts
+
+import { createHooks, mergeStyles } from "@css-hooks/react";
+
+export const { on, styleSheet } = createHooks("&:hover");
+
+export { mergeStyles };
+```
+
+## 4. Render the stylesheet
+
+```diff
+// src/main.tsx
+
+ import { StrictMode } from 'react'
+ import { createRoot } from 'react-dom/client'
+-import './index.css'
+ import App from './App.tsx'
++import { styleSheet } from './css'
+
+ createRoot(document.getElementById('root')!).render(
+   <StrictMode>
++    <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
+     <App />
+   </StrictMode>,
+ )
+```
+
+## 5. Create a hover effect
+
+Replace the contents of `src/App.tsx` with the following:
+
+```tsx
+// src/App.tsx
+
+import { on } from "./css";
+
+export default function App() {
+  return <button style={on("&:hover", { color: "red" })}>Hover me</button>;
+}
+```
+
+## 6. View the result
 
 ```bash
 npm run dev
 ```
 
-Visit http://localhost:5173 to view changes in real time.
+By default, the development server is accessible at http://localhost:5173.
 
-## 3. Set up CSS Hooks
+## Next steps
 
-Create a `src/css.ts` module with the following contents:
-
-```typescript
-import { createHooks } from "@css-hooks/react";
-
-export const { styleSheet, on } = createHooks("&:active");
-```
-
-## 4. Add style sheet
-
-Modify `src/main.tsx` to add the style sheet to the document:
-
-<!-- prettier-ignore-start -->
-
-```diff
- import React from 'react'
- import ReactDOM from 'react-dom/client'
- import App from './App.tsx'
- import './index.css'
-+import { styleSheet } from './css.ts'
-
- ReactDOM.createRoot(document.getElementById('root')!).render(
-   <React.StrictMode>
-+    <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
-     <App />
-   </React.StrictMode>,
- )
-```
-
-<!-- prettier-ignore-end -->
-
-## 5. Add conditional style
-
-Use the configured `&:active` hook to implement an effect when the counter
-button is pressed:
-
-<!-- prettier-ignore-start -->
-
-```diff
- // src/App.tsx
-
- import { useState } from 'react'
- import reactLogo from './assets/react.svg'
- import viteLogo from '/vite.svg'
- import './App.css'
-+import { on } from './css.ts'
-+import { pipe } from 'remeda'
-
- function App() {
-   const [count, setCount] = useState(0)
-
-   return (
-     <>
-       <div>
-         <a href="https://vitejs.dev" target="_blank">
-           <img src={viteLogo} className="logo" alt="Vite logo" />
-         </a>
-         <a href="https://react.dev" target="_blank">
-           <img src={reactLogo} className="logo react" alt="React logo" />
-         </a>
-       </div>
-       <h1>Vite + React</h1>
-       <div className="card">
--        <button onClick={() => setCount((count) => count + 1)}>
-+        <button
-+          onClick={() => setCount((count) => count + 1)}
-+          style={pipe(
-+            {
-+              transition: "transform 75ms",
-+            },
-+            on("&:active", {
-+              transform: "scale(0.9)"
-+            })
-+          )}
-+        >
-           count is {count}
-         </button>
-         <p>
-           Edit <code>src/App.tsx</code> and save to test HMR
-         </p>
-       </div>
-       <p className="read-the-docs">
-         Click on the Vite and React logos to learn more
-       </p>
-     </>
-   )
- }
-
- export default App
-```
-
-<!-- prettier-ignore-end -->
+Continue to [Hooks and conditions](../../hooks-and-conditions/index.md) to
+declare more hooks, then read [Applying styles](../../applying-styles/index.md)
+for composition patterns.

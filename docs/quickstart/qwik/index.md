@@ -1,117 +1,102 @@
 ---
 title: Qwik
-description: Get up and running with Qwik in a few simple steps.
+description: Create a minimal Qwik app with CSS Hooks.
 order: 4
 ---
 
 # Quickstart: Qwik
 
-## 1. Initialize project
+## 1. Create the project
 
 ```bash
-npm create vite@latest css-hooks-playground -- --template qwik-ts
+npm create qwik@rc empty css-hooks-playground
 cd css-hooks-playground
-npm install @css-hooks/qwik remeda
 ```
 
-## 2. Start dev server
+## 2. Install CSS Hooks
+
+```bash
+npm install @css-hooks/qwik@next
+```
+
+## 3. Create the styling module
+
+```typescript
+// src/css.ts
+
+import { createHooks, mergeStyles } from "@css-hooks/qwik";
+
+export const { on, styleSheet } = createHooks("&:hover");
+
+export { mergeStyles };
+```
+
+## 4. Render the stylesheet
+
+```diff
+// src/root.tsx
+
+ import { component$ } from "@qwik.dev/core";
+ import {
+   DocumentHeadTags,
+   RouterOutlet,
+   useLocation,
+   useQwikRouter,
+ } from "@qwik.dev/router";
+
++import { styleSheet } from "./css";
+ import "./global.css";
+
+ export default component$(() => {
+   useQwikRouter();
+   const { url } = useLocation();
+
+   return (
+     <>
+       <head>
+         <meta charset="utf-8" />
+         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+         <DocumentHeadTags />
++        <style dangerouslySetInnerHTML={styleSheet()} />
+
+         <link rel="canonical" href={url.href} />
+       </head>
+       <body>
+         <RouterOutlet />
+       </body>
+     </>
+   );
+ });
+```
+
+## 5. Create a hover effect
+
+Replace the contents of `src/routes/index.tsx` with the following:
+
+```tsx
+// src/routes/index.tsx
+
+import { component$ } from "@qwik.dev/core";
+
+import { on } from "../css";
+
+export default component$(() => (
+  <button style={on("&:hover", { color: "red" })}>Hover me</button>
+));
+```
+
+## 6. View the result
 
 ```bash
 npm run dev
 ```
 
-Visit http://localhost:5173 to view changes in real time.
+By default, the development server is accessible at http://localhost:5173.
 
-## 3. Set up CSS Hooks
+## Next steps
 
-Create a `src/css.ts` module with the following contents:
-
-```typescript
-import { createHooks } from "@css-hooks/qwik";
-
-export const { styleSheet, on } = createHooks("&:active");
-```
-
-## 4. Add style sheet
-
-Modify `src/main.tsx` to add the style sheet to the document:
-
-<!-- prettier-ignore-start -->
-
-```diff
- import '@builder.io/qwik/qwikloader.js'
-
- import { render } from '@builder.io/qwik'
- import { App } from './app.tsx'
- import './index.css'
-+import { styleSheet } from './css.ts'
-
--render(document.getElementById('app') as HTMLElement, <App />)
-+render(
-+  document.getElementById('app') as HTMLElement,
-+  <>
-+    <style dangerouslySetInnerHTML={styleSheet()} />
-+    <App />
-+  </>
-+)
-```
-
-<!-- prettier-ignore-end -->
-
-## 5. Add conditional style
-
-Use the configured `&:active` hook to implement an effect when the counter
-button is pressed:
-
-<!-- prettier-ignore-start -->
-
-```diff
- // src/app.tsx
-
- import { component$, useSignal } from '@builder.io/qwik'
-
- import qwikLogo from './assets/qwik.svg'
- import viteLogo from '/vite.svg'
- import './app.css'
-+import { on } from './css.ts'
-+import { pipe } from 'remeda'
-
- export const App = component$(() => {
-   const count = useSignal(0)
-
-   return (
-     <>
-       <div>
-         <a href="https://vitejs.dev" target="_blank">
-           <img src={viteLogo} className="logo" alt="Vite logo" />
-         </a>
-         <a href="https://qwik.builder.io" target="_blank">
-           <img src={qwikLogo} className="logo qwik" alt="Qwik logo" />
-         </a>
-       </div>
-       <h1>Vite + Qwik</h1>
-       <div className="card">
--        <button onClick$={() => count.value++}>count is {count.value}</button>
-+        <button
-+          onClick$={() => count.value++}
-+          style={pipe(
-+            {
-+              transition: "transform 75ms",
-+            },
-+            on("&:active", {
-+              transform: "scale(0.9)"
-+            })
-+          )}
-+        >
-           count is {count}
-         </button>
-       </div>
-       <p className="read-the-docs">
-         Click on the Vite and Qwik logos to learn more
-       </p>
-     </>
-   )
- })
-```
-
-<!-- prettier-ignore-end -->
+Continue to [Hooks and conditions](../../hooks-and-conditions/index.md) to
+declare more hooks, then read [Applying styles](../../applying-styles/index.md)
+for composition patterns.

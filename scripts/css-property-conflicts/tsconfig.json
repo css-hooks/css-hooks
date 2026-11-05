@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": ".",
+    "target": "ES2024",
+    "noEmit": true,
+    "customConditions": null,
+    "types": ["node"],
+    "resolveJsonModule": true
+  },
+  "include": ["*.ts"]
+}

@@ -1,0 +1,115 @@
+name: quickstart
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+    inputs:
+      reset:
+        description: Accept the current scaffolds as a new baseline
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: quickstart
+  cancel-in-progress: false
+
+jobs:
+  check:
+    if: github.ref == 'refs/heads/next'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: find previous run
+        id: previous
+        if: ${{ !inputs.reset }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            for await (const { data: runs } of github.paginate.iterator(
+              github.rest.actions.listWorkflowRuns,
+              { ...context.repo, workflow_id: 'quickstart.yml', branch: 'next', per_page: 100 },
+            )) {
+              const previous = runs.find(run => run.id < context.runId);
+              if (!previous) continue;
+              if (previous.conclusion !== 'success') {
+                core.setFailed(`Previous run ${previous.html_url} did not succeed. Review the failure, then dispatch this workflow with reset enabled.`);
+                return;
+              }
+              core.setOutput('run-id', previous.id);
+              return;
+            }
+            core.info('First run: establishing the initial baseline.');
+
+      - name: download previous hashes
+        if: steps.previous.outputs.run-id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: quickstart-hashes
+          path: ${{ runner.temp }}/previous
+          run-id: ${{ steps.previous.outputs.run-id }}
+          github-token: ${{ github.token }}
+
+      - uses: actions/checkout@v4
+        with:
+          ref: next
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: scaffold quickstarts and hash files
+        env:
+          CI: "true"
+          npm_config_yes: "true"
+        shell: bash
+        run: |
+          for guide in "$GITHUB_WORKSPACE"/docs/quickstart/*/index.md; do
+            framework=$(basename "$(dirname "$guide")")
+            command=$(awk '
+              /^## 1\./ { step = 1; next }
+              step && /^## / { exit }
+              step && /^npm create / { print; exit }
+            ' "$guide")
+            if [[ -z "$command" ]]; then
+              echo "::error file=$guide::No step-1 scaffolding command found."
+              exit 1
+            fi
+            # Solid prompts for devtools even in CI; choose its default (No).
+            if [[ "$command" == "npm create solid@"* ]]; then
+              command+=" --no-devtools"
+            fi
+            mkdir -p "$RUNNER_TEMP/quickstarts/$framework"
+            (
+              cd "$RUNNER_TEMP/quickstarts/$framework"
+              bash -e -o pipefail -c "$command" < /dev/null
+              test -s css-hooks-playground/package.json
+            )
+          done
+          cd "$RUNNER_TEMP/quickstarts"
+          find . -type d \( -name .git -o -name node_modules \) -prune -o -type f -print0 |
+            LC_ALL=C sort -z | xargs -0 sha256sum > "$RUNNER_TEMP/quickstart-hashes.txt"
+          test -s "$RUNNER_TEMP/quickstart-hashes.txt"
+
+      - name: save current hashes
+        uses: actions/upload-artifact@v4
+        with:
+          name: quickstart-hashes
+          path: ${{ runner.temp }}/quickstart-hashes.txt
+          if-no-files-found: error
+          retention-days: 90
+          overwrite: true
+
+      - name: compare hashes
+        if: steps.previous.outputs.run-id != ''
+        shell: bash
+        run: |
+          if ! diff -u "$RUNNER_TEMP/previous/quickstart-hashes.txt" "$RUNNER_TEMP/quickstart-hashes.txt"; then
+            echo "::error::Quickstart scaffolds changed. Review the guides, then dispatch this workflow with reset enabled."
+            exit 1
+          fi
