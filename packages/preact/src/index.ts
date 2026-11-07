@@ -13,16 +13,9 @@ import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 export type * from "@css-hooks/core";
 export type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
-/**
- * See
- * https://github.com/preactjs/preact/blob/bc4e5bc536ddcafdca27e68b3339521ce0d34f00/compat/src/util.js#L15-L16
- */
-const IS_NON_DIMENSIONAL =
-  /^(-|f[lo].*[^se]$|g.{5,}[^ps]$|z|o[pr]|(W.{5})?[lL]i.*(t|mp)$|an|(bo|s).{4}Im|sca|m.{6}[ds]|ta|c.*[st]$|wido|ini|asp|fill|st)/;
-
-/** Additional cases not covered by Preact's IS_NON_DIMENSIONAL pattern */
-const IS_NON_DIMENSIONAL_EXTRA =
-  /^(?:hyphenateLimitChars|mathDepth|readingOrder|Webkit(?:Animation|BorderImage|BoxOrdinalGroup|Columns|MaskBoxImage(?:Outset|Slice|Width)?|Order))$/;
+/** Unitless properties observed in Chromium, Firefox, and WebKit */
+const UNITLESS =
+  /^(--|(Moz(ForceBrokenImageIcon|TabSize)|lineHeight|tabSize|font(SizeAdjus|Weigh)t|widows|scale|(s|WebkitS)hapeImageThreshold|((border|WebkitMaskBox)Image|maskBorder)(Outset|Slice|Width)?|(Moz|Webkit)Bo(rderImage|x(Flex|OrdinalGroup))|stroke(Dash(array|offset)|Miterlimit|Width)|mathDepth|hyphenateLimit(Char|Line)s|readingOrder|Webkit(BoxFlexGroup|HyphenateLimit(After|Before|Lines)|LineClamp|Perspective)|aspectRatio|(i|WebkitI)nitialLetter|flexLineCount|(a|(Moz|Webkit)A)nimation(IterationCount)?|(c|WebkitC)olumn(s|Count)|(f|WebkitF)lex(Grow|Shrink)?|(o|WebkitO)(pacity|rder)|grid(Area|(Column|Row)(End|Start)?)|(fill|flood|stop|stroke)Opacity|orphans|z(Index|oom))$)/;
 
 const hooksSystem = createHooksSystem<CSSProperties, CSSPropertyConflicts>(
   _stringifyValue,
@@ -44,12 +37,8 @@ export const mergeStyles: HooksSystem<
 
 /** @internal */
 export function _stringifyValue(value: unknown, propertyName: string) {
-  switch (typeof value) {
-    case "string":
-      return value;
-    case "number":
-      return `${value}${propertyName.startsWith("--") || IS_NON_DIMENSIONAL.test(propertyName) || IS_NON_DIMENSIONAL_EXTRA.test(propertyName) ? "" : "px"}`;
-    default:
-      return null;
+  if (typeof value === "number") {
+    return value + (UNITLESS.test(propertyName) ? "" : "px");
   }
+  return typeof value === "string" ? value : null;
 }

@@ -7,6 +7,7 @@
     "@css-hooks/core": "4.0.0-next.90"
   },
   "devDependencies": {
+    "playwright": "^1.65.0",
     "preact": "^11.0.0-0"
   },
   "files": [
@@ -40,7 +41,7 @@
     "build": "wireit",
     "codegen": "npm run --silent start -w @scripts/css-property-conflicts -- --casing camel > src/css-property-conflicts.ts",
     "prepublishOnly": "wireit",
-    "test": "node --conditions @css-hooks/source --test src/index.test.ts"
+    "test": "tsc && node --conditions @css-hooks/source --test test/index.ts"
   },
   "wireit": {
     "attw": {
@@ -56,7 +57,7 @@
       ]
     },
     "build": {
-      "command": "tsc && tsc --project tsconfig.cjs.json && node -e \"require('node:fs').writeFileSync('cjs/package.json', JSON.stringify({type:'commonjs'}))\"",
+      "command": "tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json && node -e \"require('node:fs').writeFileSync('cjs/package.json', JSON.stringify({type:'commonjs'}))\"",
       "dependencies": [
         "../core:build"
       ]

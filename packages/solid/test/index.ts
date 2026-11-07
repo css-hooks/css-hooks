@@ -1,4 +1,4 @@
-import { createHooks, mergeStyles } from "./index.ts";
+import { createHooks, mergeStyles } from "../src/index.ts";
 
 {
   const { on } = createHooks("&");

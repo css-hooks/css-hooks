@@ -34,7 +34,7 @@
     "build": "wireit",
     "codegen": "npm run --silent start -w @scripts/css-property-conflicts -- --casing kebab > src/css-property-conflicts.ts",
     "prepublishOnly": "wireit",
-    "test": "node --conditions @css-hooks/source --test src/index.test.ts"
+    "test": "tsc && node --conditions @css-hooks/source --test test/index.ts"
   },
   "wireit": {
     "attw": {
@@ -50,7 +50,7 @@
       ]
     },
     "build": {
-      "command": "tsc && tsc --project tsconfig.cjs.json && node -e \"require('node:fs').writeFileSync('cjs/package.json', JSON.stringify({type:'commonjs'}))\"",
+      "command": "tsc --project tsconfig.esm.json && tsc --project tsconfig.cjs.json && node -e \"require('node:fs').writeFileSync('cjs/package.json', JSON.stringify({type:'commonjs'}))\"",
       "dependencies": [
         "../core:build"
       ]
