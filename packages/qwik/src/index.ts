@@ -15,6 +15,10 @@ import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 export type * from "@css-hooks/core";
 export type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
+/** Unitless properties observed in Chromium, Firefox, and WebKit */
+const UNITLESS =
+  /^(--|(Moz(ForceBrokenImageIcon|TabSize)|lineHeight|tabSize|font(SizeAdjus|Weigh)t|widows|scale|(s|WebkitS)hapeImageThreshold|((border|WebkitMaskBox)Image|maskBorder)(Outset|Slice|Width)?|(Moz|Webkit)Bo(rderImage|x(Flex|OrdinalGroup))|stroke(Dash(array|offset)|Miterlimit|Width)|mathDepth|hyphenateLimit(Char|Line)s|readingOrder|Webkit(BoxFlexGroup|HyphenateLimit(After|Before|Lines)|LineClamp|Perspective)|aspectRatio|(i|WebkitI)nitialLetter|flexLineCount|(a|(Moz|Webkit)A)nimation(IterationCount)?|(c|WebkitC)olumn(s|Count)|(f|WebkitF)lex(Grow|Shrink)?|(o|WebkitO)(pacity|rder)|grid(Area|(Column|Row)(End|Start)?)|(fill|flood|stop|stroke)Opacity|orphans|z(Index|oom))$)/;
+
 /** @internal */
 export function _stringifyValue(value: unknown, propertyName: string) {
   switch (typeof value) {
@@ -45,63 +49,6 @@ export const mergeStyles: HooksSystem<
   CSSPropertyConflicts
 >["mergeStyles"] = hooksSystem.mergeStyles;
 
-/**
- * Following code (c) Builder.io. Source modified to account for custom
- * properties.
- */
-
-/**
- * CSS properties which accept numbers but are not in units of "px".
- *
- * @internal
- */
-export const _unitlessNumbers = new Set([
-  "animationIterationCount",
-  "aspectRatio",
-  "borderImageOutset",
-  "borderImageSlice",
-  "borderImageWidth",
-  "boxFlex",
-  "boxFlexGroup",
-  "boxOrdinalGroup",
-  "columnCount",
-  "columns",
-  "flex",
-  "flexGrow",
-  "flexShrink",
-  "gridArea",
-  "gridRow",
-  "gridRowEnd",
-  "gridRowStart",
-  "gridColumn",
-  "gridColumnEnd",
-  "gridColumnStart",
-  "fontWeight",
-  "lineClamp",
-  "lineHeight",
-  "opacity",
-  "order",
-  "orphans",
-  "scale",
-  "tabSize",
-  "widows",
-  "zIndex",
-  "zoom",
-  "MozAnimationIterationCount", // Known Prefixed Properties
-  "MozBoxFlex", // TODO: Remove these since they shouldn't be used in modern code
-  "msFlex",
-  "msFlexPositive",
-  "WebkitAnimationIterationCount",
-  "WebkitBoxFlex",
-  "WebkitBoxOrdinalGroup",
-  "WebkitColumnCount",
-  "WebkitColumns",
-  "WebkitFlex",
-  "WebkitFlexGrow",
-  "WebkitFlexShrink",
-  "WebkitLineClamp",
-]);
-
 function isUnitlessNumber(name: string) {
   if (name.startsWith("--")) {
     return true;
@@ -109,5 +56,5 @@ function isUnitlessNumber(name: string) {
   const camelCaseName = name
     .replace(/^-ms-/, "ms-")
     .replace(/-([a-z])/g, (_, letter: string) => letter.toUpperCase());
-  return _unitlessNumbers.has(camelCaseName);
+  return UNITLESS.test(camelCaseName);
 }
