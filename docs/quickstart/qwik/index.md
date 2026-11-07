@@ -8,18 +8,28 @@ order: 4
 
 ## 1. Create the project
 
+<!-- quickstart: create -->
+
 ```bash
 npm create qwik@rc empty css-hooks-playground
 cd css-hooks-playground
 ```
 
+<!-- /quickstart -->
+
 ## 2. Install CSS Hooks
+
+<!-- quickstart: install -->
 
 ```bash
 npm install @css-hooks/qwik@next
 ```
 
+<!-- /quickstart -->
+
 ## 3. Create the styling module
+
+<!-- quickstart: css.ts -->
 
 ```typescript
 // src/css.ts
@@ -31,7 +41,11 @@ export const { on, styleSheet } = createHooks("&:hover");
 export { mergeStyles };
 ```
 
+<!-- /quickstart -->
+
 ## 4. Render the stylesheet
+
+<!-- quickstart: root.patch -->
 
 ```diff
 // src/root.tsx
@@ -50,6 +64,10 @@ export { mergeStyles };
  export default component$(() => {
    useQwikRouter();
    const { url } = useLocation();
+
+   /**
+    * This is the root of a QwikRouter site. It contains the document's `<head>` and `<body>`. You can adjust them as you see fit.
+    */
 
    return (
      <>
@@ -71,9 +89,13 @@ export { mergeStyles };
  });
 ```
 
+<!-- /quickstart -->
+
 ## 5. Create a hover effect
 
 Replace the contents of `src/routes/index.tsx` with the following:
+
+<!-- quickstart: index.tsx -->
 
 ```tsx
 // src/routes/index.tsx
@@ -87,11 +109,17 @@ export default component$(() => (
 ));
 ```
 
+<!-- /quickstart -->
+
 ## 6. View the result
+
+<!-- quickstart: dev -->
 
 ```bash
 npm run dev
 ```
+
+<!-- /quickstart -->
 
 By default, the development server is accessible at http://localhost:5173.
 

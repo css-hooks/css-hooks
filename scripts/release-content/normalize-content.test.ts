@@ -5,6 +5,7 @@ import {
   normalizeDocumentationUrls,
   normalizeInstallCommands,
   normalizeNextBranchWarning,
+  normalizeQuickstartSteps,
 } from "./normalize-content.ts";
 
 describe("normalizeDocumentationUrls", () => {
@@ -84,6 +85,28 @@ describe("normalizeInstallCommands", () => {
       ),
       "$ npm install @css-hooks/qwik@next # install the integration",
     );
+  });
+});
+
+describe("normalizeQuickstartSteps", () => {
+  it("switches install channels without changing the steps", () => {
+    const steps = {
+      create:
+        "npm create vite@latest css-hooks-playground -- --template react-ts",
+      install: "npm install @css-hooks/react@next",
+      steps: [
+        { source: "css.ts", target: "src/css.ts" },
+        { patch: "main.patch" },
+      ],
+    };
+    const content = `${JSON.stringify(steps, null, 2)}\n`;
+    const stable = normalizeQuickstartSteps(content, "latest");
+    assert.deepEqual(JSON.parse(stable), {
+      ...steps,
+      install: "npm install @css-hooks/react",
+    });
+    assert.equal(normalizeQuickstartSteps(stable, "next"), content);
+    assert.equal(normalizeQuickstartSteps(content, "next"), content);
   });
 });
 

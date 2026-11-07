@@ -8,18 +8,28 @@ order: 2
 
 ## 1. Create the project
 
+<!-- quickstart: create -->
+
 ```bash
 npm create vite@latest css-hooks-playground -- --template preact-ts
 cd css-hooks-playground
 ```
 
+<!-- /quickstart -->
+
 ## 2. Install CSS Hooks
+
+<!-- quickstart: install -->
 
 ```bash
 npm install @css-hooks/preact@next
 ```
 
+<!-- /quickstart -->
+
 ## 3. Create the styling module
+
+<!-- quickstart: css.ts -->
 
 ```typescript
 // src/css.ts
@@ -31,7 +41,11 @@ export const { on, styleSheet } = createHooks("&:hover");
 export { mergeStyles };
 ```
 
+<!-- /quickstart -->
+
 ## 4. Render the stylesheet
+
+<!-- quickstart: main.patch -->
 
 ```diff
 // src/main.tsx
@@ -51,9 +65,13 @@ export { mergeStyles };
 +)
 ```
 
+<!-- /quickstart -->
+
 ## 5. Create a hover effect
 
 Replace the contents of `src/app.tsx` with the following:
+
+<!-- quickstart: app.tsx -->
 
 ```tsx
 // src/app.tsx
@@ -65,11 +83,17 @@ export function App() {
 }
 ```
 
+<!-- /quickstart -->
+
 ## 6. View the result
+
+<!-- quickstart: dev -->
 
 ```bash
 npm run dev
 ```
+
+<!-- /quickstart -->
 
 By default, the development server is accessible at http://localhost:5173.
 

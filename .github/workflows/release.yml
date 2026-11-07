@@ -47,7 +47,7 @@ jobs:
 
       - uses: EndBug/add-and-commit@v9
         with:
-          add: package.json package-lock.json README.md docs **/package.json
+          add: package.json package-lock.json README.md docs **/package.json packages/*/test/quickstart/steps.json
           message: "misc: release v${{ steps.version.outputs.NEW_VERSION }}"
           committer_name: CSS Hooks Release Bot
           committer_email: ${{ vars.RELEASE_BOT_APP_ID }}+CSS-Hooks-Release-Bot[bot]@users.noreply.github.com
@@ -104,7 +104,7 @@ jobs:
 
       - uses: EndBug/add-and-commit@v9
         with:
-          add: README.md docs
+          add: README.md docs packages/*/test/quickstart/steps.json
           message: "misc: release content updates"
           committer_name: CSS Hooks Release Bot
           committer_email: ${{ vars.RELEASE_BOT_APP_ID }}+CSS-Hooks-Release-Bot[bot]@users.noreply.github.com

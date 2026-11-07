@@ -13,6 +13,17 @@ export function normalizeInstallCommands(
   );
 }
 
+export function normalizeQuickstartSteps(
+  content: string,
+  channel: "latest" | "next",
+) {
+  const steps = JSON.parse(content) as { install: string };
+  const install = normalizeInstallCommands(steps.install, channel);
+  if (install === steps.install) return content;
+  steps.install = install;
+  return `${JSON.stringify(steps, null, 2)}\n`;
+}
+
 export function normalizeDocumentationUrls(
   content: string,
   channel: "latest" | "next",

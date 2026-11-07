@@ -10,6 +10,7 @@ import {
   normalizeDocumentationUrls,
   normalizeInstallCommands,
   normalizeNextBranchWarning,
+  normalizeQuickstartSteps,
 } from "./normalize-content.ts";
 
 const exec = promisify(execCb);
@@ -55,6 +56,17 @@ async function main() {
       `${JSON.stringify(packageJson, null, 2)}\n`,
       "utf-8",
     );
+    if (!npm) {
+      const stepsPath = resolve(
+        rootDir,
+        pkg.location,
+        "test/quickstart/steps.json",
+      );
+      const steps = await fs.readFile(stepsPath, "utf-8");
+      const normalized = normalizeQuickstartSteps(steps, channel);
+      if (normalized !== steps)
+        await fs.writeFile(stepsPath, normalized, "utf-8");
+    }
   }
 
   const rootReadmeContent = await fs.readFile(rootReadmePath, "utf-8");
