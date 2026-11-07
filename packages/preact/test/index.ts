@@ -18,6 +18,7 @@ describe("`stringifyValue` function", () => {
 
   it("assumes numbers assigned to custom properties are unitless values", () => {
     assert.equal(stringifyValue(7, "--foo"), "7");
+    assert.equal(stringifyValue(7, "--foo-bar"), "7");
   });
 
   describe("for numeric properties", () => {
@@ -51,10 +52,13 @@ describe("`stringifyValue` function", () => {
           });
         });
         currentProperties
-          .map(({ name, ...rest }) => ({
-            name: name.replace(/-[a-z]/g, x => x.substring(1).toUpperCase()),
-            ...rest,
-          }))
+          .flatMap(({ name, ...rest }) => [
+            { name, ...rest },
+            {
+              name: name.replace(/-[a-z]/g, x => x.substring(1).toUpperCase()),
+              ...rest,
+            },
+          ])
           .forEach(current => {
             const existing = properties.find(
               existing => existing.name === current.name,

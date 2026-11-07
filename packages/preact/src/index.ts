@@ -38,7 +38,17 @@ export const mergeStyles: HooksSystem<
 /** @internal */
 export function _stringifyValue(value: unknown, propertyName: string) {
   if (typeof value === "number") {
-    return value + (UNITLESS.test(propertyName) ? "" : "px");
+    return value + (isUnitlessNumber(propertyName) ? "" : "px");
   }
   return typeof value === "string" ? value : null;
+}
+
+function isUnitlessNumber(name: string) {
+  if (name.startsWith("--")) {
+    return true;
+  }
+  const camelCaseName = name
+    .replace(/^-ms-/, "ms-")
+    .replace(/-([a-z])/g, (_, letter: string) => letter.toUpperCase());
+  return UNITLESS.test(camelCaseName);
 }
