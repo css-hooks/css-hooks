@@ -1,10 +1,10 @@
 {
   "name": "@css-hooks/core",
   "description": "CSS Hooks core library",
-  "version": "4.0.0-next.94",
+  "version": "4.0.0-next.95",
   "author": "Nick Saunders",
   "devDependencies": {
-    "@test/quickstart": "4.0.0-next.94",
+    "@test/quickstart": "4.0.0-next.95",
     "color": "^5.0.3",
     "csstype": "^3.1.3",
     "lightningcss": "^1.23.0",
