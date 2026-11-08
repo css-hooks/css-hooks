@@ -8,18 +8,28 @@ order: 99
 
 ## 1. Create the project
 
+<!-- quickstart: create -->
+
 ```bash
 npm create vite@latest css-hooks-playground -- --template vanilla-ts
 cd css-hooks-playground
 ```
 
+<!-- /quickstart -->
+
 ## 2. Install CSS Hooks
+
+<!-- quickstart: install -->
 
 ```bash
 npm install @css-hooks/core@next csstype
 ```
 
+<!-- /quickstart -->
+
 ## 3. Create the styling module
+
+<!-- quickstart: css.ts -->
 
 ```typescript
 // src/css.ts
@@ -43,9 +53,13 @@ export function styleObjectToString(style: PropertiesHyphen<string>) {
 export { mergeStyles };
 ```
 
+<!-- /quickstart -->
+
 ## 4. Create a button
 
 Replace the contents of `src/main.ts` with the following:
+
+<!-- quickstart: main.ts -->
 
 ```typescript
 // src/main.ts
@@ -53,7 +67,11 @@ Replace the contents of `src/main.ts` with the following:
 document.querySelector("#app")!.innerHTML = "<button>Hover me</button>";
 ```
 
+<!-- /quickstart -->
+
 ## 5. Render the stylesheet
+
+<!-- quickstart: main.patch -->
 
 ```diff
 // src/main.ts
@@ -67,7 +85,11 @@ document.querySelector("#app")!.innerHTML = "<button>Hover me</button>";
  document.querySelector("#app")!.innerHTML = "<button>Hover me</button>";
 ```
 
+<!-- /quickstart -->
+
 ## 6. Create a hover effect
+
+<!-- quickstart: main-hover.patch -->
 
 ```diff
 // src/main.ts
@@ -86,11 +108,17 @@ document.querySelector("#app")!.innerHTML = "<button>Hover me</button>";
 +  .setAttribute("style", styleObjectToString(on("&:hover", { color: "red" })));
 ```
 
+<!-- /quickstart -->
+
 ## 7. View the result
+
+<!-- quickstart: dev -->
 
 ```bash
 npm run dev
 ```
+
+<!-- /quickstart -->
 
 By default, the development server is accessible at http://localhost:5173.
 

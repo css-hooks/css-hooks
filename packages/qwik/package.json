@@ -8,7 +8,8 @@
   },
   "devDependencies": {
     "@qwik.dev/core": "^2.0.0-beta.30",
-    "playwright": "^1.65.0"
+    "@test/css-property-inventory": "4.0.0-next.91",
+    "@test/quickstart": "4.0.0-next.91"
   },
   "files": [
     "cjs",
@@ -41,7 +42,7 @@
     "build": "wireit",
     "codegen": "npm run --silent start -w @scripts/css-property-conflicts -- --casing camel --casing kebab > src/css-property-conflicts.ts",
     "prepublishOnly": "wireit",
-    "test": "tsc && node --conditions @css-hooks/source --test test/index.ts"
+    "test": "tsc && node --conditions @css-hooks/source --test test/index.ts test/quickstart.ts"
   },
   "wireit": {
     "attw": {

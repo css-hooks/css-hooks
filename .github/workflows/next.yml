@@ -1,6 +1,8 @@
 name: next
 
 on:
+  schedule:
+    - cron: "17 6 * * *"
   pull_request:
     types:
       - opened
@@ -12,6 +14,7 @@ on:
 
 jobs:
   title:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: deepakputhraya/action-pr-title@v1.0.2
@@ -22,6 +25,7 @@ jobs:
           github_token: ${{ github.token }}
 
   commitlint:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -86,8 +90,12 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc

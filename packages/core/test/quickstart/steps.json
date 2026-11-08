@@ -1,0 +1,20 @@
+{
+  "create": "npm create vite@latest css-hooks-playground -- --template vanilla-ts",
+  "install": "npm install @css-hooks/core@next csstype",
+  "steps": [
+    {
+      "source": "css.ts",
+      "target": "src/css.ts"
+    },
+    {
+      "source": "main.ts",
+      "target": "src/main.ts"
+    },
+    {
+      "patch": "main.patch"
+    },
+    {
+      "patch": "main-hover.patch"
+    }
+  ]
+}

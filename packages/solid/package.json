@@ -7,7 +7,8 @@
     "@css-hooks/core": "4.0.0-next.92"
   },
   "devDependencies": {
-    "@solidjs/web": "^2.0.0-rc.6"
+    "@solidjs/web": "^2.0.0-rc.6",
+    "@test/quickstart": "4.0.0-next.91"
   },
   "files": [
     "cjs",
@@ -34,7 +35,7 @@
     "build": "wireit",
     "codegen": "npm run --silent start -w @scripts/css-property-conflicts -- --casing kebab > src/css-property-conflicts.ts",
     "prepublishOnly": "wireit",
-    "test": "tsc && node --conditions @css-hooks/source --test test/index.ts"
+    "test": "tsc && node --conditions @css-hooks/source --test test/index.ts test/quickstart.ts"
   },
   "wireit": {
     "attw": {

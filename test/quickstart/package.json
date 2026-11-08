@@ -1,0 +1,21 @@
+{
+  "name": "@test/quickstart",
+  "version": "4.0.0-next.91",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./run.ts",
+    "./fixture": "./fixture.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "tsc && node --test run.test.ts"
+  },
+  "dependencies": {
+    "playwright": "^1.65.0",
+    "valibot": "^1.2.0"
+  },
+  "devDependencies": {
+    "@total-typescript/ts-reset": "^0.6.1"
+  }
+}

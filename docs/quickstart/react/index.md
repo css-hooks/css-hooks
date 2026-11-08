@@ -8,18 +8,28 @@ order: 1
 
 ## 1. Create the project
 
+<!-- quickstart: create -->
+
 ```bash
 npm create vite@latest css-hooks-playground -- --template react-ts
 cd css-hooks-playground
 ```
 
+<!-- /quickstart -->
+
 ## 2. Install CSS Hooks
+
+<!-- quickstart: install -->
 
 ```bash
 npm install @css-hooks/react@next
 ```
 
+<!-- /quickstart -->
+
 ## 3. Create the styling module
+
+<!-- quickstart: css.ts -->
 
 ```typescript
 // src/css.ts
@@ -31,7 +41,11 @@ export const { on, styleSheet } = createHooks("&:hover");
 export { mergeStyles };
 ```
 
+<!-- /quickstart -->
+
 ## 4. Render the stylesheet
+
+<!-- quickstart: main.patch -->
 
 ```diff
 // src/main.tsx
@@ -50,9 +64,13 @@ export { mergeStyles };
  )
 ```
 
+<!-- /quickstart -->
+
 ## 5. Create a hover effect
 
 Replace the contents of `src/App.tsx` with the following:
+
+<!-- quickstart: App.tsx -->
 
 ```tsx
 // src/App.tsx
@@ -64,11 +82,17 @@ export default function App() {
 }
 ```
 
+<!-- /quickstart -->
+
 ## 6. View the result
+
+<!-- quickstart: dev -->
 
 ```bash
 npm run dev
 ```
+
+<!-- /quickstart -->
 
 By default, the development server is accessible at http://localhost:5173.
 

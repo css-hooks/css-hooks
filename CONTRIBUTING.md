@@ -38,6 +38,31 @@ implication that CSS Hooks generates code.
 Do not edit the generated API reference under `docs/api/` by hand. Update the
 source JSDoc and run `npm run docs`.
 
+### Quickstarts
+
+Quickstart commands, example modules, and patches live under each package's
+`test/quickstart/` directory (`packages/core` owns the no-framework guide).
+`steps.json` lists the commands and the ordered file replacements and patches.
+The package's normal tests scaffold a project, follow those steps, build it, and
+check the hover effect in Chromium using published packages for the current
+release channel.
+
+These tests require Bash, Git, and Playwright's Chromium browser; CI runs them
+on Linux.
+
+Shared test execution lives in the private `@test/quickstart` workspace under
+`test/quickstart/`. The private `@test/css-property-inventory` workspace
+discovers numeric CSS properties across browsers; integration tests own their
+casing and assertions. The `@scripts/quickstart` package only generates
+documentation from the quickstart fixtures. Run all tests, including the shared
+helpers, with `npm test --workspaces --if-present`.
+
+Edit those inputs rather than the generated blocks in `docs/quickstart/`, then
+run `npm run codegen -w @scripts/quickstart`. Keep the surrounding prose in sync
+when changing a step. Full modules stay full code blocks; patches stay diffs.
+Use full-file context in patches (`git diff --unified=10000`) so guide diffs
+show the complete module without omitted code or patch headers.
+
 ### Recipes
 
 Add recipes under `docs/recipes/<name>/` with an `index.mdx` document, an
