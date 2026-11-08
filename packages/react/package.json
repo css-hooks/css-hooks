@@ -1,14 +1,14 @@
 {
   "name": "@css-hooks/react",
   "description": "CSS Hooks for React",
-  "version": "4.0.0-next.92",
+  "version": "4.0.0-next.93",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "4.0.0-next.92"
+    "@css-hooks/core": "4.0.0-next.93"
   },
   "devDependencies": {
-    "@test/css-property-inventory": "4.0.0-next.91",
-    "@test/quickstart": "4.0.0-next.91",
+    "@test/css-property-inventory": "4.0.0-next.93",
+    "@test/quickstart": "4.0.0-next.93",
     "@types/react": "^19.0.4"
   },
   "files": [

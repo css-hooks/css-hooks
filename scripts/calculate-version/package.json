@@ -1,6 +1,6 @@
 {
   "name": "@scripts/calculate-version",
-  "version": "4.0.0-next.92",
+  "version": "4.0.0-next.93",
   "private": true,
   "type": "module",
   "scripts": {
