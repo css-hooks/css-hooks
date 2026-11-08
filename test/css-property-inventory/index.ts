@@ -20,9 +20,14 @@ export async function cssPropertyInventory() {
           }
         }
         return [...properties].flatMap(name => {
-          if (CSS.supports(name, "1")) return [{ name, unitless: true }];
-          if (CSS.supports(name, "1px")) return [{ name, unitless: false }];
-          return [];
+          switch (true) {
+            case CSS.supports(name, "1"):
+              return [{ name, unitless: true }];
+            case CSS.supports(name, "1px"):
+              return [{ name, unitless: false }];
+            default:
+              return [];
+          }
         });
       });
       for (const current of currentProperties) {

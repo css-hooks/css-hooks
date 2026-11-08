@@ -1,18 +1,65 @@
 import assert from "node:assert/strict";
-import { test } from "node:test";
+import { before, describe, it } from "node:test";
 
 import { cssPropertyInventory } from "./index.ts";
 
-test("inventory contains unique kebab-case numeric properties across browsers", async () => {
-  const properties = await cssPropertyInventory();
-  const inventory = new Map(
-    properties.map(property => [property.name, property.unitless]),
-  );
-  assert.equal(inventory.size, properties.length);
-  assert(
-    properties.every(property => property.name === property.name.toLowerCase()),
-  );
-  assert.equal(inventory.get("margin-top"), false);
-  assert.equal(inventory.get("opacity"), true);
-  assert.equal(inventory.get("line-height"), true);
+describe("css property inventory", () => {
+  let properties: Awaited<ReturnType<typeof cssPropertyInventory>> = [];
+
+  before(async () => {
+    properties = await cssPropertyInventory();
+  });
+
+  it("contains only kebab-case properties", () => {
+    const invalidCasingProperties = properties.filter(
+      ({ name }) => name !== name.toLowerCase(),
+    );
+
+    if (invalidCasingProperties.length) {
+      assert.fail(
+        `Properties not in kebab-case: ${invalidCasingProperties.map(({ name }) => name).join(", ")}`,
+      );
+    }
+  });
+
+  it("contains only unique property names", () => {
+    const duplicateProperties = Object.entries(
+      Object.groupBy(properties, property => property.name),
+    ).flatMap(([name, group]) =>
+      group && group.length > 1 ? [[name, group.length]] : [],
+    );
+
+    if (duplicateProperties.length) {
+      assert.fail(
+        `Duplicate properties: ${duplicateProperties.map(([name, count]) => `${name} (${count})`).join(", ")}`,
+      );
+    }
+  });
+
+  it("does not include non-numeric properties", () => {
+    assert.strictEqual(
+      properties.find(property => property.name === "color"),
+      undefined,
+    );
+  });
+
+  it("correctly identifies non-unitless values", () => {
+    assert.deepStrictEqual(
+      properties
+        .filter(property => property.name === "margin-top")
+        .map(({ unitless }) => unitless),
+      [false],
+    );
+  });
+
+  it("correctly identifies unitless values", () => {
+    for (const name of ["line-height", "opacity"]) {
+      assert.deepStrictEqual(
+        properties
+          .filter(property => property.name === name)
+          .map(({ unitless }) => unitless),
+        [true],
+      );
+    }
+  });
 });
