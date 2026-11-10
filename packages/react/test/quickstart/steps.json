@@ -1,0 +1,17 @@
+{
+  "create": "npm create vite@latest css-hooks-playground -- --template react-ts",
+  "install": "npm install @css-hooks/react@next",
+  "steps": [
+    {
+      "source": "css.ts",
+      "target": "src/css.ts"
+    },
+    {
+      "patch": "main.patch"
+    },
+    {
+      "source": "App.tsx",
+      "target": "src/App.tsx"
+    }
+  ]
+}

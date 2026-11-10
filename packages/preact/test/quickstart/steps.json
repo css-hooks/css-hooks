@@ -1,0 +1,17 @@
+{
+  "create": "npm create vite@latest css-hooks-playground -- --template preact-ts",
+  "install": "npm install @css-hooks/preact@next",
+  "steps": [
+    {
+      "source": "css.ts",
+      "target": "src/css.ts"
+    },
+    {
+      "patch": "main.patch"
+    },
+    {
+      "source": "app.tsx",
+      "target": "src/app.tsx"
+    }
+  ]
+}

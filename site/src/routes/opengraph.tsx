@@ -26,7 +26,7 @@ export async function loader() {
               background: gray(90),
             }}
           >
-            <Logo height="8rem" />
+            <Logo height={128} />
           </div>
         </body>,
       ),

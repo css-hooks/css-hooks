@@ -1,0 +1,17 @@
+{
+  "create": "npm create solid@latest css-hooks-playground -- --solid --template bare --ts --no-devtools",
+  "install": "npm install @css-hooks/solid@next",
+  "steps": [
+    {
+      "source": "css.ts",
+      "target": "src/css.ts"
+    },
+    {
+      "patch": "Document.patch"
+    },
+    {
+      "source": "App.tsx",
+      "target": "src/App.tsx"
+    }
+  ]
+}

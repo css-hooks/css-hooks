@@ -1,0 +1,15 @@
+--- a/src/main.tsx
++++ b/src/main.tsx
+@@ -1,10 +1,11 @@
+ import { StrictMode } from 'react'
+ import { createRoot } from 'react-dom/client'
+-import './index.css'
+ import App from './App.tsx'
++import { styleSheet } from './css'
+ 
+ createRoot(document.getElementById('root')!).render(
+   <StrictMode>
++    <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
+     <App />
+   </StrictMode>,
+ )

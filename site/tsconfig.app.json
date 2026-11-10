@@ -6,7 +6,6 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["node", "vite/client"],
     "jsx": "react-jsx",
-    "baseUrl": ".",
     "rootDirs": [".", "./.react-router/types"]
   },
   "include": [

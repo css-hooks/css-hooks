@@ -1,0 +1,14 @@
+{
+  "name": "@test/css-property-inventory",
+  "version": "4.0.0-next.96",
+  "private": true,
+  "type": "module",
+  "exports": "./index.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "tsc && node --test index.test.ts"
+  },
+  "dependencies": {
+    "playwright": "^1.65.0"
+  }
+}

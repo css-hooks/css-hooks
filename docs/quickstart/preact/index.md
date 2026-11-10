@@ -1,48 +1,59 @@
 ---
 title: Preact
-description: Get up and running with Preact in a few simple steps.
+description: Create a minimal Preact app with CSS Hooks.
 order: 2
 ---
 
 # Quickstart: Preact
 
-## 1. Initialize project
+## 1. Create the project
+
+<!-- quickstart: create -->
 
 ```bash
 npm create vite@latest css-hooks-playground -- --template preact-ts
 cd css-hooks-playground
-npm install @css-hooks/preact remeda
 ```
 
-## 2. Start dev server
+<!-- /quickstart -->
+
+## 2. Install CSS Hooks
+
+<!-- quickstart: install -->
 
 ```bash
-npm run dev
+npm install @css-hooks/preact@next
 ```
 
-Visit http://localhost:5173 to view changes in real time.
+<!-- /quickstart -->
 
-## 3. Set up CSS Hooks
+## 3. Create the styling module
 
-Create a `src/css.ts` module with the following contents:
+<!-- quickstart: css.ts -->
 
 ```typescript
-import { createHooks } from "@css-hooks/preact";
+// src/css.ts
 
-export const { styleSheet, on } = createHooks("&:active");
+import { createHooks, mergeStyles } from "@css-hooks/preact";
+
+export const { on, styleSheet } = createHooks("&:hover");
+
+export { mergeStyles };
 ```
 
-## 4. Add style sheet
+<!-- /quickstart -->
 
-Modify `src/main.tsx` to add the style sheet to the document:
+## 4. Render the stylesheet
 
-<!-- prettier-ignore-start -->
+<!-- quickstart: main.patch -->
 
 ```diff
+// src/main.tsx
+
  import { render } from 'preact'
+-import './index.css'
  import { App } from './app.tsx'
- import './index.css'
-+import { styleSheet } from './css.ts'
++import { styleSheet } from './css'
 
 -render(<App />, document.getElementById('app')!)
 +render(
@@ -50,68 +61,44 @@ Modify `src/main.tsx` to add the style sheet to the document:
 +    <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
 +    <App />
 +  </>,
-+  document.getElementById('app')!
++  document.getElementById('app')!,
 +)
 ```
 
-<!-- prettier-ignore-end -->
+<!-- /quickstart -->
 
-## 5. Add conditional style
+## 5. Create a hover effect
 
-Use the configured `&:active` hook to implement an effect when the counter
-button is pressed:
+Replace the contents of `src/app.tsx` with the following:
 
-<!-- prettier-ignore-start -->
+<!-- quickstart: app.tsx -->
 
-```diff
- // src/app.tsx
+```tsx
+// src/app.tsx
 
- import { useState } from 'preact/hooks'
- import preactLogo from './assets/preact.svg'
- import viteLogo from '/vite.svg'
- import './app.css'
-+import { on } from './css.ts'
-+import { pipe } from 'remeda'
+import { on } from "./css";
 
- export function App() {
-   const [count, setCount] = useState(0)
-
-   return (
-     <>
-       <div>
-         <a href="https://vitejs.dev" target="_blank">
-           <img src={viteLogo} className="logo" alt="Vite logo" />
-         </a>
-         <a href="https://preactjs.com" target="_blank">
-           <img src={preactLogo} className="logo preact" alt="Preact logo" />
-         </a>
-       </div>
-       <h1>Vite + Preact</h1>
-       <div className="card">
--        <button onClick={() => setCount((count) => count + 1)}>
-+        <button
-+          onClick={() => setCount((count) => count + 1)}
-+          style={pipe(
-+            {
-+              transition: "transform 75ms",
-+            },
-+            on("&:active", {
-+              transform: "scale(0.9)"
-+            })
-+          )}
-+        >
-           count is {count}
-         </button>
-         <p>
-           Edit <code>src/app.tsx</code> and save to test HMR
-         </p>
-       </div>
-       <p className="read-the-docs">
-         Click on the Vite and Preact logos to learn more
-       </p>
-     </>
-   )
- }
+export function App() {
+  return <button style={on("&:hover", { color: "red" })}>Hover me</button>;
+}
 ```
 
-<!-- prettier-ignore-end -->
+<!-- /quickstart -->
+
+## 6. View the result
+
+<!-- quickstart: dev -->
+
+```bash
+npm run dev
+```
+
+<!-- /quickstart -->
+
+By default, the development server is accessible at http://localhost:5173.
+
+## Next steps
+
+Continue to [Hooks and conditions](../../hooks-and-conditions/index.md) to
+declare more hooks, then read [Applying styles](../../applying-styles/index.md)
+for composition patterns.

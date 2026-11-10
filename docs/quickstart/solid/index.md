@@ -1,125 +1,115 @@
 ---
 title: Solid
-description: Get up and running with Solid in a few simple steps.
+description: Create a minimal Solid app with CSS Hooks.
 order: 3
 ---
 
 # Quickstart: Solid
 
-## 1. Initialize project
+## 1. Create the project
+
+<!-- quickstart: create -->
 
 ```bash
-npm create vite@latest css-hooks-playground -- --template solid-ts
+npm create solid@latest css-hooks-playground -- --solid --template bare --ts --no-devtools
 cd css-hooks-playground
-npm install @css-hooks/solid remeda
 ```
 
-## 2. Start dev server
+<!-- /quickstart -->
+
+## 2. Install CSS Hooks
+
+<!-- quickstart: install -->
+
+```bash
+npm install @css-hooks/solid@next
+```
+
+<!-- /quickstart -->
+
+## 3. Create the styling module
+
+<!-- quickstart: css.ts -->
+
+```typescript
+// src/css.ts
+
+import { createHooks, mergeStyles } from "@css-hooks/solid";
+
+export const { on, styleSheet } = createHooks("&:hover");
+
+export { mergeStyles };
+```
+
+<!-- /quickstart -->
+
+## 4. Render the stylesheet
+
+<!-- quickstart: Document.patch -->
+
+```diff
+// src/Document.tsx
+
+ import type { ParentProps } from 'solid-js';
+ import { HydrationScript } from '@solidjs/web';
++import { styleSheet } from './css';
+
+ // The document shell (the index.html replacement), picked up by the
+ // src/Document.* convention; it must render the full <html> and ships no
+ // client JS. <HydrationScript /> is stripped from the prerendered shell in
+ // client mode and activates under `ssr: true`. Delete this file to fall
+ // back to the plugin's built-in shell.
+ export default function Document(props: ParentProps) {
+   return (
+     <html lang="en">
+       <head>
+         <meta charset="utf-8" />
+         <meta name="viewport" content="width=device-width, initial-scale=1" />
+         <link rel="icon" href="/favicon.ico" />
+         <title>Solid App</title>
++        <style innerHTML={styleSheet()} />
+         <HydrationScript />
+       </head>
+       <body>{props.children}</body>
+     </html>
+   );
+ }
+```
+
+<!-- /quickstart -->
+
+## 5. Create a hover effect
+
+Replace the contents of `src/App.tsx` with the following:
+
+<!-- quickstart: App.tsx -->
+
+```tsx
+// src/App.tsx
+
+import { on } from "./css";
+
+export default function App() {
+  return <button style={on("&:hover", { color: "red" })}>Hover me</button>;
+}
+```
+
+<!-- /quickstart -->
+
+## 6. View the result
+
+<!-- quickstart: dev -->
 
 ```bash
 npm run dev
 ```
 
-Visit http://localhost:5173 to view changes in real time.
+<!-- /quickstart -->
 
-## 3. Set up CSS Hooks
+By default, the development server is accessible at http://localhost:3000.
 
-Create a `src/css.ts` module with the following contents:
+## Next steps
 
-```typescript
-import { createHooks } from "@css-hooks/solid";
-
-export const { styleSheet, on } = createHooks("&:active");
-```
-
-## 4. Add style sheet
-
-Modify `src/index.tsx` to add the style sheet to the document:
-
-<!-- prettier-ignore-start -->
-
-```diff
- /* @refresh reload */
- import { render } from 'solid-js/web'
-
- import './index.css'
- import App from './App'
-+import { styleSheet } from './css'
-
- const root = document.getElementById('root')
-
--render(() => <App />, root!)
-+render(
-+  () => (
-+    <>
-+      <style innerHTML={styleSheet()} />
-+      <App />
-+    </>
-+  ),
-+  root!
-+)
-```
-
-<!-- prettier-ignore-end -->
-
-## 5. Add conditional style
-
-Use the configured `&:active` hook to implement an effect when the counter
-button is pressed:
-
-<!-- prettier-ignore-start -->
-
-```diff
- // src/App.tsx
-
- import { createSignal } from 'solid-js'
- import solidLogo from './assets/solid.svg'
- import viteLogo from '/vite.svg'
- import './App.css'
-+import { on } from './css'
-+import { pipe } from 'remeda'
-
- function App() {
-   const [count, setCount] = createSignal(0)
-
-   return (
-     <>
-       <div>
-         <a href="https://vitejs.dev" target="_blank">
-           <img src={viteLogo} className="logo" alt="Vite logo" />
-         </a>
-         <a href="https://solidjs.com" target="_blank">
-           <img src={solidLogo} className="logo solid" alt="Solid logo" />
-         </a>
-       </div>
-       <h1>Vite + Solid</h1>
-       <div className="card">
--        <button onClick={() => setCount((count) => count + 1)}>
-+        <button
-+          onClick={() => setCount((count) => count + 1)}
-+          style={pipe(
-+            {
-+              transition: "transform 75ms",
-+            },
-+            on("&:active", {
-+              transform: "scale(0.9)"
-+            })
-+          )}
-+        >
-           count is {count()}
-         </button>
-         <p>
-           Edit <code>src/App.tsx</code> and save to test HMR
-         </p>
-       </div>
-       <p className="read-the-docs">
-         Click on the Vite and Solid logos to learn more
-       </p>
-     </>
-   )
- }
-
- export default App
-```
-
-<!-- prettier-ignore-end -->
+Continue to [Hooks and conditions](../../hooks-and-conditions/index.md) to
+declare more hooks, then read [Applying styles](../../applying-styles/index.md)
+for composition patterns.
