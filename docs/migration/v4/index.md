@@ -127,16 +127,18 @@ v4 adds TypeScript protection against conflicting CSS declarations across base
 and override styles. In v3, mixing a shorthand with one of its longhands was
 allowed:
 
+<!-- prettier-ignore -->
 ```typescript
-pipe({ margin: 0 }, on("&:hover", { marginTop: 8 }));
+pipe({ margin: 0 }, on("&:hover", { marginTop: 8 }))
 ```
 
 This can produce unexpected results because the declarations overwrite one
 another. In v4, it is a type error. Use the same property for the base and
 override values:
 
+<!-- prettier-ignore -->
 ```typescript
-mergeStyles({ marginTop: 0 }, on("&:hover", { marginTop: 8 }));
+mergeStyles({ marginTop: 0 }, on("&:hover", { marginTop: 8 }))
 ```
 
 For the conflicts the check detects and how to keep your styles compatible, see

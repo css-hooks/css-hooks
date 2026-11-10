@@ -64,21 +64,24 @@ scales the button on any device.
 Because `on` returns a plain style object, calls can be nested. The declarations
 apply only when every enclosing condition matches:
 
+<!-- prettier-ignore -->
 ```typescript
-on("@media (hover: hover)", on("&:hover", { background: "#009" }));
+on("@media (hover: hover)", on("&:hover", { background: "#009" }))
 ```
 
 This is equivalent to:
 
+<!-- prettier-ignore -->
 ```typescript
-on(and("@media (hover: hover)", "&:hover"), { background: "#009" });
+on(and("@media (hover: hover)", "&:hover"), { background: "#009" })
 ```
 
 Use `mergeStyles` inside an `on` call to group declarations and nested overrides
 under a single condition:
 
-```tsx
-style={mergeStyles(
+<!-- prettier-ignore -->
+```typescript
+mergeStyles(
   { background: "#eee", color: "#333" },
   on(
     "@media (hover: hover)",
@@ -87,10 +90,8 @@ style={mergeStyles(
       on("&:hover", { color: "#009" }),
     ),
   ),
-)}
+)
 ```
-
-Nested overrides fall back to defaults from enclosing `mergeStyles` calls.
 
 ## Override priority
 
@@ -101,13 +102,15 @@ custom component) should generally be passed as the last argument so internal
 component styles do not override them unexpectedly.
 
 ```tsx
-style={mergeStyles(
-  { background: "#666" },
-  on("&:hover", { background: "#009" }),
-  on("&:active", { background: "#900" }),
-  on("&:disabled", { background: "#aaa" }),
-  consumerStyle,
-)}
+<button
+  style={mergeStyles(
+    { background: "#666" },
+    on("&:hover", { background: "#009" }),
+    on("&:active", { background: "#900" }),
+    on("&:disabled", { background: "#aaa" }),
+    consumerStyle,
+  )}
+/>
 ```
 
 This example shows how order matters. The `:hover` and `:disabled`

@@ -33,7 +33,7 @@ control the value of a flag for an element and its descendants:
 
 When enabled, a flag activates conditional styles just like any other hook:
 
-```tsx
+```typescript
 const panelStyle = mergeStyles(
   { background: "#fff", color: "#000" },
   on("%dark", { background: "#000", color: "#fff" }),
