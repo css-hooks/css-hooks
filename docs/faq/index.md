@@ -28,14 +28,13 @@ acts as a filter on declarations, activating when the element to which they
 apply matches the hook’s logic. Such logic can include contextual selectors, so
 you can style a descendant based on its position within a group:
 
-<!--prettier-ignore-start-->
-```tsx
+<!-- prettier-ignore -->
+```typescript
 // The child changes when an ancestor with class="group" is hovered.
 on(".group:hover &", {
   color: "rebeccapurple",
 })
 ```
-<!--prettier-ignore-end-->
 
 Use [Flags](../flags/index.md) to share state with descendants. Each descendant
 defines its own styles for that state.

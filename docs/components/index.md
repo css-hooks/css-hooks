@@ -143,14 +143,15 @@ conditional ones.
 
 `mergeStyles` includes type-level protection against conflicting properties:
 
-```tsx
+<!-- prettier-ignore -->
+```typescript
 mergeStyles(
   { margin: 0 },
   on("&.b", {
     marginTop: 8, // Type error: `margin` conflicts with `marginTop`.
   }),
   styleProp,
-);
+)
 ```
 
 Because a component’s `style` prop is usually typed as `CSSProperties`, the
