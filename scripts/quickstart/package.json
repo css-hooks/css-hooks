@@ -1,6 +1,6 @@
 {
   "name": "@scripts/quickstart",
-  "version": "4.0.0-next.95",
+  "version": "4.0.0-next.96",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,7 +9,7 @@
     "test": "node --test render.test.ts"
   },
   "dependencies": {
-    "@test/quickstart": "4.0.0-next.95",
+    "@test/quickstart": "4.0.0-next.96",
     "prettier": "^3.6.2"
   }
 }

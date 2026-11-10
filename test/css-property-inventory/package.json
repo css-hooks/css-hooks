@@ -1,6 +1,6 @@
 {
   "name": "@test/css-property-inventory",
-  "version": "4.0.0-next.95",
+  "version": "4.0.0-next.96",
   "private": true,
   "type": "module",
   "exports": "./index.ts",
