@@ -7,6 +7,8 @@ import { test } from "node:test";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 
+import * as v from "valibot";
+
 import type { Quickstart } from "./fixture.ts";
 import { readQuickstart } from "./fixture.ts";
 import { applySteps, candidateInstallCommand } from "./run.ts";
@@ -35,14 +37,20 @@ test("quickstarts install packed candidate adapters and core without the registr
     signal: context.signal,
   });
 
-  const lock = JSON.parse(
+  const lock = v.parse(
+    v.pipe(
+      v.string(),
+      v.parseJson(),
+      v.object({ packages: v.record(v.string(), v.unknown()) }),
+    ),
     await readFile(path.join(project, "package-lock.json"), "utf8"),
-  ) as { packages: Record<string, { resolved?: string }> };
+  );
   for (const name of ["core", "react"]) {
-    assert.match(
-      lock.packages[`node_modules/@css-hooks/${name}`]!.resolved!,
-      /^file:/,
+    const { resolved } = v.parse(
+      v.object({ resolved: v.string() }),
+      lock.packages[`node_modules/@css-hooks/${name}`],
     );
+    assert.match(resolved, /^file:/);
     assert.equal(
       await readFile(
         path.join(project, `node_modules/@css-hooks/${name}/esm/index.js`),
