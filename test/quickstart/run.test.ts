@@ -1,14 +1,17 @@
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { execFile as execFileCb } from "node:child_process";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { test } from "node:test";
 import { pathToFileURL } from "node:url";
+import { promisify } from "node:util";
 
 import type { Quickstart } from "./fixture.ts";
 import { readQuickstart } from "./fixture.ts";
 import { applySteps, candidateInstallCommand } from "./run.ts";
+
+const execFile = promisify(execFileCb);
 
 test("quickstarts install packed candidate adapters and core without the registry", async context => {
   const temporary = await mkdtemp(
@@ -21,11 +24,15 @@ test("quickstarts install packed candidate adapters and core without the registr
 
   const install =
     "npm install --offline --ignore-scripts @css-hooks/react@next";
-  const command = candidateInstallCommand(install, temporary);
+  const command = await candidateInstallCommand(
+    install,
+    temporary,
+    context.signal,
+  );
   assert(!command.includes("@next"));
-  execFileSync("bash", ["-e", "-o", "pipefail", "-c", command], {
+  await execFile("bash", ["-e", "-o", "pipefail", "-c", command], {
     cwd: project,
-    stdio: "pipe",
+    signal: context.signal,
   });
 
   const lock = JSON.parse(
@@ -50,6 +57,17 @@ test("quickstarts install packed candidate adapters and core without the registr
   assert.equal(
     lock.packages["node_modules/@css-hooks/react/node_modules/@css-hooks/core"],
     undefined,
+  );
+});
+
+test("candidate preparation respects test cancellation", async () => {
+  await assert.rejects(
+    candidateInstallCommand(
+      "npm install @css-hooks/core",
+      tmpdir(),
+      AbortSignal.abort(),
+    ),
+    { name: "AbortError" },
   );
 });
 

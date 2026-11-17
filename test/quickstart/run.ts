@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import type { ChildProcess } from "node:child_process";
-import { execFileSync, spawn } from "node:child_process";
+import { execFile as execFileCb, spawn } from "node:child_process";
 import { once } from "node:events";
 import { copyFile, mkdir, mkdtemp, rm } from "node:fs/promises";
 import { createServer } from "node:net";
@@ -9,6 +9,7 @@ import path from "node:path";
 import type { TestContext } from "node:test";
 import { setTimeout as delay } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
+import { promisify } from "node:util";
 
 import type { Browser } from "playwright";
 import { chromium } from "playwright";
@@ -16,6 +17,8 @@ import * as v from "valibot";
 
 import type { Quickstart } from "./fixture.ts";
 import { readQuickstart } from "./fixture.ts";
+
+const execFile = promisify(execFileCb);
 
 /** @internal */
 export async function applySteps(
@@ -25,10 +28,10 @@ export async function applySteps(
 ) {
   for (const step of steps) {
     if ("patch" in step) {
-      execFileSync(
+      await execFile(
         "git",
         ["apply", fileURLToPath(new URL(step.patch, directory))],
-        { cwd: project, stdio: "pipe" },
+        { cwd: project },
       );
     } else {
       const target = path.join(project, step.target);
@@ -56,7 +59,11 @@ async function stopServer(server: ChildProcess | undefined) {
 }
 
 /** @internal */
-export function candidateInstallCommand(install: string, destination: string) {
+export async function candidateInstallCommand(
+  install: string,
+  destination: string,
+  signal: AbortSignal,
+) {
   const packages = new Set(
     Array.from(
       install.matchAll(/(@css-hooks\/[a-z-]+)(?:@[^\s]+)?/g),
@@ -69,21 +76,25 @@ export function candidateInstallCommand(install: string, destination: string) {
   const workspaces = [...packages].flatMap(name => ["--workspace", name]);
   const cwd = fileURLToPath(new URL("../../", import.meta.url));
 
-  execFileSync("npm", ["run", "build", ...workspaces], {
+  const build = execFile("npm", ["run", "build", ...workspaces], {
     cwd,
-    stdio: "inherit",
+    signal,
   });
+  build.child.stdout?.pipe(process.stdout);
+  build.child.stderr?.pipe(process.stderr);
+  await build;
+  const { stdout } = await execFile(
+    "npm",
+    ["pack", "--json", "--pack-destination", destination, ...workspaces],
+    { cwd, signal },
+  );
   const packed = v.parse(
     v.pipe(
       v.string(),
       v.parseJson(),
       v.array(v.object({ name: v.string(), filename: v.string() })),
     ),
-    execFileSync(
-      "npm",
-      ["pack", "--json", "--pack-destination", destination, ...workspaces],
-      { cwd, encoding: "utf8" },
-    ),
+    stdout,
   );
   const tarballs = new Map(
     packed.map(({ name, filename }) => [
@@ -137,7 +148,12 @@ export async function checkQuickstart(directory: URL, context: TestContext) {
 
   const project = path.join(temporary, "css-hooks-playground");
 
-  await run(candidateInstallCommand(quickstart.install, temporary), project);
+  const install = await candidateInstallCommand(
+    quickstart.install,
+    temporary,
+    context.signal,
+  );
+  await run(install, project);
 
   await applySteps(directory, project, quickstart.steps);
 
