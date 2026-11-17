@@ -37,6 +37,7 @@ test("quickstarts install packed candidate adapters and core without the registr
     signal: context.signal,
   });
 
+  const names = ["core", "react"] as const;
   const lock = v.parse(
     v.pipe(
       v.string(),
@@ -45,12 +46,11 @@ test("quickstarts install packed candidate adapters and core without the registr
     ),
     await readFile(path.join(project, "package-lock.json"), "utf8"),
   );
-  for (const name of ["core", "react"]) {
-    const { resolved } = v.parse(
-      v.object({ resolved: v.string() }),
+  for (const name of names) {
+    v.parse(
+      v.object({ resolved: v.pipe(v.string(), v.regex(/^file:/)) }),
       lock.packages[`node_modules/@css-hooks/${name}`],
     );
-    assert.match(resolved, /^file:/);
     assert.equal(
       await readFile(
         path.join(project, `node_modules/@css-hooks/${name}/esm/index.js`),
