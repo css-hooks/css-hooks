@@ -44,8 +44,10 @@ Quickstart commands, example modules, and patches live under each package's
 `test/quickstart/` directory (`packages/core` owns the no-framework guide).
 `steps.json` lists the commands and the ordered file replacements and patches.
 The package's normal tests scaffold a project, follow those steps, build it, and
-check the hover effect in Chromium using published packages for the current
-release channel.
+check the hover effect in Chromium. The test runner builds and packs the local
+CSS Hooks packages, including core, and installs those tarballs instead of the
+published release. The fixtures retain the public install commands for the
+current release channel so the generated guides show the commands users run.
 
 These tests require Bash, Git, and Playwright's Chromium browser; CI runs them
 on Linux.

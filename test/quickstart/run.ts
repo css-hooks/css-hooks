@@ -54,6 +54,51 @@ async function stopServer(server: ChildProcess | undefined) {
   await closed;
 }
 
+/** @internal */
+export function candidateInstallCommand(install: string, destination: string) {
+  const packages = new Set(
+    Array.from(
+      install.matchAll(/(@css-hooks\/[a-z-]+)(?:@[^\s]+)?/g),
+      match => match[1]!,
+    ),
+  );
+  assert(packages.size > 0, "Quickstart must install a CSS Hooks package");
+  const includesCore = packages.has("@css-hooks/core");
+  packages.add("@css-hooks/core");
+  const workspaces = [...packages].flatMap(name => ["--workspace", name]);
+  const cwd = fileURLToPath(new URL("../../", import.meta.url));
+
+  execFileSync("npm", ["run", "build", ...workspaces], {
+    cwd,
+    stdio: "inherit",
+  });
+  const packed = JSON.parse(
+    execFileSync(
+      "npm",
+      ["pack", "--json", "--pack-destination", destination, ...workspaces],
+      { cwd, encoding: "utf8" },
+    ),
+  ) as { name: string; filename: string }[];
+  const tarballs = new Map(
+    packed.map(({ name, filename }) => [
+      name,
+      `'${path.join(destination, filename).replace(/'/g, "'\\''")}'`,
+    ]),
+  );
+  const command = install.replace(
+    /(@css-hooks\/[a-z-]+)(?:@[^\s]+)?/g,
+    (_, name: string) => {
+      const tarball = tarballs.get(name);
+      assert(tarball, `Missing candidate tarball: ${name}`);
+      return tarball;
+    },
+  );
+  // Install core alongside the adapter so its exact-version dependency stays local.
+  return includesCore
+    ? command
+    : `${command} ${tarballs.get("@css-hooks/core")!}`;
+}
+
 export async function checkQuickstart(directory: URL, context: TestContext) {
   const quickstart = await readQuickstart(directory);
   const temporary = await mkdtemp(path.join(tmpdir(), "css-hooks-quickstart-"));
@@ -86,7 +131,7 @@ export async function checkQuickstart(directory: URL, context: TestContext) {
 
   const project = path.join(temporary, "css-hooks-playground");
 
-  await run(quickstart.install, project);
+  await run(candidateInstallCommand(quickstart.install, temporary), project);
 
   await applySteps(directory, project, quickstart.steps);
 

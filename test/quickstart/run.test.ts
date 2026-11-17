@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -7,7 +8,50 @@ import { pathToFileURL } from "node:url";
 
 import type { Quickstart } from "./fixture.ts";
 import { readQuickstart } from "./fixture.ts";
-import { applySteps } from "./run.ts";
+import { applySteps, candidateInstallCommand } from "./run.ts";
+
+test("quickstarts install packed candidate adapters and core without the registry", async context => {
+  const temporary = await mkdtemp(
+    path.join(tmpdir(), "css-hooks-candidate ' $-"),
+  );
+  context.after(() => rm(temporary, { recursive: true, force: true }));
+  const project = path.join(temporary, "project");
+  await mkdir(project);
+  await writeFile(path.join(project, "package.json"), '{"private":true}\n');
+
+  const install =
+    "npm install --offline --ignore-scripts @css-hooks/react@next";
+  const command = candidateInstallCommand(install, temporary);
+  assert(!command.includes("@next"));
+  execFileSync("bash", ["-e", "-o", "pipefail", "-c", command], {
+    cwd: project,
+    stdio: "pipe",
+  });
+
+  const lock = JSON.parse(
+    await readFile(path.join(project, "package-lock.json"), "utf8"),
+  ) as { packages: Record<string, { resolved?: string }> };
+  for (const name of ["core", "react"]) {
+    assert.match(
+      lock.packages[`node_modules/@css-hooks/${name}`]!.resolved!,
+      /^file:/,
+    );
+    assert.equal(
+      await readFile(
+        path.join(project, `node_modules/@css-hooks/${name}/esm/index.js`),
+        "utf8",
+      ),
+      await readFile(
+        new URL(`../../packages/${name}/esm/index.js`, import.meta.url),
+        "utf8",
+      ),
+    );
+  }
+  assert.equal(
+    lock.packages["node_modules/@css-hooks/react/node_modules/@css-hooks/core"],
+    undefined,
+  );
+});
 
 test("quickstart steps run in order and fail when a patch does not apply", async context => {
   const temporary = await mkdtemp(path.join(tmpdir(), "css-hooks-steps-"));
