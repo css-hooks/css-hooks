@@ -12,6 +12,7 @@ import { fileURLToPath } from "node:url";
 
 import type { Browser } from "playwright";
 import { chromium } from "playwright";
+import * as v from "valibot";
 
 import type { Quickstart } from "./fixture.ts";
 import { readQuickstart } from "./fixture.ts";
@@ -72,13 +73,18 @@ export function candidateInstallCommand(install: string, destination: string) {
     cwd,
     stdio: "inherit",
   });
-  const packed = JSON.parse(
+  const packed = v.parse(
+    v.pipe(
+      v.string(),
+      v.parseJson(),
+      v.array(v.object({ name: v.string(), filename: v.string() })),
+    ),
     execFileSync(
       "npm",
       ["pack", "--json", "--pack-destination", destination, ...workspaces],
       { cwd, encoding: "utf8" },
     ),
-  ) as { name: string; filename: string }[];
+  );
   const tarballs = new Map(
     packed.map(({ name, filename }) => [
       name,
