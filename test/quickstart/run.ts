@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import type { ChildProcess } from "node:child_process";
-import { execFileSync, spawn } from "node:child_process";
+import { execFile as execFileCb, spawn } from "node:child_process";
 import { once } from "node:events";
 import { copyFile, mkdir, mkdtemp, rm } from "node:fs/promises";
 import { createServer } from "node:net";
@@ -9,12 +9,16 @@ import path from "node:path";
 import type { TestContext } from "node:test";
 import { setTimeout as delay } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
+import { promisify } from "node:util";
 
 import type { Browser } from "playwright";
 import { chromium } from "playwright";
+import * as v from "valibot";
 
 import type { Quickstart } from "./fixture.ts";
 import { readQuickstart } from "./fixture.ts";
+
+const execFile = promisify(execFileCb);
 
 /** @internal */
 export async function applySteps(
@@ -24,10 +28,10 @@ export async function applySteps(
 ) {
   for (const step of steps) {
     if ("patch" in step) {
-      execFileSync(
+      await execFile(
         "git",
         ["apply", fileURLToPath(new URL(step.patch, directory))],
-        { cwd: project, stdio: "pipe" },
+        { cwd: project },
       );
     } else {
       const target = path.join(project, step.target);
@@ -52,6 +56,64 @@ async function stopServer(server: ChildProcess | undefined) {
   }
 
   await closed;
+}
+
+/** @internal */
+export async function candidateInstallCommand(
+  install: string,
+  destination: string,
+  signal: AbortSignal,
+) {
+  const packages = new Set(
+    Array.from(
+      install.matchAll(/(@css-hooks\/[a-z-]+)(?:@[^\s]+)?/g),
+      match => match[1]!,
+    ),
+  );
+  assert(packages.size > 0, "Quickstart must install a CSS Hooks package");
+  const includesCore = packages.has("@css-hooks/core");
+  packages.add("@css-hooks/core");
+  const workspaces = [...packages].flatMap(name => ["--workspace", name]);
+  const cwd = fileURLToPath(new URL("../../", import.meta.url));
+
+  const build = execFile("npm", ["run", "build", ...workspaces], {
+    cwd,
+    signal,
+  });
+  build.child.stdout?.pipe(process.stdout);
+  build.child.stderr?.pipe(process.stderr);
+  await build;
+  const { stdout } = await execFile(
+    "npm",
+    ["pack", "--json", "--pack-destination", destination, ...workspaces],
+    { cwd, signal },
+  );
+  const packed = v.parse(
+    v.pipe(
+      v.string(),
+      v.parseJson(),
+      v.array(v.object({ name: v.string(), filename: v.string() })),
+    ),
+    stdout,
+  );
+  const tarballs = new Map(
+    packed.map(({ name, filename }) => [
+      name,
+      `'${path.join(destination, filename).replace(/'/g, "'\\''")}'`,
+    ]),
+  );
+  const command = install.replace(
+    /(@css-hooks\/[a-z-]+)(?:@[^\s]+)?/g,
+    (_, name: string) => {
+      const tarball = tarballs.get(name);
+      assert(tarball, `Missing candidate tarball: ${name}`);
+      return tarball;
+    },
+  );
+  // Install core alongside the adapter so its exact-version dependency stays local.
+  return includesCore
+    ? command
+    : `${command} ${tarballs.get("@css-hooks/core")!}`;
 }
 
 export async function checkQuickstart(directory: URL, context: TestContext) {
@@ -86,7 +148,12 @@ export async function checkQuickstart(directory: URL, context: TestContext) {
 
   const project = path.join(temporary, "css-hooks-playground");
 
-  await run(quickstart.install, project);
+  const install = await candidateInstallCommand(
+    quickstart.install,
+    temporary,
+    context.signal,
+  );
+  await run(install, project);
 
   await applySteps(directory, project, quickstart.steps);
 

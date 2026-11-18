@@ -1,13 +1,82 @@
 import assert from "node:assert/strict";
+import { execFile as execFileCb } from "node:child_process";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { test } from "node:test";
 import { pathToFileURL } from "node:url";
+import { promisify } from "node:util";
+
+import * as v from "valibot";
 
 import type { Quickstart } from "./fixture.ts";
 import { readQuickstart } from "./fixture.ts";
-import { applySteps } from "./run.ts";
+import { applySteps, candidateInstallCommand } from "./run.ts";
+
+const execFile = promisify(execFileCb);
+
+test("quickstarts install packed candidate adapters and core without the registry", async context => {
+  const temporary = await mkdtemp(
+    path.join(tmpdir(), "css-hooks-candidate ' $-"),
+  );
+  context.after(() => rm(temporary, { recursive: true, force: true }));
+  const project = path.join(temporary, "project");
+  await mkdir(project);
+  await writeFile(path.join(project, "package.json"), '{"private":true}\n');
+
+  const install =
+    "npm install --offline --ignore-scripts @css-hooks/react@next";
+  const command = await candidateInstallCommand(
+    install,
+    temporary,
+    context.signal,
+  );
+  assert(!command.includes("@next"));
+  await execFile("bash", ["-e", "-o", "pipefail", "-c", command], {
+    cwd: project,
+    signal: context.signal,
+  });
+
+  const lock = v.parse(
+    v.pipe(
+      v.string(),
+      v.parseJson(),
+      v.object({ packages: v.record(v.string(), v.unknown()) }),
+    ),
+    await readFile(path.join(project, "package-lock.json"), "utf8"),
+  );
+  for (const name of ["core", "react"]) {
+    v.parse(
+      v.object({ resolved: v.pipe(v.string(), v.regex(/^file:/)) }),
+      lock.packages[`node_modules/@css-hooks/${name}`],
+    );
+    assert.equal(
+      await readFile(
+        path.join(project, `node_modules/@css-hooks/${name}/esm/index.js`),
+        "utf8",
+      ),
+      await readFile(
+        new URL(`../../packages/${name}/esm/index.js`, import.meta.url),
+        "utf8",
+      ),
+    );
+  }
+  assert.equal(
+    lock.packages["node_modules/@css-hooks/react/node_modules/@css-hooks/core"],
+    undefined,
+  );
+});
+
+test("candidate preparation respects test cancellation", async () => {
+  await assert.rejects(
+    candidateInstallCommand(
+      "npm install @css-hooks/core",
+      tmpdir(),
+      AbortSignal.abort(),
+    ),
+    { name: "AbortError" },
+  );
+});
 
 test("quickstart steps run in order and fail when a patch does not apply", async context => {
   const temporary = await mkdtemp(path.join(tmpdir(), "css-hooks-steps-"));
