@@ -4,7 +4,7 @@
 
 ## Condition type
 
-Represents a hook or combination of hooks that can activate declarations.
+A hook or logical combination of hooks
 
 **Signature:**
 

@@ -5,7 +5,7 @@
  */
 
 /**
- * Represents a hook or combination of hooks that can activate declarations.
+ * A hook or logical combination of hooks
  *
  * @typeParam H - The basic hook type to enhance with boolean operations
  *
@@ -15,7 +15,7 @@ export type Condition<H> =
   H | { and: Condition<H>[] } | { or: Condition<H>[] } | { not: Condition<H> };
 
 /**
- * Function to convert a value into a string
+ * Converts a declaration value into a string.
  *
  * @remarks
  * Used for merging a conditional property value with the fallback value
@@ -34,17 +34,17 @@ export type StringifyFn = (
 ) => string | null;
 
 /**
- * Represents a hook declared with `createHooks`.
+ * A unit of CSS logic that can be used for conditional inline styles
  *
  * @remarks
- * Four forms are supported:
+ * Supported types include:
  *
  * 1. A selector hook, where `&` is used as a placeholder for the element for which
  *    the hook activates. The `&` character must appear somewhere.
  * 2. An at-rule hook beginning with `@media`, `@container`, `@supports`, or
  *    `@scope`, followed by a space. `@scope` requires an explicit scope root.
  * 3. The `@starting-style` at-rule hook with no additional parameters.
- * 4. A named boolean flag hook beginning with `%`.
+ * 4. A named Boolean flag hook beginning with `%`.
  *
  * @public
  */
@@ -55,14 +55,17 @@ export type Hook =
   | "@starting-style"
   | `%${string}`;
 
-/** Extracts the flags in a hook tuple. */
+/** Extracts the flags from a list of hooks. */
 type Flag<Hooks extends readonly Hook[]> = Extract<Hooks[number], `%${string}`>;
 
 /** Style declarations that set a flag for an element and its descendants */
 type FlagStyle = { [P in `--${string}`]: string };
 
 const fallbackMarker = "var(--ch-revert-layer,revert-layer)";
-const fallbackMarkerPattern = /var\(--ch-revert-layer,revert-layer\)/g;
+const fallbackMarkerPattern = new RegExp(
+  fallbackMarker.replace(/[-()]/g, x => `\\${x}`),
+  "g",
+);
 
 /**
  * Extracts the keys known to be present in each object in a union.
@@ -71,8 +74,8 @@ const fallbackMarkerPattern = /var\(--ch-revert-layer,revert-layer\)/g;
  * Unlike `keyof`, this excludes optional keys and distributes over union
  * members. For an exact object type it produces the same keys as `keyof`, while
  * a broad type such as `CSSProperties` contributes no keys because its
- * properties are optional. This lets broad style inputs participate in a merge
- * without introducing false conflicts or erasing keys known from other inputs.
+ * properties are optional. This allows broad style objects to be merged without
+ * introducing false conflicts or erasing keys known from other styles.
  *
  * @typeParam T - The object or union of objects whose known-present keys are
  *   extracted
@@ -121,50 +124,50 @@ type MergeStyle<BaseStyle, OverrideStyle> = Omit<
   OverrideStyle;
 
 /**
- * Applies a style input to a base style, ignoring an absent input.
+ * Applies a style to a base style, ignoring null and undefined.
  *
  * @typeParam BaseStyle - The accumulated style
- * @typeParam Input - The next style object or absent style input
+ * @typeParam Style - The next style object, null, or undefined
  */
-type ApplyStyleInput<
+type ApplyStyle<
   BaseStyle,
-  Input extends object | null | undefined,
-> = Input extends null | undefined ? BaseStyle : MergeStyle<BaseStyle, Input>;
+  Style extends object | null | undefined,
+> = Style extends null | undefined ? BaseStyle : MergeStyle<BaseStyle, Style>;
 
 /**
- * Applies style inputs from left to right to produce their merged style type.
+ * Applies styles from left to right to produce their merged style type.
  *
  * @typeParam BaseStyle - The initial accumulated style
- * @typeParam Inputs - The style inputs to apply in order
+ * @typeParam Styles - The styles to apply in order
  */
-type MergeStyleInputs<
+type MergeStyles<
   BaseStyle,
-  Inputs extends readonly (object | null | undefined)[],
-> = Inputs extends readonly [
-  infer Input extends object | null | undefined,
+  Styles extends readonly (object | null | undefined)[],
+> = Styles extends readonly [
+  infer Style extends object | null | undefined,
   ...infer Rest extends readonly (object | null | undefined)[],
 ]
-  ? MergeStyleInputs<ApplyStyleInput<BaseStyle, Input>, Rest>
+  ? MergeStyles<ApplyStyle<BaseStyle, Style>, Rest>
   : BaseStyle;
 
 /**
  * A style object that may be absent.
  *
  * @remarks
- * Including `null` and `undefined` lets optional style objects be passed to
+ * Optional means the entire style object may be `null` or `undefined`, not that
+ * its properties are optional. This lets optional style objects be passed to
  * `mergeStyles` without first checking whether they are present.
  *
  * @typeParam CSSProperties - The configured style object type
  */
-type StyleInput<CSSProperties extends object> =
+type OptionalStyle<CSSProperties extends object> =
   CSSProperties | null | undefined;
 
 /**
- * Constrains a style input against the known-present properties of previous
- * inputs.
+ * Constrains a style against the known-present properties of preceding styles.
  *
  * @remarks
- * The outer `Input &` intentionally exposes `Input` outside the conditional
+ * The outer `Style &` intentionally exposes `Style` outside the conditional
  * type so TypeScript infers the exact argument type before checking conflicts.
  * Using only the conditional type can instead widen the argument to the
  * configured style type, whose optional properties provide no known-present
@@ -173,38 +176,37 @@ type StyleInput<CSSProperties extends object> =
  * @typeParam CSSProperties - The configured style object type
  * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
  *   with which they conflict
- * @typeParam PreviousInputs - The style inputs preceding the input being
- *   checked
- * @typeParam Input - The style input being checked
+ * @typeParam PreviousStyles - The styles preceding the style being checked
+ * @typeParam Style - The style being checked
  */
-type CheckedStyleInput<
+type CheckedStyle<
   CSSProperties extends object,
   CSSPropertyConflicts extends object,
-  PreviousInputs extends readonly unknown[],
-  Input extends StyleInput<CSSProperties>,
-> = Input &
-  (Input extends null | undefined
-    ? Input
+  PreviousStyles extends readonly unknown[],
+  Style extends OptionalStyle<CSSProperties>,
+> = Style &
+  (Style extends null | undefined
+    ? Style
     : StyleConflictConstraint<
-        Input & object,
+        Style & object,
         CSSPropertyConflicts,
-        PreviousInputs[number]
+        PreviousStyles[number]
       >);
 
 /**
- * Produces the merged style type for inputs applied to an empty base style.
+ * Produces the merged style type for styles applied to an empty base style.
  *
- * @typeParam Inputs - The style inputs to merge from left to right
+ * @typeParam Styles - The styles to merge from left to right
  */
-type Merged<Inputs extends readonly (object | null | undefined)[]> =
-  MergeStyleInputs<object, Inputs>;
+type Merged<Styles extends readonly (object | null | undefined)[]> =
+  MergeStyles<object, Styles>;
 
 /**
- * Merges up to 26 style inputs from left to right.
+ * Merges up to 26 styles from left to right.
  *
  * @remarks
- * Each input after the first is checked against the known-present properties of
- * every preceding input.
+ * Each style after the first is checked against the known-present properties of
+ * every preceding style.
  *
  * @typeParam CSSProperties - The configured style object type
  * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
@@ -214,124 +216,99 @@ type MergeStylesFn<
   CSSProperties extends object,
   CSSPropertyConflicts extends object,
 > = {
-  <const A extends StyleInput<CSSProperties>>(
+  <const A extends OptionalStyle<CSSProperties>>(
     a: A,
-  ): MergeStyleInputs<object, [A]>;
+  ): MergeStyles<object, [A]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-  ): MergeStyleInputs<object, [A, B]>;
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+  ): MergeStyles<object, [A, B]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-  ): MergeStyleInputs<object, [A, B, C]>;
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+  ): MergeStyles<object, [A, B, C]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-  ): MergeStyleInputs<object, [A, B, C, D]>;
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+  ): MergeStyles<object, [A, B, C, D]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-  ): MergeStyleInputs<object, [A, B, C, D, E]>;
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+  ): MergeStyles<object, [A, B, C, D, E]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-  ): MergeStyleInputs<object, [A, B, C, D, E, F]>;
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+  ): MergeStyles<object, [A, B, C, D, E, F]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-  ): MergeStyleInputs<object, [A, B, C, D, E, F, G]>;
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+  ): MergeStyles<object, [A, B, C, D, E, F, G]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
@@ -339,40 +316,30 @@ type MergeStylesFn<
     >,
   ): Merged<[A, B, C, D, E, F, G, H]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
@@ -380,47 +347,37 @@ type MergeStylesFn<
     >,
   ): Merged<[A, B, C, D, E, F, G, H, I]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
-    const J extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
       I
     >,
-    j: CheckedStyleInput<
+    j: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I],
@@ -428,54 +385,44 @@ type MergeStylesFn<
     >,
   ): Merged<[A, B, C, D, E, F, G, H, I, J]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
-    const J extends StyleInput<CSSProperties>,
-    const K extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
       I
     >,
-    j: CheckedStyleInput<
+    j: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I],
       J
     >,
-    k: CheckedStyleInput<
+    k: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J],
@@ -483,61 +430,51 @@ type MergeStylesFn<
     >,
   ): Merged<[A, B, C, D, E, F, G, H, I, J, K]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
-    const J extends StyleInput<CSSProperties>,
-    const K extends StyleInput<CSSProperties>,
-    const L extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
       I
     >,
-    j: CheckedStyleInput<
+    j: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I],
       J
     >,
-    k: CheckedStyleInput<
+    k: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J],
       K
     >,
-    l: CheckedStyleInput<
+    l: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K],
@@ -545,68 +482,58 @@ type MergeStylesFn<
     >,
   ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
-    const J extends StyleInput<CSSProperties>,
-    const K extends StyleInput<CSSProperties>,
-    const L extends StyleInput<CSSProperties>,
-    const M extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
       I
     >,
-    j: CheckedStyleInput<
+    j: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I],
       J
     >,
-    k: CheckedStyleInput<
+    k: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J],
       K
     >,
-    l: CheckedStyleInput<
+    l: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K],
       L
     >,
-    m: CheckedStyleInput<
+    m: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L],
@@ -614,75 +541,65 @@ type MergeStylesFn<
     >,
   ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
-    const J extends StyleInput<CSSProperties>,
-    const K extends StyleInput<CSSProperties>,
-    const L extends StyleInput<CSSProperties>,
-    const M extends StyleInput<CSSProperties>,
-    const N extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
       I
     >,
-    j: CheckedStyleInput<
+    j: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I],
       J
     >,
-    k: CheckedStyleInput<
+    k: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J],
       K
     >,
-    l: CheckedStyleInput<
+    l: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K],
       L
     >,
-    m: CheckedStyleInput<
+    m: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L],
       M
     >,
-    n: CheckedStyleInput<
+    n: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M],
@@ -690,82 +607,72 @@ type MergeStylesFn<
     >,
   ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
-    const J extends StyleInput<CSSProperties>,
-    const K extends StyleInput<CSSProperties>,
-    const L extends StyleInput<CSSProperties>,
-    const M extends StyleInput<CSSProperties>,
-    const N extends StyleInput<CSSProperties>,
-    const O extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
       I
     >,
-    j: CheckedStyleInput<
+    j: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I],
       J
     >,
-    k: CheckedStyleInput<
+    k: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J],
       K
     >,
-    l: CheckedStyleInput<
+    l: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K],
       L
     >,
-    m: CheckedStyleInput<
+    m: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L],
       M
     >,
-    n: CheckedStyleInput<
+    n: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M],
       N
     >,
-    o: CheckedStyleInput<
+    o: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
@@ -773,89 +680,79 @@ type MergeStylesFn<
     >,
   ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
-    const J extends StyleInput<CSSProperties>,
-    const K extends StyleInput<CSSProperties>,
-    const L extends StyleInput<CSSProperties>,
-    const M extends StyleInput<CSSProperties>,
-    const N extends StyleInput<CSSProperties>,
-    const O extends StyleInput<CSSProperties>,
-    const P extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
       I
     >,
-    j: CheckedStyleInput<
+    j: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I],
       J
     >,
-    k: CheckedStyleInput<
+    k: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J],
       K
     >,
-    l: CheckedStyleInput<
+    l: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K],
       L
     >,
-    m: CheckedStyleInput<
+    m: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L],
       M
     >,
-    n: CheckedStyleInput<
+    n: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M],
       N
     >,
-    o: CheckedStyleInput<
+    o: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
       O
     >,
-    p: CheckedStyleInput<
+    p: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
@@ -863,96 +760,86 @@ type MergeStylesFn<
     >,
   ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
-    const J extends StyleInput<CSSProperties>,
-    const K extends StyleInput<CSSProperties>,
-    const L extends StyleInput<CSSProperties>,
-    const M extends StyleInput<CSSProperties>,
-    const N extends StyleInput<CSSProperties>,
-    const O extends StyleInput<CSSProperties>,
-    const P extends StyleInput<CSSProperties>,
-    const Q extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
       I
     >,
-    j: CheckedStyleInput<
+    j: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I],
       J
     >,
-    k: CheckedStyleInput<
+    k: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J],
       K
     >,
-    l: CheckedStyleInput<
+    l: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K],
       L
     >,
-    m: CheckedStyleInput<
+    m: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L],
       M
     >,
-    n: CheckedStyleInput<
+    n: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M],
       N
     >,
-    o: CheckedStyleInput<
+    o: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
       O
     >,
-    p: CheckedStyleInput<
+    p: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
       P
     >,
-    q: CheckedStyleInput<
+    q: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
@@ -960,103 +847,93 @@ type MergeStylesFn<
     >,
   ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
-    const J extends StyleInput<CSSProperties>,
-    const K extends StyleInput<CSSProperties>,
-    const L extends StyleInput<CSSProperties>,
-    const M extends StyleInput<CSSProperties>,
-    const N extends StyleInput<CSSProperties>,
-    const O extends StyleInput<CSSProperties>,
-    const P extends StyleInput<CSSProperties>,
-    const Q extends StyleInput<CSSProperties>,
-    const R extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
       I
     >,
-    j: CheckedStyleInput<
+    j: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I],
       J
     >,
-    k: CheckedStyleInput<
+    k: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J],
       K
     >,
-    l: CheckedStyleInput<
+    l: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K],
       L
     >,
-    m: CheckedStyleInput<
+    m: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L],
       M
     >,
-    n: CheckedStyleInput<
+    n: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M],
       N
     >,
-    o: CheckedStyleInput<
+    o: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
       O
     >,
-    p: CheckedStyleInput<
+    p: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
       P
     >,
-    q: CheckedStyleInput<
+    q: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
       Q
     >,
-    r: CheckedStyleInput<
+    r: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
@@ -1064,110 +941,100 @@ type MergeStylesFn<
     >,
   ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
-    const J extends StyleInput<CSSProperties>,
-    const K extends StyleInput<CSSProperties>,
-    const L extends StyleInput<CSSProperties>,
-    const M extends StyleInput<CSSProperties>,
-    const N extends StyleInput<CSSProperties>,
-    const O extends StyleInput<CSSProperties>,
-    const P extends StyleInput<CSSProperties>,
-    const Q extends StyleInput<CSSProperties>,
-    const R extends StyleInput<CSSProperties>,
-    const S extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
+    const S extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
       I
     >,
-    j: CheckedStyleInput<
+    j: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I],
       J
     >,
-    k: CheckedStyleInput<
+    k: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J],
       K
     >,
-    l: CheckedStyleInput<
+    l: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K],
       L
     >,
-    m: CheckedStyleInput<
+    m: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L],
       M
     >,
-    n: CheckedStyleInput<
+    n: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M],
       N
     >,
-    o: CheckedStyleInput<
+    o: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
       O
     >,
-    p: CheckedStyleInput<
+    p: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
       P
     >,
-    q: CheckedStyleInput<
+    q: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
       Q
     >,
-    r: CheckedStyleInput<
+    r: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
       R
     >,
-    s: CheckedStyleInput<
+    s: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R],
@@ -1175,117 +1042,107 @@ type MergeStylesFn<
     >,
   ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
-    const J extends StyleInput<CSSProperties>,
-    const K extends StyleInput<CSSProperties>,
-    const L extends StyleInput<CSSProperties>,
-    const M extends StyleInput<CSSProperties>,
-    const N extends StyleInput<CSSProperties>,
-    const O extends StyleInput<CSSProperties>,
-    const P extends StyleInput<CSSProperties>,
-    const Q extends StyleInput<CSSProperties>,
-    const R extends StyleInput<CSSProperties>,
-    const S extends StyleInput<CSSProperties>,
-    const T extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
+    const S extends OptionalStyle<CSSProperties>,
+    const T extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
       I
     >,
-    j: CheckedStyleInput<
+    j: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I],
       J
     >,
-    k: CheckedStyleInput<
+    k: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J],
       K
     >,
-    l: CheckedStyleInput<
+    l: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K],
       L
     >,
-    m: CheckedStyleInput<
+    m: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L],
       M
     >,
-    n: CheckedStyleInput<
+    n: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M],
       N
     >,
-    o: CheckedStyleInput<
+    o: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
       O
     >,
-    p: CheckedStyleInput<
+    p: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
       P
     >,
-    q: CheckedStyleInput<
+    q: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
       Q
     >,
-    r: CheckedStyleInput<
+    r: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
       R
     >,
-    s: CheckedStyleInput<
+    s: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R],
       S
     >,
-    t: CheckedStyleInput<
+    t: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S],
@@ -1293,124 +1150,114 @@ type MergeStylesFn<
     >,
   ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
-    const J extends StyleInput<CSSProperties>,
-    const K extends StyleInput<CSSProperties>,
-    const L extends StyleInput<CSSProperties>,
-    const M extends StyleInput<CSSProperties>,
-    const N extends StyleInput<CSSProperties>,
-    const O extends StyleInput<CSSProperties>,
-    const P extends StyleInput<CSSProperties>,
-    const Q extends StyleInput<CSSProperties>,
-    const R extends StyleInput<CSSProperties>,
-    const S extends StyleInput<CSSProperties>,
-    const T extends StyleInput<CSSProperties>,
-    const U extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
+    const S extends OptionalStyle<CSSProperties>,
+    const T extends OptionalStyle<CSSProperties>,
+    const U extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
       I
     >,
-    j: CheckedStyleInput<
+    j: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I],
       J
     >,
-    k: CheckedStyleInput<
+    k: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J],
       K
     >,
-    l: CheckedStyleInput<
+    l: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K],
       L
     >,
-    m: CheckedStyleInput<
+    m: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L],
       M
     >,
-    n: CheckedStyleInput<
+    n: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M],
       N
     >,
-    o: CheckedStyleInput<
+    o: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
       O
     >,
-    p: CheckedStyleInput<
+    p: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
       P
     >,
-    q: CheckedStyleInput<
+    q: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
       Q
     >,
-    r: CheckedStyleInput<
+    r: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
       R
     >,
-    s: CheckedStyleInput<
+    s: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R],
       S
     >,
-    t: CheckedStyleInput<
+    t: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S],
       T
     >,
-    u: CheckedStyleInput<
+    u: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T],
@@ -1418,131 +1265,121 @@ type MergeStylesFn<
     >,
   ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
-    const J extends StyleInput<CSSProperties>,
-    const K extends StyleInput<CSSProperties>,
-    const L extends StyleInput<CSSProperties>,
-    const M extends StyleInput<CSSProperties>,
-    const N extends StyleInput<CSSProperties>,
-    const O extends StyleInput<CSSProperties>,
-    const P extends StyleInput<CSSProperties>,
-    const Q extends StyleInput<CSSProperties>,
-    const R extends StyleInput<CSSProperties>,
-    const S extends StyleInput<CSSProperties>,
-    const T extends StyleInput<CSSProperties>,
-    const U extends StyleInput<CSSProperties>,
-    const V extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
+    const S extends OptionalStyle<CSSProperties>,
+    const T extends OptionalStyle<CSSProperties>,
+    const U extends OptionalStyle<CSSProperties>,
+    const V extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
       I
     >,
-    j: CheckedStyleInput<
+    j: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I],
       J
     >,
-    k: CheckedStyleInput<
+    k: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J],
       K
     >,
-    l: CheckedStyleInput<
+    l: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K],
       L
     >,
-    m: CheckedStyleInput<
+    m: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L],
       M
     >,
-    n: CheckedStyleInput<
+    n: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M],
       N
     >,
-    o: CheckedStyleInput<
+    o: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
       O
     >,
-    p: CheckedStyleInput<
+    p: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
       P
     >,
-    q: CheckedStyleInput<
+    q: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
       Q
     >,
-    r: CheckedStyleInput<
+    r: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
       R
     >,
-    s: CheckedStyleInput<
+    s: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R],
       S
     >,
-    t: CheckedStyleInput<
+    t: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S],
       T
     >,
-    u: CheckedStyleInput<
+    u: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T],
       U
     >,
-    v: CheckedStyleInput<
+    v: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U],
@@ -1550,138 +1387,128 @@ type MergeStylesFn<
     >,
   ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]>;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
-    const J extends StyleInput<CSSProperties>,
-    const K extends StyleInput<CSSProperties>,
-    const L extends StyleInput<CSSProperties>,
-    const M extends StyleInput<CSSProperties>,
-    const N extends StyleInput<CSSProperties>,
-    const O extends StyleInput<CSSProperties>,
-    const P extends StyleInput<CSSProperties>,
-    const Q extends StyleInput<CSSProperties>,
-    const R extends StyleInput<CSSProperties>,
-    const S extends StyleInput<CSSProperties>,
-    const T extends StyleInput<CSSProperties>,
-    const U extends StyleInput<CSSProperties>,
-    const V extends StyleInput<CSSProperties>,
-    const W extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
+    const S extends OptionalStyle<CSSProperties>,
+    const T extends OptionalStyle<CSSProperties>,
+    const U extends OptionalStyle<CSSProperties>,
+    const V extends OptionalStyle<CSSProperties>,
+    const W extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
       I
     >,
-    j: CheckedStyleInput<
+    j: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I],
       J
     >,
-    k: CheckedStyleInput<
+    k: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J],
       K
     >,
-    l: CheckedStyleInput<
+    l: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K],
       L
     >,
-    m: CheckedStyleInput<
+    m: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L],
       M
     >,
-    n: CheckedStyleInput<
+    n: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M],
       N
     >,
-    o: CheckedStyleInput<
+    o: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
       O
     >,
-    p: CheckedStyleInput<
+    p: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
       P
     >,
-    q: CheckedStyleInput<
+    q: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
       Q
     >,
-    r: CheckedStyleInput<
+    r: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
       R
     >,
-    s: CheckedStyleInput<
+    s: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R],
       S
     >,
-    t: CheckedStyleInput<
+    t: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S],
       T
     >,
-    u: CheckedStyleInput<
+    u: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T],
       U
     >,
-    v: CheckedStyleInput<
+    v: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U],
       V
     >,
-    w: CheckedStyleInput<
+    w: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V],
@@ -1691,145 +1518,135 @@ type MergeStylesFn<
     [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W]
   >;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
-    const J extends StyleInput<CSSProperties>,
-    const K extends StyleInput<CSSProperties>,
-    const L extends StyleInput<CSSProperties>,
-    const M extends StyleInput<CSSProperties>,
-    const N extends StyleInput<CSSProperties>,
-    const O extends StyleInput<CSSProperties>,
-    const P extends StyleInput<CSSProperties>,
-    const Q extends StyleInput<CSSProperties>,
-    const R extends StyleInput<CSSProperties>,
-    const S extends StyleInput<CSSProperties>,
-    const T extends StyleInput<CSSProperties>,
-    const U extends StyleInput<CSSProperties>,
-    const V extends StyleInput<CSSProperties>,
-    const W extends StyleInput<CSSProperties>,
-    const X extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
+    const S extends OptionalStyle<CSSProperties>,
+    const T extends OptionalStyle<CSSProperties>,
+    const U extends OptionalStyle<CSSProperties>,
+    const V extends OptionalStyle<CSSProperties>,
+    const W extends OptionalStyle<CSSProperties>,
+    const X extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
       I
     >,
-    j: CheckedStyleInput<
+    j: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I],
       J
     >,
-    k: CheckedStyleInput<
+    k: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J],
       K
     >,
-    l: CheckedStyleInput<
+    l: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K],
       L
     >,
-    m: CheckedStyleInput<
+    m: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L],
       M
     >,
-    n: CheckedStyleInput<
+    n: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M],
       N
     >,
-    o: CheckedStyleInput<
+    o: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
       O
     >,
-    p: CheckedStyleInput<
+    p: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
       P
     >,
-    q: CheckedStyleInput<
+    q: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
       Q
     >,
-    r: CheckedStyleInput<
+    r: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
       R
     >,
-    s: CheckedStyleInput<
+    s: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R],
       S
     >,
-    t: CheckedStyleInput<
+    t: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S],
       T
     >,
-    u: CheckedStyleInput<
+    u: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T],
       U
     >,
-    v: CheckedStyleInput<
+    v: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U],
       V
     >,
-    w: CheckedStyleInput<
+    w: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V],
       W
     >,
-    x: CheckedStyleInput<
+    x: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W],
@@ -1839,152 +1656,142 @@ type MergeStylesFn<
     [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X]
   >;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
-    const J extends StyleInput<CSSProperties>,
-    const K extends StyleInput<CSSProperties>,
-    const L extends StyleInput<CSSProperties>,
-    const M extends StyleInput<CSSProperties>,
-    const N extends StyleInput<CSSProperties>,
-    const O extends StyleInput<CSSProperties>,
-    const P extends StyleInput<CSSProperties>,
-    const Q extends StyleInput<CSSProperties>,
-    const R extends StyleInput<CSSProperties>,
-    const S extends StyleInput<CSSProperties>,
-    const T extends StyleInput<CSSProperties>,
-    const U extends StyleInput<CSSProperties>,
-    const V extends StyleInput<CSSProperties>,
-    const W extends StyleInput<CSSProperties>,
-    const X extends StyleInput<CSSProperties>,
-    const Y extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
+    const S extends OptionalStyle<CSSProperties>,
+    const T extends OptionalStyle<CSSProperties>,
+    const U extends OptionalStyle<CSSProperties>,
+    const V extends OptionalStyle<CSSProperties>,
+    const W extends OptionalStyle<CSSProperties>,
+    const X extends OptionalStyle<CSSProperties>,
+    const Y extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
       I
     >,
-    j: CheckedStyleInput<
+    j: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I],
       J
     >,
-    k: CheckedStyleInput<
+    k: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J],
       K
     >,
-    l: CheckedStyleInput<
+    l: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K],
       L
     >,
-    m: CheckedStyleInput<
+    m: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L],
       M
     >,
-    n: CheckedStyleInput<
+    n: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M],
       N
     >,
-    o: CheckedStyleInput<
+    o: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
       O
     >,
-    p: CheckedStyleInput<
+    p: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
       P
     >,
-    q: CheckedStyleInput<
+    q: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
       Q
     >,
-    r: CheckedStyleInput<
+    r: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
       R
     >,
-    s: CheckedStyleInput<
+    s: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R],
       S
     >,
-    t: CheckedStyleInput<
+    t: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S],
       T
     >,
-    u: CheckedStyleInput<
+    u: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T],
       U
     >,
-    v: CheckedStyleInput<
+    v: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U],
       V
     >,
-    w: CheckedStyleInput<
+    w: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V],
       W
     >,
-    x: CheckedStyleInput<
+    x: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W],
       X
     >,
-    y: CheckedStyleInput<
+    y: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X],
@@ -1994,159 +1801,149 @@ type MergeStylesFn<
     [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y]
   >;
   <
-    const A extends StyleInput<CSSProperties>,
-    const B extends StyleInput<CSSProperties>,
-    const C extends StyleInput<CSSProperties>,
-    const D extends StyleInput<CSSProperties>,
-    const E extends StyleInput<CSSProperties>,
-    const F extends StyleInput<CSSProperties>,
-    const G extends StyleInput<CSSProperties>,
-    const H extends StyleInput<CSSProperties>,
-    const I extends StyleInput<CSSProperties>,
-    const J extends StyleInput<CSSProperties>,
-    const K extends StyleInput<CSSProperties>,
-    const L extends StyleInput<CSSProperties>,
-    const M extends StyleInput<CSSProperties>,
-    const N extends StyleInput<CSSProperties>,
-    const O extends StyleInput<CSSProperties>,
-    const P extends StyleInput<CSSProperties>,
-    const Q extends StyleInput<CSSProperties>,
-    const R extends StyleInput<CSSProperties>,
-    const S extends StyleInput<CSSProperties>,
-    const T extends StyleInput<CSSProperties>,
-    const U extends StyleInput<CSSProperties>,
-    const V extends StyleInput<CSSProperties>,
-    const W extends StyleInput<CSSProperties>,
-    const X extends StyleInput<CSSProperties>,
-    const Y extends StyleInput<CSSProperties>,
-    const Z extends StyleInput<CSSProperties>,
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
+    const S extends OptionalStyle<CSSProperties>,
+    const T extends OptionalStyle<CSSProperties>,
+    const U extends OptionalStyle<CSSProperties>,
+    const V extends OptionalStyle<CSSProperties>,
+    const W extends OptionalStyle<CSSProperties>,
+    const X extends OptionalStyle<CSSProperties>,
+    const Y extends OptionalStyle<CSSProperties>,
+    const Z extends OptionalStyle<CSSProperties>,
   >(
     a: A,
-    b: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A], B>,
-    c: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B], C>,
-    d: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
-    e: CheckedStyleInput<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
-    f: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E],
-      F
-    >,
-    g: CheckedStyleInput<
-      CSSProperties,
-      CSSPropertyConflicts,
-      [A, B, C, D, E, F],
-      G
-    >,
-    h: CheckedStyleInput<
+    b: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSProperties, CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G],
       H
     >,
-    i: CheckedStyleInput<
+    i: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H],
       I
     >,
-    j: CheckedStyleInput<
+    j: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I],
       J
     >,
-    k: CheckedStyleInput<
+    k: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J],
       K
     >,
-    l: CheckedStyleInput<
+    l: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K],
       L
     >,
-    m: CheckedStyleInput<
+    m: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L],
       M
     >,
-    n: CheckedStyleInput<
+    n: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M],
       N
     >,
-    o: CheckedStyleInput<
+    o: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
       O
     >,
-    p: CheckedStyleInput<
+    p: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
       P
     >,
-    q: CheckedStyleInput<
+    q: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
       Q
     >,
-    r: CheckedStyleInput<
+    r: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
       R
     >,
-    s: CheckedStyleInput<
+    s: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R],
       S
     >,
-    t: CheckedStyleInput<
+    t: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S],
       T
     >,
-    u: CheckedStyleInput<
+    u: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T],
       U
     >,
-    v: CheckedStyleInput<
+    v: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U],
       V
     >,
-    w: CheckedStyleInput<
+    w: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V],
       W
     >,
-    x: CheckedStyleInput<
+    x: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W],
       X
     >,
-    y: CheckedStyleInput<
+    y: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X],
       Y
     >,
-    z: CheckedStyleInput<
+    z: CheckedStyle<
       CSSProperties,
       CSSPropertyConflicts,
       [
@@ -2400,19 +2197,19 @@ export function createHooksSystem<
     return `var(--${hash})`;
   };
 
-  const mergeStyles = (...inputs: (object | null | undefined)[]): object => {
+  const mergeStyles = (...styles: (object | null | undefined)[]): object => {
     let result: Record<PropertyKey, unknown> = {};
-    for (const input of inputs) {
-      if (!input) {
+    for (const style of styles) {
+      if (!style) {
         continue;
       }
       const merged = { ...result };
-      for (const property of Reflect.ownKeys(input)) {
-        if (!Object.prototype.propertyIsEnumerable.call(input, property)) {
+      for (const property of Reflect.ownKeys(style)) {
+        if (!Object.prototype.propertyIsEnumerable.call(style, property)) {
           continue;
         }
         Reflect.deleteProperty(merged, property);
-        const value = (input as Record<PropertyKey, unknown>)[property];
+        const value = (style as Record<PropertyKey, unknown>)[property];
         if (
           typeof property === "string" &&
           typeof value === "string" &&

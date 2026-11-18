@@ -4,7 +4,7 @@
 
 ## StringifyFn type
 
-Function to convert a value into a string
+Converts a declaration value into a string.
 
 **Signature:**
 
