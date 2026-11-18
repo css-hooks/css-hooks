@@ -52,7 +52,7 @@ Description
 
 </td><td>
 
-Represents a hook or combination of hooks that can activate declarations.
+A hook or logical combination of hooks
 
 
 </td></tr>
@@ -74,7 +74,7 @@ Represents the function used to declare hooks and related configuration.
 
 </td><td>
 
-Represents a hook declared with `createHooks`<!-- -->.
+A unit of CSS logic that can be used for conditional inline styles
 
 
 </td></tr>
@@ -107,7 +107,7 @@ The functions configured by `createHooksSystem` for a specific app framework
 
 </td><td>
 
-Function to convert a value into a string
+Converts a declaration value into a string.
 
 
 </td></tr>
