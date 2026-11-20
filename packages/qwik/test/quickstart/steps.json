@@ -1,0 +1,17 @@
+{
+  "create": "npm create qwik@rc empty css-hooks-playground",
+  "install": "npm install @css-hooks/qwik@next",
+  "steps": [
+    {
+      "source": "css.ts",
+      "target": "src/css.ts"
+    },
+    {
+      "patch": "root.patch"
+    },
+    {
+      "source": "index.tsx",
+      "target": "src/routes/index.tsx"
+    }
+  ]
+}

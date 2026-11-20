@@ -7,5 +7,16 @@
   "trailingComma": "all",
   "bracketSpacing": true,
   "arrowParens": "avoid",
-  "proseWrap": "always"
+  "proseWrap": "always",
+  "plugins": ["prettier-plugin-jsdoc"],
+  "tsdoc": true,
+  "jsdocSeparateTagGroups": true,
+  "overrides": [
+    {
+      "files": ["docs/recipes/**/*.ts", "docs/recipes/**/*.tsx"],
+      "options": {
+        "printWidth": 60
+      }
+    }
+  ]
 }

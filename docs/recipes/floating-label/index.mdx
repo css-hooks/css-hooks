@@ -1,0 +1,49 @@
+---
+title: Floating label
+description:
+  Position a floating label using the input’s placeholder and focus states.
+order: 2
+hidden: true
+---
+
+import App from "./App.tsx";
+import appSource from "./App.tsx?raw";
+import { styleSheet } from "./css.ts";
+import cssSource from "./css.ts?raw";
+
+export const recipeFiles = { "App.tsx": appSource, "css.ts": cssSource };
+
+# Floating label
+
+Use a field’s label as a custom placeholder that moves out of the way when the
+field has focus or contains a value. The label remains visible and available to
+assistive technology in either position.
+
+## Example
+
+Click a field or use Tab key navigation to give it focus. The label moves to the
+top edge. Enter a value, and then move focus away. The label remains in its
+top-edge position. Clear the value and move focus away again to see the label
+return to its placeholder position.
+
+<Wide>
+  <RecipeDemo files={recipeFiles} styleSheet={styleSheet()}>
+    <App />
+  </RecipeDemo>
+</Wide>
+
+## Features
+
+**Label position.** The combination of `:placeholder-shown + &` with
+`:not(:focus) + &` places the label text inside the field when it is empty and
+does not have focus. Otherwise, the text aligns with the top edge of the field,
+using a background to mask the underlying border.
+
+**Placeholder state.** `placeholder=" "` gives the browser a placeholder to
+track without displaying text. The label position follows the input’s native
+placeholder and focus states.
+
+**Accessible label.** The `<label>` element contains the `<input>` element and
+its visible text, providing an accessible name even after a value is entered.
+`pointerEvents: "none"` lets pointer input pass through the label text to the
+field beneath it.
