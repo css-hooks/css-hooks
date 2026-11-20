@@ -128,14 +128,13 @@ unconditionally.
 Certain combinations of CSS properties can produce unexpected results at
 runtime. Notable conflicts include shorthand properties and their longhand
 equivalents, physical and logical properties that affect the same edge, and
-aliases. Avoid mixing these properties across base styles and overrides.
-
-The TypeScript types for the React, Preact, Solid, and Qwik integrations report
-these conflicts in calls to `mergeStyles`.
+aliases. The `mergeStyles` function produces a compiler error when style
+arguments contain incompatible properties.
 
 Conflict checking requires the specific keys of each style object to be
-retained. If you annotate a reusable style with a broad framework type such as
-`CSSProperties`, use `satisfies` instead:
+retained. Use `satisfies` instead of a type annotation to ensure that the style
+object is compatible with your framework's `CSSProperties` (or equivalent) type
+without widening:
 
 ```typescript
 const baseStyle = {
@@ -143,6 +142,7 @@ const baseStyle = {
 } satisfies CSSProperties;
 ```
 
-This protection is compile-time only. Custom integrations built directly with
+Conflict checking is automatically enabled for the React, Preact, Solid, and
+Qwik framework integrations. Custom integrations built directly with
 `@css-hooks/core` can enable conflict checking by supplying a property-conflict
 map.

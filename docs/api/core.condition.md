@@ -9,12 +9,12 @@ A hook or logical combination of hooks
 **Signature:**
 
 ```typescript
-export type Condition<H> = H | {
-    and: Condition<H>[];
+export type Condition<Hook> = Hook | {
+    and: Condition<Hook>[];
 } | {
-    or: Condition<H>[];
+    or: Condition<Hook>[];
 } | {
-    not: Condition<H>;
+    not: Condition<Hook>;
 };
 ```
 **References:** [Condition](./core.condition.md)

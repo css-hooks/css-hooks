@@ -141,7 +141,8 @@ conditional ones.
 
 ### Conflict protection
 
-`mergeStyles` includes type-level protection against conflicting properties:
+`mergeStyles` includes type-level protection against
+[conflicting properties](../applying-styles/index.md#property-conflicts):
 
 <!-- prettier-ignore -->
 ```typescript
