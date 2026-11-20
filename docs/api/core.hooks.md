@@ -11,14 +11,14 @@ An object containing the functions needed to support and use the configured hook
 ```typescript
 export type Hooks<ConfiguredHooks extends readonly Hook[], CSSProperties> = {
     on: <const Style extends CSSProperties>(condition: Condition<ConfiguredHooks[number]>, style: Style) => Style;
-    and: <C extends Condition<ConfiguredHooks[number]>[]>(...conditions: C) => {
-        and: C;
+    and: <Conditions extends Condition<ConfiguredHooks[number]>[]>(...conditions: Conditions) => {
+        and: Conditions;
     };
-    or: <C extends Condition<ConfiguredHooks[number]>[]>(...conditions: C) => {
-        or: C;
+    or: <Conditions extends Condition<ConfiguredHooks[number]>[]>(...conditions: Conditions) => {
+        or: Conditions;
     };
-    not: <C extends Condition<ConfiguredHooks[number]>>(condition: C) => {
-        not: C;
+    not: <ConditionValue extends Condition<ConfiguredHooks[number]>>(condition: ConditionValue) => {
+        not: ConditionValue;
     };
     styleSheet: () => string;
 } & (`%${string}` extends Flag<ConfiguredHooks> ? unknown : [Flag<ConfiguredHooks>] extends [never] ? unknown : {
