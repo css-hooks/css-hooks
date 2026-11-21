@@ -1,14 +1,14 @@
 {
   "name": "@css-hooks/preact",
   "description": "CSS Hooks for Preact",
-  "version": "4.0.0-next.100",
+  "version": "4.0.0-next.101",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "4.0.0-next.100"
+    "@css-hooks/core": "4.0.0-next.101"
   },
   "devDependencies": {
-    "@test/css-property-inventory": "4.0.0-next.100",
-    "@test/quickstart": "4.0.0-next.100",
+    "@test/css-property-inventory": "4.0.0-next.101",
+    "@test/quickstart": "4.0.0-next.101",
     "preact": "^11.0.0-0"
   },
   "files": [
