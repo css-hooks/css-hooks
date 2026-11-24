@@ -6,11 +6,9 @@ order: 6
 
 # Components
 
-A component should encapsulate its styling implementation details, making it
-easy to use and predictable for the consumer. With CSS Hooks, components can
-share a small set of generic hooks while assigning local meaning based on their
-own variants. Designing their public APIs means deciding which choices to expose
-through explicit props and when to allow direct style overrides.
+This guide explains how to style reusable components with CSS Hooks, from
+applying styles based on props or state to defining variants and supporting
+style overrides.
 
 ## Class selector hooks
 
@@ -111,6 +109,10 @@ prop. Then pass its value as the last `mergeStyles` argument to override the
 component’s internal styles:
 
 ```diff
+ import type { ComponentProps } from "react";
+ import { mergeStyles } from "@css-hooks/react";
+ import { on } from "./css";
+
 -type ButtonProps = Omit<ComponentProps<"button">, "style"> & {
 +type ButtonProps = ComponentProps<"button"> & {
    variant?: "primary" | "danger";
@@ -122,17 +124,32 @@ component’s internal styles:
 +  style: styleProp,
    ...props
  }: ButtonProps) {
+   const primary = "a";
+   const danger = "b";
 
-   // ...
-
+   return (
+     <button
+       {...props}
+       className={`${classNameProp} ${{ primary, danger }[variant]}`}
        style={mergeStyles(
-         // ...
+         {
+           border: 0,
+           borderRadius: 6,
+           padding: "0.5rem 1rem",
+         },
+         on(`&.${primary}`, {
+           backgroundColor: "#174ea6",
+           color: "white",
+         }),
          on(`&.${danger}`, {
            backgroundColor: "#a21d27",
            color: "white",
          }),
 +        styleProp,
        )}
+     />
+   );
+ }
 ```
 
 Later style objects override matching properties from earlier ones. Because the
