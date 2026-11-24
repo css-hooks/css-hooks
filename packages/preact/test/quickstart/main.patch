@@ -1,0 +1,16 @@
+--- a/src/main.tsx
++++ b/src/main.tsx
+@@ -1,5 +1,11 @@
+ import { render } from 'preact'
+-import './index.css'
+ import { App } from './app.tsx'
++import { styleSheet } from './css'
+ 
+-render(<App />, document.getElementById('app')!)
++render(
++  <>
++    <style dangerouslySetInnerHTML={{ __html: styleSheet() }} />
++    <App />
++  </>,
++  document.getElementById('app')!,
++)

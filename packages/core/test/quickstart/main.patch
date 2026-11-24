@@ -1,0 +1,10 @@
+--- a/src/main.ts
++++ b/src/main.ts
+@@ -1 +1,7 @@
++import { styleSheet } from "./css";
++
++const style = document.createElement("style");
++style.textContent = styleSheet();
++document.head.append(style);
++
+ document.querySelector("#app")!.innerHTML = "<button>Hover me</button>";

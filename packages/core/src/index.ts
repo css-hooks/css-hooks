@@ -5,32 +5,29 @@
  */
 
 /**
- * Represents the conditions under which a given hook or declaration applies.
+ * A hook or logical combination of hooks
  *
- * @typeParam S - The basic type of condition to enhance with boolean
- * operations.
+ * @typeParam Hook - The basic hook type to enhance with boolean operations
  *
  * @public
  */
-export type Condition<S> =
-  | S
-  | { and: Condition<S>[] }
-  | { or: Condition<S>[] }
-  | { not: Condition<S> };
+export type Condition<Hook> =
+  | Hook
+  | { and: Condition<Hook>[] }
+  | { or: Condition<Hook>[] }
+  | { not: Condition<Hook> };
 
 /**
- * Function to convert a value into a string.
- *
- * @param value - The value to stringify
- *
- * @param propertyName - The property name corresponding to the value being
- * stringified
+ * Converts a declaration value into a string.
  *
  * @remarks
- * Used for merging a conditional property value with the fallback value.
+ * Used for merging a conditional property value with the fallback value
  *
- * @returns The stringified value, or `undefined` if the value cannot be
- * stringified
+ * @param value - The value to stringify
+ * @param propertyName - The property name corresponding to the value being
+ *   stringified
+ *
+ * @returns The stringified value, or `null` if the value cannot be stringified
  *
  * @public
  */
@@ -40,286 +37,2028 @@ export type StringifyFn = (
 ) => string | null;
 
 /**
- * Represents the selector logic used to create a hook.
+ * A unit of CSS logic that can be used for conditional inline styles
  *
  * @remarks
- * Two types are supported:
- * 1. A basic selector, where `&` is used as a placeholder for the element to
- *    which the condition applies. The `&` character must appear somewhere.
- * 2. A `@media`, `@container`, or `@supports` at-rule. The value must begin
- *    with one of these keywords, followed by a space.
- * 3. The `@starting-style` at-rule (exactly, with no additional parameters).
+ * Supported types include:
+ *
+ * 1. A selector hook, where `&` is used as a placeholder for the element for which
+ *    the hook activates. The `&` character must appear somewhere.
+ * 2. An at-rule hook beginning with `@media`, `@container`, `@supports`, or
+ *    `@scope`, followed by a space. `@scope` requires an explicit scope root.
+ * 3. The `@starting-style` at-rule hook with no additional parameters.
+ * 4. A named Boolean flag hook beginning with `%`.
  *
  * @public
  */
-export type Selector =
+export type Hook =
   | `${string}&${string}`
   | `@${"media" | "container" | "supports"} ${string}`
-  | "@starting-style";
+  | `@scope (${string})`
+  | "@starting-style"
+  | `%${string}`;
 
 /**
- * Enhances a style object by merging in conditional declarations.
+ * Extracts the flags from a list of hooks.
  *
- * @typeParam CSSProperties - The type of a standard (flat) style object,
- * typically defined by an app framework (e.g., React's `CSSProperties` type).
- *
- * @param style - The original style object containing default/fallback values
- *
- * @returns An enhanced style object with conditional styles applied
- *
- * @public
+ * @typeParam Hooks - The hooks from which to extract flags
  */
-export type EnhanceStyleFn<CSSProperties> = (
-  style: CSSProperties,
-) => CSSProperties;
+type Flag<Hooks extends readonly Hook[]> = Extract<Hooks[number], `%${string}`>;
+
+/** Style declarations that set a flag for an element and its descendants */
+type FlagStyle = { [P in `--${string}`]: string };
+
+const fallbackMarker = "var(--ch-revert-layer,revert-layer)";
+const fallbackMarkerPattern = new RegExp(
+  fallbackMarker.replace(/[-()]/g, x => `\\${x}`),
+  "g",
+);
+
+/**
+ * Extracts declaration keys known to be present.
+ *
+ * @remarks
+ * Broad types such as `CSSProperties` have no known keys because their
+ * properties are optional.
+ *
+ * @typeParam Style - The style from which to extract known declaration keys
+ */
+type PresentKeys<Style> = Style extends object
+  ? {
+      [P in keyof Style]-?: Record<never, never> extends Pick<Style, P>
+        ? never
+        : P;
+    }[keyof Style]
+  : never;
+
+/**
+ * Marks conflicting properties as `never`.
+ *
+ * @typeParam Style - The style being validated
+ * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
+ *   with which they conflict
+ * @typeParam PreviousStyles - The previously merged styles whose known-present
+ *   properties are checked for conflicts
+ */
+type StyleConflictConstraint<
+  Style extends object,
+  CSSPropertyConflicts extends object,
+  PreviousStyles,
+> = {
+  [P in PresentKeys<Style> & keyof Style]: P extends keyof CSSPropertyConflicts
+    ? Extract<
+        CSSPropertyConflicts[P],
+        PresentKeys<PreviousStyles>
+      > extends never
+      ? Style[P]
+      : never
+    : Style[P];
+};
+
+/**
+ * Applies the known-present properties of an override style to a base style.
+ *
+ * @typeParam BaseStyle - The style being overridden
+ * @typeParam OverrideStyle - The style whose known-present properties take
+ *   precedence
+ */
+type MergeStyle<BaseStyle, OverrideStyle> = Omit<
+  BaseStyle,
+  PresentKeys<OverrideStyle>
+> &
+  OverrideStyle;
+
+/**
+ * Applies a style to a base style, ignoring null and undefined.
+ *
+ * @typeParam BaseStyle - The accumulated style
+ * @typeParam Style - The next style object, null, or undefined
+ */
+type ApplyStyle<
+  BaseStyle,
+  Style extends object | null | undefined,
+> = Style extends null | undefined ? BaseStyle : MergeStyle<BaseStyle, Style>;
+
+/**
+ * Applies styles from left to right to produce their merged style type.
+ *
+ * @typeParam BaseStyle - The initial accumulated style
+ * @typeParam Styles - The styles to apply in order
+ */
+type MergeStyles<
+  BaseStyle,
+  Styles extends readonly (object | null | undefined)[],
+> = Styles extends readonly [
+  infer Style extends object | null | undefined,
+  ...infer Rest extends readonly (object | null | undefined)[],
+]
+  ? MergeStyles<ApplyStyle<BaseStyle, Style>, Rest>
+  : BaseStyle;
+
+/**
+ * A style object that may be absent.
+ *
+ * @remarks
+ * Optional means the entire style object may be `null` or `undefined`, not that
+ * its properties are optional. This lets optional style objects be passed to
+ * `mergeStyles` without first checking whether they are present.
+ *
+ * @typeParam CSSProperties - The configured style object type
+ */
+type OptionalStyle<CSSProperties extends object> =
+  CSSProperties | null | undefined;
+
+/**
+ * Constrains a style against the known-present properties of preceding styles.
+ *
+ * @remarks
+ * The outer `Style &` intentionally exposes `Style` outside the conditional
+ * type so TypeScript infers the exact argument type before checking conflicts.
+ * Using only the conditional type can instead widen the argument to the
+ * configured style type, whose optional properties provide no known-present
+ * keys to check.
+ *
+ * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
+ *   with which they conflict
+ * @typeParam PreviousStyles - The styles preceding the style being checked
+ * @typeParam Style - The style being checked
+ */
+type CheckedStyle<
+  CSSPropertyConflicts extends object,
+  PreviousStyles extends readonly unknown[],
+  Style extends object | null | undefined,
+> = Style &
+  (Style extends null | undefined
+    ? Style
+    : StyleConflictConstraint<
+        Style & object,
+        CSSPropertyConflicts,
+        PreviousStyles[number]
+      >);
+
+/**
+ * Determines the merged style type.
+ *
+ * @typeParam Styles - The styles to merge from left to right
+ */
+type Merged<Styles extends readonly (object | null | undefined)[]> =
+  MergeStyles<object, Styles>;
+
+/**
+ * Merges style objects from left to right.
+ *
+ * @typeParam CSSProperties - The configured style object type
+ * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
+ *   with which they conflict
+ */
+type MergeStylesFn<
+  CSSProperties extends object,
+  CSSPropertyConflicts extends object,
+> = {
+  <const A extends OptionalStyle<CSSProperties>>(a: A): Merged<[A]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+  ): Merged<[A, B]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+  ): Merged<[A, B, C]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+  ): Merged<[A, B, C, D]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+  ): Merged<[A, B, C, D, E]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+  ): Merged<[A, B, C, D, E, F]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+  ): Merged<[A, B, C, D, E, F, G]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+  ): Merged<[A, B, C, D, E, F, G, H]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+  ): Merged<[A, B, C, D, E, F, G, H, I]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+    j: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I], J>,
+  ): Merged<[A, B, C, D, E, F, G, H, I, J]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+    j: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I], J>,
+    k: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J], K>,
+  ): Merged<[A, B, C, D, E, F, G, H, I, J, K]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+    j: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I], J>,
+    k: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J], K>,
+    l: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J, K], L>,
+  ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+    j: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I], J>,
+    k: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J], K>,
+    l: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J, K], L>,
+    m: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L],
+      M
+    >,
+  ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+    j: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I], J>,
+    k: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J], K>,
+    l: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J, K], L>,
+    m: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L],
+      M
+    >,
+    n: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M],
+      N
+    >,
+  ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+    j: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I], J>,
+    k: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J], K>,
+    l: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J, K], L>,
+    m: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L],
+      M
+    >,
+    n: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M],
+      N
+    >,
+    o: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
+      O
+    >,
+  ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+    j: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I], J>,
+    k: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J], K>,
+    l: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J, K], L>,
+    m: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L],
+      M
+    >,
+    n: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M],
+      N
+    >,
+    o: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
+      O
+    >,
+    p: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
+      P
+    >,
+  ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+    j: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I], J>,
+    k: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J], K>,
+    l: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J, K], L>,
+    m: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L],
+      M
+    >,
+    n: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M],
+      N
+    >,
+    o: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
+      O
+    >,
+    p: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
+      P
+    >,
+    q: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
+      Q
+    >,
+  ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+    j: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I], J>,
+    k: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J], K>,
+    l: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J, K], L>,
+    m: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L],
+      M
+    >,
+    n: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M],
+      N
+    >,
+    o: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
+      O
+    >,
+    p: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
+      P
+    >,
+    q: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
+      Q
+    >,
+    r: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
+      R
+    >,
+  ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
+    const S extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+    j: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I], J>,
+    k: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J], K>,
+    l: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J, K], L>,
+    m: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L],
+      M
+    >,
+    n: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M],
+      N
+    >,
+    o: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
+      O
+    >,
+    p: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
+      P
+    >,
+    q: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
+      Q
+    >,
+    r: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
+      R
+    >,
+    s: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R],
+      S
+    >,
+  ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
+    const S extends OptionalStyle<CSSProperties>,
+    const T extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+    j: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I], J>,
+    k: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J], K>,
+    l: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J, K], L>,
+    m: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L],
+      M
+    >,
+    n: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M],
+      N
+    >,
+    o: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
+      O
+    >,
+    p: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
+      P
+    >,
+    q: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
+      Q
+    >,
+    r: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
+      R
+    >,
+    s: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R],
+      S
+    >,
+    t: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S],
+      T
+    >,
+  ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
+    const S extends OptionalStyle<CSSProperties>,
+    const T extends OptionalStyle<CSSProperties>,
+    const U extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+    j: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I], J>,
+    k: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J], K>,
+    l: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J, K], L>,
+    m: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L],
+      M
+    >,
+    n: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M],
+      N
+    >,
+    o: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
+      O
+    >,
+    p: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
+      P
+    >,
+    q: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
+      Q
+    >,
+    r: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
+      R
+    >,
+    s: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R],
+      S
+    >,
+    t: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S],
+      T
+    >,
+    u: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T],
+      U
+    >,
+  ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
+    const S extends OptionalStyle<CSSProperties>,
+    const T extends OptionalStyle<CSSProperties>,
+    const U extends OptionalStyle<CSSProperties>,
+    const V extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+    j: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I], J>,
+    k: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J], K>,
+    l: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J, K], L>,
+    m: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L],
+      M
+    >,
+    n: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M],
+      N
+    >,
+    o: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
+      O
+    >,
+    p: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
+      P
+    >,
+    q: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
+      Q
+    >,
+    r: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
+      R
+    >,
+    s: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R],
+      S
+    >,
+    t: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S],
+      T
+    >,
+    u: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T],
+      U
+    >,
+    v: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U],
+      V
+    >,
+  ): Merged<[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]>;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
+    const S extends OptionalStyle<CSSProperties>,
+    const T extends OptionalStyle<CSSProperties>,
+    const U extends OptionalStyle<CSSProperties>,
+    const V extends OptionalStyle<CSSProperties>,
+    const W extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+    j: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I], J>,
+    k: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J], K>,
+    l: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J, K], L>,
+    m: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L],
+      M
+    >,
+    n: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M],
+      N
+    >,
+    o: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
+      O
+    >,
+    p: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
+      P
+    >,
+    q: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
+      Q
+    >,
+    r: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
+      R
+    >,
+    s: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R],
+      S
+    >,
+    t: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S],
+      T
+    >,
+    u: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T],
+      U
+    >,
+    v: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U],
+      V
+    >,
+    w: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V],
+      W
+    >,
+  ): Merged<
+    [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W]
+  >;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
+    const S extends OptionalStyle<CSSProperties>,
+    const T extends OptionalStyle<CSSProperties>,
+    const U extends OptionalStyle<CSSProperties>,
+    const V extends OptionalStyle<CSSProperties>,
+    const W extends OptionalStyle<CSSProperties>,
+    const X extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+    j: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I], J>,
+    k: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J], K>,
+    l: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J, K], L>,
+    m: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L],
+      M
+    >,
+    n: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M],
+      N
+    >,
+    o: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
+      O
+    >,
+    p: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
+      P
+    >,
+    q: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
+      Q
+    >,
+    r: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
+      R
+    >,
+    s: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R],
+      S
+    >,
+    t: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S],
+      T
+    >,
+    u: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T],
+      U
+    >,
+    v: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U],
+      V
+    >,
+    w: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V],
+      W
+    >,
+    x: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W],
+      X
+    >,
+  ): Merged<
+    [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X]
+  >;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
+    const S extends OptionalStyle<CSSProperties>,
+    const T extends OptionalStyle<CSSProperties>,
+    const U extends OptionalStyle<CSSProperties>,
+    const V extends OptionalStyle<CSSProperties>,
+    const W extends OptionalStyle<CSSProperties>,
+    const X extends OptionalStyle<CSSProperties>,
+    const Y extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+    j: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I], J>,
+    k: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J], K>,
+    l: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J, K], L>,
+    m: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L],
+      M
+    >,
+    n: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M],
+      N
+    >,
+    o: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
+      O
+    >,
+    p: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
+      P
+    >,
+    q: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
+      Q
+    >,
+    r: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
+      R
+    >,
+    s: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R],
+      S
+    >,
+    t: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S],
+      T
+    >,
+    u: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T],
+      U
+    >,
+    v: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U],
+      V
+    >,
+    w: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V],
+      W
+    >,
+    x: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W],
+      X
+    >,
+    y: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X],
+      Y
+    >,
+  ): Merged<
+    [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y]
+  >;
+  <
+    const A extends OptionalStyle<CSSProperties>,
+    const B extends OptionalStyle<CSSProperties>,
+    const C extends OptionalStyle<CSSProperties>,
+    const D extends OptionalStyle<CSSProperties>,
+    const E extends OptionalStyle<CSSProperties>,
+    const F extends OptionalStyle<CSSProperties>,
+    const G extends OptionalStyle<CSSProperties>,
+    const H extends OptionalStyle<CSSProperties>,
+    const I extends OptionalStyle<CSSProperties>,
+    const J extends OptionalStyle<CSSProperties>,
+    const K extends OptionalStyle<CSSProperties>,
+    const L extends OptionalStyle<CSSProperties>,
+    const M extends OptionalStyle<CSSProperties>,
+    const N extends OptionalStyle<CSSProperties>,
+    const O extends OptionalStyle<CSSProperties>,
+    const P extends OptionalStyle<CSSProperties>,
+    const Q extends OptionalStyle<CSSProperties>,
+    const R extends OptionalStyle<CSSProperties>,
+    const S extends OptionalStyle<CSSProperties>,
+    const T extends OptionalStyle<CSSProperties>,
+    const U extends OptionalStyle<CSSProperties>,
+    const V extends OptionalStyle<CSSProperties>,
+    const W extends OptionalStyle<CSSProperties>,
+    const X extends OptionalStyle<CSSProperties>,
+    const Y extends OptionalStyle<CSSProperties>,
+    const Z extends OptionalStyle<CSSProperties>,
+  >(
+    a: A,
+    b: CheckedStyle<CSSPropertyConflicts, [A], B>,
+    c: CheckedStyle<CSSPropertyConflicts, [A, B], C>,
+    d: CheckedStyle<CSSPropertyConflicts, [A, B, C], D>,
+    e: CheckedStyle<CSSPropertyConflicts, [A, B, C, D], E>,
+    f: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E], F>,
+    g: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F], G>,
+    h: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G], H>,
+    i: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H], I>,
+    j: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I], J>,
+    k: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J], K>,
+    l: CheckedStyle<CSSPropertyConflicts, [A, B, C, D, E, F, G, H, I, J, K], L>,
+    m: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L],
+      M
+    >,
+    n: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M],
+      N
+    >,
+    o: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N],
+      O
+    >,
+    p: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O],
+      P
+    >,
+    q: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P],
+      Q
+    >,
+    r: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q],
+      R
+    >,
+    s: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R],
+      S
+    >,
+    t: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S],
+      T
+    >,
+    u: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T],
+      U
+    >,
+    v: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U],
+      V
+    >,
+    w: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V],
+      W
+    >,
+    x: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W],
+      X
+    >,
+    y: CheckedStyle<
+      CSSPropertyConflicts,
+      [A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X],
+      Y
+    >,
+    z: CheckedStyle<
+      CSSPropertyConflicts,
+      [
+        A,
+        B,
+        C,
+        D,
+        E,
+        F,
+        G,
+        H,
+        I,
+        J,
+        K,
+        L,
+        M,
+        N,
+        O,
+        P,
+        Q,
+        R,
+        S,
+        T,
+        U,
+        V,
+        W,
+        X,
+        Y,
+      ],
+      Z
+    >,
+  ): Merged<
+    [
+      A,
+      B,
+      C,
+      D,
+      E,
+      F,
+      G,
+      H,
+      I,
+      J,
+      K,
+      L,
+      M,
+      N,
+      O,
+      P,
+      Q,
+      R,
+      S,
+      T,
+      U,
+      V,
+      W,
+      X,
+      Y,
+      Z,
+    ]
+  >;
+};
 
 /**
  * An object containing the functions needed to support and use the configured
- * hooks.
+ * hooks
  *
- * @typeParam S - The type of the selector logic for which to generate hooks
- *
- * @typeParam CSSProperties - The type of a standard (flat) style object,
- * typically defined by an app framework (e.g., React's `CSSProperties` type).
+ * @typeParam ConfiguredHooks - The tuple of configured hooks
+ * @typeParam CSSProperties - The type of a style object, typically defined by
+ *   an app framework (e.g., React’s `CSSProperties` type)
  *
  * @public
  */
-export interface CreateHooksResult<S, CSSProperties> {
-  /**
-   * Enhances a style object with conditional styles.
-   */
-  on: (
-    condition: Condition<S>,
-    style: CSSProperties,
-  ) => EnhanceStyleFn<CSSProperties>;
+export type Hooks<ConfiguredHooks extends readonly Hook[], CSSProperties> = {
+  /** Creates a style object with conditional declarations. */
+  on: <const Style extends CSSProperties>(
+    condition: Condition<ConfiguredHooks[number]>,
+    style: Style,
+  ) => Style;
 
   /**
    * Combines a list of conditions into a single condition which is true when
    * all of the specified conditions are true.
    *
-   * @typeParam C - The type of the conditions which must all be true in order
-   * for the condition to be true.
+   * @typeParam Conditions - The type of the conditions which must all be true
+   *   in order for the condition to be true
    *
    * @param conditions - The conditions which must all be true in order for the
-   * condition to be true.
+   *   condition to be true
    *
    * @returns A condition that is true when all of the specified conditions are
-   * true.
+   *   true
    */
-  and: <C extends Condition<S>[]>(...conditions: C) => { and: C };
+  and: <Conditions extends Condition<ConfiguredHooks[number]>[]>(
+    ...conditions: Conditions
+  ) => {
+    and: Conditions;
+  };
 
   /**
    * Combines a list of conditions into a single condition which is true when
    * any of the specified conditions are true.
    *
-   * @typeParam C - The type of the conditions any one of which must be true in
-   * order for the condition to be true.
+   * @typeParam Conditions - The type of the conditions any one of which must be
+   *   true in order for the condition to be true
    *
    * @param conditions - The conditions any one of which must be true in order
-   * for the condition to be true.
+   *   for the condition to be true
    *
    * @returns A condition that is true when any of the specified conditions are
-   * true.
+   *   true
    */
-  or: <C extends Condition<S>[]>(...conditions: C) => { or: C };
+  or: <Conditions extends Condition<ConfiguredHooks[number]>[]>(
+    ...conditions: Conditions
+  ) => {
+    or: Conditions;
+  };
 
   /**
    * Negates a condition.
    *
-   * @typeParam condition - The type of the condition which must be false in
-   * order for the resulting condition to be true.
+   * @typeParam ConditionValue - The type of the condition which must be false
+   *   in order for the resulting condition to be true
    *
    * @param condition - The condition which must be false in order for the
-   * resulting condition to be true.
+   *   resulting condition to be true
    *
    * @returns A condition that is true when the specified condition is false.
    */
-  not: <C extends Condition<S>>(condition: C) => { not: C };
+  not: <ConditionValue extends Condition<ConfiguredHooks[number]>>(
+    condition: ConditionValue,
+  ) => {
+    not: ConditionValue;
+  };
 
-  /**
-   * The style sheet required to support the configured hooks.
-   */
+  /** Returns the stylesheet required to support the declared hooks. */
   styleSheet: () => string;
-}
+} & (`%${string}` extends Flag<ConfiguredHooks>
+  ? unknown
+  : [Flag<ConfiguredHooks>] extends [never]
+    ? unknown
+    : {
+        /**
+         * Returns style declarations that enable flags for the element and its
+         * descendants.
+         */
+        enable: (
+          flag: Flag<ConfiguredHooks>,
+          ...flags: Flag<ConfiguredHooks>[]
+        ) => FlagStyle;
+
+        /**
+         * Returns style declarations that disable flags for the element and its
+         * descendants.
+         */
+        disable: (
+          flag: Flag<ConfiguredHooks>,
+          ...flags: Flag<ConfiguredHooks>[]
+        ) => FlagStyle;
+      });
 
 /**
- * Represents the function used to define hooks and related configuration.
+ * Represents the function used to declare hooks and related configuration.
  *
- * @typeParam CSSProperties - The type of a standard (flat) style object,
- * typically defined by an app framework (e.g., React's `CSSProperties` type).
+ * @remarks
+ * When the declared hooks are known to include one or more `%<name>` values,
+ * the return type also exposes `enable` and `disable` functions restricted to
+ * those flags.
  *
- * @typeParam S - The type of selectors for which to create hooks.
+ * @typeParam CSSProperties - The type of a style object, typically defined by
+ *   an app framework (e.g., React’s `CSSProperties` type)
+ * @typeParam ConfiguredHooks - The tuple of hooks to declare
  *
- * @param selectors - The selectors for which to create hooks.
+ * @param hooks - The hooks to declare
  *
  * @returns An object containing the functions needed to support and use the
- * configured hooks.
+ *   declared hooks
  *
  * @public
  */
-export type CreateHooksFn<CSSProperties> = <S extends Selector>(
-  ...selectors: S[]
-) => CreateHooksResult<S, CSSProperties>;
+export type CreateHooksFn<CSSProperties> = <
+  const ConfiguredHooks extends Hook[],
+>(
+  ...hooks: ConfiguredHooks
+) => Hooks<ConfiguredHooks, CSSProperties>;
+
+/**
+ * The functions configured by `createHooksSystem` for a specific app framework
+ *
+ * @typeParam CSSProperties - The type of a style object, typically defined by
+ *   an app framework (e.g., React’s `CSSProperties` type)
+ * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
+ *   with which they conflict
+ *
+ * @public
+ */
+export type HooksSystem<
+  CSSProperties extends object,
+  CSSPropertyConflicts extends object = object,
+> = {
+  /** Creates functions for the declared hooks. */
+  createHooks: CreateHooksFn<CSSProperties>;
+
+  /**
+   * Merges style objects from left to right.
+   *
+   * @remarks
+   * Conflicting arguments produce compiler errors. Styles conflict when they
+   * contain incompatible properties defined by `CSSPropertyConflicts`, such as
+   * overlapping shorthand/longhand declarations.
+   *
+   * These checks use known-present keys. Broad types such as `CSSProperties` do
+   * not expose which properties are present, so their conflicts cannot be
+   * detected.
+   */
+  mergeStyles: MergeStylesFn<CSSProperties, CSSPropertyConflicts>;
+};
 
 /**
  * Creates a flavor of CSS Hooks tailored to a specific app framework.
  *
- * @param stringify - The function used to stringify values when merging
- * conditional styles.
- *
- * @returns The `createHooks` function used to bootstrap CSS Hooks within an app
- * or component library.
- *
  * @remarks
  * Primarily for internal use, advanced use cases, or when an appropriate
- * framework integration is not provided.
+ * framework integration is not provided
+ *
+ * @typeParam CSSProperties - The type of a style object, typically defined by
+ *   an app framework (e.g., React’s `CSSProperties` type)
+ * @typeParam CSSPropertyConflicts - A map from CSS properties to the properties
+ *   with which they conflict
+ *
+ * @param stringify - The function used to stringify values when merging
+ *   override styles
+ *
+ * @returns The functions used to bootstrap CSS Hooks within an app or component
+ *   library
  *
  * @public
- *
  */
-export function buildHooksSystem<
+export function createHooksSystem<
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   CSSProperties extends { [P: string]: any } = Record<string, unknown>,
->(stringify: StringifyFn = String): CreateHooksFn<CSSProperties> {
-  return (...selectors: string[]) => {
-    const [space, newline] =
+  CSSPropertyConflicts extends object = object,
+>(
+  stringify: StringifyFn = String,
+): HooksSystem<CSSProperties, CSSPropertyConflicts> {
+  // Hoists a long resolved value so conditional branches share a reference.
+  const hoist = (
+    value: string,
+    extraDecls: Record<string, unknown>,
+  ): string => {
+    // shortcut: unresolved chains can still grow; retain their property context before hoisting.
+    // CSS resets must resolve on the original property; escapes may hide them.
+    if (
+      value.includes(fallbackMarker) ||
+      value.length <= 32 ||
+      /\\|\b(?:initial|inherit|unset|revert(?:-layer)?)\b/i.test(value)
+    ) {
+      return value;
+    }
+    const hash = createHash(value);
+    extraDecls[`--${hash}`] = value;
+    return `var(--${hash})`;
+  };
+
+  const mergeStyles = (...styles: (object | null | undefined)[]): object => {
+    let result: Record<PropertyKey, unknown> = {};
+    for (const style of styles) {
+      if (!style) {
+        continue;
+      }
+      const merged = { ...result };
+      for (const property of Reflect.ownKeys(style)) {
+        if (!Object.prototype.propertyIsEnumerable.call(style, property)) {
+          continue;
+        }
+        Reflect.deleteProperty(merged, property);
+        const value = (style as Record<PropertyKey, unknown>)[property];
+        if (
+          typeof property === "string" &&
+          typeof value === "string" &&
+          value.includes(fallbackMarker)
+        ) {
+          // Preserve missing fallbacks so enclosing merges can supply them.
+          const fallbackValue = hoist(
+            property in result
+              ? (stringify(result[property], property) ?? "revert-layer")
+              : fallbackMarker,
+            merged,
+          );
+          merged[property] = value.replace(
+            fallbackMarkerPattern,
+            () => fallbackValue,
+          );
+        } else {
+          merged[property] = value;
+        }
+      }
+      result = merged;
+    }
+    return result;
+  };
+
+  const createHooks: CreateHooksFn<CSSProperties> = <
+    const Hooks extends Hook[],
+  >(
+    ...hooks: Hooks
+  ) => {
+    let space = "";
+    let newline = "";
+    try {
       // @ts-expect-error bundler expected to replace `process.env.NODE_ENV` expression
-      process.env.NODE_ENV === "development" ? [" ", "\n"] : ["", ""];
+      if (process.env.NODE_ENV === "development") {
+        space = " ";
+        newline = "\n";
+      }
+    } catch {
+      // `process.env.NODE_ENV` is absent in unbundled browser environments
+    }
+
+    /**
+     * The "off" value for flag variables.
+     *
+     * @remarks
+     * It resolves to a truly-empty value (so `var()` treats it as empty rather
+     * than substituting its fallback), without introducing whitespace that
+     * would accumulate when composed through nested `var()` expressions.
+     * `--ch-empty` is never defined.
+     */
+    const empty = "var(--ch-empty, )";
+
+    const hookHashes = new Map<string, string>(
+      hooks.map(hook => [hook, createHash(hook)]),
+    );
+
+    /**
+     * Provides the name of the custom property corresponding to a given
+     * hook/suffix.
+     */
+    const hookVar = (hash: string, suffix = ""): string => `--${hash}${suffix}`;
+
+    const flagVars = (hash: string) =>
+      [
+        "0", // off
+        "1", // on
+        "0s", // off (seed)
+        "1s", // on (seed)
+      ].map(suffix => hookVar(hash, suffix));
+
+    const flagKeys = new Set(
+      hooks
+        .filter(hook => hook.startsWith("%"))
+        .flatMap(hook => {
+          const hash = hookHashes.get(hook);
+          return hash ? flagVars(hash) : [];
+        }),
+    );
+
+    const flagDeclarations = (flags: string[], enabled: boolean) => {
+      if (flags.length === 0) {
+        throw new RangeError("At least one flag is required");
+      }
+      return Object.fromEntries(
+        flags.flatMap(flag => {
+          const hash = hookHashes.get(flag);
+          if (!flag.startsWith("%") || !hash) {
+            throw new RangeError(`Unknown flag: ${flag}`);
+          }
+          const [off, on, offSeed, onSeed] = flagVars(hash);
+          return [
+            [off, enabled ? empty : "initial"],
+            [on, enabled ? "initial" : empty],
+            [offSeed, enabled ? empty : "initial"],
+            [onSeed, enabled ? "initial" : empty],
+          ];
+        }),
+      ) as FlagStyle;
+    };
+
+    /**
+     * Builds the `var()` expression that selects `valueIfTrue` when the
+     * condition matches and `valueIfFalse` otherwise.
+     *
+     * @remarks
+     * `suffix` is `"i"` when the condition should read the inherited flag
+     * variables (`--{hash}*i`) rather than the element's own (`--{hash}*`).
+     */
+    const buildExpression = (
+      condition: string | Condition<string>,
+      valueIfTrue: string,
+      valueIfFalse: string,
+      suffix: "" | "i" = "",
+    ): [string, Record<string, string>] => {
+      if (typeof condition === "string") {
+        const extraDecls: Record<string, string> = {};
+        const valTrue = hoist(valueIfTrue, extraDecls);
+        const valFalse = hoist(valueIfFalse, extraDecls);
+        const hookHash = hookHashes.get(condition) || createHash(condition);
+        const conditionSuffix = condition.startsWith("%") ? suffix : "";
+        return [
+          `var(${hookVar(hookHash, `1${conditionSuffix}`)},${valTrue})var(${hookVar(hookHash, `0${conditionSuffix}`)},${valFalse})`,
+          extraDecls,
+        ];
+      }
+      if ("and" in condition) {
+        const [head, ...tail] = condition.and;
+        if (!head) {
+          return [valueIfTrue, {}];
+        }
+        if (tail.length === 0) {
+          return buildExpression(head, valueIfTrue, valueIfFalse, suffix);
+        }
+        const [tailExpr, tailDecls] = buildExpression(
+          { and: tail },
+          valueIfTrue,
+          valueIfFalse,
+          suffix,
+        );
+        const [expr, decls] = buildExpression(
+          head,
+          tailExpr,
+          valueIfFalse,
+          suffix,
+        );
+        return [expr, { ...decls, ...tailDecls }];
+      }
+      if ("or" in condition) {
+        // De Morgan: `a || b` is equivalent to `!(¬a && ¬b)`.
+        return buildExpression(
+          { and: condition.or.map(c => ({ not: c })) },
+          valueIfFalse,
+          valueIfTrue,
+          suffix,
+        );
+      }
+      if (condition.not) {
+        return buildExpression(
+          condition.not,
+          valueIfFalse,
+          valueIfTrue,
+          suffix,
+        );
+      }
+      throw new Error(`Invalid condition: ${JSON.stringify(condition)}`);
+    };
 
     return {
+      enable: (...flags: [string, ...string[]]) =>
+        flagDeclarations(flags, true),
+      disable: (...flags: [string, ...string[]]) =>
+        flagDeclarations(flags, false),
       styleSheet() {
-        const indent = Array(2).fill(space).join("");
-        return `*${space}{${newline}${selectors
-          .flatMap(selector => [
-            `${indent}--${createHash(selector)}-0:${space}initial;`,
-            `${indent}--${createHash(selector)}-1:${space};`,
-          ])
-          .join(newline)}${newline}}${newline}${selectors
-          .flatMap(def => {
-            if (def.startsWith("@")) {
-              return [
-                `${def} {`,
-                `${indent}* {`,
-                `${indent}${indent}--${createHash(def)}-0:${space};`,
-                `${indent}${indent}--${createHash(def)}-1:${space}initial;`,
-                `${indent}}`,
-                "}",
-              ];
+        type Ruleset = [string[], { [P: string]: string } | Ruleset];
+
+        const parityVariable = "--ch-parity";
+        const evenQuery = `@container not style(${parityVariable}:${space})`;
+        const oddQuery = `@container style(${parityVariable}:${space})`;
+
+        return hooks
+          .flatMap((hook): Ruleset[] => {
+            const hookHash = hookHashes.get(hook)!;
+
+            const offVariable = hookVar(hookHash, "0");
+            const onVariable = hookVar(hookHash, "1");
+
+            if (hook.startsWith("%")) {
+              const rulesets: Ruleset[] = ["0", "1"].flatMap(lane => {
+                const valueVariable = hookVar(hookHash, lane);
+                const evenVariable = hookVar(hookHash, lane + "e");
+                const oddVariable = hookVar(hookHash, lane + "o");
+                const seedVariable = hookVar(hookHash, lane + "s");
+                const inheritedVariable = hookVar(hookHash, lane + "i");
+                return [
+                  [
+                    [evenQuery],
+                    [
+                      ["*"],
+                      {
+                        [evenVariable]: `var(${seedVariable})`,
+                        [inheritedVariable]: `var(${oddVariable})`,
+                      },
+                    ],
+                  ],
+                  [
+                    [oddQuery],
+                    [
+                      ["*"],
+                      {
+                        [oddVariable]: `var(${seedVariable})`,
+                        [inheritedVariable]: `var(${evenVariable})`,
+                      },
+                    ],
+                  ],
+                  [
+                    ["*"],
+                    {
+                      [valueVariable]: `var(${inheritedVariable})`,
+                    },
+                  ],
+                ];
+              });
+              // Initialize each flag to its "off" state on the root element, so
+              // that when no ancestor ever enables or disables it, it reads as
+              // "off" rather than "unset". These custom properties inherit, so
+              // the default propagates to the whole tree unless overridden.
+              rulesets.push([
+                [":root"],
+                {
+                  [hookVar(hookHash, "0s")]: "initial",
+                  [hookVar(hookHash, "1s")]: empty,
+                  // The root has no query container to initialize these lanes.
+                  [hookVar(hookHash, "0i")]: "initial",
+                  [hookVar(hookHash, "1i")]: empty,
+                  [hookVar(hookHash, "0o")]: `var(${hookVar(hookHash, "0s")})`,
+                  [hookVar(hookHash, "1o")]: `var(${hookVar(hookHash, "1s")})`,
+                },
+              ]);
+              return rulesets;
             }
-            return [
-              `${def.replace(/&/g, "*")}${space}{`,
-              `${indent}--${createHash(def)}-0:${space};`,
-              `${indent}--${createHash(def)}-1:${space}initial;`,
-              "}",
-            ];
+
+            const offDeclarations = {
+              [offVariable]: "initial",
+              [onVariable]: empty,
+            };
+            const onDeclarations = {
+              [offVariable]: empty,
+              [onVariable]: "initial",
+            };
+
+            const rulesets: Ruleset[] = [[["*"], offDeclarations]];
+
+            if (hook.startsWith("@")) {
+              const target = ["*"];
+              if (hook.startsWith("@scope")) {
+                target.push(":scope");
+              }
+              rulesets.push([[hook], [target, onDeclarations]]);
+            } else {
+              rulesets.push([
+                [`:where(${hook.replace(/&/g, "*")})`],
+                onDeclarations,
+              ]);
+            }
+
+            return rulesets;
           })
-          .join(newline)}`;
+          .concat(
+            hooks.some(hook => hook.startsWith("%"))
+              ? [
+                  [[evenQuery], [["*"], { [parityVariable]: space }]],
+                  [[oddQuery], [["*"], { [parityVariable]: "initial" }]],
+                ]
+              : [],
+          )
+          .map(
+            unary(function render(ruleset: Ruleset, level: number = 0): string {
+              const [headers, declarations] = ruleset;
+              const indent = Array(level * 2)
+                .fill(space)
+                .join("");
+              if (Array.isArray(declarations)) {
+                return `${indent}${headers.join(`,${space}`)}${space}{${newline}${render(
+                  declarations,
+                  level + 1,
+                )}${newline}${indent}}`;
+              }
+              return `${indent}${headers.join(`,${space}`)}${space}{${newline}${Object.entries(
+                declarations,
+              )
+                .map(
+                  ([property, value]) =>
+                    `${indent}${space}${property}:${space}${value};`,
+                )
+                .join(newline)}${newline}${indent}}`;
+            }),
+          )
+          .join(newline);
       },
       and: (...and) => ({ and }),
       or: (...or) => ({ or }),
       not: not => ({ not }),
-      on(condition, conditionalStyle) {
-        return fallbackStyle => {
-          const style = { ...fallbackStyle };
-          for (const property in conditionalStyle) {
-            const conditionalValue = stringify(
-              conditionalStyle[property],
-              property,
-            );
-            if (conditionalValue === null) {
-              continue;
-            }
-            let fallbackValue = "revert-layer";
-            if (property in style) {
-              const fv = stringify(style[property], property);
-              if (fv !== null) {
-                fallbackValue = fv;
-              }
-            }
-            const [value, extraDecls] = buildExpression(
-              condition,
-              conditionalValue,
-              fallbackValue,
-            );
-            Object.assign(style, { [property]: value }, extraDecls);
+      on(condition, inputStyle) {
+        const style = {} as CSSProperties;
+        for (const property in inputStyle) {
+          const inputStyleValue = inputStyle[property];
+          if (inputStyleValue === undefined) {
+            continue;
           }
-          return style;
-          function buildExpression(
-            condition: string | Condition<string>,
-            valueIfTrue: string,
-            valueIfFalse: string,
-          ): [string, Record<string, string>] {
-            if (typeof condition === "string") {
-              let valTrue = valueIfTrue,
-                valFalse = valueIfFalse;
-              const extraDecls: Record<string, string> = {};
-              if (valTrue.length > 32) {
-                const hash = createHash(valTrue);
-                extraDecls[`--${hash}`] = valTrue;
-                valTrue = `var(--${hash})`;
-              }
-              if (valFalse.length > 32) {
-                const hash = createHash(valFalse);
-                extraDecls[`--${hash}`] = valFalse;
-                valFalse = `var(--${hash})`;
-              }
-              return [
-                `var(--${createHash(condition)}-1,${space}${valTrue})${space}var(--${createHash(
-                  condition,
-                )}-0,${space}${valFalse})`,
-                extraDecls,
-              ];
-            }
-            if ("and" in condition) {
-              const [head, ...tail] = condition.and;
-              if (!head) {
-                return [valueIfTrue, {}];
-              }
-              if (tail.length === 0) {
-                return buildExpression(head, valueIfTrue, valueIfFalse);
-              }
-              const [tailExpr, tailDecls] = buildExpression(
-                { and: tail },
-                valueIfTrue,
-                valueIfFalse,
-              );
-              const [expr, decls] = buildExpression(
-                head,
-                tailExpr,
-                valueIfFalse,
-              );
-              return [expr, { ...decls, ...tailDecls }];
-            }
-            if ("or" in condition) {
-              return buildExpression(
-                { and: condition.or.map(not => ({ not })) },
-                valueIfFalse,
-                valueIfTrue,
-              );
-            }
-            if (condition.not) {
-              return buildExpression(condition.not, valueIfFalse, valueIfTrue);
-            }
-            throw new Error(`Invalid condition: ${JSON.stringify(condition)}`);
+          const overrideValue = stringify(inputStyleValue, property);
+          if (overrideValue === null) {
+            continue;
           }
-        };
+
+          const [value, extraDecls] = buildExpression(
+            condition,
+            overrideValue,
+            fallbackMarker,
+            flagKeys.has(property) ? "i" : "",
+          );
+          Object.assign(style, { [property]: value }, extraDecls);
+        }
+        return style as typeof inputStyle;
       },
     };
   };
+
+  return {
+    createHooks,
+    mergeStyles: mergeStyles as HooksSystem<
+      CSSProperties,
+      CSSPropertyConflicts
+    >["mergeStyles"],
+  };
 }
 
-function createHash(obj: unknown) {
-  const jsonString = JSON.stringify(obj);
+const hashAlphabet = "abcdefghijklmnopqrstuvwxyz0123456789-_";
+const hashAlphabetLength = hashAlphabet.length;
 
-  let hashValue = 0;
+function createHash(value: string) {
+  let h1 = 0xdeadbeef;
+  let h2 = 0x41c6ce57;
 
-  for (let i = 0; i < jsonString.length; i++) {
-    const charCode = jsonString.charCodeAt(i);
-    hashValue = (hashValue << 5) - hashValue + charCode;
-    hashValue &= 0x7fffffff;
+  for (let i = 0; i < value.length; i++) {
+    const code = value.charCodeAt(i);
+    h1 = Math.imul(h1 ^ code, 0x9e3779b1);
+    h2 = Math.imul(h2 ^ code, 0x5f356495);
   }
 
-  const str = hashValue.toString(36);
+  h1 =
+    Math.imul(h1 ^ (h1 >>> 16), 0x85ebca6b) ^
+    Math.imul(h2 ^ (h2 >>> 13), 0xc2b2ae35);
+  h2 =
+    Math.imul(h2 ^ (h2 >>> 16), 0x85ebca6b) ^
+    Math.imul(h1 ^ (h1 >>> 13), 0xc2b2ae35);
 
-  return /^[0-9]/.test(str) ? `a${str}` : str;
+  let hash = (h1 >>> 0) + 0x100000000 * (h2 & 0xf);
+  let encoded = "";
+
+  for (let i = 0; i < 7; i++) {
+    encoded = hashAlphabet.charAt(hash % hashAlphabetLength) + encoded;
+    hash = Math.floor(hash / hashAlphabetLength);
+  }
+
+  return encoded;
+}
+
+function unary<Argument, Result>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  fn: (a: Argument, ...rest: any) => Result,
+): (a: Argument) => Result {
+  return (a: Argument) => fn(a);
 }

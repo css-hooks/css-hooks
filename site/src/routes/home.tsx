@@ -2,7 +2,6 @@ import type { CSSProperties, ReactElement, ReactNode } from "react";
 import { Fragment, useState } from "react";
 import { prerenderToNodeStream } from "react-dom/static";
 import { Link } from "react-router";
-import { pipe } from "remeda";
 
 import { version } from "../../package.json";
 import { Block } from "../components/block.tsx";
@@ -14,14 +13,16 @@ import { SyntaxHighlighter } from "../components/syntax-highlighter.tsx";
 import {
   and,
   dark,
+  enable,
   extractClassName,
   intent,
   intentAdjacentSibling,
   light,
-  merge,
+  mergeStyles,
   not,
   on,
   or,
+  pageContentTimeline,
   withAlpha,
 } from "../css.ts";
 import {
@@ -39,11 +40,11 @@ import { monospace } from "../design/typography.ts";
 import type { Route } from "./+types/home.ts";
 
 export async function loader() {
-  const [pseudoClasses, selectors, responsive] = await Promise.all(
+  const [userInteraction, responsive, inheritedState] = await Promise.all(
     [
-      <PseudoClassesDemoSource key="pseudo-classes" />,
-      <SelectorsDemoSource key="selectors" />,
+      <UserInteractionDemoSource key="user-interaction" />,
       <ResponsiveDemoSource key="responsive" />,
+      <InheritedStateDemoSource key="inherited-state" />,
     ].map(async jsx => {
       const { prelude: stream } = await prerenderToNodeStream(jsx);
       return await new Promise<string>((resolve, reject) => {
@@ -54,37 +55,38 @@ export async function loader() {
       });
     }),
   );
-  if (!pseudoClasses || !selectors || !responsive) {
+  if (!userInteraction || !responsive || !inheritedState) {
     throw new Response("A demo source was unexpectedly empty.", {
       status: 500,
       statusText: "Internal Server Error",
     });
   }
-  return { demoSource: { pseudoClasses, selectors, responsive } };
+  return { demoSource: { userInteraction, responsive, inheritedState } };
 }
 
 export default function Home({
   loaderData: { demoSource },
 }: Route.ComponentProps) {
   return (
-    <main style={{ display: "contents" }}>
+    <main>
       <section
         style={{
-          position: "relative",
+          position: "sticky",
+          top: 0,
+          zIndex: 0,
           overflowX: "clip",
-          fontSize: "1rem",
           marginTop: "calc(-48px - 2em)",
           width: "100%",
         }}
       >
         {/* Zone A: content */}
         <div
-          style={pipe(
+          style={mergeStyles(
             {
               position: "relative",
               overflow: "hidden",
-              paddingTop: "8.75em",
-              paddingBottom: "8em",
+              paddingTop: 140,
+              paddingBottom: 64,
             },
             on(not(dark), {
               background: [
@@ -93,24 +95,26 @@ export default function Home({
                 "linear-gradient(to bottom, #ffffff, #f7f7fb)",
               ].join(", "),
             }),
+            on(dark, {
+              background: `linear-gradient(to bottom, ${gray(95)}, ${gray(95)} calc(48px + 2em), ${purple(90)} 55%)`,
+            }),
           )}
         >
           {/* Ambient glow clipped to Zone A */}
           <div
             role="presentation"
-            style={pipe(
+            style={mergeStyles(
               {},
               on(dark, {
                 position: "absolute",
                 pointerEvents: "none",
                 left: "50%",
-                top: "40%",
+                top: "50%",
                 width: "130%",
                 height: "100%",
                 transform: "translate(-50%, -50%)",
                 background:
                   "radial-gradient( ellipse at bottom, rgba(100, 70, 255, 0.65) 0%, rgba(70, 40, 220, 0.45) 40%, rgba(40, 20, 140, 0.25) 65%, rgba(0, 0, 0, 0) 100%)",
-                filter: "blur(40px)",
               }),
             )}
           />
@@ -123,11 +127,11 @@ export default function Home({
                 flexDirection: "column",
                 alignItems: "center",
                 textAlign: "center",
-                gap: "0.5em",
+                gap: 8,
               }}
             >
               <h1
-                style={pipe(
+                style={mergeStyles(
                   {
                     margin: 0,
                     fontSize: "4em",
@@ -145,7 +149,7 @@ export default function Home({
                 )}
               >
                 <strong
-                  style={pipe(
+                  style={mergeStyles(
                     {
                       fontWeight: 600,
                       color: purple(61),
@@ -161,9 +165,11 @@ export default function Home({
                 Inline style simplicity.
               </h1>
               <p
-                style={pipe(
+                style={mergeStyles(
                   {
                     fontSize: "1.5em",
+                    lineHeight: 4 / 3,
+                    maxWidth: 720,
                     textWrap: "balance",
                     color: gray(60),
                   },
@@ -175,8 +181,9 @@ export default function Home({
                   }),
                 )}
               >
-                The styling system that supercharges native inline styles with
-                pseudo-classes, responsive queries, and advanced selector logic.
+                Respond to user interaction, layout context, and inherited
+                state. All CSS-driven. All without leaving the{" "}
+                <Code>style</Code> prop.
               </p>
               <div
                 style={{
@@ -185,14 +192,14 @@ export default function Home({
                   width: "100%",
                   maxWidth: 480,
                   gap: 16,
-                  marginTop: "1em",
+                  marginTop: 16,
                 }}
               >
                 <CtaButton to="/docs" theme="primary">
                   Docs
                 </CtaButton>
                 <div
-                  style={pipe(
+                  style={mergeStyles(
                     {
                       display: "contents",
                     },
@@ -206,7 +213,7 @@ export default function Home({
                   </CtaButton>
                 </div>
                 <div
-                  style={pipe(
+                  style={mergeStyles(
                     {
                       display: "none",
                     },
@@ -225,121 +232,42 @@ export default function Home({
             </div>
           </Block>
         </div>
-        {/* Zone B: stripe anchor + below-stripe space */}{" "}
-        <div
-          style={{
-            position: "relative",
-            marginTop: "-4em",
-            paddingBottom: "4em",
-          }}
-        >
-          {(
-            [
-              {
-                left: "50%",
-                top: 0,
-                width: "180%",
-                height: "80px",
-                transform: "translate(-50%, -50%)",
-                background: `radial-gradient(ellipse at center, ${withAlpha(purple(50), 0.15)} 0%, transparent 70%)`,
-                filter: "blur(40px)",
-              },
-              {
-                left: "50%",
-                top: 0,
-                width: "150%",
-                height: "5em",
-                transform: "translate(-50%, -50%)",
-                background: `radial-gradient(ellipse at center, ${withAlpha(purple(30), 0.55)} 0%, ${withAlpha(purple(45), 0.35)} 30%, ${withAlpha(purple(60), 0.15)} 55%, transparent 75%)`,
-                filter: "blur(12px)",
-              },
-              {
-                left: "50%",
-                top: "1em",
-                width: "70%",
-                height: "5em",
-                transform: "translate(-50%, -50%)",
-                background: `radial-gradient(ellipse at center, ${withAlpha(blue(40), 0.35)} 0%, ${withAlpha(blue(55), 0.15)} 35%, transparent 70%)`,
-                filter: "blur(16px)",
-              },
-              {
-                left: "50%",
-                top: 0,
-                width: "28%",
-                height: "8em",
-                transform: "translate(-50%, -50%)",
-                background: `radial-gradient(ellipse at center, ${white} 0%, ${withAlpha(purple(10), 0.95)} 10%, ${withAlpha(purple(20), 0.75)} 22%, ${withAlpha(purple(40), 0.45)} 40%, ${withAlpha(purple(60), 0.15)} 60%, transparent 75%)`,
-                filter: "blur(14px)",
-              },
-              {
-                left: "50%",
-                top: 0,
-                width: "55%",
-                height: "3em",
-                transform: "translate(-50%, -50%)",
-                background: `radial-gradient(ellipse at center, ${white} 0%, ${withAlpha(purple(20), 0.7)} 25%, transparent 65%)`,
-                filter: "blur(8px)",
-              },
-              {
-                left: "50%",
-                top: 0,
-                width: "120%",
-                height: "6px",
-                transform: "translate(-50%, -50%)",
-                background: `linear-gradient(to right, transparent 0%, ${withAlpha(purple(30), 0.9)} 20%, ${white} 50%, ${withAlpha(purple(30), 0.9)} 80%, transparent 100%)`,
-                filter: "blur(3px)",
-              },
-              {
-                left: "50%",
-                top: 0,
-                width: "100%",
-                height: "1px",
-                transform: "translate(-50%, -50%)",
-                background: `linear-gradient(to right, transparent 0%, ${withAlpha(white, 0.8)} 50%, transparent 100%)`,
-                opacity: 0.8,
-              },
-            ] satisfies CSSProperties[]
-          ).map((style, key) => (
-            <div
-              key={key}
-              role="presentation"
-              style={pipe(
-                {},
-                on(dark, style),
-                merge({
-                  position: "absolute",
-                  pointerEvents: "none",
-                }),
-              )}
-            />
-          ))}
-        </div>
       </section>
       <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 48,
-          marginBlock: 96,
-        }}
+        style={mergeStyles(
+          {
+            position: "relative",
+            zIndex: 1,
+            viewTimelineName: pageContentTimeline,
+            viewTimelineAxis: "block",
+            viewTimelineInset: 0,
+            background: white,
+            display: "flex",
+            flexDirection: "column",
+            gap: 48,
+            paddingTop: 64,
+            paddingBottom: 96,
+          },
+          on(dark, { background: gray(90) }),
+        )}
       >
         <Demo
-          icon={<PseudoClassesIcon />}
-          title="Pseudo-classes"
-          source={demoSource.pseudoClasses}
-          preview={<PseudoClassesDemoPreview />}
-        />
-        <Demo
-          icon={<SelectorsIcon />}
-          title="Selectors"
-          source={demoSource.selectors}
-          preview={<SelectorsDemoPreview />}
+          icon={<UserInteractionIcon />}
+          title="User interaction"
+          source={demoSource.userInteraction}
+          preview={<UserInteractionDemoPreview />}
         />
         <Demo
           icon={<ResponsiveIcon />}
           title="Responsive design"
           source={demoSource.responsive}
           preview={<ResponsiveDemoPreview />}
+        />
+        <Demo
+          icon={<InheritedStateIcon />}
+          title="Inherited state"
+          source={demoSource.inheritedState}
+          preview={<InheritedStateDemoPreview />}
         />
         <section>
           <ScreenReaderOnly>
@@ -372,7 +300,7 @@ export default function Home({
                       components are self-contained, you stop hunting through
                       external stylesheets to find a layout bug. You can
                       refactor confidently, knowing your changes are scoped
-                      exactly where they&apos;re written.
+                      exactly where they’re written.
                     </>
                   ),
                 },
@@ -413,13 +341,12 @@ export default function Home({
                   headline: "Static stability, dynamic delivery",
                   body: (
                     <>
-                      This approach combines the modularity of runtime CSS-in-JS
-                      with the performance of static CSS. A tiny stylesheet
-                      added once at startup handles the plumbing, and CSS
-                      variable fallbacks handle the rest—ensuring that your
-                      styling payload stays proportional to your{" "}
-                      <strong>active UI</strong> instead of your{" "}
-                      <strong>entire application</strong>. All without the
+                      This approach combines component-local styles with the
+                      performance of static CSS. A tiny stylesheet added once at
+                      startup handles the plumbing, and CSS variable fallbacks
+                      handle the rest—ensuring that your styling payload stays
+                      proportional to your <strong>active UI</strong> instead of
+                      your <strong>entire application</strong>. All without the
                       overhead of client-side style injection.
                     </>
                   ),
@@ -450,7 +377,7 @@ export default function Home({
                         }}
                       >
                         <span
-                          style={pipe(
+                          style={mergeStyles(
                             {
                               display: "inline-block",
                               alignSelf: "flex-start",
@@ -476,7 +403,7 @@ export default function Home({
                           {label}
                         </span>
                         <h2
-                          style={pipe(
+                          style={mergeStyles(
                             {
                               margin: 0,
                               fontSize: 20,
@@ -493,7 +420,7 @@ export default function Home({
                         </h2>
                       </div>
                       <p
-                        style={pipe(
+                        style={mergeStyles(
                           {
                             ...itemStyle,
                             minWidth: "55%",
@@ -520,7 +447,7 @@ export default function Home({
           </ScreenReaderOnly>
           <Block>
             <div
-              style={pipe(
+              style={mergeStyles(
                 {
                   display: "grid",
                   gap: 32,
@@ -708,9 +635,8 @@ export default function Home({
               ].map(({ framework, logo }) => (
                 <div
                   key={framework}
-                  style={pipe(
+                  style={mergeStyles(
                     {
-                      fontSize: "1rem",
                       background: gray(10),
                       color: gray(80),
                       display: "flex",
@@ -727,7 +653,7 @@ export default function Home({
                   )}
                 >
                   <h1
-                    style={pipe(
+                    style={mergeStyles(
                       {
                         margin: 0,
                         fontWeight: 400,
@@ -742,14 +668,14 @@ export default function Home({
                   </h1>
                   <div style={{ order: 99 }}>
                     <CtaButton
-                      to={`/docs/quickstart/${framework.toLowerCase()}`}
+                      to={`/docs/quickstart/${framework.toLowerCase()}/`}
                       theme="subtle"
                     >
                       Quickstart
                     </CtaButton>
                   </div>
                   <div
-                    style={pipe(
+                    style={mergeStyles(
                       {
                         opacity: 0.75,
                         filter: "grayscale(0.75)",
@@ -772,7 +698,7 @@ export default function Home({
         </section>
         <Section title="Opinions">
           <div
-            style={pipe(
+            style={mergeStyles(
               {
                 display: "grid",
                 gap: 32,
@@ -817,7 +743,7 @@ export default function Home({
               }
             >
               <p style={{ margin: 0 }}>
-                That&apos;s how I always wished the style prop worked!
+                That’s how I always wished the style prop worked!
               </p>
             </Testimonial>
             <Testimonial
@@ -831,11 +757,10 @@ export default function Home({
               }
             >
               <p style={{ margin: 0 }}>
-                I absolutely love it. There&apos;s just something
-                &quot;fresh&quot; about it. Simple to get started, practically
-                no overhead, and it just makes sense. Best part is that it does
-                this all using native CSS features, nothing fancy - just really
-                cleverly done.
+                I absolutely love it. There’s just something &quot;fresh&quot;
+                about it. Simple to get started, practically no overhead, and it
+                just makes sense. Best part is that it does this all using
+                native CSS features, nothing fancy - just really cleverly done.
               </p>
             </Testimonial>
             <Testimonial
@@ -878,7 +803,7 @@ export default function Home({
               }
             >
               <p style={{ margin: 0 }}>
-                I&apos;m curious if there is a &quot;catch&quot; to css hooks,
+                I’m curious if there is a &quot;catch&quot; to css hooks,
                 because from first glance it seems too good to be true!
               </p>
             </Testimonial>
@@ -891,16 +816,17 @@ export default function Home({
 
 function InstallCommand({ framework }: { framework: string }) {
   const [copied, setCopied] = useState(false);
-  const command = `npm i @css-hooks/${framework.toLowerCase()}`;
+  const command = `npm i @css-hooks/${framework.toLowerCase()}${version.includes("-next.") ? "@next" : ""}`;
   return (
     <div
-      style={pipe(
+      style={mergeStyles(
         {
           display: "flex",
           alignItems: "center",
           gap: "0.5em",
           fontFamily: monospace,
           fontSize: "0.75em",
+          lineHeight: 4 / 3,
           color: gray(55),
         },
         on(dark, {
@@ -917,7 +843,7 @@ function InstallCommand({ framework }: { framework: string }) {
             setTimeout(() => setCopied(false), 2000);
           });
         }}
-        style={pipe(
+        style={mergeStyles(
           {
             background: "none",
             border: "none",
@@ -972,7 +898,7 @@ function CtaButton({
   return (
     <Link
       className={extractClassName({ primary, secondary, subtle }[theme])}
-      style={pipe(
+      style={mergeStyles(
         {
           display: "inline-flex",
           justifyContent: "center",
@@ -994,14 +920,14 @@ function CtaButton({
         }),
         on(
           light,
-          pipe(
+          mergeStyles(
             {
               background: white,
               color: black,
             },
             on(
               primary,
-              pipe(
+              mergeStyles(
                 {
                   background: purple(61),
                 },
@@ -1015,7 +941,7 @@ function CtaButton({
             ),
             on(
               secondary,
-              pipe(
+              mergeStyles(
                 {
                   color: purple(61),
                 },
@@ -1029,7 +955,7 @@ function CtaButton({
             ),
             on(
               subtle,
-              pipe(
+              mergeStyles(
                 {
                   background: gray(12),
                   color: gray(55),
@@ -1048,7 +974,7 @@ function CtaButton({
         ),
         on(
           dark,
-          pipe(
+          mergeStyles(
             {
               background: black,
               color: white,
@@ -1056,7 +982,7 @@ function CtaButton({
             },
             on(
               primary,
-              pipe(
+              mergeStyles(
                 {
                   background: gray(15),
                   color: purple(90),
@@ -1071,7 +997,7 @@ function CtaButton({
             ),
             on(
               secondary,
-              pipe(
+              mergeStyles(
                 {
                   background: purple(90),
                 },
@@ -1085,7 +1011,7 @@ function CtaButton({
             ),
             on(
               subtle,
-              pipe(
+              mergeStyles(
                 {
                   background: gray(80),
                 },
@@ -1121,18 +1047,18 @@ function Section({
         <ScreenReaderOnly>
           <h1>{title}</h1>
         </ScreenReaderOnly>
-        <div style={{ fontSize: "1rem" }}>{children}</div>
+        <div>{children}</div>
       </Block>
     </section>
   );
 }
 
 function CodeWindow({ children }: { children: ReactNode }) {
-  const bg = pipe(
+  const bg = mergeStyles(
     { backgroundColor: white },
     on(dark, { backgroundColor: withAlpha(gray(95), 0.45) }),
   );
-  const border = pipe(
+  const border = mergeStyles(
     { borderColor: gray(19) },
     on(dark, { borderColor: withAlpha(gray(55), 0.25) }),
   );
@@ -1146,7 +1072,7 @@ function CodeWindow({ children }: { children: ReactNode }) {
       }}
     >
       <div
-        style={pipe(
+        style={mergeStyles(
           {
             display: "flex",
             padding: 7,
@@ -1156,14 +1082,14 @@ function CodeWindow({ children }: { children: ReactNode }) {
             borderTopLeftRadius: 8,
             borderTopRightRadius: 8,
           },
-          merge(bg),
-          merge(border),
+          bg,
+          border,
         )}
       >
         {[0, 1, 2].map(i => (
           <div
             key={i}
-            style={pipe(
+            style={mergeStyles(
               {
                 width: 12,
                 aspectRatio: 1,
@@ -1176,18 +1102,18 @@ function CodeWindow({ children }: { children: ReactNode }) {
         ))}
       </div>
       <div
-        style={pipe(
+        style={mergeStyles(
           {
             flex: 1,
             borderWidth: 1,
             borderStyle: "solid",
             borderBottomLeftRadius: 8,
             borderBottomRightRadius: 8,
-            padding: "1rem",
+            padding: 16,
             overflow: "auto",
           },
-          merge(bg),
-          merge(border),
+          bg,
+          border,
         )}
       >
         {children}
@@ -1211,7 +1137,7 @@ function Demo({
     <section>
       <Block>
         <div
-          style={pipe(
+          style={mergeStyles(
             {
               position: "relative",
               overflow: "hidden",
@@ -1241,7 +1167,7 @@ function Demo({
             }}
           >
             <div
-              style={pipe(
+              style={mergeStyles(
                 {
                   width: 28,
                   height: 28,
@@ -1263,11 +1189,10 @@ function Demo({
               {icon}
             </div>
             <span
-              style={pipe(
+              style={mergeStyles(
                 {
                   color: gray(70),
                   fontWeight: 700,
-                  fontSize: "1rem",
                   letterSpacing: "-0.01em",
                 },
                 on(dark, { color: gray(20) }),
@@ -1278,7 +1203,7 @@ function Demo({
           </div>
           {/* Panels */}
           <div
-            style={pipe(
+            style={mergeStyles(
               {
                 position: "relative",
                 zIndex: 1,
@@ -1298,7 +1223,7 @@ function Demo({
               </CodeWindow>
             </div>
             <div
-              style={pipe(
+              style={mergeStyles(
                 {
                   flex: 1,
                   minHeight: 280,
@@ -1324,10 +1249,10 @@ function Demo({
   );
 }
 
-function PseudoClassesDemoSource() {
+function UserInteractionDemoSource() {
   return (
     <SyntaxHighlighter language="tsx">{`<button
-  style={pipe(
+  style={mergeStyles(
     {
       background: "${blue(60)}",
       color: "${white}",
@@ -1345,10 +1270,10 @@ function PseudoClassesDemoSource() {
   );
 }
 
-function PseudoClassesDemoPreview() {
+function UserInteractionDemoPreview() {
   return (
     <button
-      style={pipe(
+      style={mergeStyles(
         {
           margin: 0,
           padding: "0.75em 1em",
@@ -1356,7 +1281,7 @@ function PseudoClassesDemoPreview() {
           border: 0,
           fontFamily: "sans-serif",
           fontWeight: 700,
-          fontSize: "1rem",
+          fontSize: "1em",
           lineHeight: 1,
           background: blue(60),
           color: white,
@@ -1374,56 +1299,15 @@ function PseudoClassesDemoPreview() {
   );
 }
 
-function SelectorsDemoSource() {
-  return (
-    <SyntaxHighlighter language="tsx">{`<label>
-  <input type="checkbox" checked />
-  <span
-    style={pipe(
-      {},
-      on(":checked + &", {
-        textDecoration: "line-through"
-      })
-    )}
-  >
-    Simplify CSS architecture
-  </span>
-</label>`}</SyntaxHighlighter>
-  );
-}
-
-function SelectorsDemoPreview() {
-  return (
-    <label
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "0.25em",
-        fontFamily: "sans-serif",
-        fontWeight: 700,
-      }}
-    >
-      <input type="checkbox" defaultChecked />
-      <span
-        style={pipe(
-          {},
-          on(":checked + &", {
-            textDecoration: "line-through",
-          }),
-        )}
-      >
-        Simplify CSS architecture
-      </span>
-    </label>
-  );
-}
-
 function ResponsiveDemoSource() {
   return (
     <SyntaxHighlighter language="tsx">{`<span
-  style={pipe(
-    {},
-    on(or("@container (width < 50px)", "@container (width >= 100px)"), {
+  style={mergeStyles(
+    { display: "none" },
+    on("@container (width >= 50px)", {
+      display: "revert-layer"
+    }),
+    on("@container (width >= 100px)", {
       display: "none"
     })
   )}
@@ -1431,10 +1315,10 @@ function ResponsiveDemoSource() {
   sm
 </span>
 <span
-  style={pipe(
-    {},
-    on("@container (width < 100px)", {
-      display: "none"
+  style={mergeStyles(
+    { display: "none" },
+    on("@container (width >= 100px)", {
+      display: "revert-layer"
     })
   )}
 >
@@ -1456,13 +1340,13 @@ function ResponsiveDemoPreview() {
       }}
     >
       <div
-        style={pipe(
+        style={mergeStyles(
           {
             background: white,
             color: black,
             fontFamily: "sans-serif",
             fontWeight: 700,
-            fontSize: "3rem",
+            fontSize: "3em",
             height: scale,
             width,
             display: "grid",
@@ -1479,11 +1363,16 @@ function ResponsiveDemoPreview() {
         )}
       >
         <span
-          style={pipe(
+          style={mergeStyles(
             {
+              display: "none",
               fontSize: "0.5em",
+              lineHeight: 4 / 3,
             },
-            on(or("@container (width < 50px)", "@container (width >= 100px)"), {
+            on("@container (width >= 50px)", {
+              display: "revert-layer",
+            }),
+            on("@container (width >= 100px)", {
               display: "none",
             }),
           )}
@@ -1491,10 +1380,10 @@ function ResponsiveDemoPreview() {
           sm
         </span>
         <span
-          style={pipe(
-            {},
-            on("@container (width < 100px)", {
-              display: "none",
+          style={mergeStyles(
+            { display: "none" },
+            on("@container (width >= 100px)", {
+              display: "revert-layer",
             }),
           )}
         >
@@ -1517,6 +1406,83 @@ function ResponsiveDemoPreview() {
   );
 }
 
+function InheritedStateDemoSource() {
+  return (
+    <SyntaxHighlighter language="tsx">{`<div
+  style={mergeStyles(
+    { padding: 24 },
+    on("&:hover", enable("%active"))
+  )}
+>
+  Hover parent
+  <span
+    style={mergeStyles(
+      { color: "gray" },
+      on("%active", { color: "purple" })
+    )}
+  >
+    Child responds
+  </span>
+</div>`}</SyntaxHighlighter>
+  );
+}
+
+function InheritedStateDemoPreview() {
+  return (
+    <div
+      style={mergeStyles(
+        {
+          display: "flex",
+          flexDirection: "column",
+          gap: 12,
+          minWidth: 160,
+          padding: 20,
+          borderRadius: 8,
+          borderWidth: 1,
+          borderStyle: "solid",
+          borderColor: gray(20),
+          background: gray(10),
+          color: gray(60),
+          fontFamily: "sans-serif",
+          fontWeight: 700,
+        },
+        on(dark, {
+          borderColor: gray(70),
+          background: gray(85),
+          color: gray(30),
+        }),
+        on("&:hover", enable("%active")),
+      )}
+    >
+      <span style={{ fontSize: "0.75em" }}>Hover parent</span>
+      <span
+        style={mergeStyles(
+          {
+            padding: 12,
+            borderRadius: 6,
+            background: white,
+            color: gray(60),
+            textAlign: "center",
+            boxShadow: `inset 0 0 0 1px ${gray(20)}`,
+          },
+          on(dark, {
+            background: gray(90),
+            color: gray(30),
+            boxShadow: `inset 0 0 0 1px ${gray(70)}`,
+          }),
+          on("%active", {
+            background: purple(60),
+            color: white,
+            boxShadow: "none",
+          }),
+        )}
+      >
+        Child responds
+      </span>
+    </div>
+  );
+}
+
 function TestimonialAuthor({
   name,
   handle,
@@ -1532,7 +1498,8 @@ function TestimonialAuthor({
         display: "grid",
         gridTemplateAreas: "'avatar name' 'avatar handle'",
         gridTemplateColumns: "auto 1fr",
-        gap: "0 1rem",
+        rowGap: 0,
+        columnGap: 16,
       }}
     >
       <div
@@ -1548,7 +1515,7 @@ function TestimonialAuthor({
       </div>
       <div style={{ gridArea: "name" }}>{name}</div>
       <div
-        style={pipe(
+        style={mergeStyles(
           { gridArea: "handle", color: gray(50) },
           on(dark, { color: gray(45) }),
         )}
@@ -1570,14 +1537,14 @@ function Testimonial({
     <blockquote style={{ display: "contents" }} cite={href}>
       <a
         href={href}
-        style={pipe(
+        style={mergeStyles(
           {
             textDecoration: "none",
             color: "inherit",
             background: white,
             flexDirection: "column",
             gap: 16,
-            padding: "2rem",
+            padding: 32,
             outlineWidth: 0,
             outlineOffset: 2,
             outlineColor: purple(20),
@@ -1633,7 +1600,7 @@ function DemoIconSvg({ children }: { children: ReactElement }) {
   );
 }
 
-function PseudoClassesIcon() {
+function UserInteractionIcon() {
   return (
     <DemoIconSvg>
       <path
@@ -1644,11 +1611,11 @@ function PseudoClassesIcon() {
   );
 }
 
-function SelectorsIcon() {
+function InheritedStateIcon() {
   return (
     <DemoIconSvg>
       <path
-        d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"
+        d="M4 3h8v6H9v2h7v3h4v7h-8v-7h3v-1H8v1H4v7H0v-7h4v-3h3V9H4V3Zm2 2v2h4V5H6Zm8 11v3h4v-3h-4ZM2 16v3h4v-3H2Z"
         fill="currentColor"
       />
     </DemoIconSvg>
@@ -1667,5 +1634,14 @@ function ResponsiveIcon() {
 }
 
 function Code({ children }: { children?: ReactNode }) {
-  return <code style={{ fontFamily: monospace }}>{children}</code>;
+  return (
+    <code
+      style={mergeStyles(
+        { color: teal(60), fontFamily: monospace },
+        on(dark, { color: teal(30) }),
+      )}
+    >
+      {children}
+    </code>
+  );
 }

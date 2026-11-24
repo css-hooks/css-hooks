@@ -1,115 +1,48 @@
 /**
- *  CSS Hooks for {@link https://react.dev | React}
+ * CSS Hooks for {@link https://react.dev | React}
  *
  * @packageDocumentation
  */
 
-import { buildHooksSystem } from "@css-hooks/core";
+import type { HooksSystem } from "@css-hooks/core";
+import { createHooksSystem } from "@css-hooks/core";
 import type { CSSProperties } from "react";
 
-export type * from "@css-hooks/core";
+import type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
 
-// See https://github.com/facebook/react/blob/main/packages/react-dom-bindings/src/client/CSSPropertyOperations.js
+export type * from "@css-hooks/core";
+export type { CSSPropertyConflicts } from "./css-property-conflicts.ts";
+
+/** Unitless properties observed in Chromium, Firefox, and WebKit */
+const UNITLESS =
+  /^(--|(Moz(ForceBrokenImageIcon|TabSize)|lineHeight|tabSize|font(SizeAdjus|Weigh)t|widows|scale|(s|WebkitS)hapeImageThreshold|((border|WebkitMaskBox)Image|maskBorder)(Outset|Slice|Width)?|(Moz|Webkit)Bo(rderImage|x(Flex|OrdinalGroup))|stroke(Dash(array|offset)|Miterlimit|Width)|mathDepth|hyphenateLimit(Char|Line)s|readingOrder|Webkit(BoxFlexGroup|HyphenateLimit(After|Before|Lines)|LineClamp|Perspective)|aspectRatio|(i|WebkitI)nitialLetter|flexLineCount|(a|(Moz|Webkit)A)nimation(IterationCount)?|(c|WebkitC)olumn(s|Count)|(f|WebkitF)lex(Grow|Shrink)?|(o|WebkitO)(pacity|rder)|grid(Area|(Column|Row)(End|Start)?)|(fill|flood|stop|stroke)Opacity|orphans|z(Index|oom))$)/;
+
 /** @internal */
 export function _stringifyValue(value: unknown, propertyName: string) {
   switch (typeof value) {
     case "string":
       return value;
     case "number":
-      return `${value}${isUnitlessNumber(propertyName) ? "" : "px"}`;
+      return `${value}${UNITLESS.test(propertyName) ? "" : "px"}`;
     default:
       return null;
   }
 }
 
+const hooksSystem = createHooksSystem<CSSProperties, CSSPropertyConflicts>(
+  _stringifyValue,
+);
+
 /**
- * A {@link @css-hooks/core#CreateHooksFn} configured to use React's
- * `CSSProperties` type and logic for converting CSS values into strings.
+ * A hook factory configured to use React’s `CSSProperties` type and logic for
+ * converting CSS values into strings
  *
  * @public
  */
-export const createHooks = buildHooksSystem<CSSProperties>(_stringifyValue);
+export const createHooks = hooksSystem.createHooks;
 
-/**
- * Following code (c) Meta Platforms, Inc. and affiliates.
- * Source modified to account for custom properties.
- */
-
-/** @internal */
-export const _unitlessNumbers = new Set([
-  "animationIterationCount",
-  "aspectRatio",
-  "borderImageOutset",
-  "borderImageSlice",
-  "borderImageWidth",
-  "boxFlex",
-  "boxFlexGroup",
-  "boxOrdinalGroup",
-  "columnCount",
-  "columns",
-  "flex",
-  "flexGrow",
-  "flexPositive",
-  "flexShrink",
-  "flexNegative",
-  "flexOrder",
-  "gridArea",
-  "gridRow",
-  "gridRowEnd",
-  "gridRowSpan",
-  "gridRowStart",
-  "gridColumn",
-  "gridColumnEnd",
-  "gridColumnSpan",
-  "gridColumnStart",
-  "fontWeight",
-  "lineClamp",
-  "lineHeight",
-  "opacity",
-  "order",
-  "orphans",
-  "scale",
-  "tabSize",
-  "widows",
-  "zIndex",
-  "zoom",
-  "fillOpacity", // SVG-related properties
-  "floodOpacity",
-  "stopOpacity",
-  "strokeDasharray",
-  "strokeDashoffset",
-  "strokeMiterlimit",
-  "strokeOpacity",
-  "strokeWidth",
-  "MozAnimationIterationCount", // Known Prefixed Properties
-  "MozBoxFlex", // TODO: Remove these since they shouldn't be used in modern code
-  "MozBoxFlexGroup",
-  "MozLineClamp",
-  "msAnimationIterationCount",
-  "msFlex",
-  "msZoom",
-  "msFlexGrow",
-  "msFlexNegative",
-  "msFlexOrder",
-  "msFlexPositive",
-  "msFlexShrink",
-  "msGridColumn",
-  "msGridColumnSpan",
-  "msGridRow",
-  "msGridRowSpan",
-  "WebkitAnimationIterationCount",
-  "WebkitBoxFlex",
-  "WebKitBoxFlexGroup",
-  "WebkitBoxOrdinalGroup",
-  "WebkitColumnCount",
-  "WebkitColumns",
-  "WebkitFlex",
-  "WebkitFlexGrow",
-  "WebkitFlexPositive",
-  "WebkitFlexShrink",
-  "WebkitLineClamp",
-]);
-
-function isUnitlessNumber(name: string) {
-  return /^--/.test(name) || _unitlessNumbers.has(name);
-}
+/** A style merger configured to use React’s `CSSProperties` type. @public */
+export const mergeStyles: HooksSystem<
+  CSSProperties,
+  CSSPropertyConflicts
+>["mergeStyles"] = hooksSystem.mergeStyles;

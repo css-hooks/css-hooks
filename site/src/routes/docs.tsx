@@ -1,7 +1,5 @@
-import { pipe } from "remeda";
-
 import { NavLink } from "../components/nav-link.tsx";
-import { dark, not, on } from "../css.ts";
+import { dark, mergeStyles, not, on } from "../css.ts";
 import { docs } from "../data/docs.ts";
 import { createMetaDescriptors } from "../data/meta.ts";
 import { gray } from "../design/colors.ts";
@@ -17,31 +15,33 @@ export default function Docs() {
   return (
     <main
       style={{
-        margin: "1rem auto",
-        width: "calc(100% - 4rem)",
+        marginBlock: 16,
+        marginInline: "auto",
+        width: "calc(100% - 64px)",
         maxWidth: "60ch",
       }}
     >
       <h1
         style={{
           margin: 0,
-          fontSize: "2.2rem",
+          fontSize: "2em",
           fontWeight: 400,
           lineHeight: 1.25,
-          marginBlock: "1.375rem",
+          marginBlockStart: 0,
+          marginBlockEnd: 16,
         }}
       >
         Documentation
       </h1>
       <ol
-        style={pipe(
+        style={mergeStyles(
           {
             listStyleType: "none",
             margin: 0,
-            padding: "2em",
+            padding: 32,
             display: "flex",
             flexDirection: "column",
-            gap: "2em",
+            gap: 32,
           },
           on(dark, {
             background: gray(85),
@@ -53,14 +53,15 @@ export default function Docs() {
       >
         {docs
           .filter(
-            ({ attributes: { level, order } }) => level === 0 && order >= 0,
+            ({ attributes: { level, order, hidden } }) =>
+              level === 0 && order >= 0 && !hidden,
           )
           .sort(({ attributes: { order: a } }, { attributes: { order: b } }) =>
             a < b ? -1 : a > b ? 1 : 0,
           )
           .map(({ attributes: { pathname, title, description } }) => (
             <li key={pathname}>
-              <span style={{ fontSize: "1.5em" }}>
+              <span style={{ fontSize: "1.5em", lineHeight: 4 / 3 }}>
                 <NavLink to={pathname}>{title}</NavLink>
               </span>
               <br />

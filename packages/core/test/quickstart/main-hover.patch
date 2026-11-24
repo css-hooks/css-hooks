@@ -1,0 +1,15 @@
+--- a/src/main.ts
++++ b/src/main.ts
+@@ -1,7 +1,11 @@
+-import { styleSheet } from "./css";
++import { on, styleObjectToString, styleSheet } from "./css";
+ 
+ const style = document.createElement("style");
+ style.textContent = styleSheet();
+ document.head.append(style);
+ 
+ document.querySelector("#app")!.innerHTML = "<button>Hover me</button>";
++
++document
++  .querySelector("button")!
++  .setAttribute("style", styleObjectToString(on("&:hover", { color: "red" })));
