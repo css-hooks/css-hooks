@@ -45,9 +45,9 @@ object’s properties move to the end of the result, overriding matching
 properties from earlier objects. `mergeStyles` also resolves each conditional
 property against the value it overrides.
 
-> [!WARNING] Do not use object spread instead of the `mergeStyles` function when
-> combining base and conditional styles. Object spread does not resolve
-> conditional property fallback values.
+> [!WARNING] Always use the `mergeStyles` function to combine base and
+> conditional styles. Object spread does not resolve conditional declarations'
+> fallback values.
 
 ## Conditional overrides
 

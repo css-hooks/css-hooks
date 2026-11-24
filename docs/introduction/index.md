@@ -37,22 +37,17 @@ listeners, component state, or style injection.
 
 ## Why inline styles
 
-Inline styles have several advantages over stylesheets:
+Inline styles have several important benefits:
 
-- **Familiar, typed syntax.** Inline styles use standard CSS properties and
-  values as plain objects, so editors provide completion and type checking and
-  there is no new language or abstraction to learn.
-- **Local reasoning.** Declarations live with the element they style, so there
-  is no separate stylesheet to consult and no dead CSS left over after a design
-  change or refactor.
-- **Deterministic resolution.** Inline styles take precedence over stylesheet
-  rules and apply in the order you write them, so there are no specificity,
-  source-order, or cascade-layer surprises.
-- **Dynamic values.** Values can be computed from data or state directly.
-- **No build step.** Nothing needs to be compiled, extracted, or generated ahead
-  of time.
-- **No render-blocking request.** There is no separate stylesheet to download
-  before the element can render.
+- **Familiar, typed syntax.** Inline styles use ordinary style objects. You
+  reuse existing CSS knowledge. Your editor provides autocompletion and type
+  checking.
+- **Local reasoning.** Declaring styles directly on an element means there is no
+  separate stylesheet to read and no dead CSS code left over after a refactor.
+- **Deterministic resolution.** Inline styles apply predictably in the order you
+  write them—with no cascade interference.
+- **Efficient loading.** Inline styles avoid render-blocking CSS requests and
+  naturally follow component code-splitting boundaries.
 
 The main gap is conditionality: The `style` prop cannot express states or
 context such as `&:hover`, container queries, or inherited state.
@@ -60,27 +55,22 @@ context such as `&:hover`, container queries, or inherited state.
 ## Why CSS Hooks
 
 CSS Hooks provides advanced styling capabilities without sacrificing the
-advantages of native inline styles. Compared with other approaches:
+advantages of native inline styles. Compared with other approaches, it
 
-- Does not inject styles at runtime, unlike typical CSS-in-JS solutions
-- Keeps the familiar syntax of the `style` prop, unlike atomic or
-  "utility-first" CSS solutions
-- Does not require a compiler or restrict styles to statically analyzable
-  values, unlike "zero runtime" CSS solutions
+- does not inject styles at runtime, unlike typical CSS-in-JS solutions;
+- keeps the familiar syntax of the `style` prop, unlike atomic or
+  "utility-first" CSS solutions; and
+- does not require a compiler or restrict styles to statically analyzable
+  values, unlike "zero runtime" CSS solutions.
 
-Building on inline styles, CSS Hooks provides:
+Building on inline styles, CSS Hooks provides
 
-- Conditional selector and at-rule logic
-- `and`, `or`, and `not` combinators that enable the expression of advanced
-  conditions through hook composition
-- CSS-driven interaction and responsive behavior without mirrored JavaScript
-  state
-- Predictable composition and fallback values through the `mergeStyles` function
-- Inheritable Boolean state for coordinating styles across a subtree
-
-CSS Hooks supports server rendering, including server components. The browser
-evaluates conditions through CSS, so components do not need access to the
-browser environment to render conditional styles.
+- selector, at-rule, and inherited Boolean state hooks, evaluated entirely in
+  CSS;
+- `and`, `or`, and `not` combinators that allow advanced conditions to be
+  expressed through hook composition;
+- predictable style overrides through the `mergeStyles` function; and
+- frictionless server rendering and inherent support for server components.
 
 ## How it fits with CSS
 
