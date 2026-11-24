@@ -1,15 +1,15 @@
 {
   "name": "@css-hooks/qwik",
   "description": "CSS Hooks for Qwik",
-  "version": "4.0.0-next.101",
+  "version": "4.0.0-next.102",
   "author": "Nick Saunders",
   "dependencies": {
-    "@css-hooks/core": "4.0.0-next.101"
+    "@css-hooks/core": "4.0.0-next.102"
   },
   "devDependencies": {
     "@qwik.dev/core": "^2.0.0-beta.30",
-    "@test/css-property-inventory": "4.0.0-next.101",
-    "@test/quickstart": "4.0.0-next.101"
+    "@test/css-property-inventory": "4.0.0-next.102",
+    "@test/quickstart": "4.0.0-next.102"
   },
   "files": [
     "cjs",
